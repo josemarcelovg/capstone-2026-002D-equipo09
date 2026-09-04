@@ -18,6 +18,28 @@ MicroLogist busca solucionar la dificultad de gestionar información operativa y
 La plataforma centraliza esta información en un solo lugar, facilitando el seguimiento de vehículos, conductores, turnos y vencimientos, ayudando a mejorar la organización y gestión del servicio.
 
 
+
+# Tecnologías Utilizadas :
+
+| Tecnología        | Uso                                                                                 |
+| ----------------- | ----------------------------------------------------------------------------------- |
+| **Next.js**       | Framework principal para desarrollar la aplicación web.                             |
+| **React**         | Se utilizará para crear la interfaz de usuario.                                     |
+| **TypeScript**    | Se utilizará para desarrollar el código de la aplicación.                           |
+| **Tailwind CSS**  | Se utilizará para diseñar la interfaz y adaptarla a distintos dispositivos.         |
+| **PostgreSQL**    | Base de datos donde se almacenará la información del sistema.                       |
+| **Prisma ORM**    | Se utilizará para conectar la aplicación con la base de datos y realizar consultas. |
+| **Supabase**      | Se utilizará para alojar la base de datos y gestionar servicios del sistema.        |
+| **Supabase Auth** | Se utilizará para gestionar el inicio de sesión y la autenticación de usuarios.     |
+| **Zod**           | Se utilizará para validar los datos ingresados en el sistema.                       |
+| **Vercel**        | Se utilizará para desplegar y alojar la aplicación web.                             |
+| **GitHub**        | Se utilizará para almacenar el código y gestionar el trabajo del equipo.            |
+
+
+
+
+
+
 # Instrucciones Para Ejecutar Localmente :
 
 
