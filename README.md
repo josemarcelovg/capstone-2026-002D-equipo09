@@ -1,6 +1,6 @@
 # capstone-2026-002D-equipo09 
 
-# Nombre Del Proyecto: MicroLogist_
+# Nombre Del Proyecto: MicroLogist
 
 # Descripción del Proyecto :
 ## Descripción
