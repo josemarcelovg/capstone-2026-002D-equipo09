@@ -42,6 +42,105 @@ La plataforma centraliza esta información en un solo lugar, facilitando el segu
 
 # Instrucciones Para Ejecutar Localmente :
 
+Requisitos
+Node.js 24 o superior (versión usada por el equipo: 24)
+npm (se instala junto con Node.js)
+Git
+
+Instalación
+Clonar el repositorio (se recomienda una carpeta fuera de OneDrive, por ejemplo C:\Proyectos):
+
+   
+   git clone https://github.com/josemarcelovg/capstone-2026-002D-equipo09.git
+   cd capstone-2026-002D-equipo09
+
+2. Instalar las dependencias:
+
+npm install
+3. Crear el archivo de variables de entorno a partir del ejemplo:
+
+cp .env.example .env
+
+   Los valores se completarán cuando se configure Supabase. El archivo .env nunca se sube al repositorio.
+
+Ejecución
+
+┌───────────────┬───────────────────────────────────────┐
+│    Comando    │            Para qué sirve             │
+├───────────────┼───────────────────────────────────────┤
+│ npm run dev   │ Inicia el servidor de desarrollo      │
+├───────────────┼───────────────────────────────────────┤
+│ npm run build │ Compila la aplicación para producción │
+├───────────────┼───────────────────────────────────────┤
+│ npm run start │ Ejecuta la versión compilada          │
+├───────────────┼───────────────────────────────────────┤
+│ npm run lint  │ Revisa el código con ESLint           │
+└───────────────┴───────────────────────────────────────┘
+
+Con npm run dev, abrir http://localhost:3000 en el navegador.
+
+▎ ⚠️ Usar la dirección localhost y no la que aparece como "Network": Next.js bloquea esa dirección en modo desarrollo y la página se ve vacía.
+
+Estructura del repositorio
+
+┌───────────┬─────────────────────────────────────┐
+│  Carpeta  │              Contenido              │
+- npm (se instala junto con Node.js)
+- Git
+
+### Instalación
+
+1. Clonar el repositorio (se recomienda una carpeta fuera de OneDrive, por ejemplo `C:\Proyectos`):
+
+   
+bash
+   git clone https://github.com/josemarcelovg/capstone-2026-002D-equipo09.git
+   cd capstone-2026-002D-equipo09
+
+Instalar las dependencias:
+
+npm install
+Crear el archivo de variables de entorno a partir del ejemplo:
+
+cp .env.example .env
+
+   Los valores se completarán cuando se configure Supabase. El archivo .env nunca se sube al repositorio.
+
+Ejecución
+
+┌───────────────┬───────────────────────────────────────┐
+│    Comando    │            Para qué sirve             │
+├───────────────┼───────────────────────────────────────┤
+│ npm run dev   │ Inicia el servidor de desarrollo      │
+├───────────────┼───────────────────────────────────────┤
+│ npm run build │ Compila la aplicación para producción │
+├───────────────┼───────────────────────────────────────┤
+│ npm run start │ Ejecuta la versión compilada          │
+├───────────────┼───────────────────────────────────────┤
+│ npm run lint  │ Revisa el código con ESLint           │
+└───────────────┴───────────────────────────────────────┘
+
+Con npm run dev, abrir http://localhost:3000/ en el navegador.
+
+▎ ⚠️ Usar la dirección localhost y no la que aparece como "Network": Next.js bloquea esa dirección en modo desarrollo y la página se ve vacía.
+
+Estructura del repositorio
+
+┌───────────┬─────────────────────────────────────┐
+│  Carpeta  │              Contenido              │
+├───────────┼─────────────────────────────────────┤
+│ src/app/  │ Páginas y rutas de la aplicación    │
+├───────────┼─────────────────────────────────────┤
+│ public/   │ Imágenes y archivos estáticos       │
+├───────────┼─────────────────────────────────────┤
+│ docs/     │ Documentación del proyecto por fase │
+├───────────┼─────────────────────────────────────┤
+│ database/ │ Scripts y recursos de base de datos │
+├───────────┼─────────────────────────────────────┤
+│ docker/   │ Configuración de Docker             │
+├───────────┼─────────────────────────────────────┤
+│ tests/    │ Pruebas                             │
+└───────────┴─────────────────────────────────────┘
 
 
 # Integrantes Del Equipo Con Sus Roles:
