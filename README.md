@@ -75,6 +75,8 @@ Ejecución
 │ npm run start │ Ejecuta la versión compilada          │
 ├───────────────┼───────────────────────────────────────┤
 │ npm run lint  │ Revisa el código con ESLint           │
+├───────────────┼───────────────────────────────────────┤
+│ npm test      │ Ejecuta las pruebas automáticas       │
 └───────────────┴───────────────────────────────────────┘
 
 Con npm run dev, abrir http://localhost:3000 en el navegador.
@@ -118,6 +120,8 @@ Ejecución
 │ npm run start │ Ejecuta la versión compilada          │
 ├───────────────┼───────────────────────────────────────┤
 │ npm run lint  │ Revisa el código con ESLint           │
+├───────────────┼───────────────────────────────────────┤
+│ npm test      │ Ejecuta las pruebas automáticas       │
 └───────────────┴───────────────────────────────────────┘
 
 Con npm run dev, abrir http://localhost:3000/ en el navegador.
