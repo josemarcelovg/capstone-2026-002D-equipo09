@@ -3,7 +3,7 @@ import Form from "next/form";
 import Link from "next/link";
 import { ESTADOS, ETIQUETA_ESTADO, ETIQUETA_TIPO, formatearPatente } from "@/lib/vehiculos";
 import { listarVehiculos } from "@/lib/vehiculos-datos";
-import { InsigniaEstado } from "./insignia-estado";
+import { InsigniaEstado } from "../insignia-estado";
 
 export const metadata: Metadata = { title: "Vehículos" };
 
