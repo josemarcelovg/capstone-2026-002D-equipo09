@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
+import { MenuSesion } from "./menu-sesion";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,14 +30,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <header className="border-b border-zinc-200 bg-white">
           <nav
             aria-label="Principal"
-            className="mx-auto flex w-full max-w-5xl items-center gap-6 px-4 py-3"
+            className="mx-auto flex w-full max-w-5xl items-center gap-4 px-4 py-3 sm:gap-6"
           >
             <Link href="/" className="text-lg font-semibold text-blue-800">
               MicroLogist
             </Link>
-            <Link href="/vehiculos" className="text-sm font-medium text-zinc-800 hover:underline">
-              Vehículos
-            </Link>
+            <MenuSesion />
           </nav>
         </header>
         <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">{children}</main>

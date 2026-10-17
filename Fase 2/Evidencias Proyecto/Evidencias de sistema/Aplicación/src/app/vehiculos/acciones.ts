@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { redirect, unstable_rethrow } from "next/navigation";
 import { formatearPatente, validarVehiculo, type ErroresVehiculo } from "@/lib/vehiculos";
 import {
   actualizarVehiculo,
@@ -38,6 +38,8 @@ export async function guardarVehiculo(
       await crearVehiculo(datos);
     }
   } catch (error) {
+    // Sin sesión, empresaDeLaSesion() redirige al login (SIM-02): esa redirección no es un error.
+    unstable_rethrow(error);
     if (error instanceof PatenteDuplicadaError) {
       return {
         patente: `Ya tienes un vehículo registrado con la patente ${formatearPatente(datos.patente)}.`,
@@ -61,6 +63,7 @@ export async function cambiarActivacion(id: string, activar: boolean) {
   try {
     vehiculo = await actualizarVehiculo(id, { estado: reactivar ? "activo" : "inactivo" });
   } catch (error) {
+    unstable_rethrow(error);
     console.error(error);
     return "No pudimos cambiar el estado del vehículo. Intenta nuevamente.";
   }

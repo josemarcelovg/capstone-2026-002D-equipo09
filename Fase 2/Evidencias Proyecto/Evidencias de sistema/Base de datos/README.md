@@ -6,6 +6,7 @@ PostgreSQL, administrada con Prisma. En desarrollo se usa Supabase o la base loc
 |---|---|
 | `schema.prisma` | Modelo de datos: tablas, columnas, relaciones y restricciones (por ejemplo, patente única por empresa). |
 | `migrations/` | Scripts SQL que crean y modifican las tablas, en orden. Cada carpeta tiene su `migration.sql`. |
+| `perfiles-prueba.sql` | Une las cuentas de prueba de Supabase Auth con su empresa ficticia. Se ejecuta en el SQL Editor de Supabase ([SIM-02](<../../Evidencias de documentación/SIM-02_Inicio_de_Sesion.md>), sección 5). |
 
 - **Diagrama entidad-relación y diccionario de datos:** [JOS-04 Modelo de datos](<../../Evidencias de documentación/JOS-04_Modelo_de_Datos.md>).
 - **Configuración y datos de prueba:** [JOS-02 Configuración de la base de datos](<../../Evidencias de documentación/JOS-02_Configuracion_Base_de_Datos.md>).
