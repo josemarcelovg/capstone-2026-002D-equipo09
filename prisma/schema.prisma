@@ -1,0 +1,96 @@
+// Modelo de datos de MicroLogist (JOS-02), según JOA-01 secciones 2.2 y 3.
+// En el código los campos van en camelCase; en la base de datos, las tablas
+// y columnas quedan en snake_case (@map / @@map), como en JOA-01.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Rol {
+  admin
+
+  @@map("rol")
+}
+
+enum TipoVehiculo {
+  bus
+  minibus
+  van
+  furgon
+  automovil
+  otro
+
+  @@map("tipo_vehiculo")
+}
+
+enum EstadoVehiculo {
+  activo
+  en_mantencion
+  inactivo
+
+  @@map("estado_vehiculo")
+}
+
+/// Los datos cuelgan de la empresa y no del usuario (JOA-01, 2.1).
+model Empresa {
+  id            String   @id @default(uuid()) @db.Uuid
+  nombre        String   @db.VarChar(100)
+  /// Opcional por ahora; único si se ingresa. [POR CONFIRMAR] si será obligatorio.
+  rut           String?  @unique @db.VarChar(12)
+  /// Recibirá los avisos de vencimiento.
+  emailContacto String   @map("email_contacto") @db.VarChar(254)
+  telefono      String?  @db.VarChar(20)
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  usuarios  Usuario[]
+  vehiculos Vehiculo[]
+
+  @@map("empresa")
+}
+
+/// Perfil del usuario. La contraseña la maneja Supabase Auth, no esta tabla.
+model Usuario {
+  /// El mismo id del usuario en Supabase Auth (auth.users.id), por eso no se genera aquí.
+  id        String   @id @db.Uuid
+  empresaId String   @map("empresa_id") @db.Uuid
+  nombre    String   @db.VarChar(100)
+  email     String   @unique @db.VarChar(254)
+  rol       Rol      @default(admin)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  empresa Empresa @relation(fields: [empresaId], references: [id])
+
+  @@index([empresaId])
+  @@map("usuario")
+}
+
+model Vehiculo {
+  id                 String         @id @default(uuid()) @db.Uuid
+  empresaId          String         @map("empresa_id") @db.Uuid
+  /// Normalizada: mayúsculas, sin espacios, guiones ni puntos (BBCD12 o AB1234).
+  patente            String         @db.VarChar(6)
+  tipo               TipoVehiculo
+  marca              String         @db.VarChar(50)
+  modelo             String         @db.VarChar(50)
+  anio               Int            @db.SmallInt
+  capacidadPasajeros Int            @map("capacidad_pasajeros") @db.SmallInt
+  numeroInterno      String?        @map("numero_interno") @db.VarChar(20)
+  color              String?        @db.VarChar(30)
+  estado             EstadoVehiculo @default(activo)
+  observaciones      String?        @db.VarChar(500)
+  createdAt          DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime       @updatedAt @map("updated_at") @db.Timestamptz
+
+  empresa Empresa @relation(fields: [empresaId], references: [id])
+
+  /// Una patente no se repite dentro de la misma empresa, incluidos los inactivos.
+  /// Otra empresa sí puede tenerla (JOA-01, 3.1).
+  @@unique([empresaId, patente])
+  @@map("vehiculo")
+}
