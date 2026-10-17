@@ -133,6 +133,16 @@ Con `npm run dev`, abrir http://localhost:3000 en el navegador.
 
 > ⚠️ Usar la dirección `localhost` y no la que aparece como "Network": Next.js bloquea esa dirección en modo desarrollo y la página se ve vacía.
 
+### Ejecutar con Docker (sin claves de Supabase)
+
+Requiere [Docker Desktop](https://www.docker.com/products/docker-desktop/). Desde la carpeta del proyecto:
+
+```bash
+docker compose -f docker/compose.yaml up --build
+```
+
+Levanta la aplicación y una base de datos PostgreSQL local con los datos de prueba. Abrir http://localhost:3000. Detalles y problemas frecuentes: [JOS-05](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-05_Entorno_Docker.md>).
+
 ### Estructura del repositorio
 
 | Carpeta | Contenido |
@@ -186,4 +196,6 @@ Para el desarrollo del proyecto se utilizará una metodología ágil e increment
 | [JOA-07 Innovación](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-07_Innovacion.md>) | Problema, alternativas existentes y aporte de MicroLogist |
 | [JOA-08 Product Backlog](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-08_Product_Backlog.md>) | Historias de usuario priorizadas con sus criterios de aceptación |
 | [JOS-02 Configuración de la base de datos](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-02_Configuracion_Base_de_Datos.md>) | Supabase, Prisma, migraciones y datos de prueba |
+| [JOS-04 Modelo de datos](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-04_Modelo_de_Datos.md>) | Diagrama entidad-relación, diccionario de datos y separación entre empresas |
+| [JOS-05 Entorno Docker](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-05_Entorno_Docker.md>) | Levantar la aplicación con una base de datos local, sin claves de Supabase |
 | [SIM-05 Definition of Done](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-05_Definition_of_Done.md>) | Condiciones para dar una tarea por terminada |
