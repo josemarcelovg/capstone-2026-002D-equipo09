@@ -78,7 +78,7 @@ flowchart LR
 
 Por ahora el acceso a datos usa datos de ejemplo en memoria; la conexión con Prisma y Supabase está en desarrollo (JOS-02 y JOS-03), y el inicio de sesión se implementa en SIM-02.
 
-El detalle está en el diagrama de componentes y en los diagramas de secuencia de [JOA-06](docs/fase2-desarrollo/JOA-06_Diagramas_UML.md).
+El detalle está en el diagrama de componentes y en los diagramas de secuencia de [JOA-06](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-06_Diagramas_UML.md>).
 
 ## Instrucciones para ejecutar localmente
 
@@ -129,10 +129,12 @@ Con `npm run dev`, abrir http://localhost:3000 en el navegador.
 
 | Carpeta | Contenido |
 |---|---|
+| `Fase 1/` | Evidencias individuales y grupales de la Fase 1 |
+| `Fase 2/` | Evidencias individuales, grupales y del proyecto de la Fase 2 (documentación y evidencias del sistema) |
+| `Fase 3/` | Evidencias individuales y grupales de la Fase 3 |
 | `src/app/` | Páginas y rutas de la aplicación |
 | `src/lib/` | Reglas de validación y acceso a datos |
 | `public/` | Imágenes y archivos estáticos |
-| `docs/` | Documentación del proyecto por fase |
 | `database/` | Scripts y recursos de base de datos |
 | `docker/` | Configuración de Docker |
 | `tests/` | Pruebas automáticas |
@@ -160,7 +162,7 @@ Para el desarrollo del proyecto se utilizará una metodología ágil e increment
 
 ### Cómo la aplicamos
 
-- **Artefactos:** [Product Vision](docs/fase2-desarrollo/JOA-04_Product_Vision.md), [Product Backlog](docs/fase2-desarrollo/JOA-08_Product_Backlog.md) priorizado por el Product Owner, [Definition of Done](docs/fase2-desarrollo/SIM-05_Definition_of_Done.md) acordada por el equipo, y Sprint Backlog y retrospectivas de cada sprint (SIM-06, en preparación).
+- **Artefactos:** [Product Vision](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-04_Product_Vision.md>), [Product Backlog](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-08_Product_Backlog.md>) priorizado por el Product Owner, [Definition of Done](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-05_Definition_of_Done.md>) acordada por el equipo, y Sprint Backlog y retrospectivas de cada sprint (SIM-06, en preparación).
 - **Seguimiento:** un tablero en GitHub Projects con las tareas de cada integrante, sus responsables y criterios de aceptación, en estados pendiente, en curso y terminado. Se revisa en una reunión semanal.
 - **Revisión del trabajo:** cada tarea se hace en su propia rama y se une a `main` mediante un pull request revisado por otro integrante.
 - **Duración de los sprints:** **[POR CONFIRMAR]** con el equipo.
@@ -169,10 +171,10 @@ Para el desarrollo del proyecto se utilizará una metodología ágil e increment
 
 | Documento | Contenido |
 |---|---|
-| [JOA-01 Reglas del módulo de vehículos](docs/fase2-desarrollo/JOA-01_Reglas_Modulo_Vehiculos.md) | Alcance, campos, permisos y criterios de aceptación de la primera entrega |
-| [JOA-04 Product Vision](docs/fase2-desarrollo/JOA-04_Product_Vision.md) | Visión, usuarios, objetivos y hoja de ruta |
-| [JOA-05 Requisitos no funcionales](docs/fase2-desarrollo/JOA-05_Requisitos_No_Funcionales.md) | Seguridad, rendimiento, usabilidad, compatibilidad y disponibilidad |
-| [JOA-06 Diagramas UML](docs/fase2-desarrollo/JOA-06_Diagramas_UML.md) | Casos de uso, secuencia, clases y componentes |
-| [JOA-07 Innovación](docs/fase2-desarrollo/JOA-07_Innovacion.md) | Problema, alternativas existentes y aporte de MicroLogist |
-| [JOA-08 Product Backlog](docs/fase2-desarrollo/JOA-08_Product_Backlog.md) | Historias de usuario priorizadas con sus criterios de aceptación |
-| [SIM-05 Definition of Done](docs/fase2-desarrollo/SIM-05_Definition_of_Done.md) | Condiciones para dar una tarea por terminada |
+| [JOA-01 Reglas del módulo de vehículos](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-01_Reglas_Modulo_Vehiculos.md>) | Alcance, campos, permisos y criterios de aceptación de la primera entrega |
+| [JOA-04 Product Vision](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-04_Product_Vision.md>) | Visión, usuarios, objetivos y hoja de ruta |
+| [JOA-05 Requisitos no funcionales](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-05_Requisitos_No_Funcionales.md>) | Seguridad, rendimiento, usabilidad, compatibilidad y disponibilidad |
+| [JOA-06 Diagramas UML](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-06_Diagramas_UML.md>) | Casos de uso, secuencia, clases y componentes |
+| [JOA-07 Innovación](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-07_Innovacion.md>) | Problema, alternativas existentes y aporte de MicroLogist |
+| [JOA-08 Product Backlog](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-08_Product_Backlog.md>) | Historias de usuario priorizadas con sus criterios de aceptación |
+| [SIM-05 Definition of Done](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-05_Definition_of_Done.md>) | Condiciones para dar una tarea por terminada |
