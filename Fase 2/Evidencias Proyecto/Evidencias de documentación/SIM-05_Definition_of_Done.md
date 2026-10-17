@@ -47,7 +47,7 @@ Una tarea está terminada cuando cumple **sus criterios de aceptación y esta Do
 
 ### 3.2 Documentación
 
-- [ ] Está en la carpeta correspondiente de `docs/` según la fase.
+- [ ] Está en la carpeta correspondiente según la fase (por ejemplo `Fase 2/Evidencias Proyecto/Evidencias de documentación`).
 - [ ] El nombre del archivo sigue el formato `CODIGO_Nombre.md` (por ejemplo `JOA-04_Product_Vision.md`).
 - [ ] Lo que no está decidido se marca como **[POR CONFIRMAR]**.
 - [ ] No contradice decisiones ya tomadas (por ejemplo: avisos solo por correo, sin GPS).
@@ -58,7 +58,7 @@ Una tarea está terminada cuando cumple **sus criterios de aceptación y esta Do
 - [ ] Cada caso tiene: pasos, resultado esperado y resultado obtenido.
 - [ ] Los errores encontrados se registran con cómo reproducirlos.
 - [ ] Las correcciones se vuelven a probar.
-- [ ] La evidencia queda en `docs/fase2-desarrollo` sin datos personales reales.
+- [ ] La evidencia queda en `Fase 2/Evidencias Proyecto` sin datos personales reales.
 
 ---
 
