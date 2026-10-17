@@ -1,3 +1,6 @@
+import { Prisma } from "@/generated/prisma/client";
+import { prisma } from "@/lib/prisma";
+import { empresaDeLaSesion } from "@/lib/sesion";
 import {
   normalizarPatente,
   type DatosVehiculo,
@@ -5,57 +8,32 @@ import {
   type Vehiculo,
 } from "@/lib/vehiculos";
 
-// Acceso a datos de vehículos. Por ahora son datos de ejemplo en memoria:
-// se pierden al reiniciar el servidor y no distinguen entre empresas.
-// JOS-03 reemplaza el contenido de estas funciones por consultas con Prisma,
-// filtradas siempre por el empresa_id de la sesión (JOA-01, sección 2.4).
-// Las pantallas solo usan estas funciones, así que no deberían cambiar.
+// Acceso a datos de vehículos. Toda consulta filtra por la empresa de la sesión,
+// también al buscar por id (JOA-01, sección 2.4): un vehículo de otra empresa se
+// trata igual que uno que no existe. Las pantallas y acciones solo usan estas funciones.
 
-const EJEMPLOS: Vehiculo[] = [
-  {
-    id: "5f0c1a52-8f0e-4f0b-9d4e-2f6a1c7b9e01",
-    patente: "BBCD12",
-    tipo: "minibus",
-    marca: "Yutong",
-    modelo: "ZK6729",
-    anio: 2018,
-    capacidadPasajeros: 25,
-    numeroInterno: "12",
-    color: "Blanco",
-    estado: "activo",
-    observaciones: null,
-  },
-  {
-    id: "9b2d7c34-1a6f-4c58-8e21-7d3b5a9c4f02",
-    patente: "HJKL78",
-    tipo: "bus",
-    marca: "Mercedes-Benz",
-    modelo: "O500",
-    anio: 2016,
-    capacidadPasajeros: 45,
-    numeroInterno: "7",
-    color: null,
-    estado: "en_mantencion",
-    observaciones: "En taller por cambio de frenos.",
-  },
-  {
-    id: "c41e8f76-3b2a-4d90-a5c7-6e8f2b1d3a03",
-    patente: "XY4321",
-    tipo: "van",
-    marca: "Hyundai",
-    modelo: "H350",
-    anio: 2009,
-    capacidadPasajeros: 15,
-    numeroInterno: null,
-    color: "Gris",
-    estado: "inactivo",
-    observaciones: "Vendida.",
-  },
-];
+const CAMPOS = {
+  id: true,
+  patente: true,
+  tipo: true,
+  marca: true,
+  modelo: true,
+  anio: true,
+  capacidadPasajeros: true,
+  numeroInterno: true,
+  color: true,
+  estado: true,
+  observaciones: true,
+} satisfies Prisma.VehiculoSelect;
 
-// Se guarda en globalThis para que la lista sobreviva a las recargas de `next dev`.
-const almacen = globalThis as typeof globalThis & { vehiculosDeEjemplo?: Vehiculo[] };
-const vehiculos = (almacen.vehiculosDeEjemplo ??= [...EJEMPLOS]);
+// Un id con otro formato no existe; además, Postgres rechazaría la consulta.
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** La empresa ya tiene esa patente (restricción única empresa_id + patente). */
+export class PatenteDuplicadaError extends Error {}
+
+const codigoPrisma = (error: unknown) =>
+  error instanceof Prisma.PrismaClientKnownRequestError ? error.code : null;
 
 export type FiltroVehiculos = {
   patente?: string;
@@ -69,35 +47,54 @@ export async function listarVehiculos({
   estado,
   incluirInactivos = false,
 }: FiltroVehiculos = {}): Promise<Vehiculo[]> {
-  const buscada = normalizarPatente(patente);
-  return vehiculos
-    .filter((vehiculo) => vehiculo.patente.includes(buscada))
-    .filter((vehiculo) =>
-      estado ? vehiculo.estado === estado : incluirInactivos || vehiculo.estado !== "inactivo",
-    )
-    .sort((a, b) => a.patente.localeCompare(b.patente));
+  const empresaId = await empresaDeLaSesion();
+  return prisma.vehiculo.findMany({
+    where: {
+      empresaId,
+      patente: { contains: normalizarPatente(patente) },
+      estado: estado ?? (incluirInactivos ? undefined : { not: "inactivo" }),
+    },
+    select: CAMPOS,
+    orderBy: { patente: "asc" },
+  });
 }
 
 export async function obtenerVehiculo(id: string): Promise<Vehiculo | null> {
-  return vehiculos.find((vehiculo) => vehiculo.id === id) ?? null;
+  if (!UUID.test(id)) return null;
+  const empresaId = await empresaDeLaSesion();
+  return prisma.vehiculo.findFirst({ where: { id, empresaId }, select: CAMPOS });
 }
 
-export async function buscarPorPatente(patente: string): Promise<Vehiculo | null> {
-  return vehiculos.find((vehiculo) => vehiculo.patente === patente) ?? null;
-}
-
+/** Lanza `PatenteDuplicadaError` si la empresa ya tiene esa patente. */
 export async function crearVehiculo(datos: DatosVehiculo): Promise<Vehiculo> {
-  const vehiculo = { id: crypto.randomUUID(), ...datos };
-  vehiculos.push(vehiculo);
-  return vehiculo;
+  const empresaId = await empresaDeLaSesion();
+  try {
+    return await prisma.vehiculo.create({ data: { ...datos, empresaId }, select: CAMPOS });
+  } catch (error) {
+    if (codigoPrisma(error) === "P2002") throw new PatenteDuplicadaError();
+    throw error;
+  }
 }
 
-/** Devuelve `null` si el vehículo no existe. */
+/**
+ * Devuelve `null` si el vehículo no existe en la empresa de la sesión.
+ * Lanza `PatenteDuplicadaError` si la patente nueva ya está en la empresa.
+ */
 export async function actualizarVehiculo(
   id: string,
   cambios: Partial<DatosVehiculo>,
 ): Promise<Vehiculo | null> {
-  const vehiculo = vehiculos.find((actual) => actual.id === id);
-  if (!vehiculo) return null;
-  return Object.assign(vehiculo, cambios);
+  if (!UUID.test(id)) return null;
+  const empresaId = await empresaDeLaSesion();
+  try {
+    return await prisma.vehiculo.update({
+      where: { id, empresaId },
+      data: cambios,
+      select: CAMPOS,
+    });
+  } catch (error) {
+    if (codigoPrisma(error) === "P2025") return null;
+    if (codigoPrisma(error) === "P2002") throw new PatenteDuplicadaError();
+    throw error;
+  }
 }
