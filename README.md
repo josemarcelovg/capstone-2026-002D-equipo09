@@ -76,7 +76,7 @@ flowchart LR
 | **Acceso a datos** | Consultas a PostgreSQL con Prisma, siempre filtradas por la empresa del usuario. | `src/lib/` |
 | **Avisos** | Un proceso diario que busca documentos por vencer y envía un correo. El correo es el único canal de aviso. | Pendiente |
 
-Por ahora el acceso a datos usa datos de ejemplo en memoria; la conexión con Prisma y Supabase está en desarrollo (JOS-02 y JOS-03), y el inicio de sesión se implementa en SIM-02.
+Los vehículos ya se guardan en PostgreSQL mediante Prisma (JOS-02 y JOS-03). Mientras no exista el inicio de sesión (SIM-02), la empresa con la que se trabaja se toma de la variable `EMPRESA_DESARROLLO_ID` del `.env`.
 
 El detalle está en el diagrama de componentes y en los diagramas de secuencia de [JOA-06](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-06_Diagramas_UML.md>).
 
@@ -109,7 +109,15 @@ El detalle está en el diagrama de componentes y en los diagramas de secuencia d
    cp .env.example .env
    ```
 
-   Los valores se completarán cuando se configure Supabase. El archivo `.env` nunca se sube al repositorio.
+   Cómo obtener los valores está en [JOS-02](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-02_Configuracion_Base_de_Datos.md>). El archivo `.env` nunca se sube al repositorio.
+
+4. Preparar la base de datos (Supabase + Prisma), con el `.env` completo:
+
+   ```bash
+   npm run db:deploy     # aplica las migraciones
+   npm run db:seed       # carga las empresas y vehículos ficticios
+   npm run db:comprobar  # comprueba que todo funcione
+   ```
 
 ### Ejecución
 
@@ -177,4 +185,5 @@ Para el desarrollo del proyecto se utilizará una metodología ágil e increment
 | [JOA-06 Diagramas UML](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-06_Diagramas_UML.md>) | Casos de uso, secuencia, clases y componentes |
 | [JOA-07 Innovación](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-07_Innovacion.md>) | Problema, alternativas existentes y aporte de MicroLogist |
 | [JOA-08 Product Backlog](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-08_Product_Backlog.md>) | Historias de usuario priorizadas con sus criterios de aceptación |
+| [JOS-02 Configuración de la base de datos](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-02_Configuracion_Base_de_Datos.md>) | Supabase, Prisma, migraciones y datos de prueba |
 | [SIM-05 Definition of Done](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-05_Definition_of_Done.md>) | Condiciones para dar una tarea por terminada |
