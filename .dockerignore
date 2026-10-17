@@ -1,0 +1,18 @@
+# Lo que no se copia a la imagen de Docker (docker/Dockerfile).
+
+# Se instalan y generan dentro de la imagen.
+node_modules
+.next
+src/generated
+
+# Credenciales: nunca dentro de una imagen.
+.env*
+!.env.example
+
+# No hacen falta para ejecutar la aplicación.
+.git
+.claude
+.vercel
+docs
+coverage
+*.tsbuildinfo
