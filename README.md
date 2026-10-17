@@ -158,6 +158,17 @@ npm run db:comprobar  # comprueba que todo funcione
 ```
 
 
+# Ejecutar con Docker (sin claves de Supabase)
+
+Requiere [Docker Desktop](https://www.docker.com/products/docker-desktop/). Desde la carpeta del proyecto:
+
+```bash
+docker compose -f docker/compose.yaml up --build
+```
+
+Levanta la aplicación y una base de datos PostgreSQL local con los datos de prueba. Abrir http://localhost:3000. Detalles y problemas frecuentes: [JOS-05](docs/fase2-desarrollo/JOS-05_Entorno_Docker.md).
+
+
 # Integrantes Del Equipo Con Sus Roles:
 
 ## Simon Jofre(Scrum Master)

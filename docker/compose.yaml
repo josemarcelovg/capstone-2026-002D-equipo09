@@ -1,0 +1,49 @@
+# Entorno de desarrollo de MicroLogist (JOS-05): la aplicación y una base de datos
+# PostgreSQL local, con las migraciones y los datos de prueba ya cargados.
+# No necesita las claves de Supabase.
+#
+# Uso, desde la raíz del repositorio:
+#   docker compose -f docker/compose.yaml up --build
+# y abrir http://localhost:3000
+#
+# Detalles: docs/fase2-desarrollo/JOS-05_Entorno_Docker.md
+
+name: micrologist
+
+services:
+  db:
+    image: postgres:17
+    environment:
+      # Credenciales solo de esta base local; no son secretas ni sirven fuera de Docker.
+      POSTGRES_USER: micrologist
+      POSTGRES_PASSWORD: micrologist
+      POSTGRES_DB: micrologist
+    ports:
+      # Permite usar esta base desde el computador (npm run dev, Prisma Studio).
+      - "${DB_PUERTO:-5432}:5432"
+    volumes:
+      - datos-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U micrologist -d micrologist"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://micrologist:micrologist@db:5432/micrologist
+      DIRECT_URL: postgresql://micrologist:micrologist@db:5432/micrologist
+      # Empresa con la que se trabaja hasta que exista el inicio de sesión (SIM-02).
+      EMPRESA_DESARROLLO_ID: ${EMPRESA_DESARROLLO_ID:-a0000000-0000-4000-8000-000000000001}
+      NEXT_TELEMETRY_DISABLED: "1"
+    ports:
+      - "${APP_PUERTO:-3000}:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  datos-postgres:
