@@ -3,7 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { formatearPatente, validarVehiculo, type ErroresVehiculo } from "@/lib/vehiculos";
-import { actualizarVehiculo, buscarPorPatente, crearVehiculo } from "@/lib/vehiculos-datos";
+import {
+  actualizarVehiculo,
+  crearVehiculo,
+  obtenerVehiculo,
+  PatenteDuplicadaError,
+} from "@/lib/vehiculos-datos";
+
+const NO_ENCONTRADO = "No encontramos el vehículo. Vuelve al listado.";
 
 /**
  * Registra un vehículo (`id` nulo) o guarda los cambios de uno existente.
@@ -18,15 +25,25 @@ export async function guardarVehiculo(
   const { datos } = resultado;
 
   try {
-    const mismaPatente = await buscarPorPatente(datos.patente);
-    if (mismaPatente && mismaPatente.id !== id) {
+    if (id) {
+      const actual = await obtenerVehiculo(id);
+      if (!actual) return { general: NO_ENCONTRADO };
+      // Desactivar y reactivar solo con su botón, que pide confirmación (JOA-01, sección 4).
+      if (actual.estado === "inactivo") datos.estado = "inactivo";
+      else if (datos.estado === "inactivo") {
+        return { estado: "Para desactivar el vehículo usa el botón «Desactivar vehículo»." };
+      }
+      if (!(await actualizarVehiculo(id, datos))) return { general: NO_ENCONTRADO };
+    } else {
+      await crearVehiculo(datos);
+    }
+  } catch (error) {
+    if (error instanceof PatenteDuplicadaError) {
       return {
         patente: `Ya tienes un vehículo registrado con la patente ${formatearPatente(datos.patente)}.`,
       };
     }
-    const guardado = id ? await actualizarVehiculo(id, datos) : await crearVehiculo(datos);
-    if (!guardado) return { general: "No encontramos el vehículo. Vuelve al listado." };
-  } catch {
+    console.error(error);
     return { general: "No pudimos guardar el vehículo. Intenta nuevamente." };
   }
 
@@ -34,10 +51,20 @@ export async function guardarVehiculo(
   redirect(`/vehiculos?mensaje=${id ? "actualizado" : "creado"}`);
 }
 
-/** Desactiva (`activar` falso) o reactiva un vehículo. Nunca se elimina. */
+/**
+ * Desactiva (`activar` falso) o reactiva un vehículo. Nunca se elimina.
+ * Si algo falla devuelve el mensaje para mostrar.
+ */
 export async function cambiarActivacion(id: string, activar: boolean) {
-  const vehiculo = await actualizarVehiculo(id, { estado: activar ? "activo" : "inactivo" });
+  const reactivar = activar === true;
+  let vehiculo;
+  try {
+    vehiculo = await actualizarVehiculo(id, { estado: reactivar ? "activo" : "inactivo" });
+  } catch (error) {
+    console.error(error);
+    return "No pudimos cambiar el estado del vehículo. Intenta nuevamente.";
+  }
   revalidatePath("/vehiculos");
   if (!vehiculo) redirect("/vehiculos");
-  redirect(`/vehiculos?mensaje=${activar ? "reactivado" : "desactivado"}`);
+  redirect(`/vehiculos?mensaje=${reactivar ? "reactivado" : "desactivado"}`);
 }
