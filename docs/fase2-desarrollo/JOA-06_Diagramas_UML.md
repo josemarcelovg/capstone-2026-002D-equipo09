@@ -7,8 +7,9 @@
 | **Revisión** | José Vargas (modelo de datos) y Simón Jofré (acceso) |
 | **Estado** | Propuesta para revisión del equipo |
 | **Fecha** | 12-10-2026 |
+| **Actualización** | 16-10-2026: se agregan los diagramas de clases y de componentes |
 
-Este documento contiene el diagrama de casos de uso del MVP y los diagramas de secuencia de sus flujos principales. Se basa en las reglas de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), en la [Product Vision](JOA-04_Product_Vision.md) y en el Product Backlog (JOA-08).
+Este documento contiene los diagramas UML del MVP: casos de uso, secuencia de los flujos principales, clases y componentes. Se basa en las reglas de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), en la [Product Vision](JOA-04_Product_Vision.md) y en el Product Backlog (JOA-08).
 
 Los diagramas están escritos en [Mermaid](https://mermaid.js.org/), dentro de este mismo archivo. GitHub los dibuja al abrir el documento, y su código queda versionado junto con el resto del repositorio: para cambiar un diagrama se edita el texto y se revisa en un pull request, igual que cualquier otro cambio.
 
@@ -275,23 +276,194 @@ El único canal es el correo: no hay avisos por WhatsApp, SMS ni notificaciones 
 
 ---
 
-## 3. Coherencia con el modelo de datos
+## 3. Diagrama de clases
 
-Los diagramas usan los nombres de JOA-01: empresa, usuario, vehículo, patente y estado. Los documentos, conductores, turnos y el registro de envíos todavía no tienen un modelo definido. Cuando José documente el modelo de datos (JOS-04), hay que revisar que los nombres de estos diagramas coincidan con los suyos.
+Muestra las clases del dominio del MVP, sus atributos principales y cómo se relacionan.
+
+- **Empresa, Usuario y Vehículo** siguen los campos acordados en JOA-01 (secciones 2.2 y 3), con los nombres que ya usa el código (por ejemplo, `capacidadPasajeros` en vez de `capacidad_pasajeros`).
+- **Conductor, Documento, Turno y AvisoEnviado** todavía no tienen sus reglas definidas, así que sus atributos son una propuesta **[POR CONFIRMAR]**, tomada del Product Backlog.
+
+```mermaid
+classDiagram
+    class Empresa {
+        +String id
+        +String nombre
+        +String rut [0..1]
+        +String emailContacto
+        +String telefono [0..1]
+    }
+    class Usuario {
+        +String id
+        +String nombre
+        +String email
+        +String rol
+    }
+    class Vehiculo {
+        +String id
+        +String patente
+        +TipoVehiculo tipo
+        +String marca
+        +String modelo
+        +int anio
+        +int capacidadPasajeros
+        +String numeroInterno [0..1]
+        +String color [0..1]
+        +EstadoVehiculo estado
+        +String observaciones [0..1]
+        +desactivar()
+        +reactivar()
+    }
+    class Conductor {
+        +String id
+        +String nombre
+        +String rut
+        +String telefono
+        +String email
+        +Boolean activo
+        +desactivar()
+        +reactivar()
+    }
+    class Documento {
+        +String id
+        +TipoDocumento tipo
+        +Date fechaVencimiento
+        +estado(hoy: Date) EstadoDocumento
+    }
+    class Turno {
+        +String id
+        +Date fecha
+        +String jornada
+    }
+    class AvisoEnviado {
+        +String id
+        +int diasDeAnticipacion
+        +DateTime enviadoEn
+    }
+    class TipoVehiculo {
+        <<enumeration>>
+        bus
+        minibus
+        van
+        furgon
+        automovil
+        otro
+    }
+    class EstadoVehiculo {
+        <<enumeration>>
+        activo
+        en_mantencion
+        inactivo
+    }
+    class TipoDocumento {
+        <<enumeration>>
+        revision_tecnica
+        soap
+        permiso_circulacion
+        licencia_conducir
+        otro
+    }
+    class EstadoDocumento {
+        <<enumeration>>
+        vigente
+        por_vencer
+        vencido
+    }
+
+    Empresa "1" *-- "1..*" Usuario : tiene
+    Empresa "1" *-- "*" Vehiculo : registra
+    Empresa "1" *-- "*" Conductor : registra
+    Vehiculo "0..1" -- "*" Documento : tiene
+    Conductor "0..1" -- "*" Documento : tiene
+    Turno "*" --> "1" Vehiculo : usa
+    Turno "*" --> "1" Conductor : asigna
+    Documento "1" -- "*" AvisoEnviado : genera
+    Vehiculo ..> TipoVehiculo
+    Vehiculo ..> EstadoVehiculo
+    Documento ..> TipoDocumento
+    Documento ..> EstadoDocumento
+
+    note for Documento "Pertenece a un vehículo o a un conductor, nunca a ambos"
+```
+
+- **Atributos opcionales:** los marcados con `[0..1]`. Todas las clases tienen además las fechas de creación y de actualización, que se omiten para que el diagrama se lea mejor.
+- **Usuario:** en el MVP cada empresa tiene un solo usuario, con rol `admin`. La relación permite agregar más usuarios después sin cambiar el modelo (JOA-01, sección 2.1). Su `id` es el mismo de Supabase Auth y la contraseña no se guarda en esta clase.
+- **Nada se elimina:** los vehículos se desactivan en vez de borrarse (JOA-01, sección 3.2). Que los conductores sigan la misma regla está **[POR CONFIRMAR]**.
+- **Estado del documento:** no se guarda; se calcula con la fecha de vencimiento cada vez que se consulta. "Por vencer" significa 30 días o menos **[POR CONFIRMAR]**.
+- **Jornada del turno:** los valores posibles están **[POR CONFIRMAR]** (propuesta: mañana, tarde y noche).
+- **Ingresos:** no aparece porque es un módulo opcional, fuera del MVP.
 
 ---
 
-## 4. Otros diagramas
+## 4. Diagrama de componentes
 
-La tarea pide agregar otros diagramas solo si la pauta vigente los exige. No encontramos en el repositorio una pauta que pida diagramas adicionales (de clases, de actividad o de componentes), así que no se incluyen. Si la profesora los solicita, se agregan a este documento **[POR CONFIRMAR]**.
+Muestra las partes que forman MicroLogist, dónde se ejecuta cada una y cómo se comunican. Corresponde a las tecnologías definidas en el README.
+
+```mermaid
+flowchart LR
+    resp["«actor»<br/>Responsable de la empresa"]
+
+    subgraph navegador["Navegador del usuario"]
+        ui["«componente»<br/>Interfaz web<br/>React y Tailwind CSS"]
+    end
+
+    subgraph vercel["Vercel"]
+        subgraph app["«componente» Aplicación Next.js"]
+            paginas["«componente»<br/>Páginas"]
+            acciones["«componente»<br/>Acciones del servidor"]
+            validacion["«componente»<br/>Validación<br/>esquemas Zod"]
+            datos["«componente»<br/>Acceso a datos<br/>Prisma"]
+            avisos["«componente»<br/>Proceso de avisos"]
+        end
+    end
+
+    subgraph supabase["Supabase"]
+        auth["«componente»<br/>Supabase Auth"]
+        bd[("«componente»<br/>Base de datos<br/>PostgreSQL")]
+    end
+
+    programador["«componente»<br/>Programador diario"]
+    correo["«componente externo»<br/>Proveedor de correo"]
+
+    resp --> ui
+    ui -->|HTTPS| paginas
+    ui -->|HTTPS| acciones
+    paginas -->|comprueba la sesión| auth
+    acciones -->|comprueba la sesión| auth
+    acciones --> validacion
+    paginas --> datos
+    acciones --> datos
+    datos -->|SQL| bd
+    programador -->|una vez al día| avisos
+    avisos --> datos
+    avisos -->|envía el correo| correo
+```
+
+| Componente | Qué hace | Estado al 16-10-2026 |
+|---|---|---|
+| **Interfaz web** | Las pantallas que usa el responsable, en computador o celular. | Pantallas de vehículos hechas en JOA-02. |
+| **Páginas** | Arman cada pantalla en el servidor con los datos de la empresa del usuario. | Listado, registro y detalle de vehículos, hechos en JOA-02. |
+| **Acciones del servidor** | Reciben lo que el usuario guarda, comprueban la sesión, validan y llaman al acceso a datos. | Hechas en JOA-02, todavía sin sesión. |
+| **Validación** | Las reglas de JOA-01 en esquemas Zod, compartidas por el formulario y el servidor. | Esquema de vehículo hecho en JOA-02. |
+| **Acceso a datos** | Las consultas a la base de datos, siempre filtradas por la empresa de la sesión. | Hoy usa datos de ejemplo en memoria; JOS-03 lo conecta con Prisma. |
+| **Supabase Auth** | Comprueba las credenciales y maneja las sesiones. | Pendiente en SIM-02. |
+| **Base de datos** | Guarda empresas, usuarios, vehículos y el resto del modelo. | En configuración en JOS-02. |
+| **Proceso de avisos** | Busca los documentos por vencer y pide enviar los correos. | Pendiente, módulo del MVP completo. |
+| **Programador diario** | Inicia el proceso de avisos una vez al día. Cuál se usará está **[POR CONFIRMAR]**. | Pendiente. |
+| **Proveedor de correo** | Entrega los correos de aviso. Cuál se usará está **[POR CONFIRMAR]** (JOA-01, sección 5). | Pendiente. |
 
 ---
 
-## 5. Checklist de JOA-06
+## 5. Coherencia con el modelo de datos
+
+El diagrama de clases (sección 3) es la propuesta de la que debería partir el modelo de datos. Cuando José documente el modelo (JOS-04), hay que revisar que los nombres de clases, atributos y relaciones coincidan con los suyos, y actualizar este documento si cambian.
+
+---
+
+## 6. Checklist de JOA-06
 
 - [x] Diagrama de casos de uso con actores y funcionalidades del MVP (sección 1).
 - [x] Diagramas de secuencia de inicio de sesión, registro y edición de vehículo, y aviso de vencimiento por correo (sección 2).
-- [x] Sin diagramas adicionales, porque la pauta no los exige (sección 4).
+- [x] Diagramas de clases y de componentes (secciones 3 y 4). Se agregaron porque la revisión de evidencias de la profesora considera cuatro tipos de diagrama UML: casos de uso, clases, secuencia y componentes.
 - [x] Diagramas versionados en el repositorio como texto Mermaid dentro de este archivo.
-- [ ] Revisión de coherencia con el modelo de datos de JOS-04, cuando exista (sección 3).
+- [ ] Revisión de coherencia con el modelo de datos de JOS-04, cuando exista (sección 5).
 - [ ] Revisión de José y Simón en el PR.
