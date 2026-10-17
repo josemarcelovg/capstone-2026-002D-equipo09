@@ -127,6 +127,7 @@ Los usuarios no se cargan en el seed: su `id` tiene que ser el que asigna Supaba
 ## 7. Coordinación con SIM-02 (inicio de sesión)
 
 - El `id` de `usuario` es el mismo `id` del usuario en Supabase Auth (`auth.users.id`). Al iniciar sesión se busca el perfil con ese `id` y de ahí se obtiene `empresa_id`.
+- Desde JOS-03, todo el acceso a vehículos obtiene la empresa con `empresaDeLaSesion()` en `src/lib/sesion.ts`. SIM-02 solo tiene que reemplazar esa función. Mientras tanto, en desarrollo se usa `EMPRESA_DESARROLLO_ID` del `.env`.
 - Para las cuentas de prueba: crear los dos usuarios en **Supabase → Authentication → Users** y luego agregar su perfil en `usuario` con ese mismo `id`, uno en cada empresa ficticia.
 - **[POR CONFIRMAR] con Simón:** si el perfil se crea a mano para las cuentas de prueba (suficiente para la primera entrega) o con un trigger en la base de datos cuando exista el registro público.
 
