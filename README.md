@@ -147,6 +147,17 @@ Estructura del repositorio
 └───────────┴─────────────────────────────────────┘
 
 
+# Base de datos (Supabase + Prisma)
+
+Con el `.env` completo (cómo obtener los valores: [JOS-02](docs/fase2-desarrollo/JOS-02_Configuracion_Base_de_Datos.md)):
+
+```bash
+npm run db:deploy     # aplica las migraciones
+npm run db:seed       # carga las empresas y vehículos ficticios
+npm run db:comprobar  # comprueba que todo funcione
+```
+
+
 # Integrantes Del Equipo Con Sus Roles:
 
 ## Simon Jofre(Scrum Master)
