@@ -190,6 +190,7 @@ Para el desarrollo del proyecto se utilizará una metodología ágil e increment
 | Documento | Contenido |
 |---|---|
 | [JOA-01 Reglas del módulo de vehículos](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-01_Reglas_Modulo_Vehiculos.md>) | Alcance, campos, permisos y criterios de aceptación de la primera entrega |
+| [JOA-03 Validación de la primera entrega](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-03_Validacion_Primera_Entrega.md>) | Guion de la demostración, estado de cada criterio de aceptación y pendientes de la primera entrega |
 | [JOA-04 Product Vision](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-04_Product_Vision.md>) | Visión, usuarios, objetivos y hoja de ruta |
 | [JOA-05 Requisitos no funcionales](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-05_Requisitos_No_Funcionales.md>) | Seguridad, rendimiento, usabilidad, compatibilidad y disponibilidad |
 | [JOA-06 Diagramas UML](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-06_Diagramas_UML.md>) | Casos de uso, secuencia, clases y componentes |
