@@ -7,6 +7,7 @@
 | **Revisión** | José Vargas y Simón Jofré |
 | **Estado** | Propuesta para revisión del equipo |
 | **Fecha** | 12-10-2026 |
+| **Actualización** | 18-10-2026 (cierre de la Iteración 2) |
 
 Este documento reúne todo lo que MicroLogist debe hacer, ordenado por prioridad. Parte de la [Product Vision](JOA-04_Product_Vision.md) y de las reglas de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md). De aquí salen los ítems de cada Sprint Backlog (SIM-06) y los casos del plan de pruebas (SIM-04). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -33,13 +34,13 @@ Este backlog contiene funcionalidades del producto. Las tareas de documentación
 
 ## 2. Backlog priorizado
 
-Estado al 12-10-2026.
+Estado al 18-10-2026.
 
 | Prioridad | ID | Ítem | Módulo | Etapa | Estado |
 |---|---|---|---|---|---|
 | 1 | PB-01 | Iniciar sesión | Acceso | Primera entrega | Pendiente |
 | 2 | PB-02 | Cerrar sesión | Acceso | Primera entrega | Pendiente |
-| 3 | PB-03 | Separación de datos entre empresas | Acceso | Primera entrega | Pendiente |
+| 3 | PB-03 | Separación de datos entre empresas | Acceso | Primera entrega | En curso |
 | 4 | PB-04 | Registrar vehículo | Vehículos | Primera entrega | En curso |
 | 5 | PB-05 | Listar y buscar vehículos | Vehículos | Primera entrega | En curso |
 | 6 | PB-06 | Ver detalle y editar vehículo | Vehículos | Primera entrega | En curso |
@@ -60,6 +61,14 @@ Estado al 12-10-2026.
 | 21 | PB-21 | Activar el módulo de ingresos | Ingresos | Opcional | Pendiente |
 | 22 | PB-22 | Registrar ingreso | Ingresos | Opcional | Pendiente |
 | 23 | PB-23 | Ver ingresos por período | Ingresos | Opcional | Pendiente |
+
+### Avance de la primera entrega
+
+- **PB-04 a PB-07:** implementados y comprobados con dos empresas ficticias (JOA-02 y JOS-03, PR #5 y #12). Siguen en curso porque falta integrarlos con el inicio de sesión (criterio común 5 de la sección 3).
+- **PB-03:** todas las consultas de vehículos ya filtran por empresa (JOS-03), pero la empresa todavía no viene de una sesión real.
+- **PB-01 y PB-02:** pendientes. Dependen de SIM-02, planificado para la Iteración 3 (19-10 al 01-11).
+
+El detalle por criterio está en la matriz de validación de [JOA-03](JOA-03_Validacion_Primera_Entrega.md).
 
 ### Por qué este orden
 
@@ -370,7 +379,7 @@ Este ítem responde a la necesidad 3 de la Product Vision ("ver el estado de la 
 ## 8. Pendientes de este backlog
 
 - **Estimación:** los ítems no tienen estimación. El equipo decidirá si usa puntos o tallas y estimará cada ítem al planificar el sprint **[POR CONFIRMAR]**.
-- **Sprints:** la duración y las fechas de los sprints están **[POR CONFIRMAR]**. La asignación de ítems a cada sprint se registra en el Sprint Backlog (SIM-06).
+- **Sprints:** el tablero del Project usa iteraciones de 14 días (Iteración 3: 19-10 al 01-11), pero el equipo todavía no confirma esa duración como la de los sprints **[POR CONFIRMAR]**. La asignación de ítems a cada sprint se registra en el Sprint Backlog (SIM-06).
 - **Reglas de cada módulo:** conductores, documentos, turnos e ingresos necesitan un documento de reglas como JOA-01 antes de desarrollarse. Ahí se resuelven los **[POR CONFIRMAR]** de sus ítems.
 - **PB-20:** falta decidir si el resumen de la flota entra en el MVP.
 
@@ -388,6 +397,7 @@ Este ítem responde a la necesidad 3 de la Product Vision ("ver el estado de la 
 | Fecha | Cambio |
 |---|---|
 | 12-10-2026 | Primera versión del backlog. |
+| 18-10-2026 | Cierre de la Iteración 2: PB-03 pasa a En curso, se agrega el avance de la primera entrega y se anota la duración de las iteraciones del tablero. |
 
 ---
 
