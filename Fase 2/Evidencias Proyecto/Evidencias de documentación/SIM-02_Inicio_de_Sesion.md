@@ -152,11 +152,19 @@ No hace falta configurar las direcciones de redirección (*Site URL* / *Redirect
   - La pantalla de inicio de sesión se ve sin desplazamiento horizontal a 360 px de ancho.
 - En modo desarrollo, sin Supabase: `/login` lleva a `/vehiculos`, y sin base de datos aparece la pantalla de error de vehículos, sin detalles técnicos.
 
-### 6.3 Pendiente: pruebas con Supabase real (SIM-03)
+### 6.3 Comprobado con el proyecto real de Supabase (19-10-2026)
 
-Todavía no se probó contra el proyecto real de Supabase. Falta configurar Supabase Auth (sección 5) y, con las cuentas de la Empresa A y la Empresa B, ejecutar en SIM-03:
+- Supabase Auth configurado según la sección 5: registro público desactivado y contraseña mínima de 8 caracteres.
+- Dos cuentas de prueba creadas y confirmadas, cada una con su perfil en `usuario`: la de la Empresa A ("Transportes Cordillera (ficticia)") y la de la Empresa B ("Buses del Litoral (ficticia)").
+- `npm run db:comprobar` responde "Todo correcto.".
+- Sin sesión, `/vehiculos` redirige a `/login` (criterio 7.3).
+- Con una contraseña incorrecta y con un correo que no existe aparece el mismo mensaje, "Correo o contraseña incorrectos.", y no se entra (criterio 7.2).
 
-- Criterios 7.1 a 7.4 de JOA-01: entrar, mensaje genérico, redirección sin sesión, y que después de cerrar sesión ni volver atrás ni llamar a una acción muestre o modifique datos.
+### 6.4 Pendiente (SIM-03)
+
+Con las cuentas de la Empresa A y la Empresa B, ejecutar en SIM-03:
+
+- Criterios 7.1 y 7.4 de JOA-01: entrar con credenciales correctas y ver el listado propio; y que después de cerrar sesión ni volver atrás ni llamar a una acción muestre o modifique datos.
 - Criterios 7.11 a 7.13 con dos cuentas reales, y no solo cambiando `EMPRESA_DESARROLLO_ID`.
 - Encabezado con sesión iniciada a 360 px de ancho (criterio 7.14).
 - RNF-SEG-01 a RNF-SEG-06 de [JOA-05](JOA-05_Requisitos_No_Funcionales.md).
@@ -180,7 +188,7 @@ Todavía no se probó contra el proyecto real de Supabase. Falta configurar Supa
 
 ## 8. Pendientes
 
-- **Configurar Supabase Auth y crear las cuentas de prueba** (sección 5), y ejecutar las pruebas de SIM-03.
+- **Ejecutar las pruebas de SIM-03** con las cuentas de prueba (sección 6.4).
 - **Node.js 24:** `npm test` necesita Node.js 22 o superior, y `@supabase/supabase-js` avisa que dejará de funcionar con Node.js 20.
 - **Documentos de otros integrantes** que siguen diciendo "Pendiente (SIM-02)": [JOS-06](JOS-06_Manual_Tecnico.md) (secciones 1, 2.1, 4, 5.1, 8.1, 8.2 y 9) y [JOS-05](JOS-05_Entorno_Docker.md) (secciones 3.1 y 4), a cargo de José. Los umbrales de RNF-SEG-06 en [JOA-05](JOA-05_Requisitos_No_Funcionales.md) (sección 8), a cargo de Joaquín.
 - **Vercel:** agregar `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` cuando se despliegue.
@@ -196,6 +204,7 @@ Todavía no se probó contra el proyecto real de Supabase. Falta configurar Supa
 - [x] `empresaDeLaSesion()` con Supabase Auth; la empresa sale del perfil del usuario (PB-03).
 - [x] Pruebas automáticas de las reglas de acceso.
 - [x] README y `.env.example` actualizados.
-- [ ] Supabase Auth configurado y cuentas de prueba creadas (sección 5).
-- [ ] Pruebas con Supabase real, con evidencia en SIM-03.
+- [x] Supabase Auth configurado y cuentas de prueba creadas (sección 5).
+- [x] Comprobación inicial con Supabase real: criterios 7.2 y 7.3 (sección 6.3).
+- [ ] Resto de las pruebas con Supabase real, con evidencia en SIM-03 (sección 6.4).
 - [ ] Revisión de José y Joaquín en el PR.
