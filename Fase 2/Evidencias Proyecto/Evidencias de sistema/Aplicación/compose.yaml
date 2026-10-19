@@ -2,9 +2,12 @@
 # PostgreSQL local, con las migraciones y los datos de prueba ya cargados.
 # No necesita las claves de Supabase.
 #
-# Uso, desde la raíz del repositorio:
-#   docker compose -f docker/compose.yaml up --build
+# Uso, desde esta carpeta («Aplicación»):
+#   docker compose up --build
 # y abrir http://localhost:3000
+#
+# Variables opcionales (EMPRESA_DESARROLLO_ID, DB_PUERTO, APP_PUERTO): se leen del
+# archivo .env de esta carpeta, si existe.
 #
 # Detalles: Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-05_Entorno_Docker.md
 
@@ -31,8 +34,9 @@ services:
 
   app:
     build:
+      # «Evidencias de sistema»: la imagen necesita «Aplicación» y «Base de datos».
       context: ..
-      dockerfile: docker/Dockerfile
+      dockerfile: Aplicación/Dockerfile
     environment:
       DATABASE_URL: postgresql://micrologist:micrologist@db:5432/micrologist
       DIRECT_URL: postgresql://micrologist:micrologist@db:5432/micrologist

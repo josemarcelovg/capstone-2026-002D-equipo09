@@ -2,9 +2,10 @@
 // En el código los campos van en camelCase; en la base de datos, las tablas
 // y columnas quedan en snake_case (@map / @@map), como en JOA-01.
 
+// El cliente se genera dentro de la aplicación (carpeta «Aplicación», al lado de esta).
 generator client {
   provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  output   = "../Aplicación/src/generated/prisma"
 }
 
 datasource db {

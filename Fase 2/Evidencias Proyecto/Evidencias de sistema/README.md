@@ -1,5 +1,7 @@
 # capstone-2026-002D-equipo09
 
+Este README está en `Fase 2/Evidencias Proyecto/Evidencias de sistema`, junto a las dos carpetas desde las que se ejecuta el sistema: **Aplicación** (código de la aplicación, Docker y variables de entorno) y **Base de datos** (modelo y scripts de la base de datos).
+
 ## Nombre del proyecto
 
 **MicroLogist**
@@ -70,15 +72,15 @@ flowchart LR
 
 | Capa | Qué hace | Dónde está en el código |
 |---|---|---|
-| **Interfaz** | Pantallas adaptables a computador y celular, hechas con React y Tailwind CSS. | `src/app/` |
-| **Servidor** | Páginas y acciones del servidor de Next.js: comprueban la sesión, validan los datos y llaman al acceso a datos. La empresa del usuario siempre se toma de la sesión, nunca del formulario. | `src/app/` |
-| **Validación** | Las reglas de cada módulo en esquemas Zod, compartidas por el formulario y el servidor. | `src/lib/` |
-| **Acceso a datos** | Consultas a PostgreSQL con Prisma, siempre filtradas por la empresa del usuario. | `src/lib/` |
+| **Interfaz** | Pantallas adaptables a computador y celular, hechas con React y Tailwind CSS. | `Aplicación/src/app/` |
+| **Servidor** | Páginas y acciones del servidor de Next.js: comprueban la sesión, validan los datos y llaman al acceso a datos. La empresa del usuario siempre se toma de la sesión, nunca del formulario. | `Aplicación/src/app/` |
+| **Validación** | Las reglas de cada módulo en esquemas Zod, compartidas por el formulario y el servidor. | `Aplicación/src/lib/` |
+| **Acceso a datos** | Consultas a PostgreSQL con Prisma, siempre filtradas por la empresa del usuario. El modelo y las migraciones están en `Base de datos/`. | `Aplicación/src/lib/` |
 | **Avisos** | Un proceso diario que busca documentos por vencer y envía un correo. El correo es el único canal de aviso. | Pendiente |
 
-Los vehículos ya se guardan en PostgreSQL mediante Prisma (JOS-02 y JOS-03). Mientras no exista el inicio de sesión (SIM-02), la empresa con la que se trabaja se toma de la variable `EMPRESA_DESARROLLO_ID` del `.env`.
+Los vehículos ya se guardan en PostgreSQL mediante Prisma (JOS-02 y JOS-03). Mientras no exista el inicio de sesión (SIM-02), la empresa con la que se trabaja se toma de la variable `EMPRESA_DESARROLLO_ID` del `.env` de `Aplicación/`.
 
-El detalle está en el diagrama de componentes y en los diagramas de secuencia de [JOA-06](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-06_Diagramas_UML.md>).
+El detalle está en el diagrama de componentes y en los diagramas de secuencia de [JOA-06](<../Evidencias de documentación/JOA-06_Diagramas_UML.md>).
 
 ## Instrucciones para ejecutar localmente
 
@@ -90,32 +92,32 @@ El detalle está en el diagrama de componentes y en los diagramas de secuencia d
 
 ### Instalación
 
-1. Clonar el repositorio (se recomienda una carpeta fuera de OneDrive, por ejemplo `C:\Proyectos`):
+1. Clonar el repositorio (se recomienda una carpeta corta y fuera de OneDrive, por ejemplo `C:\Proyectos`; en Windows, las rutas muy largas dan el error "Filename too long") y entrar a la carpeta de la aplicación. **Todos los comandos siguientes se ejecutan desde `Aplicación`.**
 
    ```bash
    git clone https://github.com/josemarcelovg/capstone-2026-002D-equipo09.git
-   cd capstone-2026-002D-equipo09
+   cd "capstone-2026-002D-equipo09/Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación"
    ```
 
-2. Instalar las dependencias:
+2. Instalar las dependencias (también genera el cliente de Prisma a partir de `Base de datos/schema.prisma`):
 
    ```bash
    npm install
    ```
 
-3. Crear el archivo de variables de entorno a partir del ejemplo:
+3. Crear el archivo de variables de entorno a partir del ejemplo, en la misma carpeta `Aplicación`:
 
    ```bash
    cp .env.example .env
    ```
 
-   Cómo obtener los valores está en [JOS-02](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-02_Configuracion_Base_de_Datos.md>). El archivo `.env` nunca se sube al repositorio.
+   Cómo obtener los valores está en [JOS-02](<../Evidencias de documentación/JOS-02_Configuracion_Base_de_Datos.md>). El archivo `.env` nunca se sube al repositorio.
 
 4. Preparar la base de datos (Supabase + Prisma), con el `.env` completo:
 
    ```bash
-   npm run db:deploy     # aplica las migraciones
-   npm run db:seed       # carga las empresas y vehículos ficticios
+   npm run db:deploy     # aplica las migraciones de Base de datos/migrations
+   npm run db:seed       # carga las empresas y vehículos ficticios (Aplicación/prisma/seed.ts)
    npm run db:comprobar  # comprueba que todo funcione
    ```
 
@@ -135,27 +137,38 @@ Con `npm run dev`, abrir http://localhost:3000 en el navegador.
 
 ### Ejecutar con Docker (sin claves de Supabase)
 
-Requiere [Docker Desktop](https://www.docker.com/products/docker-desktop/). Desde la carpeta del proyecto:
+Requiere [Docker Desktop](https://www.docker.com/products/docker-desktop/). Desde la carpeta `Aplicación`:
 
 ```bash
-docker compose -f docker/compose.yaml up --build
+docker compose up --build
 ```
 
-Levanta la aplicación y una base de datos PostgreSQL local con los datos de prueba. Abrir http://localhost:3000. Detalles y problemas frecuentes: [JOS-05](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-05_Entorno_Docker.md>).
+Levanta la aplicación y una base de datos PostgreSQL local con los datos de prueba. Abrir http://localhost:3000. Detalles y problemas frecuentes: [JOS-05](<../Evidencias de documentación/JOS-05_Entorno_Docker.md>).
 
 ### Estructura del repositorio
+
+En la raíz solo están las carpetas de cada fase.
 
 | Carpeta | Contenido |
 |---|---|
 | `Fase 1/` | Evidencias individuales y grupales de la Fase 1 |
-| `Fase 2/` | Evidencias individuales, grupales y del proyecto de la Fase 2 (documentación y evidencias del sistema) |
+| `Fase 2/Evidencias Individuales/` y `Fase 2/Evidencias Grupales/` | Evidencias individuales y grupales de la Fase 2 |
+| `Fase 2/Evidencias Proyecto/Evidencias de documentación/` | Documentos del proyecto (tabla de abajo) |
+| `Fase 2/Evidencias Proyecto/Evidencias de sistema/` | Este README y el sistema |
 | `Fase 3/` | Evidencias individuales y grupales de la Fase 3 |
-| `src/app/` | Páginas y rutas de la aplicación |
-| `src/lib/` | Reglas de validación y acceso a datos |
-| `public/` | Imágenes y archivos estáticos |
-| `database/` | Scripts y recursos de base de datos |
-| `docker/` | Configuración de Docker |
-| `tests/` | Pruebas automáticas |
+
+Dentro de `Evidencias de sistema`:
+
+| Carpeta | Contenido |
+|---|---|
+| `Aplicación/src/app/` | Páginas y rutas de la aplicación |
+| `Aplicación/src/lib/` | Reglas de validación y acceso a datos |
+| `Aplicación/public/` | Imágenes y archivos estáticos |
+| `Aplicación/tests/` | Pruebas automáticas |
+| `Aplicación/prisma/` | Datos de prueba (`seed.ts`) y comprobación de la conexión (`comprobar.ts`) |
+| `Aplicación/Capturas/` | Capturas de pantalla de la aplicación |
+| `Aplicación/` (raíz) | `Dockerfile`, `compose.yaml`, `.env.example` y configuración del proyecto |
+| `Base de datos/` | Modelo de datos (`schema.prisma`) y scripts SQL de las migraciones (`migrations/`) |
 
 ## Integrantes del equipo y roles
 
@@ -180,7 +193,7 @@ Para el desarrollo del proyecto se utilizará una metodología ágil e increment
 
 ### Cómo la aplicamos
 
-- **Artefactos:** [Product Vision](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-04_Product_Vision.md>), [Product Backlog](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-08_Product_Backlog.md>) priorizado por el Product Owner, [Definition of Done](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-05_Definition_of_Done.md>) acordada por el equipo, y Sprint Backlog y retrospectivas de cada sprint (SIM-06, en preparación).
+- **Artefactos:** [Product Vision](<../Evidencias de documentación/JOA-04_Product_Vision.md>), [Product Backlog](<../Evidencias de documentación/JOA-08_Product_Backlog.md>) priorizado por el Product Owner, [Definition of Done](<../Evidencias de documentación/SIM-05_Definition_of_Done.md>) acordada por el equipo, y Sprint Backlog y retrospectivas de cada sprint (SIM-06, en preparación).
 - **Seguimiento:** un tablero en GitHub Projects con las tareas de cada integrante, sus responsables y criterios de aceptación, en estados pendiente, en curso y terminado. Se revisa en una reunión semanal.
 - **Revisión del trabajo:** cada tarea se hace en su propia rama y se une a `main` mediante un pull request revisado por otro integrante.
 - **Duración de los sprints:** **[POR CONFIRMAR]** con el equipo.
@@ -189,15 +202,15 @@ Para el desarrollo del proyecto se utilizará una metodología ágil e increment
 
 | Documento | Contenido |
 |---|---|
-| [JOA-01 Reglas del módulo de vehículos](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-01_Reglas_Modulo_Vehiculos.md>) | Alcance, campos, permisos y criterios de aceptación de la primera entrega |
-| [JOA-03 Validación de la primera entrega](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-03_Validacion_Primera_Entrega.md>) | Guion de la demostración, estado de cada criterio de aceptación y pendientes de la primera entrega |
-| [JOA-04 Product Vision](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-04_Product_Vision.md>) | Visión, usuarios, objetivos y hoja de ruta |
-| [JOA-05 Requisitos no funcionales](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-05_Requisitos_No_Funcionales.md>) | Seguridad, rendimiento, usabilidad, compatibilidad y disponibilidad |
-| [JOA-06 Diagramas UML](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-06_Diagramas_UML.md>) | Casos de uso, secuencia, clases y componentes |
-| [JOA-07 Innovación](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-07_Innovacion.md>) | Problema, alternativas existentes y aporte de MicroLogist |
-| [JOA-08 Product Backlog](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-08_Product_Backlog.md>) | Historias de usuario priorizadas con sus criterios de aceptación |
-| [JOS-02 Configuración de la base de datos](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-02_Configuracion_Base_de_Datos.md>) | Supabase, Prisma, migraciones y datos de prueba |
-| [JOS-04 Modelo de datos](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-04_Modelo_de_Datos.md>) | Diagrama entidad-relación, diccionario de datos y separación entre empresas |
-| [JOS-05 Entorno Docker](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-05_Entorno_Docker.md>) | Levantar la aplicación con una base de datos local, sin claves de Supabase |
-| [JOS-06 Manual técnico](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-06_Manual_Tecnico.md>) | Arquitectura, código, configuración, base de datos, despliegue y operación |
-| [SIM-05 Definition of Done](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-05_Definition_of_Done.md>) | Condiciones para dar una tarea por terminada |
+| [JOA-01 Reglas del módulo de vehículos](<../Evidencias de documentación/JOA-01_Reglas_Modulo_Vehiculos.md>) | Alcance, campos, permisos y criterios de aceptación de la primera entrega |
+| [JOA-03 Validación de la primera entrega](<../Evidencias de documentación/JOA-03_Validacion_Primera_Entrega.md>) | Guion de la demostración, estado de cada criterio de aceptación y pendientes de la primera entrega |
+| [JOA-04 Product Vision](<../Evidencias de documentación/JOA-04_Product_Vision.md>) | Visión, usuarios, objetivos y hoja de ruta |
+| [JOA-05 Requisitos no funcionales](<../Evidencias de documentación/JOA-05_Requisitos_No_Funcionales.md>) | Seguridad, rendimiento, usabilidad, compatibilidad y disponibilidad |
+| [JOA-06 Diagramas UML](<../Evidencias de documentación/JOA-06_Diagramas_UML.md>) | Casos de uso, secuencia, clases y componentes |
+| [JOA-07 Innovación](<../Evidencias de documentación/JOA-07_Innovacion.md>) | Problema, alternativas existentes y aporte de MicroLogist |
+| [JOA-08 Product Backlog](<../Evidencias de documentación/JOA-08_Product_Backlog.md>) | Historias de usuario priorizadas con sus criterios de aceptación |
+| [JOS-02 Configuración de la base de datos](<../Evidencias de documentación/JOS-02_Configuracion_Base_de_Datos.md>) | Supabase, Prisma, migraciones y datos de prueba |
+| [JOS-04 Modelo de datos](<../Evidencias de documentación/JOS-04_Modelo_de_Datos.md>) | Diagrama entidad-relación, diccionario de datos y separación entre empresas |
+| [JOS-05 Entorno Docker](<../Evidencias de documentación/JOS-05_Entorno_Docker.md>) | Levantar la aplicación con una base de datos local, sin claves de Supabase |
+| [JOS-06 Manual técnico](<../Evidencias de documentación/JOS-06_Manual_Tecnico.md>) | Arquitectura, código, configuración, base de datos, despliegue y operación |
+| [SIM-05 Definition of Done](<../Evidencias de documentación/SIM-05_Definition_of_Done.md>) | Condiciones para dar una tarea por terminada |
