@@ -18,7 +18,7 @@ El modelo tiene dos partes:
 
 | Parte | Tablas | Estado |
 |---|---|---|
-| **Implementada** | `empresa`, `usuario`, `vehiculo` | Creada en Supabase en JOS-02. Es exactamente lo que hay en `prisma/schema.prisma` y en la migración inicial. |
+| **Implementada** | `empresa`, `usuario`, `vehiculo` | Creada en Supabase en JOS-02. Es exactamente lo que hay en `Base de datos/schema.prisma` y en la migración inicial. |
 | **Propuesta** | `conductor`, `documento`, `turno`, `aviso_enviado`, `ingreso` | Diseño para los módulos del MVP completo y el módulo opcional de ingresos. Se crea en la tarea de cada módulo, después de confirmar sus reglas. Lo no decidido está marcado **[POR CONFIRMAR]**. |
 
 Convenciones:

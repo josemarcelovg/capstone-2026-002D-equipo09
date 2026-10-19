@@ -52,7 +52,7 @@ Estado en el tablero al 18-10-2026. Las tareas son las de la sección 5 de la De
 
 ### 3.2 Datos de prueba
 
-Son los del seed (`prisma/seed.ts`): dos empresas ficticias, sin datos personales reales.
+Son los del seed (`Aplicación/prisma/seed.ts`): dos empresas ficticias, sin datos personales reales.
 
 | Empresa | `id` | Vehículos |
 |---|---|---|
@@ -135,14 +135,14 @@ Estado de cada criterio de la sección 7 de JOA-01 al 18-10-2026.
 | 4 | Después de cerrar sesión no hay acceso a datos | Pendiente (SIM-02) | — | 15 |
 | 5 | Registrar un vehículo válido y que persista | Comprobado sin sesión | PR #12 (JOS-03), 16-10-2026 | 9, 10 |
 | 6 | Patente duplicada: mensaje y no crea nada | Comprobado sin sesión | PR #12 | 8 |
-| 7 | Patente normalizada | Comprobado sin sesión | PR #12 y pruebas automáticas (`tests/vehiculos.test.ts`) | 9 |
+| 7 | Patente normalizada | Comprobado sin sesión | PR #12 y pruebas automáticas (`Aplicación/tests/vehiculos.test.ts`) | 9 |
 | 8 | Campos inválidos muestran su error y no se guardan | Comprobado sin sesión | PR #12 y pruebas automáticas | 6, 7 |
 | 9 | Editar y que el cambio persista | Comprobado sin sesión | PR #12 | 11 |
 | 10 | Desactivar, ver con "Incluir inactivos" y reactivar | Comprobado sin sesión | PR #12 | 5, 12, 13 |
 | 11 | La Empresa A no ve los vehículos de la B | Comprobado sin sesión | PR #12 | 16 |
 | 12 | Un vehículo de otra empresa responde "no encontrado" | Comprobado sin sesión | PR #12 | 17 |
 | 13 | La misma patente en dos empresas | Comprobado sin sesión | PR #12 y seed | 16 |
-| 14 | Computador y celular a 360 px | Comprobado | PR #5 (JOA-02) y capturas en `Evidencias de sistema/Aplicación` | 18 |
+| 14 | Computador y celular a 360 px | Comprobado | PR #5 (JOA-02) y capturas en `Evidencias de sistema/Aplicación/Capturas` | 18 |
 
 "Comprobado sin sesión" significa que se probó cambiando la empresa con `EMPRESA_DESARROLLO_ID`. Los criterios 5 a 13 se vuelven a comprobar con sesión real en SIM-03.
 
@@ -152,12 +152,12 @@ Estado de cada criterio de la sección 7 de JOA-01 al 18-10-2026.
 
 ### 6.1 Reglas de vehículos contra el código
 
-Revisión hecha el 18-10-2026 sobre `main`.
+Revisión hecha el 18-10-2026 sobre `main`. Las rutas son de `Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación`, salvo la de `Base de datos`.
 
 | Regla de JOA-01 | Dónde está | ¿Cumple? |
 |---|---|---|
 | Patente normalizada y formatos `BBCD12` o `AB1234` (3.1) | `src/lib/vehiculos.ts` | Sí |
-| Patente única por empresa, incluidos los inactivos (3.1) | `@@unique([empresaId, patente])` en `prisma/schema.prisma` | Sí |
+| Patente única por empresa, incluidos los inactivos (3.1) | `@@unique([empresaId, patente])` en `Base de datos/schema.prisma` | Sí |
 | Año entre 1980 y el año actual + 1; capacidad entre 1 y 100 (3) | `src/lib/vehiculos.ts` | Sí |
 | Tipos y estados permitidos (3 y 3.2) | `src/lib/vehiculos.ts` | Sí |
 | No existe eliminar; desactivar pide confirmación (3.2 y 4) | `src/app/vehiculos/acciones.ts` y `boton-activacion.tsx` | Sí |

@@ -1,0 +1,20 @@
+# Lo que no se copia a la imagen de Docker (Dockerfile, en esta carpeta).
+# Las rutas son relativas al contexto de construcción: la carpeta «Evidencias de sistema».
+
+# Se instalan y generan dentro de la imagen.
+**/node_modules
+**/.next
+Aplicación/src/generated
+
+# Credenciales: nunca dentro de una imagen.
+**/.env*
+!**/.env.example
+
+# No hacen falta para ejecutar la aplicación.
+**/.git
+**/.claude
+**/.vercel
+Aplicación/Capturas
+README.md
+**/coverage
+**/*.tsbuildinfo

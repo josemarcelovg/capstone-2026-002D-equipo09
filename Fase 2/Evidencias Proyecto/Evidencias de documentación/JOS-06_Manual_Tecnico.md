@@ -40,7 +40,7 @@ Los requisitos están en [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), [JOA-05](J
 | Inicio de sesión | Supabase Auth | Supabase. Pendiente (SIM-02). |
 | Envío de avisos | Proceso diario y proveedor de correo | Pendiente **[POR CONFIRMAR]** |
 
-El diagrama general está en el [README](<../../../README.md#arquitectura>) y el diagrama de componentes en [JOA-06](JOA-06_Diagramas_UML.md), sección 4.
+El diagrama general está en el [README](<../Evidencias de sistema/README.md#arquitectura>) y el diagrama de componentes en [JOA-06](JOA-06_Diagramas_UML.md), sección 4.
 
 ### 2.2 Cómo viaja una solicitud dentro del código
 
@@ -89,8 +89,23 @@ Las versiones exactas están en `package.json` y `package-lock.json`. Prisma se 
 
 ## 4. Estructura del código
 
+Desde el 18-10-2026, en la raíz del repositorio solo están las carpetas `Fase 1`, `Fase 2` y `Fase 3`. El sistema está en `Fase 2/Evidencias Proyecto/Evidencias de sistema`:
+
 ```
-.
+Evidencias de sistema/
+├── README.md                     Descripción del proyecto e instrucciones para ejecutarlo
+├── Base de datos/
+│   ├── schema.prisma             Modelo de datos
+│   ├── migrations/               Migraciones versionadas (scripts SQL)
+│   └── README.md                 Qué contiene y cómo se usa
+└── Aplicación/                   Desde aquí se ejecutan los comandos npm y Docker
+    └── (estructura de abajo)
+```
+
+Dentro de `Aplicación`:
+
+```
+Aplicación/
 ├── src/
 │   ├── app/                      Páginas y rutas (App Router)
 │   │   ├── layout.tsx            Estructura común y menú
@@ -110,14 +125,13 @@ Las versiones exactas están en `package.json` y `package-lock.json`. Prisma se 
 │   │   └── prisma.ts             Cliente de Prisma para la aplicación
 │   └── generated/prisma/         Cliente generado por Prisma (no se sube al repositorio)
 ├── prisma/
-│   ├── schema.prisma             Modelo de datos
-│   ├── migrations/               Migraciones versionadas
 │   ├── seed.ts                   Datos ficticios de prueba
 │   └── comprobar.ts              Comprobación de la base de datos
 ├── tests/                        Pruebas automáticas
-├── docker/                       Entorno Docker (JOS-05)
-├── Fase 1/, Fase 2/, Fase 3/     Evidencias y documentación por fase
-├── prisma.config.ts              Configuración del CLI de Prisma
+├── Capturas/                     Capturas de pantalla de la aplicación
+├── Dockerfile, compose.yaml,     Entorno Docker (JOS-05)
+│   iniciar.sh
+├── prisma.config.ts              Configuración del CLI de Prisma (apunta a «Base de datos»)
 └── .env.example                  Variables de entorno, sin valores secretos
 ```
 
@@ -131,16 +145,16 @@ Convenciones:
 
 ## 5. Instalación y configuración
 
-Los pasos para instalar y ejecutar están en el [README](<../../../README.md#instrucciones-para-ejecutar-localmente>). Hay dos formas de trabajar:
+Los pasos para instalar y ejecutar están en el [README](<../Evidencias de sistema/README.md#instrucciones-para-ejecutar-localmente>). Hay dos formas de trabajar:
 
 | Forma | Base de datos | Cuándo usarla |
 |---|---|---|
 | `npm run dev` en el computador | Supabase (o la de Docker) | Para programar a diario |
-| Docker (`docker compose -f docker/compose.yaml up --build`) | PostgreSQL local, sin claves | Para levantar y revisar la aplicación sin credenciales ([JOS-05](JOS-05_Entorno_Docker.md)) |
+| Docker (`docker compose up --build`, desde `Aplicación`) | PostgreSQL local, sin claves | Para levantar y revisar la aplicación sin credenciales ([JOS-05](JOS-05_Entorno_Docker.md)) |
 
 ### 5.1 Variables de entorno
 
-Se definen en `.env` (desarrollo), en `docker/compose.yaml` (Docker) o en el panel de Vercel (producción). El `.env` nunca se sube al repositorio.
+Se definen en `.env` (desarrollo), en `Aplicación/compose.yaml` (Docker) o en el panel de Vercel (producción). El `.env` nunca se sube al repositorio.
 
 | Variable | Para qué | Quién la usa | Desarrollo | Producción |
 |---|---|---|---|---|
@@ -173,7 +187,7 @@ Comandos principales:
 
 Reglas al cambiar el modelo:
 
-1. Editar `prisma/schema.prisma` y crear la migración con `npm run db:migrate`. La carpeta nueva de `prisma/migrations/` se sube en el mismo PR.
+1. Editar `Base de datos/schema.prisma` y crear la migración con `npm run db:migrate` (desde `Aplicación`). La carpeta nueva de `Base de datos/migrations/` se sube en el mismo PR.
 2. **Toda tabla nueva activa RLS en su migración** (`ALTER TABLE ... ENABLE ROW LEVEL SECURITY;`), como la migración inicial ([JOS-02](JOS-02_Configuracion_Base_de_Datos.md), sección 6).
 3. Toda tabla con datos de una empresa tiene `empresa_id` obligatorio ([JOS-04](JOS-04_Modelo_de_Datos.md), sección 4).
 4. Nunca se edita una migración que ya está en `main`: se corrige con una nueva.
@@ -200,7 +214,7 @@ La Definition of Done exige que `build` y `lint` pasen antes de unir un PR ([SIM
 
 La aplicación todavía no está desplegada. Pasos previstos **[POR CONFIRMAR]**:
 
-1. Importar el repositorio de GitHub en Vercel. Vercel detecta Next.js y usa `npm run build`. `npm install` ejecuta `prisma generate` automáticamente.
+1. Importar el repositorio de GitHub en Vercel y poner como **Root Directory** `Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación`, dejando activada la opción que incluye los archivos fuera de esa carpeta (Prisma necesita `../Base de datos`). Vercel detecta Next.js y usa `npm run build`. `npm install` ejecuta `prisma generate` automáticamente.
 2. Configurar las variables de producción de la sección 5.1 en el panel de Vercel.
 3. Aplicar las migraciones a la base de producción antes de cada despliegue que las incluya: `npm run db:deploy` con la `DIRECT_URL` de producción. Si esto se automatiza, se define al configurar Vercel.
 4. Elegir para las funciones de Vercel una región cercana a la de la base de datos, para reducir la latencia (el proyecto de desarrollo de Supabase está en West US, Oregon).
@@ -235,7 +249,7 @@ Se implementa con el módulo de documentos (PB-15 y PB-16). Quedan por definir *
 
 | Medida | Dónde |
 |---|---|
-| Credenciales solo en variables de entorno; `.env` fuera del repositorio y fuera de las imágenes de Docker | `.gitignore`, `.dockerignore` |
+| Credenciales solo en variables de entorno; `.env` fuera del repositorio y fuera de las imágenes de Docker | `.gitignore`, `Dockerfile.dockerignore` |
 | La empresa se toma de la sesión y todas las consultas filtran por ella | `src/lib/sesion.ts`, `src/lib/vehiculos-datos.ts` |
 | Validación en el servidor con Zod | `src/lib/vehiculos.ts`, `acciones.ts` |
 | Patente única por empresa garantizada por la base de datos | Restricción `(empresa_id, patente)` |
@@ -265,7 +279,7 @@ Se implementa con el módulo de documentos (PB-15 y PB-16). Quedan por definir *
 | `P1001: Can't reach database server` | Revisar la conexión a internet y las direcciones del `.env`. |
 | `password authentication failed` | La contraseña del `.env` no coincide. Revisar que no quedaron los corchetes de `[YOUR-PASSWORD]`. |
 | `Cannot find module '@/generated/prisma/client'` | Falta generar el cliente: `npx prisma generate` (o `npm install`). |
-| Prisma no encuentra las variables | Prisma no lee el `.env` solo: lo carga `prisma.config.ts` con `dotenv`. Ejecutar los comandos desde la raíz del proyecto. |
+| Prisma no encuentra las variables | Prisma no lee el `.env` solo: lo carga `prisma.config.ts` con `dotenv`. Ejecutar los comandos desde la carpeta `Aplicación`. |
 | La aplicación muestra "No pudimos cargar los vehículos" | Revisar en la terminal el error real. En desarrollo, comprobar `EMPRESA_DESARROLLO_ID` y la conexión a la base de datos. |
 | Problemas con Docker | [JOS-05](JOS-05_Entorno_Docker.md), sección 5. |
 
