@@ -78,7 +78,7 @@ flowchart LR
 | **Acceso a datos** | Consultas a PostgreSQL con Prisma, siempre filtradas por la empresa del usuario. El modelo y las migraciones están en `Base de datos/`. | `Aplicación/src/lib/` |
 | **Avisos** | Un proceso diario que busca documentos por vencer y envía un correo. El correo es el único canal de aviso. | Pendiente |
 
-Los vehículos ya se guardan en PostgreSQL mediante Prisma (JOS-02 y JOS-03). Mientras no exista el inicio de sesión (SIM-02), la empresa con la que se trabaja se toma de la variable `EMPRESA_DESARROLLO_ID` del `.env` de `Aplicación/`.
+Los vehículos ya se guardan en PostgreSQL mediante Prisma (JOS-02 y JOS-03). El inicio de sesión usa Supabase Auth (SIM-02): el proxy (`src/proxy.ts`) manda al login a quien no tiene sesión, y cada página y acción vuelve a comprobarla en el servidor (`src/lib/sesion.ts`), que entrega la empresa del usuario. En desarrollo, sin las claves de Supabase, se entra sin iniciar sesión con la empresa de `EMPRESA_DESARROLLO_ID` del `.env` de `Aplicación/`.
 
 El detalle está en el diagrama de componentes y en los diagramas de secuencia de [JOA-06](<../Evidencias de documentación/JOA-06_Diagramas_UML.md>).
 
@@ -121,6 +121,8 @@ El detalle está en el diagrama de componentes y en los diagramas de secuencia d
    npm run db:comprobar  # comprueba que todo funcione
    ```
 
+5. Para usar el inicio de sesión, completar `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`, y crear las cuentas de prueba y sus perfiles como indica [SIM-02](<../Evidencias de documentación/SIM-02_Inicio_de_Sesion.md>), sección 5. Sin esas dos variables, en desarrollo se entra directo con la empresa de `EMPRESA_DESARROLLO_ID`.
+
 ### Ejecución
 
 | Comando | Para qué sirve |
@@ -143,7 +145,7 @@ Requiere [Docker Desktop](https://www.docker.com/products/docker-desktop/). Desd
 docker compose up --build
 ```
 
-Levanta la aplicación y una base de datos PostgreSQL local con los datos de prueba. Abrir http://localhost:3000. Detalles y problemas frecuentes: [JOS-05](<../Evidencias de documentación/JOS-05_Entorno_Docker.md>).
+Levanta la aplicación y una base de datos PostgreSQL local con los datos de prueba. En Docker no se inicia sesión: se trabaja con la empresa de `EMPRESA_DESARROLLO_ID` (SIM-02). Abrir http://localhost:3000. Detalles y problemas frecuentes: [JOS-05](<../Evidencias de documentación/JOS-05_Entorno_Docker.md>).
 
 ### Estructura del repositorio
 
@@ -213,4 +215,5 @@ Para el desarrollo del proyecto se utilizará una metodología ágil e increment
 | [JOS-04 Modelo de datos](<../Evidencias de documentación/JOS-04_Modelo_de_Datos.md>) | Diagrama entidad-relación, diccionario de datos y separación entre empresas |
 | [JOS-05 Entorno Docker](<../Evidencias de documentación/JOS-05_Entorno_Docker.md>) | Levantar la aplicación con una base de datos local, sin claves de Supabase |
 | [JOS-06 Manual técnico](<../Evidencias de documentación/JOS-06_Manual_Tecnico.md>) | Arquitectura, código, configuración, base de datos, despliegue y operación |
+| [SIM-02 Inicio de sesión](<../Evidencias de documentación/SIM-02_Inicio_de_Sesion.md>) | Inicio y cierre de sesión con Supabase Auth, decisiones y configuración |
 | [SIM-05 Definition of Done](<../Evidencias de documentación/SIM-05_Definition_of_Done.md>) | Condiciones para dar una tarea por terminada |
