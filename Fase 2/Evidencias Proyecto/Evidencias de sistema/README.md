@@ -217,4 +217,5 @@ Para el desarrollo del proyecto se utilizará una metodología ágil e increment
 | [JOS-06 Manual técnico](<../Evidencias de documentación/JOS-06_Manual_Tecnico.md>) | Arquitectura, código, configuración, base de datos, despliegue y operación |
 | [SIM-02 Inicio de sesión](<../Evidencias de documentación/SIM-02_Inicio_de_Sesion.md>) | Inicio y cierre de sesión con Supabase Auth, decisiones y configuración |
 | [SIM-03 Pruebas de la primera entrega](<../Evidencias de documentación/SIM-03_Pruebas_Primera_Entrega.md>) | Criterios 7.1 a 7.14 de JOA-01 probados con dos empresas ficticias, con verificación en la base de datos |
+| [SIM-04 Plan de pruebas](<../Evidencias de documentación/SIM-04_Plan_de_Pruebas.md>) | Tipos de prueba, casos con identificador, relación con JOA-05, calendario y estado de cada caso |
 | [SIM-05 Definition of Done](<../Evidencias de documentación/SIM-05_Definition_of_Done.md>) | Condiciones para dar una tarea por terminada |
