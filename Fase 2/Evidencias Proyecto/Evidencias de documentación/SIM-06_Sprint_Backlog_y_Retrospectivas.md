@@ -59,7 +59,7 @@ Que la duración de los sprints sea la de estas iteraciones está **[POR CONFIRM
 | [JOS-01] Preparar proyecto Next.js y entorno compartido | José | — | #3 (28-09) | Terminada |
 | [SIM-05] Definir y aprobar la Definition of Done | Simón | — | #4 (29-09) | Terminada |
 
-En el tablero estas cuatro tarjetas no tienen el campo *Iteration*; se ubican en la Iteración 1 por la fecha de sus PR.
+En el tablero, la primera iteración se llama solo "Iteration" (sin número); estas cuatro tarjetas la tienen asignada.
 
 ### 3.2 Iteración 2 · 05-10 al 18-10
 
@@ -115,7 +115,7 @@ Cada retrospectiva responde tres preguntas: **qué funcionó**, **qué no funcio
 
 - 4 de 4 tarjetas terminadas.
 - 3 de 4 PR con *Approve*. El PR #1 se unió el 24-09, antes de que existiera la Definition of Done (aprobada el 29-09 con el PR #4).
-- Las cuatro tarjetas quedaron sin el campo *Iteration* en el tablero.
+- En el tablero, esta iteración se llama solo "Iteration", sin número, lo que se confunde con una tarjeta sin iteración.
 
 **Temas propuestos a partir de los datos:**
 
