@@ -195,10 +195,10 @@ Para el desarrollo del proyecto se utilizará una metodología ágil e increment
 
 ### Cómo la aplicamos
 
-- **Artefactos:** [Product Vision](<../Evidencias de documentación/JOA-04_Product_Vision.md>), [Product Backlog](<../Evidencias de documentación/JOA-08_Product_Backlog.md>) priorizado por el Product Owner, [Definition of Done](<../Evidencias de documentación/SIM-05_Definition_of_Done.md>) acordada por el equipo, y Sprint Backlog y retrospectivas de cada sprint (SIM-06, en preparación).
+- **Artefactos:** [Product Vision](<../Evidencias de documentación/JOA-04_Product_Vision.md>), [Product Backlog](<../Evidencias de documentación/JOA-08_Product_Backlog.md>) priorizado por el Product Owner, [Definition of Done](<../Evidencias de documentación/SIM-05_Definition_of_Done.md>) acordada por el equipo, y [Sprint Backlog y retrospectivas](<../Evidencias de documentación/SIM-06_Sprint_Backlog_y_Retrospectivas.md>) de cada iteración (SIM-06).
 - **Seguimiento:** un tablero en GitHub Projects con las tareas de cada integrante, sus responsables y criterios de aceptación, en estados pendiente, en curso y terminado. Se revisa en una reunión semanal.
 - **Revisión del trabajo:** cada tarea se hace en su propia rama y se une a `main` mediante un pull request revisado por otro integrante.
-- **Duración de los sprints:** **[POR CONFIRMAR]** con el equipo.
+- **Duración de los sprints:** el tablero usa iteraciones de 2 semanas (Iteración 3: 19-10 al 01-11). Que esa sea la duración de los sprints está **[POR CONFIRMAR]** con el equipo (SIM-06).
 
 ## Documentación del proyecto
 
@@ -219,3 +219,4 @@ Para el desarrollo del proyecto se utilizará una metodología ágil e increment
 | [SIM-03 Pruebas de la primera entrega](<../Evidencias de documentación/SIM-03_Pruebas_Primera_Entrega.md>) | Criterios 7.1 a 7.14 de JOA-01 probados con dos empresas ficticias, con verificación en la base de datos |
 | [SIM-04 Plan de pruebas](<../Evidencias de documentación/SIM-04_Plan_de_Pruebas.md>) | Tipos de prueba, casos con identificador, relación con JOA-05, calendario y estado de cada caso |
 | [SIM-05 Definition of Done](<../Evidencias de documentación/SIM-05_Definition_of_Done.md>) | Condiciones para dar una tarea por terminada |
+| [SIM-06 Sprint Backlog y retrospectivas](<../Evidencias de documentación/SIM-06_Sprint_Backlog_y_Retrospectivas.md>) | Tareas de cada iteración, datos para las retrospectivas y acciones de mejora |
