@@ -24,4 +24,4 @@ Los comandos se ejecutan desde la carpeta `Aplicación`, que tiene la configurac
 
 Los datos de prueba quedan en `Aplicación/prisma/` porque usan el cliente de Prisma y las dependencias de la aplicación.
 
-Con Docker no hace falta ejecutar nada: al levantar el sistema se aplican las migraciones y se cargan los datos de prueba solos (ver el [README](<../README.md>)).
+Con Docker no hace falta ejecutar nada: al levantar el sistema se aplican las migraciones y se cargan los datos de prueba solos (ver el [README](<../../../../README.md>)).

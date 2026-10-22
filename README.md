@@ -1,6 +1,6 @@
 # capstone-2026-002D-equipo09
 
-Este README está en `Fase 2/Evidencias Proyecto/Evidencias de sistema`, junto a las dos carpetas desde las que se ejecuta el sistema: **Aplicación** (código de la aplicación, Docker y variables de entorno) y **Base de datos** (modelo y scripts de la base de datos).
+El sistema está en `Fase 2/Evidencias Proyecto/Evidencias de sistema`, en dos carpetas: **Aplicación** (código de la aplicación, Docker y variables de entorno), desde donde se ejecuta, y **Base de datos** (modelo y scripts de la base de datos).
 
 ## Nombre del proyecto
 
@@ -80,7 +80,7 @@ flowchart LR
 
 Los vehículos ya se guardan en PostgreSQL mediante Prisma (JOS-02 y JOS-03). El inicio de sesión usa Supabase Auth (SIM-02): el proxy (`src/proxy.ts`) manda al login a quien no tiene sesión, y cada página y acción vuelve a comprobarla en el servidor (`src/lib/sesion.ts`), que entrega la empresa del usuario. En desarrollo, sin las claves de Supabase, se entra sin iniciar sesión con la empresa de `EMPRESA_DESARROLLO_ID` del `.env` de `Aplicación/`.
 
-El detalle está en el diagrama de componentes y en los diagramas de secuencia de [JOA-06](<../Evidencias de documentación/JOA-06_Diagramas_UML.md>).
+El detalle está en el diagrama de componentes y en los diagramas de secuencia de [JOA-06](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-06_Diagramas_UML.md>).
 
 ## Instrucciones para ejecutar localmente
 
@@ -111,7 +111,7 @@ El detalle está en el diagrama de componentes y en los diagramas de secuencia d
    cp .env.example .env
    ```
 
-   Cómo obtener los valores está en [JOS-02](<../Evidencias de documentación/JOS-02_Configuracion_Base_de_Datos.md>). El archivo `.env` nunca se sube al repositorio.
+   Cómo obtener los valores está en [JOS-02](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-02_Configuracion_Base_de_Datos.md>). El archivo `.env` nunca se sube al repositorio.
 
 4. Preparar la base de datos (Supabase + Prisma), con el `.env` completo:
 
@@ -121,7 +121,7 @@ El detalle está en el diagrama de componentes y en los diagramas de secuencia d
    npm run db:comprobar  # comprueba que todo funcione
    ```
 
-5. Para usar el inicio de sesión, completar `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`, y crear las cuentas de prueba y sus perfiles como indica [SIM-02](<../Evidencias de documentación/SIM-02_Inicio_de_Sesion.md>), sección 5. Sin esas dos variables, en desarrollo se entra directo con la empresa de `EMPRESA_DESARROLLO_ID`.
+5. Para usar el inicio de sesión, completar `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`, y crear las cuentas de prueba y sus perfiles como indica [SIM-02](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-02_Inicio_de_Sesion.md>), sección 5. Sin esas dos variables, en desarrollo se entra directo con la empresa de `EMPRESA_DESARROLLO_ID`.
 
 ### Ejecución
 
@@ -145,18 +145,18 @@ Requiere [Docker Desktop](https://www.docker.com/products/docker-desktop/). Desd
 docker compose up --build
 ```
 
-Levanta la aplicación y una base de datos PostgreSQL local con los datos de prueba. En Docker no se inicia sesión: se trabaja con la empresa de `EMPRESA_DESARROLLO_ID` (SIM-02). Abrir http://localhost:3000. Detalles y problemas frecuentes: [JOS-05](<../Evidencias de documentación/JOS-05_Entorno_Docker.md>).
+Levanta la aplicación y una base de datos PostgreSQL local con los datos de prueba. En Docker no se inicia sesión: se trabaja con la empresa de `EMPRESA_DESARROLLO_ID` (SIM-02). Abrir http://localhost:3000. Detalles y problemas frecuentes: [JOS-05](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-05_Entorno_Docker.md>).
 
 ### Estructura del repositorio
 
-En la raíz solo están las carpetas de cada fase.
+En la raíz están las carpetas de cada fase y este README.
 
 | Carpeta | Contenido |
 |---|---|
 | `Fase 1/` | Evidencias individuales y grupales de la Fase 1 |
 | `Fase 2/Evidencias Individuales/` y `Fase 2/Evidencias Grupales/` | Evidencias individuales y grupales de la Fase 2 |
 | `Fase 2/Evidencias Proyecto/Evidencias de documentación/` | Documentos del proyecto (tabla de abajo) |
-| `Fase 2/Evidencias Proyecto/Evidencias de sistema/` | Este README y el sistema |
+| `Fase 2/Evidencias Proyecto/Evidencias de sistema/` | El sistema: `Aplicación` y `Base de datos` |
 | `Fase 3/` | Evidencias individuales y grupales de la Fase 3 |
 
 Dentro de `Evidencias de sistema`:
@@ -195,7 +195,7 @@ Para el desarrollo del proyecto se utilizará una metodología ágil e increment
 
 ### Cómo la aplicamos
 
-- **Artefactos:** [Product Vision](<../Evidencias de documentación/JOA-04_Product_Vision.md>), [Product Backlog](<../Evidencias de documentación/JOA-08_Product_Backlog.md>) priorizado por el Product Owner, [Definition of Done](<../Evidencias de documentación/SIM-05_Definition_of_Done.md>) acordada por el equipo, y [Sprint Backlog y retrospectivas](<../Evidencias de documentación/SIM-06_Sprint_Backlog_y_Retrospectivas.md>) de cada iteración (SIM-06).
+- **Artefactos:** [Product Vision](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-04_Product_Vision.md>), [Product Backlog](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-08_Product_Backlog.md>) priorizado por el Product Owner, [Definition of Done](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-05_Definition_of_Done.md>) acordada por el equipo, y [Sprint Backlog y retrospectivas](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-06_Sprint_Backlog_y_Retrospectivas.md>) de cada iteración (SIM-06).
 - **Seguimiento:** un tablero en GitHub Projects con las tareas de cada integrante, sus responsables y criterios de aceptación, en estados pendiente, en curso y terminado. Se revisa en una reunión semanal.
 - **Revisión del trabajo:** cada tarea se hace en su propia rama y se une a `main` mediante un pull request revisado por otro integrante.
 - **Duración de los sprints:** el tablero usa iteraciones de 2 semanas (Iteración 3: 19-10 al 01-11). Que esa sea la duración de los sprints está **[POR CONFIRMAR]** con el equipo (SIM-06).
@@ -204,19 +204,19 @@ Para el desarrollo del proyecto se utilizará una metodología ágil e increment
 
 | Documento | Contenido |
 |---|---|
-| [JOA-01 Reglas del módulo de vehículos](<../Evidencias de documentación/JOA-01_Reglas_Modulo_Vehiculos.md>) | Alcance, campos, permisos y criterios de aceptación de la primera entrega |
-| [JOA-03 Validación de la primera entrega](<../Evidencias de documentación/JOA-03_Validacion_Primera_Entrega.md>) | Guion de la demostración, estado de cada criterio de aceptación y pendientes de la primera entrega |
-| [JOA-04 Product Vision](<../Evidencias de documentación/JOA-04_Product_Vision.md>) | Visión, usuarios, objetivos y hoja de ruta |
-| [JOA-05 Requisitos no funcionales](<../Evidencias de documentación/JOA-05_Requisitos_No_Funcionales.md>) | Seguridad, rendimiento, usabilidad, compatibilidad y disponibilidad |
-| [JOA-06 Diagramas UML](<../Evidencias de documentación/JOA-06_Diagramas_UML.md>) | Casos de uso, secuencia, clases y componentes |
-| [JOA-07 Innovación](<../Evidencias de documentación/JOA-07_Innovacion.md>) | Problema, alternativas existentes y aporte de MicroLogist |
-| [JOA-08 Product Backlog](<../Evidencias de documentación/JOA-08_Product_Backlog.md>) | Historias de usuario priorizadas con sus criterios de aceptación |
-| [JOS-02 Configuración de la base de datos](<../Evidencias de documentación/JOS-02_Configuracion_Base_de_Datos.md>) | Supabase, Prisma, migraciones y datos de prueba |
-| [JOS-04 Modelo de datos](<../Evidencias de documentación/JOS-04_Modelo_de_Datos.md>) | Diagrama entidad-relación, diccionario de datos y separación entre empresas |
-| [JOS-05 Entorno Docker](<../Evidencias de documentación/JOS-05_Entorno_Docker.md>) | Levantar la aplicación con una base de datos local, sin claves de Supabase |
-| [JOS-06 Manual técnico](<../Evidencias de documentación/JOS-06_Manual_Tecnico.md>) | Arquitectura, código, configuración, base de datos, despliegue y operación |
-| [SIM-02 Inicio de sesión](<../Evidencias de documentación/SIM-02_Inicio_de_Sesion.md>) | Inicio y cierre de sesión con Supabase Auth, decisiones y configuración |
-| [SIM-03 Pruebas de la primera entrega](<../Evidencias de documentación/SIM-03_Pruebas_Primera_Entrega.md>) | Criterios 7.1 a 7.14 de JOA-01 probados con dos empresas ficticias, con verificación en la base de datos |
-| [SIM-04 Plan de pruebas](<../Evidencias de documentación/SIM-04_Plan_de_Pruebas.md>) | Tipos de prueba, casos con identificador, relación con JOA-05, calendario y estado de cada caso |
-| [SIM-05 Definition of Done](<../Evidencias de documentación/SIM-05_Definition_of_Done.md>) | Condiciones para dar una tarea por terminada |
-| [SIM-06 Sprint Backlog y retrospectivas](<../Evidencias de documentación/SIM-06_Sprint_Backlog_y_Retrospectivas.md>) | Tareas de cada iteración, datos para las retrospectivas y acciones de mejora |
+| [JOA-01 Reglas del módulo de vehículos](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-01_Reglas_Modulo_Vehiculos.md>) | Alcance, campos, permisos y criterios de aceptación de la primera entrega |
+| [JOA-03 Validación de la primera entrega](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-03_Validacion_Primera_Entrega.md>) | Guion de la demostración, estado de cada criterio de aceptación y pendientes de la primera entrega |
+| [JOA-04 Product Vision](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-04_Product_Vision.md>) | Visión, usuarios, objetivos y hoja de ruta |
+| [JOA-05 Requisitos no funcionales](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-05_Requisitos_No_Funcionales.md>) | Seguridad, rendimiento, usabilidad, compatibilidad y disponibilidad |
+| [JOA-06 Diagramas UML](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-06_Diagramas_UML.md>) | Casos de uso, secuencia, clases y componentes |
+| [JOA-07 Innovación](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-07_Innovacion.md>) | Problema, alternativas existentes y aporte de MicroLogist |
+| [JOA-08 Product Backlog](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-08_Product_Backlog.md>) | Historias de usuario priorizadas con sus criterios de aceptación |
+| [JOS-02 Configuración de la base de datos](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-02_Configuracion_Base_de_Datos.md>) | Supabase, Prisma, migraciones y datos de prueba |
+| [JOS-04 Modelo de datos](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-04_Modelo_de_Datos.md>) | Diagrama entidad-relación, diccionario de datos y separación entre empresas |
+| [JOS-05 Entorno Docker](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-05_Entorno_Docker.md>) | Levantar la aplicación con una base de datos local, sin claves de Supabase |
+| [JOS-06 Manual técnico](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-06_Manual_Tecnico.md>) | Arquitectura, código, configuración, base de datos, despliegue y operación |
+| [SIM-02 Inicio de sesión](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-02_Inicio_de_Sesion.md>) | Inicio y cierre de sesión con Supabase Auth, decisiones y configuración |
+| [SIM-03 Pruebas de la primera entrega](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-03_Pruebas_Primera_Entrega.md>) | Criterios 7.1 a 7.14 de JOA-01 probados con dos empresas ficticias, con verificación en la base de datos |
+| [SIM-04 Plan de pruebas](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-04_Plan_de_Pruebas.md>) | Tipos de prueba, casos con identificador, relación con JOA-05, calendario y estado de cada caso |
+| [SIM-05 Definition of Done](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-05_Definition_of_Done.md>) | Condiciones para dar una tarea por terminada |
+| [SIM-06 Sprint Backlog y retrospectivas](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-06_Sprint_Backlog_y_Retrospectivas.md>) | Tareas de cada iteración, datos para las retrospectivas y acciones de mejora |
