@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (requisitos y backlog) y José Vargas (rendimiento y datos) |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 21-10-2026 |
+| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración) |
 
 Este plan define cómo se prueba MicroLogist: qué tipos de prueba hay, con qué técnicas se ejecutan, en qué entorno y con qué datos, cuándo se hacen y cómo se registran los resultados y los errores. Cada caso de prueba tiene un identificador que no cambia, y cada requisito de [JOA-05](JOA-05_Requisitos_No_Funcionales.md) queda cubierto por al menos un caso (sección 10). Los casos de la primera entrega ya tienen un estado, gracias a la ejecución de [SIM-03](SIM-03_Pruebas_Primera_Entrega.md). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -30,6 +30,8 @@ Este plan define cómo se prueba MicroLogist: qué tipos de prueba hay, con qué
 
 JOA-05 (sección 7) parte con cuatro tipos y deja pendiente qué hacer con rendimiento y disponibilidad. **Propuesta de SIM-04:** agregar un quinto tipo, *Rendimiento y disponibilidad*, para que esos requisitos no queden sin caso **[POR CONFIRMAR]** con el equipo (JOA-05, sección 8).
 
+La revisión de las evidencias de Fase 1 y 2 (corte del 20-10-2026) pidió además cubrir las pruebas de **integración** con pruebas reales en el código. Por eso se agrega un sexto tipo, *Integración*, con casos automáticos (sección 6.6).
+
 | Tipo | Qué comprueba | Requisitos que cubre | Prefijo de los casos |
 |---|---|---|---|
 | **Funcionales** | Que el sistema hace lo que dicen JOA-01 y el backlog. | Criterios de JOA-01 e ítems PB-xx; RNF-USA-03, RNF-USA-04, RNF-USA-05, RNF-DIS-02 y RNF-DIS-04 | `CP-FUN` |
@@ -37,6 +39,7 @@ JOA-05 (sección 7) parte con cuatro tipos y deja pendiente qué hacer con rendi
 | **Compatibilidad** | Que funciona en celular, tablet, computador y en los navegadores acordados. | RNF-COM-01 a RNF-COM-05 | `CP-COM` |
 | **Usabilidad** | Que se aprende sin ayuda, que los usuarios lo encuentran útil y que es accesible. | RNF-USA-01, RNF-USA-02 y RNF-USA-06 | `CP-USA` |
 | **Rendimiento y disponibilidad** | Tiempos de carga y respuesta, volumen de datos, disponibilidad, respaldo y facilidad para levantar el proyecto. | RNF-REN-01 a RNF-REN-04, RNF-DIS-01, RNF-DIS-03 y RNF-DIS-05 | `CP-REN` |
+| **Integración** | Que las partes funcionan juntas: la validación de la aplicación con la base de datos real (Prisma y PostgreSQL), y la aplicación levantada con Supabase Auth y la API de Supabase. | RNF-SEG-01, RNF-SEG-02, RNF-SEG-05, RNF-SEG-06 y RNF-DIS-02 (complementa los casos `CP-FUN` y `CP-SEG`) | `CP-INT` |
 
 Los identificadores `CP-xxx-nn` no se reutilizan ni se renumeran, igual que los `PB-xx` y los `RNF-xxx-nn`.
 
@@ -46,7 +49,8 @@ Los identificadores `CP-xxx-nn` no se reutilizan ni se renumeran, igual que los 
 
 | Técnica | Para qué se usa | Cómo |
 |---|---|---|
-| **Pruebas automáticas** | Reglas que no dependen de la pantalla: validación de vehículos y reglas de acceso. | `npm test` desde `Evidencias de sistema/Aplicación` (hoy 24 pruebas en `tests/`). Corren en cada PR de código (DoD, sección 3.1). |
+| **Pruebas unitarias automáticas** | Reglas que no dependen de la pantalla ni de la base: validación de vehículos y reglas de acceso. | `npm test` desde `Evidencias de sistema/Aplicación` (hoy 24 pruebas en `tests/`). Corren en cada PR de código (DoD, sección 3.1). |
+| **Pruebas de integración automáticas** | Que la aplicación, la base de datos y Supabase funcionan juntas (sección 6.6). | `npm run test:integracion` desde `Aplicación` (hoy 16 pruebas en `tests/integracion/`). Usan el `.env`. Las de base de datos trabajan dentro de transacciones que se deshacen, así que no dejan datos; las de la aplicación necesitan `npm run dev` corriendo y solo leen. |
 | **Pruebas manuales en el navegador** | Flujos completos, como los vería el usuario. | Con las cuentas de prueba de la Empresa A y la Empresa B. |
 | **Solicitudes alteradas** | Comprobar que el servidor protege los datos aunque el navegador mande otra cosa. | Herramientas del navegador: modificar la solicitud antes de enviarla (por ejemplo, cambiar un id o agregar `empresa_id`). |
 | **Consultas de solo lectura a la base de datos** | Confirmar el efecto real de una acción, sin confiar solo en lo que dice la pantalla. | Consultas `select` sobre la tabla del módulo, antes y después de probar. Nunca se modifican datos a mano. |
@@ -61,13 +65,14 @@ Los identificadores `CP-xxx-nn` no se reutilizan ni se renumeran, igual que los 
 | Entorno | Para qué | Notas |
 |---|---|---|
 | **Local con Supabase** | La mayoría de los casos. | `npm run dev` desde `Aplicación`, Node.js 24, `.env` con el proyecto `micrologist-dev` ([SIM-02](SIM-02_Inicio_de_Sesion.md), sección 5). |
-| **Local con Docker** | Revisar la aplicación sin claves de Supabase. | No sirve para las pruebas de acceso: en Docker no se inicia sesión ([JOS-05](JOS-05_Entorno_Docker.md)). |
+| **Local con Docker** | Revisar la aplicación sin claves de Supabase. | No sirve para las pruebas de acceso: en Docker no se inicia sesión ([JOS-05](JOS-05_Entorno_Docker.md)). Las pruebas de integración con la base de datos sí corren con la base de Docker; las que necesitan Supabase se saltan con un aviso. |
 | **Versión desplegada (Vercel)** | HTTPS, rendimiento, disponibilidad y persistencia tras volver a desplegar. | Cuando exista el despliegue **[POR CONFIRMAR]**. |
 
 **Datos de prueba:**
 
 - Las dos empresas ficticias del seed y sus cuentas de prueba: `admin.empresa.a@micrologist.cl` (Empresa A) y `admin.empresa.b@micrologist.cl` (Empresa B).
 - Los vehículos que se crean al probar llevan patentes fáciles de reconocer, que empiezan con `SIM` (por ejemplo, `SIMT03`), y se anotan en el registro de cada ejecución, porque la aplicación no elimina vehículos.
+- Las pruebas de integración crean sus propias empresas, con «(prueba de integración)» en el nombre, y sus vehículos dentro de una transacción que se deshace al terminar. No usan las cuentas de prueba ni dependen del seed, y su última prueba comprueba que no quedó ninguna empresa de prueba en la base.
 - No se usan datos personales reales. Las contraseñas de las cuentas de prueba no se escriben en ningún documento ni archivo del repositorio.
 
 ---
@@ -85,6 +90,7 @@ Los identificadores `CP-xxx-nn` no se reutilizan ni se renumeran, igual que los 
 **Criterios de entrada** (antes de ejecutar las pruebas de una etapa):
 
 - `npm run build`, `npm run lint` y `npm test` sin errores (DoD, sección 3.1).
+- `npm run test:integracion` sin errores, con la aplicación levantada y el `.env` del proyecto de desarrollo.
 - El código a probar está en `main` o en la rama del PR, y se anota el commit.
 - El entorno y las cuentas de prueba están listos (sección 4).
 
@@ -202,13 +208,42 @@ Los umbrales de rendimiento se miden sobre la versión desplegada, no en el comp
 | CP-REN-06 | Respaldar la base de datos y restaurarla en un proyecto de prueba. | Se restaura completa. | RNF-DIS-03 | ⏳ Pendiente (MVP) |
 | CP-REN-07 | Otro integrante clona el repositorio y levanta la aplicación siguiendo el README, en un computador distinto. | Lo logra en menos de 15 minutos **[POR CONFIRMAR]**. | RNF-DIS-05 | ⏳ Pendiente (también lo pide la sección 6.3 de JOA-03) |
 
+### 6.6 Integración (`CP-INT`)
+
+Son pruebas automáticas que comprueban que las partes del sistema funcionan juntas, sin pasar por la pantalla. Se ejecutan con `npm run test:integracion` desde `Aplicación` y están en dos archivos:
+
+- **`tests/integracion/base-de-datos.test.ts`** (CP-INT-01 a CP-INT-10): el esquema de validación de la aplicación (`src/lib/vehiculos.ts`) y el cliente Prisma generado, contra la base de `DATABASE_URL`, igual que la aplicación. Cada caso crea sus propias empresas y vehículos dentro de una transacción que se deshace al final, así que no deja datos ni depende del seed.
+- **`tests/integracion/aplicacion.test.ts`** (CP-INT-11 a CP-INT-15): la aplicación levantada con `npm run dev` (por defecto en `http://localhost:3000`; otra dirección va en `URL_APLICACION`), con su proxy y Supabase Auth, y la API de Supabase con la clave pública. Solo leen: no inician sesión con las cuentas de prueba ni crean datos.
+
+Si falta el `.env` o la aplicación no está corriendo, los casos que lo necesitan se saltan con un aviso que dice qué falta, en vez de fallar.
+
+| ID | Qué se comprueba | Resultado esperado | Origen | Estado |
+|---|---|---|---|---|
+| CP-INT-01 | Un vehículo validado por la aplicación se guarda en la base. | Queda tal como lo normalizó la validación: patente `BBCD12` (se muestra `BBCD-12`), textos sin espacios sobrantes, opcionales vacíos como nulos y estado «activo». | PB-04, JOA-01 3.1, RNF-DIS-02 | ✅ 22-10-2026 |
+| CP-INT-02 | Los valores límite que acepta el formulario (largos máximos, año actual + 1, año 1980, capacidad 1 y 100). | Todos caben en las columnas de la base. | JOA-01 sección 3 | ✅ 22-10-2026 |
+| CP-INT-03 | Guardar un vehículo sin indicar el estado. | La base le asigna «activo». | JOA-01 3.2 | ✅ 22-10-2026 |
+| CP-INT-04 | Guardar dos veces la misma patente en una empresa, la primera inactiva. | La base rechaza la segunda (error P2002, el que la aplicación traduce a "Ya tienes un vehículo registrado…"). | JOA-01 3.1 y 7.6, PB-04 | ✅ 22-10-2026 |
+| CP-INT-05 | Guardar la misma patente en dos empresas. | Se aceptan las dos. | JOA-01 7.13, RNF-SEG-02 | ✅ 22-10-2026 |
+| CP-INT-06 | Cambiar la patente al editar por una que la empresa ya tiene. | La base lo rechaza (P2002). Complementa CP-FUN-08, que revisa el mensaje en pantalla. | PB-06 (criterio 3) | ✅ 22-10-2026 |
+| CP-INT-07 | La consulta del listado, con búsqueda, filtro por estado e «Incluir inactivos». | Solo vehículos de la empresa, ordenados por patente y filtrados correctamente. Complementa CP-FUN-06. | PB-05, RNF-SEG-02 | ✅ 22-10-2026 |
+| CP-INT-08 | Buscar y editar por id un vehículo de otra empresa, con la misma condición que usa la aplicación (id y empresa de la sesión). | No lo encuentra, la edición falla (P2025, que la aplicación muestra como "No encontrado") y el vehículo no cambia. | JOA-01 7.12, RNF-SEG-02 | ✅ 22-10-2026 |
+| CP-INT-09 | Guardar un vehículo en una empresa que no existe. | La base lo rechaza (P2003). | JOA-01 2.2, RNF-SEG-02 | ✅ 22-10-2026 |
+| CP-INT-10 | Seguridad del esquema en la base real. | RLS activado en `empresa`, `usuario` y `vehiculo`, y ninguna columna de contraseña en `usuario`. | RNF-SEG-02, RNF-SEG-05 | ✅ 22-10-2026 |
+| CP-INT-11 | Abrir el inicio de sesión. | Responde 200, en español, con los campos de correo y contraseña. | PB-01 | ✅ 22-10-2026 |
+| CP-INT-12 | Abrir sin sesión `/`, `/vehiculos`, `/vehiculos?inactivos=1`, `/vehiculos/nuevo`, la ficha de un vehículo del seed y la de un id que no existe. | Todas responden 307 hacia `/login`, sin datos. Automatiza CP-SEG-01. | RNF-SEG-01, JOA-01 7.3 | ✅ 22-10-2026 |
+| CP-INT-13 | Enviar una cookie de sesión con el formato de Supabase, pero con un token de firma inventada. | Supabase rechaza el token y la aplicación redirige al inicio de sesión, sin datos. | RNF-SEG-01, RNF-SEG-06 | ✅ 22-10-2026 |
+| CP-INT-14 | Pedir un archivo público (`/favicon.ico`) sin sesión. | Se entrega sin redirigir: el proxy no bloquea los archivos estáticos. | SIM-02 (proxy) | ✅ 22-10-2026 |
+| CP-INT-15 | Leer `empresa`, `usuario` y `vehiculo` directo desde la API de Supabase con la clave pública, sin pasar por la aplicación. | No devuelve ninguna fila (RLS sin políticas públicas). | RNF-SEG-02 | ✅ 22-10-2026 |
+
+**Ejecución del 22-10-2026:** 16 de 16 aprobadas (los 15 casos y la comprobación final de que no quedaron datos). Entorno: rama `sim-04-pruebas-integracion` desde `main` (`cb62a6d`), Node.js 24.20, proyecto `micrologist-dev` de Supabase y la aplicación con `npm run dev` en el puerto 3000. Antes y después de la ejecución, una consulta de solo lectura confirmó que la base seguía con las mismas 2 empresas y los mismos 11 vehículos.
+
 ---
 
 ## 7. Cuándo se ejecutan
 
 | Momento | Qué se ejecuta |
 |---|---|
-| **En cada PR de código** | Pruebas automáticas y los casos del módulo que cambió (DoD, sección 3.1). |
+| **En cada PR de código** | Pruebas automáticas (`npm test` y `npm run test:integracion`) y los casos del módulo que cambió (DoD, sección 3.1). |
 | **Al cierre de cada iteración** (cada 14 días **[POR CONFIRMAR]**) | Casos funcionales y de seguridad de lo terminado en la iteración, registrados en su documento de pruebas. |
 | **Primera entrega** (Iteración 3, 19-10 al 01-11) | Lo ejecutado en SIM-03 y los casos de primera entrega que siguen pendientes (sección 9). |
 | **Al desplegar en Vercel** | CP-SEG-11, CP-REN-01 a CP-REN-03 y la parte de CP-FUN-13 que requiere volver a desplegar. |
@@ -226,13 +261,13 @@ Los umbrales de rendimiento se miden sobre la versión desplegada, no en el comp
 
 ---
 
-## 9. Estado al 21-10-2026
+## 9. Estado al 22-10-2026
 
-**Casos de la primera entrega** (36):
+**Casos de la primera entrega** (51):
 
 | Estado | Cantidad | Casos |
 |---|---|---|
-| ✅ Aprobado | 17 | CP-FUN-01 a 05, 07, 09 y 10; CP-SEG-01 a 08 y 10 |
+| ✅ Aprobado | 32 | CP-FUN-01 a 05, 07, 09 y 10; CP-SEG-01 a 08 y 10; CP-INT-01 a 15 |
 | 🟡 Parcial | 5 | CP-FUN-13, CP-SEG-09, CP-SEG-12, CP-COM-01 y CP-COM-04 |
 | ❌ No aprobado | 1 | CP-SEG-13 |
 | ⏳ Pendiente | 13 | CP-FUN-06, 08, 11 y 12; CP-SEG-11; CP-COM-02 y 03; CP-USA-01 y 03; CP-REN-01, 02, 03 y 07 |
@@ -255,19 +290,19 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 
 | Requisito | Caso(s) | | Requisito | Caso(s) |
 |---|---|---|---|---|
-| RNF-SEG-01 | CP-SEG-01, CP-SEG-02 | | RNF-USA-01 | CP-USA-01 |
-| RNF-SEG-02 | CP-SEG-03, CP-SEG-04, CP-SEG-05 | | RNF-USA-02 | CP-USA-02 |
+| RNF-SEG-01 | CP-SEG-01, CP-SEG-02, CP-INT-12, CP-INT-13 | | RNF-USA-01 | CP-USA-01 |
+| RNF-SEG-02 | CP-SEG-03, CP-SEG-04, CP-SEG-05, CP-INT-05, CP-INT-08, CP-INT-10, CP-INT-15 | | RNF-USA-02 | CP-USA-02 |
 | RNF-SEG-03 | CP-SEG-06 | | RNF-USA-03 | CP-FUN-05, CP-FUN-11 |
 | RNF-SEG-04 | CP-SEG-07 | | RNF-USA-04 | CP-FUN-09, CP-FUN-11 |
-| RNF-SEG-05 | CP-SEG-08 | | RNF-USA-05 | CP-FUN-12 |
-| RNF-SEG-06 | CP-SEG-09 | | RNF-USA-06 | CP-USA-03 |
+| RNF-SEG-05 | CP-SEG-08, CP-INT-10 | | RNF-USA-05 | CP-FUN-12 |
+| RNF-SEG-06 | CP-SEG-09, CP-INT-13 | | RNF-USA-06 | CP-USA-03 |
 | RNF-SEG-07 | CP-SEG-10 | | RNF-COM-01 | CP-COM-01 |
 | RNF-SEG-08 | CP-SEG-11 | | RNF-COM-02 | CP-COM-02 |
 | RNF-SEG-09 | CP-SEG-12 | | RNF-COM-03 | CP-COM-03 |
 | RNF-SEG-10 | CP-SEG-13 | | RNF-COM-04 | CP-COM-04 |
 | RNF-REN-01 | CP-REN-01 | | RNF-COM-05 | CP-COM-05 |
 | RNF-REN-02 | CP-REN-02 | | RNF-DIS-01 | CP-REN-05 |
-| RNF-REN-03 | CP-REN-03 | | RNF-DIS-02 | CP-FUN-02, CP-FUN-07, CP-FUN-13 |
+| RNF-REN-03 | CP-REN-03 | | RNF-DIS-02 | CP-FUN-02, CP-FUN-07, CP-FUN-13, CP-INT-01 |
 | RNF-REN-04 | CP-REN-04 | | RNF-DIS-03 | CP-REN-06 |
 | | | | RNF-DIS-04 | CP-FUN-14 |
 | | | | RNF-DIS-05 | CP-REN-07 |
@@ -280,7 +315,8 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 |---|---|
 | Sin despliegue no se pueden probar HTTPS, rendimiento ni disponibilidad. | Esos casos quedan programados para el despliegue (sección 7) y no bloquean las pruebas en local. |
 | Pocas personas disponibles para la prueba con usuarios. | Agendarla con anticipación; si no se consiguen personas del rubro, usar personas que no conozcan la aplicación **[POR CONFIRMAR]**. |
-| La base de desarrollo es compartida y los datos de prueba se acumulan. | Patentes que empiezan con `SIM` y registro de lo creado en cada ejecución (sección 4). |
+| La base de desarrollo es compartida y los datos de prueba se acumulan. | Patentes que empiezan con `SIM` y registro de lo creado en cada ejecución (sección 4). Las pruebas de integración no dejan datos: trabajan en transacciones que se deshacen. |
+| Las pruebas de integración necesitan el `.env` y la aplicación levantada. | Si falta algo, se saltan con un aviso y no fallan; por eso `npm test` sigue siendo la prueba mínima de cada PR, y la ejecución completa se anota en el registro. |
 | El equipo no tiene todos los navegadores y dispositivos de RNF-COM-04. | Usar los dispositivos de los integrantes y anotar los que no se pudieron probar **[POR CONFIRMAR]**. |
 | Los planes gratuitos de Vercel y Supabase limitan las mediciones de disponibilidad. | Revisar los límites de cada plan antes de confirmar RNF-DIS-01 (JOA-05, sección 6). |
 
@@ -289,6 +325,8 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 ## 12. Pendientes
 
 - **Confirmar con el equipo** el quinto tipo de prueba (sección 2) y los umbrales **[POR CONFIRMAR]** de JOA-05 (sección 8).
+- **Proponer agregar `npm run test:integracion`** a la sección 3.1 de la Definition of Done (SIM-05), junto a `npm test`.
+- **Pruebas de rendimiento automáticas:** quedan para cuando exista el despliegue, porque los umbrales se miden sobre la versión desplegada (CP-REN-01 a CP-REN-03).
 - **Ejecutar los 13 casos pendientes de la primera entrega** y cerrar ERR-01 antes de dar por terminada la entrega (sección 9).
 - **Agregar los ID de la sección 10** a la sección 7 de JOA-05 (a cargo de Joaquín).
 - **Detallar los casos del MVP** cuando estén los documentos de reglas de conductores, documentos, avisos y turnos.
@@ -304,4 +342,5 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 - [x] Cada requisito de JOA-05 cubierto por al menos un caso (sección 10).
 - [x] Cuándo se ejecuta cada grupo de casos y cómo se registran los resultados y los errores (secciones 7 y 8).
 - [x] Estado actual con los resultados de SIM-03 y las revisiones del 21-10-2026 (sección 9).
+- [x] Tipo de prueba de integración con 15 casos automáticos en el código, ejecutados el 22-10-2026 (secciones 2 y 6.6).
 - [ ] Revisión de Joaquín y José en el PR.

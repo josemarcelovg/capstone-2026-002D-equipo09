@@ -131,7 +131,8 @@ El detalle está en el diagrama de componentes y en los diagramas de secuencia d
 | `npm run build` | Compila la aplicación para producción |
 | `npm run start` | Ejecuta la versión compilada |
 | `npm run lint` | Revisa el código con ESLint |
-| `npm test` | Ejecuta las pruebas automáticas |
+| `npm test` | Ejecuta las pruebas automáticas unitarias |
+| `npm run test:integracion` | Ejecuta las pruebas de integración con la base de datos y Supabase. Usa el `.env` y necesita `npm run dev` corriendo en otra terminal ([SIM-04](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-04_Plan_de_Pruebas.md>), sección 6.6) |
 
 Con `npm run dev`, abrir http://localhost:3000 en el navegador.
 
@@ -166,7 +167,7 @@ Dentro de `Evidencias de sistema`:
 | `Aplicación/src/app/` | Páginas y rutas de la aplicación |
 | `Aplicación/src/lib/` | Reglas de validación y acceso a datos |
 | `Aplicación/public/` | Imágenes y archivos estáticos |
-| `Aplicación/tests/` | Pruebas automáticas |
+| `Aplicación/tests/` | Pruebas automáticas: unitarias en la carpeta y de integración en `tests/integracion/` |
 | `Aplicación/prisma/` | Datos de prueba (`seed.ts`) y comprobación de la conexión (`comprobar.ts`) |
 | `Aplicación/Capturas/` | Capturas de pantalla de la aplicación |
 | `Aplicación/` (raíz) | `Dockerfile`, `compose.yaml`, `.env.example` y configuración del proyecto |
@@ -217,6 +218,6 @@ Para el desarrollo del proyecto se utilizará una metodología ágil e increment
 | [JOS-06 Manual técnico](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-06_Manual_Tecnico.md>) | Arquitectura, código, configuración, base de datos, despliegue y operación |
 | [SIM-02 Inicio de sesión](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-02_Inicio_de_Sesion.md>) | Inicio y cierre de sesión con Supabase Auth, decisiones y configuración |
 | [SIM-03 Pruebas de la primera entrega](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-03_Pruebas_Primera_Entrega.md>) | Criterios 7.1 a 7.14 de JOA-01 probados con dos empresas ficticias, con verificación en la base de datos |
-| [SIM-04 Plan de pruebas](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-04_Plan_de_Pruebas.md>) | Tipos de prueba, casos con identificador, relación con JOA-05, calendario y estado de cada caso |
+| [SIM-04 Plan de pruebas](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-04_Plan_de_Pruebas.md>) | Tipos de prueba (incluida la integración), casos con identificador, relación con JOA-05, calendario y estado de cada caso |
 | [SIM-05 Definition of Done](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-05_Definition_of_Done.md>) | Condiciones para dar una tarea por terminada |
 | [SIM-06 Sprint Backlog y retrospectivas](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-06_Sprint_Backlog_y_Retrospectivas.md>) | Tareas de cada iteración, datos para las retrospectivas y acciones de mejora |
