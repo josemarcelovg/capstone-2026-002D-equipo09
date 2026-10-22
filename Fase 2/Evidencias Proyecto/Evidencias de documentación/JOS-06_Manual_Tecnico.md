@@ -40,7 +40,7 @@ Los requisitos están en [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), [JOA-05](J
 | Inicio de sesión | Supabase Auth | Supabase. Pendiente (SIM-02). |
 | Envío de avisos | Proceso diario y proveedor de correo | Pendiente **[POR CONFIRMAR]** |
 
-El diagrama general está en el [README](<../Evidencias de sistema/README.md#arquitectura>) y el diagrama de componentes en [JOA-06](JOA-06_Diagramas_UML.md), sección 4.
+El diagrama general está en el [README](<../../../README.md#arquitectura>) y el diagrama de componentes en [JOA-06](JOA-06_Diagramas_UML.md), sección 4.
 
 ### 2.2 Cómo viaja una solicitud dentro del código
 
@@ -89,11 +89,10 @@ Las versiones exactas están en `package.json` y `package-lock.json`. Prisma se 
 
 ## 4. Estructura del código
 
-Desde el 18-10-2026, en la raíz del repositorio solo están las carpetas `Fase 1`, `Fase 2` y `Fase 3`. El sistema está en `Fase 2/Evidencias Proyecto/Evidencias de sistema`:
+En la raíz del repositorio están las carpetas `Fase 1`, `Fase 2` y `Fase 3`, y el `README.md` con la descripción del proyecto y las instrucciones para ejecutarlo. El sistema está en `Fase 2/Evidencias Proyecto/Evidencias de sistema`:
 
 ```
 Evidencias de sistema/
-├── README.md                     Descripción del proyecto e instrucciones para ejecutarlo
 ├── Base de datos/
 │   ├── schema.prisma             Modelo de datos
 │   ├── migrations/               Migraciones versionadas (scripts SQL)
@@ -145,7 +144,7 @@ Convenciones:
 
 ## 5. Instalación y configuración
 
-Los pasos para instalar y ejecutar están en el [README](<../Evidencias de sistema/README.md#instrucciones-para-ejecutar-localmente>). Hay dos formas de trabajar:
+Los pasos para instalar y ejecutar están en el [README](<../../../README.md#instrucciones-para-ejecutar-localmente>). Hay dos formas de trabajar:
 
 | Forma | Base de datos | Cuándo usarla |
 |---|---|---|
