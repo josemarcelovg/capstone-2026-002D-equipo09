@@ -36,6 +36,10 @@ export async function MenuSesion() {
           </span>
         )}
       </div>
+      {/* En celular no cabe junto a "Cerrar sesión": va en una segunda línea (observación 2 de SIM-03). */}
+      <p className="order-last basis-full truncate text-xs text-zinc-600 sm:hidden">
+        {usuario.empresaNombre}
+      </p>
     </>
   );
 }
