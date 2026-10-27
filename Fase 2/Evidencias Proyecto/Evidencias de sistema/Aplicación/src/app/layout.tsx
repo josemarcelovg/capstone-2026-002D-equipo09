@@ -30,7 +30,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <header className="border-b border-zinc-200 bg-white">
           <nav
             aria-label="Principal"
-            className="mx-auto flex w-full max-w-5xl items-center gap-4 px-4 py-3 sm:gap-6"
+            className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3 sm:gap-x-6"
           >
             <Link href="/" className="text-lg font-semibold text-blue-800">
               MicroLogist
