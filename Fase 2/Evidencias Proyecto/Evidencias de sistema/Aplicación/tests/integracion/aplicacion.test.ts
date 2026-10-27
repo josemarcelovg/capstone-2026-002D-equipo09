@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { describe, test } from "node:test";
+import { ENCABEZADOS_DE_SEGURIDAD } from "../../src/lib/seguridad.ts";
 
 // Pruebas de integración de la aplicación levantada con Supabase Auth (SIM-04, CP-INT-11 a
-// CP-INT-15): el proxy, las páginas y Supabase funcionando juntos, como los usa el navegador.
+// CP-INT-16): el proxy, las páginas y Supabase funcionando juntos, como los usa el navegador.
 // Solo leen: no inician sesión con cuentas reales ni crean datos.
 //
 // Necesitan la aplicación corriendo (npm run dev) con el mismo .env. Por defecto se prueba
@@ -112,6 +113,17 @@ describe("Aplicación levantada", { skip: sinAplicacion }, () => {
     const respuesta = await pedir("/favicon.ico");
     assert.equal(respuesta.status, 200);
     assert.match(respuesta.headers.get("content-type") ?? "", /^image\//);
+  });
+
+  test("CP-INT-16 · todas las respuestas llevan los encabezados de seguridad", async () => {
+    // Una página, un archivo público y una página privada (sin sesión, la redirección del proxy).
+    for (const ruta of ["/login", "/favicon.ico", "/vehiculos"]) {
+      const respuesta = await pedir(ruta);
+      for (const { key, value } of ENCABEZADOS_DE_SEGURIDAD) {
+        assert.equal(respuesta.headers.get(key), value, `${ruta} (${respuesta.status}): ${key}`);
+      }
+      assert.equal(respuesta.headers.get("x-powered-by"), null, `${ruta} anuncia Next.js`);
+    }
   });
 });
 

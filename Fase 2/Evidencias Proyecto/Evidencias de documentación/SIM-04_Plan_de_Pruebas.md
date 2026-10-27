@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (requisitos y backlog) y José Vargas (rendimiento y datos) |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración) |
+| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración) y el 27-10-2026 (encabezados de seguridad) |
 
 Este plan define cómo se prueba MicroLogist: qué tipos de prueba hay, con qué técnicas se ejecutan, en qué entorno y con qué datos, cuándo se hacen y cómo se registran los resultados y los errores. Cada caso de prueba tiene un identificador que no cambia, y cada requisito de [JOA-05](JOA-05_Requisitos_No_Funcionales.md) queda cubierto por al menos un caso (sección 10). Los casos de la primera entrega ya tienen un estado, gracias a la ejecución de [SIM-03](SIM-03_Pruebas_Primera_Entrega.md). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -49,8 +49,8 @@ Los identificadores `CP-xxx-nn` no se reutilizan ni se renumeran, igual que los 
 
 | Técnica | Para qué se usa | Cómo |
 |---|---|---|
-| **Pruebas unitarias automáticas** | Reglas que no dependen de la pantalla ni de la base: validación de vehículos y reglas de acceso. | `npm test` desde `Evidencias de sistema/Aplicación` (hoy 24 pruebas en `tests/`). Corren en cada PR de código (DoD, sección 3.1). |
-| **Pruebas de integración automáticas** | Que la aplicación, la base de datos y Supabase funcionan juntas (sección 6.6). | `npm run test:integracion` desde `Aplicación` (hoy 16 pruebas en `tests/integracion/`). Usan el `.env`. Las de base de datos trabajan dentro de transacciones que se deshacen, así que no dejan datos; las de la aplicación necesitan `npm run dev` corriendo y solo leen. |
+| **Pruebas unitarias automáticas** | Reglas que no dependen de la pantalla ni de la base: validación de vehículos y reglas de acceso. | `npm test` desde `Evidencias de sistema/Aplicación` (hoy 31 pruebas en `tests/`). Corren en cada PR de código (DoD, sección 3.1). |
+| **Pruebas de integración automáticas** | Que la aplicación, la base de datos y Supabase funcionan juntas (sección 6.6). | `npm run test:integracion` desde `Aplicación` (hoy 17 pruebas en `tests/integracion/`). Usan el `.env`. Las de base de datos trabajan dentro de transacciones que se deshacen, así que no dejan datos; las de la aplicación necesitan `npm run dev` corriendo y solo leen. |
 | **Pruebas manuales en el navegador** | Flujos completos, como los vería el usuario. | Con las cuentas de prueba de la Empresa A y la Empresa B. |
 | **Solicitudes alteradas** | Comprobar que el servidor protege los datos aunque el navegador mande otra cosa. | Herramientas del navegador: modificar la solicitud antes de enviarla (por ejemplo, cambiar un id o agregar `empresa_id`). |
 | **Consultas de solo lectura a la base de datos** | Confirmar el efecto real de una acción, sin confiar solo en lo que dice la pantalla. | Consultas `select` sobre la tabla del módulo, antes y después de probar. Nunca se modifican datos a mano. |
@@ -173,6 +173,7 @@ Cuando se agregue cada módulo del MVP (conductores, documentos, turnos e ingres
 | CP-SEG-11 | Entrar a la versión desplegada con `http://`. | Redirige a `https://` y todas las páginas usan HTTPS. | RNF-SEG-08 | ⏳ Pendiente (no hay despliegue) |
 | CP-SEG-12 | Forzar errores (por ejemplo, con la base de datos desconectada en un entorno de prueba). | Ningún mensaje incluye trazas, consultas ni nombres de tablas. | RNF-SEG-09 | 🟡 Inicio de sesión con el servicio caído y pantalla de vehículos sin base de datos, sin detalles técnicos (SIM-02); falta repetirlo con sesión iniciada |
 | CP-SEG-13 | Ejecutar `npm audit --omit=dev`. | Sin vulnerabilidades altas ni críticas. | RNF-SEG-10 | ❌ 21-10-2026: 3 altas (`next` 16.3.6, `sharp` y `source-map-js`). Ver ERR-01 en la sección 9 |
+| CP-SEG-14 | Revisar los encabezados HTTP de las respuestas. | Todas llevan los encabezados de seguridad de `src/lib/seguridad.ts` (CSP con `frame-ancestors`, `base-uri`, `form-action` y `object-src`; `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` y HSTS) y ninguna envía `X-Powered-By`. | Buenas prácticas de OWASP; complementa RNF-SEG-08 | ✅ 27-10-2026: `tests/seguridad.test.ts` y CP-INT-16 |
 
 ### 6.3 Compatibilidad (`CP-COM`)
 
@@ -213,7 +214,7 @@ Los umbrales de rendimiento se miden sobre la versión desplegada, no en el comp
 Son pruebas automáticas que comprueban que las partes del sistema funcionan juntas, sin pasar por la pantalla. Se ejecutan con `npm run test:integracion` desde `Aplicación` y están en dos archivos:
 
 - **`tests/integracion/base-de-datos.test.ts`** (CP-INT-01 a CP-INT-10): el esquema de validación de la aplicación (`src/lib/vehiculos.ts`) y el cliente Prisma generado, contra la base de `DATABASE_URL`, igual que la aplicación. Cada caso crea sus propias empresas y vehículos dentro de una transacción que se deshace al final, así que no deja datos ni depende del seed.
-- **`tests/integracion/aplicacion.test.ts`** (CP-INT-11 a CP-INT-15): la aplicación levantada con `npm run dev` (por defecto en `http://localhost:3000`; otra dirección va en `URL_APLICACION`), con su proxy y Supabase Auth, y la API de Supabase con la clave pública. Solo leen: no inician sesión con las cuentas de prueba ni crean datos.
+- **`tests/integracion/aplicacion.test.ts`** (CP-INT-11 a CP-INT-16): la aplicación levantada con `npm run dev` (por defecto en `http://localhost:3000`; otra dirección va en `URL_APLICACION`), con su proxy y Supabase Auth, y la API de Supabase con la clave pública. Solo leen: no inician sesión con las cuentas de prueba ni crean datos.
 
 Si falta el `.env` o la aplicación no está corriendo, los casos que lo necesitan se saltan con un aviso que dice qué falta, en vez de fallar.
 
@@ -234,8 +235,11 @@ Si falta el `.env` o la aplicación no está corriendo, los casos que lo necesit
 | CP-INT-13 | Enviar una cookie de sesión con el formato de Supabase, pero con un token de firma inventada. | Supabase rechaza el token y la aplicación redirige al inicio de sesión, sin datos. | RNF-SEG-01, RNF-SEG-06 | ✅ 22-10-2026 |
 | CP-INT-14 | Pedir un archivo público (`/favicon.ico`) sin sesión. | Se entrega sin redirigir: el proxy no bloquea los archivos estáticos. | SIM-02 (proxy) | ✅ 22-10-2026 |
 | CP-INT-15 | Leer `empresa`, `usuario` y `vehiculo` directo desde la API de Supabase con la clave pública, sin pasar por la aplicación. | No devuelve ninguna fila (RLS sin políticas públicas). | RNF-SEG-02 | ✅ 22-10-2026 |
+| CP-INT-16 | Pedir el inicio de sesión, un archivo público y una página privada sin sesión (redirección del proxy). | Las tres respuestas llevan todos los encabezados de seguridad y ninguna envía `X-Powered-By`. Automatiza CP-SEG-14. | CP-SEG-14 | ✅ 27-10-2026 |
 
 **Ejecución del 22-10-2026:** 16 de 16 aprobadas (los 15 casos y la comprobación final de que no quedaron datos). Entorno: rama `sim-04-pruebas-integracion` desde `main` (`cb62a6d`), Node.js 24.20, proyecto `micrologist-dev` de Supabase y la aplicación con `npm run dev` en el puerto 3000. Antes y después de la ejecución, una consulta de solo lectura confirmó que la base seguía con las mismas 2 empresas y los mismos 11 vehículos.
+
+**Ejecución del 27-10-2026:** 17 de 17 aprobadas, con CP-INT-16 agregado. Entorno: rama `sim-encabezados-seguridad` desde `main` (`a5bce55`), mismo proyecto de Supabase y la aplicación con `npm run dev` en el puerto 3000.
 
 ---
 
@@ -261,13 +265,13 @@ Si falta el `.env` o la aplicación no está corriendo, los casos que lo necesit
 
 ---
 
-## 9. Estado al 22-10-2026
+## 9. Estado al 27-10-2026
 
-**Casos de la primera entrega** (51):
+**Casos de la primera entrega** (53):
 
 | Estado | Cantidad | Casos |
 |---|---|---|
-| ✅ Aprobado | 32 | CP-FUN-01 a 05, 07, 09 y 10; CP-SEG-01 a 08 y 10; CP-INT-01 a 15 |
+| ✅ Aprobado | 34 | CP-FUN-01 a 05, 07, 09 y 10; CP-SEG-01 a 08, 10 y 14; CP-INT-01 a 16 |
 | 🟡 Parcial | 5 | CP-FUN-13, CP-SEG-09, CP-SEG-12, CP-COM-01 y CP-COM-04 |
 | ❌ No aprobado | 1 | CP-SEG-13 |
 | ⏳ Pendiente | 13 | CP-FUN-06, 08, 11 y 12; CP-SEG-11; CP-COM-02 y 03; CP-USA-01 y 03; CP-REN-01, 02, 03 y 07 |
@@ -297,7 +301,7 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 | RNF-SEG-05 | CP-SEG-08, CP-INT-10 | | RNF-USA-05 | CP-FUN-12 |
 | RNF-SEG-06 | CP-SEG-09, CP-INT-13 | | RNF-USA-06 | CP-USA-03 |
 | RNF-SEG-07 | CP-SEG-10 | | RNF-COM-01 | CP-COM-01 |
-| RNF-SEG-08 | CP-SEG-11 | | RNF-COM-02 | CP-COM-02 |
+| RNF-SEG-08 | CP-SEG-11, CP-SEG-14 | | RNF-COM-02 | CP-COM-02 |
 | RNF-SEG-09 | CP-SEG-12 | | RNF-COM-03 | CP-COM-03 |
 | RNF-SEG-10 | CP-SEG-13 | | RNF-COM-04 | CP-COM-04 |
 | RNF-REN-01 | CP-REN-01 | | RNF-COM-05 | CP-COM-05 |
@@ -327,6 +331,7 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 - **Confirmar con el equipo** el quinto tipo de prueba (sección 2) y los umbrales **[POR CONFIRMAR]** de JOA-05 (sección 8).
 - **Proponer agregar `npm run test:integracion`** a la sección 3.1 de la Definition of Done (SIM-05), junto a `npm test`.
 - **Pruebas de rendimiento automáticas:** quedan para cuando exista el despliegue, porque los umbrales se miden sobre la versión desplegada (CP-REN-01 a CP-REN-03).
+- **Política de contenido con nonce:** la CSP de CP-SEG-14 todavía no restringe los scripts, para no interferir con Next.js. Restringirlos requiere generar un nonce en el proxy en cada solicitud.
 - **Ejecutar los 13 casos pendientes de la primera entrega** y cerrar ERR-01 antes de dar por terminada la entrega (sección 9).
 - **Agregar los ID de la sección 10** a la sección 7 de JOA-05 (a cargo de Joaquín).
 - **Detallar los casos del MVP** cuando estén los documentos de reglas de conductores, documentos, avisos y turnos.
@@ -343,4 +348,5 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 - [x] Cuándo se ejecuta cada grupo de casos y cómo se registran los resultados y los errores (secciones 7 y 8).
 - [x] Estado actual con los resultados de SIM-03 y las revisiones del 21-10-2026 (sección 9).
 - [x] Tipo de prueba de integración con 15 casos automáticos en el código, ejecutados el 22-10-2026 (secciones 2 y 6.6).
+- [x] Encabezados de seguridad: CP-SEG-14 y CP-INT-16, aprobados el 27-10-2026 (secciones 6.2 y 6.6).
 - [ ] Revisión de Joaquín y José en el PR.
