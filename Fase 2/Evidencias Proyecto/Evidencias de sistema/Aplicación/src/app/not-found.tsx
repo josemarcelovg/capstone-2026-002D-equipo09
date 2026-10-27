@@ -1,4 +1,9 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+// Título de la pestaña en todas las páginas 404, también cuando la ficha de un vehículo
+// llama a notFound() (observación 1 de SIM-03).
+export const metadata: Metadata = { title: "No encontrado" };
 
 export default function NoEncontrado() {
   return (
