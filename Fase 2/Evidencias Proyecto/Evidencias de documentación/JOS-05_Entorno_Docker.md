@@ -62,7 +62,7 @@ Todos los comandos se ejecutan desde la carpeta `Fase 2/Evidencias Proyecto/Evid
 
 ### 3.1 Probar con la otra empresa
 
-Mientras no exista el inicio de sesión (SIM-02), la aplicación trabaja con la empresa de `EMPRESA_DESARROLLO_ID`, que por defecto es la Empresa A del seed. Para probar la separación entre empresas, poner en el `.env` de `Aplicación` (no se sube al repositorio; si no existe, crearlo solo con esta línea):
+Docker no tiene inicio de sesión (sección 4), así que la aplicación trabaja con la empresa de `EMPRESA_DESARROLLO_ID`, que por defecto es la Empresa A del seed. Para probar la separación entre empresas, poner en el `.env` de `Aplicación` (no se sube al repositorio; si no existe, crearlo solo con esta línea):
 
 ```
 EMPRESA_DESARROLLO_ID=b0000000-0000-4000-8000-000000000002
@@ -89,12 +89,12 @@ Para programar sin Supabase:
 | Variable | Valor en Docker | Para qué |
 |---|---|---|
 | `DATABASE_URL` y `DIRECT_URL` | `postgresql://micrologist:micrologist@db:5432/micrologist` | Conexión a la base local (`db` es el nombre del servicio dentro de Docker). |
-| `EMPRESA_DESARROLLO_ID` | Empresa A del seed, salvo que el `.env` de `Aplicación` diga otra | Empresa de trabajo hasta SIM-02. |
+| `EMPRESA_DESARROLLO_ID` | Empresa A del seed, salvo que el `.env` de `Aplicación` diga otra | Empresa con la que se trabaja en Docker, que no tiene inicio de sesión. |
 | `DB_PUERTO` y `APP_PUERTO` | `5432` y `3000` | Puertos en el computador. Se cambian en el `.env` de `Aplicación` si ya están ocupados. |
 
 Los valores de `micrologist` son credenciales solo de esta base local: no dan acceso a nada fuera de Docker.
 
-Cuando exista el inicio de sesión (SIM-02), Supabase Auth necesitará `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`. Cómo se entregan en Docker se define en esa tarea **[POR CONFIRMAR]**.
+**Docker no tiene inicio de sesión**, como quedó decidido en [SIM-02](SIM-02_Inicio_de_Sesion.md) (sección 3). Su base de datos es local y no tiene los usuarios de Supabase Auth, así que `compose.yaml` no recibe `NEXT_PUBLIC_SUPABASE_URL` ni `NEXT_PUBLIC_SUPABASE_ANON_KEY` y se trabaja con `EMPRESA_DESARROLLO_ID` (sección 3.1). Para probar el inicio de sesión se usa `npm run dev` con las claves de Supabase en el `.env`, como explica el README.
 
 ---
 

@@ -5,10 +5,10 @@
 | **Tarea** | [JOA-03] Validar primera entrega y preparar demostración |
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Revisión** | José Vargas (vehículos y datos) y Simón Jofré (acceso y pruebas) |
-| **Estado** | En curso: falta el inicio de sesión (SIM-02) y las pruebas (SIM-03) |
-| **Fecha** | 18-10-2026 |
+| **Estado** | En curso: falta ensayar el guion completo y probar el README en otro computador |
+| **Fecha** | 27-10-2026 (primera versión: 18-10-2026) |
 
-Este documento sirve para dos cosas: comprobar que la primera entrega cumple lo acordado en la [sección 7 de JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md) y en la [Definition of Done](SIM-05_Definition_of_Done.md) (sección 5), y guiar la demostración para la profesora. Lo marcado como **[PENDIENTE SIM-02]** depende del inicio de sesión. Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
+Este documento sirve para dos cosas: comprobar que la primera entrega cumple lo acordado en la [sección 7 de JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md) y en la [Definition of Done](SIM-05_Definition_of_Done.md) (sección 5), y guiar la demostración para la profesora. Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
 ---
 
@@ -18,25 +18,25 @@ Este documento sirve para dos cosas: comprobar que la primera entrega cumple lo 
 
 - **Duración:** 10 minutos de demostración y 5 de preguntas **[POR CONFIRMAR]** con la profesora.
 - **Quién presenta:** Joaquín conduce el guion; José responde lo técnico de vehículos y datos; Simón, lo de acceso y pruebas **[POR CONFIRMAR]**.
-- **Dónde:** en local, con la base de datos de desarrollo de Supabase. El despliegue en Vercel requiere SIM-02, porque sin sesión la aplicación no muestra datos en producción ([JOS-06](JOS-06_Manual_Tecnico.md), sección 8.1).
+- **Dónde:** en local, con la base de datos de desarrollo de Supabase y las cuentas de prueba de SIM-02. El inicio de sesión ya existe, pero el despliegue en Vercel todavía no está hecho ([JOS-06](JOS-06_Manual_Tecnico.md), sección 8.1).
 
 ---
 
 ## 2. Estado de las tareas de la primera entrega
 
-Estado en el tablero al 18-10-2026. Las tareas son las de la sección 5 de la Definition of Done.
+Estado real al 27-10-2026. Las tareas son las de la sección 5 de la Definition of Done.
 
 | Tarea | Responsable | Estado | Qué falta |
 |---|---|---|---|
 | JOA-01 · Reglas de vehículos | Joaquín | Terminada | — |
-| JOA-02 · Interfaz de vehículos | Joaquín | En curso | Criterios cumplidos. Falta integrarla con el inicio de sesión. |
-| JOA-03 · Validación y demostración | Joaquín | En curso | Este documento. Falta ejecutar el guion completo. |
+| JOA-02 · Interfaz de vehículos | Joaquín | En curso | Ya funciona con el inicio de sesión (probado en SIM-03). Falta confirmar sus criterios en el tablero. |
+| JOA-03 · Validación y demostración | Joaquín | En curso | Este documento. Falta ensayar el guion completo. |
 | JOS-01 · Proyecto Next.js | José | Terminada | — |
 | JOS-02 · Supabase y Prisma | José | Terminada | — |
-| JOS-03 · Lógica de vehículos | José | En curso | 7 de 8 criterios. Falta tomar la empresa desde la sesión. |
+| JOS-03 · Lógica de vehículos | José | En curso | La empresa ya se toma de la sesión (SIM-02). Falta confirmar sus criterios en el tablero. |
 | SIM-01 · Tablero y seguimiento | Simón | En curso | — |
-| SIM-02 · Inicio de sesión | Simón | Pendiente | **Bloquea la entrega:** acceso, despliegue y separación con sesión real. |
-| SIM-03 · Pruebas | Simón | Pendiente | Depende de SIM-02. |
+| SIM-02 · Inicio de sesión | Simón | Terminada | PR #21 (19-10-2026). |
+| SIM-03 · Pruebas | Simón | Terminada | PR #22 (21-10-2026): 14 de 14 criterios aprobados. Las dos observaciones menores se corrigieron en los PR #28 y #29; el PR #31 cierra el registro. |
 
 ---
 
@@ -65,11 +65,11 @@ Son los del seed (`Aplicación/prisma/seed.ts`): dos empresas ficticias, sin dat
 
 Se usa `prdm-26`, escrita así para mostrar que se guarda como `PRDM26`. El seed no borra los vehículos creados en los ensayos y una patente no se puede repetir en la misma empresa, aunque esté inactiva. Por eso, en cada ensayo se cambia el número: `prdm-27`, `prdm-28`, etc.
 
-### 3.4 Cuentas de prueba **[PENDIENTE SIM-02]**
+### 3.4 Cuentas de prueba
 
-Una cuenta por empresa, creada por el equipo (JOA-01, sección 2.3). Las contraseñas no se escriben en el repositorio.
+Una cuenta por empresa, creada por el equipo en Supabase Auth y con su perfil en `usuario` ([SIM-02](SIM-02_Inicio_de_Sesion.md), secciones 5 y 6.3). Las contraseñas se comparten por un canal privado del equipo y no se escriben en el repositorio.
 
-Mientras no exista SIM-02, la empresa se cambia con `EMPRESA_DESARROLLO_ID` en el `.env` y reiniciando `npm run dev`.
+Para la demo, el `.env` debe tener `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`; sin ellas la aplicación entra en modo desarrollo y no pide iniciar sesión (SIM-02, sección 3).
 
 ---
 
@@ -77,7 +77,7 @@ Mientras no exista SIM-02, la empresa se cambia con `EMPRESA_DESARROLLO_ID` en e
 
 Los números de la última columna son los criterios de la sección 7 de JOA-01.
 
-### 4.1 Acceso **[PENDIENTE SIM-02]**
+### 4.1 Acceso
 
 | Paso | Qué se hace | Qué debe verse | Criterio |
 |---|---|---|---|
@@ -105,8 +105,8 @@ Los números de la última columna son los criterios de la sección 7 de JOA-01.
 | Paso | Qué se hace | Qué debe verse | Criterio |
 |---|---|---|---|
 | 14 | Abrir HJKL-78 y copiar su dirección (`/vehiculos/a1000000-0000-4000-8000-000000000002`). | — | — |
-| 15 | Cerrar sesión. Luego volver atrás en el navegador y recargar. **[PENDIENTE SIM-02]** | No se muestran ni se modifican datos. | 4 |
-| 16 | Entrar como Empresa B. Sin SIM-02: cambiar `EMPRESA_DESARROLLO_ID` a la Empresa B y reiniciar. | BBCD-12, AB-1234 y KLPR-56. No aparece ningún vehículo de A, y BBCD-12 existe en ambas empresas. | 11, 13 |
+| 15 | Cerrar sesión. Luego volver atrás en el navegador y recargar. | No se muestran ni se modifican datos. | 4 |
+| 16 | Iniciar sesión con la cuenta de la Empresa B. | BBCD-12, AB-1234 y KLPR-56. No aparece ningún vehículo de A, y BBCD-12 existe en ambas empresas. | 11, 13 |
 | 17 | Pegar la dirección copiada en el paso 14. | "No encontrado". | 12 |
 
 La segunda mitad del criterio 12 (editar un vehículo de otra empresa con una solicitud directa) no se muestra en la demo. La comprueban las pruebas de SIM-03.
@@ -125,26 +125,26 @@ Mostrar lo que falta y los próximos pasos (sección 7.1).
 
 ## 5. Matriz de validación
 
-Estado de cada criterio de la sección 7 de JOA-01 al 18-10-2026.
+Estado de cada criterio de la sección 7 de JOA-01 al 27-10-2026. Todos se probaron con sesión real y con las dos cuentas de prueba en [SIM-03](SIM-03_Pruebas_Primera_Entrega.md) (21-10-2026).
 
 | # | Criterio (resumen) | Estado | Evidencia | Paso |
 |---|---|---|---|---|
-| 1 | Credenciales correctas: entra y ve su listado | Pendiente (SIM-02) | — | 3 |
-| 2 | Credenciales incorrectas: mensaje genérico | Pendiente (SIM-02) | — | 2 |
-| 3 | Sin sesión: redirige al inicio de sesión | Pendiente (SIM-02) | — | 1 |
-| 4 | Después de cerrar sesión no hay acceso a datos | Pendiente (SIM-02) | — | 15 |
-| 5 | Registrar un vehículo válido y que persista | Comprobado sin sesión | PR #12 (JOS-03), 16-10-2026 | 9, 10 |
-| 6 | Patente duplicada: mensaje y no crea nada | Comprobado sin sesión | PR #12 | 8 |
-| 7 | Patente normalizada | Comprobado sin sesión | PR #12 y pruebas automáticas (`Aplicación/tests/vehiculos.test.ts`) | 9 |
-| 8 | Campos inválidos muestran su error y no se guardan | Comprobado sin sesión | PR #12 y pruebas automáticas | 6, 7 |
-| 9 | Editar y que el cambio persista | Comprobado sin sesión | PR #12 | 11 |
-| 10 | Desactivar, ver con "Incluir inactivos" y reactivar | Comprobado sin sesión | PR #12 | 5, 12, 13 |
-| 11 | La Empresa A no ve los vehículos de la B | Comprobado sin sesión | PR #12 | 16 |
-| 12 | Un vehículo de otra empresa responde "no encontrado" | Comprobado sin sesión | PR #12 | 17 |
-| 13 | La misma patente en dos empresas | Comprobado sin sesión | PR #12 y seed | 16 |
-| 14 | Computador y celular a 360 px | Comprobado | PR #5 (JOA-02) y capturas en `Evidencias de sistema/Aplicación/Capturas` | 18 |
+| 1 | Credenciales correctas: entra y ve su listado | Aprobado | SIM-03, caso 7.1 | 3 |
+| 2 | Credenciales incorrectas: mensaje genérico | Aprobado | SIM-03, caso 7.2 | 2 |
+| 3 | Sin sesión: redirige al inicio de sesión | Aprobado | SIM-03, caso 7.3 | 1 |
+| 4 | Después de cerrar sesión no hay acceso a datos | Aprobado | SIM-03, caso 7.4 | 15 |
+| 5 | Registrar un vehículo válido y que persista | Aprobado | SIM-03, caso 7.5 (antes, PR #12 sin sesión) | 9, 10 |
+| 6 | Patente duplicada: mensaje y no crea nada | Aprobado | SIM-03, caso 7.6 | 8 |
+| 7 | Patente normalizada | Aprobado | SIM-03, caso 7.7, y pruebas automáticas (`Aplicación/tests/vehiculos.test.ts`) | 9 |
+| 8 | Campos inválidos muestran su error y no se guardan | Aprobado | SIM-03, caso 7.8, y pruebas automáticas | 6, 7 |
+| 9 | Editar y que el cambio persista | Aprobado | SIM-03, caso 7.9 | 11 |
+| 10 | Desactivar, ver con "Incluir inactivos" y reactivar | Aprobado | SIM-03, caso 7.10 | 5, 12, 13 |
+| 11 | La Empresa A no ve los vehículos de la B | Aprobado | SIM-03, caso 7.11 | 16 |
+| 12 | Un vehículo de otra empresa responde "no encontrado" | Aprobado | SIM-03, caso 7.12 (incluye la edición por solicitud directa) | 17 |
+| 13 | La misma patente en dos empresas | Aprobado | SIM-03, caso 7.13, y seed | 16 |
+| 14 | Computador y celular a 360 px | Aprobado | SIM-03, caso 7.14; PR #5 (JOA-02) y capturas en `Evidencias de sistema/Aplicación/Capturas` | 18 |
 
-"Comprobado sin sesión" significa que se probó cambiando la empresa con `EMPRESA_DESARROLLO_ID`. Los criterios 5 a 13 se vuelven a comprobar con sesión real en SIM-03.
+SIM-03 no encontró errores. Las pruebas se hicieron en local; falta repetir los casos principales en Vercel cuando exista el despliegue (SIM-03, sección 8).
 
 ---
 
@@ -162,7 +162,7 @@ Revisión hecha el 18-10-2026 sobre `main`. Las rutas son de `Fase 2/Evidencias 
 | Tipos y estados permitidos (3 y 3.2) | `src/lib/vehiculos.ts` | Sí |
 | No existe eliminar; desactivar pide confirmación (3.2 y 4) | `src/app/vehiculos/acciones.ts` y `boton-activacion.tsx` | Sí |
 | Inactivos fuera del listado por defecto (3.2) | `listarVehiculos` en `src/lib/vehiculos-datos.ts` | Sí |
-| La empresa la pone el servidor y filtra todas las consultas; otra empresa responde 404 (2.4) | `src/lib/vehiculos-datos.ts`, `src/lib/sesion.ts` y `src/app/vehiculos/[id]/page.tsx` | Sí, con `EMPRESA_DESARROLLO_ID` hasta SIM-02 |
+| La empresa la pone el servidor y filtra todas las consultas; otra empresa responde 404 (2.4) | `src/lib/vehiculos-datos.ts`, `src/lib/sesion.ts` y `src/app/vehiculos/[id]/page.tsx` | Sí. Desde SIM-02 la empresa sale de la sesión; `EMPRESA_DESARROLLO_ID` solo se usa en modo desarrollo |
 | Validación en el servidor con Zod (4) | `guardarVehiculo` en `src/app/vehiculos/acciones.ts` | Sí |
 | Mensajes de la sección 4 | `src/lib/vehiculos.ts` y `src/app/vehiculos/acciones.ts` | Sí |
 
@@ -170,7 +170,7 @@ No se encontraron diferencias entre las reglas y el código.
 
 ### 6.2 Errores que bloqueen el flujo principal
 
-No hay errores conocidos en el módulo de vehículos. Lo que bloquea el flujo completo es que falta el inicio de sesión (SIM-02). La confirmación final la dan las pruebas de SIM-03.
+No hay errores que bloqueen el flujo principal. SIM-03 aprobó los 14 criterios con sesión real y solo dejó dos observaciones menores de presentación (título de la pestaña en "No encontrado" y nombre de la empresa en el celular), que se corrigieron en los PR #28, #29 y #31.
 
 ### 6.3 README y ejecución reproducible
 
@@ -199,16 +199,17 @@ Las iteraciones quedan sujetas al acuerdo del equipo (SIM-01).
 
 ### 7.1 Para contar en la demostración
 
-- El módulo de vehículos funciona con datos persistentes y separados por empresa.
-- Falta el inicio de sesión (SIM-02), del que dependen el acceso, el despliegue y la separación con sesión real.
-- Próximos pasos: SIM-02 y SIM-03 en la Iteración 3, y las reglas de conductores, documentos y avisos para el MVP completo.
+- El módulo de vehículos funciona con inicio de sesión real y datos persistentes separados por empresa (14 de 14 criterios aprobados en SIM-03).
+- Falta el despliegue en Vercel.
+- Próximos pasos: despliegue y el MVP completo, partiendo por conductores y documentos con vencimiento (PB-08 a PB-13) y después los avisos por correo.
 
 ### 7.2 Antes de dar por terminada la entrega
 
-- SIM-02 terminado y JOA-02 y JOS-03 integrados con la sesión.
-- Pruebas de SIM-03 ejecutadas con las dos empresas ficticias y sin errores que bloqueen el flujo.
+- ~~SIM-02 terminado y JOA-02 y JOS-03 integrados con la sesión.~~ Hecho (PR #21; integración comprobada en SIM-03). Falta marcar los criterios de JOA-02 y JOS-03 en el tablero.
+- ~~Pruebas de SIM-03 ejecutadas con las dos empresas ficticias y sin errores que bloqueen el flujo.~~ Hecho (PR #22).
+- Guion completo ensayado con el equipo, con inicio de sesión.
 - README probado por otro integrante (sección 6.3).
-- Decisiones **[POR CONFIRMAR]** que afectan esta entrega: largo de la contraseña y duración de la sesión (RNF-SEG-06), y duración de los sprints.
+- Decisiones **[POR CONFIRMAR]** que afectan esta entrega: duración de la sesión (RNF-SEG-06) y duración de los sprints. El largo mínimo de la contraseña quedó en 8 caracteres (SIM-02).
 - Los PR #1, #5, #6, #7, #8, #9 y #14 se unieron sin un Approve registrado. Se regularizan con la revisión de José y Simón de los documentos correspondientes (Definition of Done, sección 2).
 
 ---
@@ -219,6 +220,6 @@ Las iteraciones quedan sujetas al acuerdo del equipo (SIM-01).
 - [x] Reglas del módulo de vehículos contrastadas con el código (sección 6.1).
 - [x] Tablero actualizado según lo realmente terminado (sección 6.4).
 - [ ] Demostración completa, con inicio de sesión, ensayada con el equipo.
-- [ ] Sin errores que bloqueen el flujo principal, según las pruebas de SIM-03.
+- [x] Sin errores que bloqueen el flujo principal, según las pruebas de SIM-03.
 - [ ] README probado por otro integrante en otro computador (sección 6.3).
 - [ ] Revisión de José y Simón en el PR.
