@@ -284,7 +284,7 @@ Si falta el `.env` o la aplicación no está corriendo, los casos que lo necesit
 |---|---|---|---|---|---|---|
 | ERR-01 | CP-SEG-13 | `npm audit --omit=dev` informa 3 vulnerabilidades altas: `next` 16.3.6, `sharp` y `source-map-js` (las dos últimas llegan a través de Next.js). | Ejecutar `npm audit --omit=dev` desde `Aplicación`. | Mayor | José, con el umbral que confirme Simón (JOA-05, sección 8) | Abierto. La corrección ya está identificada en [JOS-06](JOS-06_Manual_Tecnico.md) (sección 9): actualizar Next.js a 16.4 y ejecutar `npm audit fix`. |
 
-Las dos observaciones menores de presentación de SIM-03 (sección 6) no son errores y quedan registradas allí.
+Las dos observaciones menores de presentación de SIM-03 (sección 6) no eran errores; quedan registradas allí y se corrigieron el 27-10-2026.
 
 ---
 
