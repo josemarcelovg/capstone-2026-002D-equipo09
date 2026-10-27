@@ -213,6 +213,7 @@ Para el desarrollo del proyecto se utilizará una metodología ágil e increment
 | [JOA-07 Innovación](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-07_Innovacion.md>) | Problema, alternativas existentes y aporte de MicroLogist |
 | [JOA-08 Product Backlog](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-08_Product_Backlog.md>) | Historias de usuario priorizadas con sus criterios de aceptación |
 | [JOA-09 Reglas del módulo de conductores](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-09_Reglas_Modulo_Conductores.md>) | Campos, formatos de RUT y teléfono, mensajes y criterios de aceptación de PB-08 a PB-10 |
+| [JOA-10 Reglas del módulo de documentos](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-10_Reglas_Modulo_Documentos.md>) | Tipos y dueño, estado (vigente, por vencer, vencido) en hora de Chile, mensajes y criterios de aceptación de PB-11 a PB-13 |
 | [JOS-02 Configuración de la base de datos](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-02_Configuracion_Base_de_Datos.md>) | Supabase, Prisma, migraciones y datos de prueba |
 | [JOS-04 Modelo de datos](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-04_Modelo_de_Datos.md>) | Diagrama entidad-relación, diccionario de datos y separación entre empresas |
 | [JOS-05 Entorno Docker](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-05_Entorno_Docker.md>) | Levantar la aplicación con una base de datos local, sin claves de Supabase |
