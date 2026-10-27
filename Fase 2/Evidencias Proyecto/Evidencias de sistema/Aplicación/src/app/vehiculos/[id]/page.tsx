@@ -1,17 +1,26 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 import { formatearPatente } from "@/lib/vehiculos";
 import { obtenerVehiculo } from "@/lib/vehiculos-datos";
 import { BotonActivacion } from "../boton-activacion";
 import { InsigniaEstado } from "../insignia-estado";
 import { VehiculoForm } from "../vehiculo-form";
 
-export const metadata: Metadata = { title: "Detalle del vehículo" };
+// El título y la página buscan el mismo vehículo con una sola consulta por solicitud.
+const buscarVehiculo = cache(obtenerVehiculo);
+
+// Con un título fijo, el navegador volvía a "Detalle del vehículo" al terminar de cargar la
+// página "No encontrado" (observación 1 de SIM-03).
+export async function generateMetadata({ params }: PageProps<"/vehiculos/[id]">): Promise<Metadata> {
+  const { id } = await params;
+  return { title: (await buscarVehiculo(id)) ? "Detalle del vehículo" : "No encontrado" };
+}
 
 export default async function PaginaVehiculo({ params }: PageProps<"/vehiculos/[id]">) {
   const { id } = await params;
-  const vehiculo = await obtenerVehiculo(id);
+  const vehiculo = await buscarVehiculo(id);
   if (!vehiculo) notFound();
 
   const patente = formatearPatente(vehiculo.patente);
