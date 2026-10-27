@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | José Vargas y Joaquín Orellana |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 21-10-2026 |
+| **Fecha** | 21-10-2026 (observaciones corregidas el 27-10-2026) |
 
 Este documento registra las pruebas de la primera entrega ("iniciar sesión y registrar, listar y editar vehículos con datos persistentes, sin que una empresa pueda ver o modificar los datos de otra"). Se probaron los 14 criterios de aceptación de la sección 7 de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md) y los requisitos de seguridad de [JOA-05](JOA-05_Requisitos_No_Funcionales.md) que dependen de ellos. Cada caso tiene sus pasos, el resultado esperado y el resultado obtenido, como pide la [Definition of Done](SIM-05_Definition_of_Done.md) (sección 3.3).
 
@@ -22,7 +22,7 @@ Este documento registra las pruebas de la primera entrega ("iniciar sesión y re
 | Adaptabilidad | 7.14 | 1 de 1 aprobado |
 | Seguridad adicional (JOA-05) | RNF-SEG-03 y RNF-SEG-04, y solicitudes alteradas | 4 de 4 aprobados |
 
-**No se encontraron errores.** Hay dos observaciones menores de presentación (sección 6) que no bloquean la entrega.
+**No se encontraron errores.** Hubo dos observaciones menores de presentación (sección 6), que no bloqueaban la entrega y ya están corregidas.
 
 ---
 
@@ -155,10 +155,15 @@ Que el AB1234 de la Empresa B mantenga su hora de modificación del 16-10 demues
 
 **Observaciones menores** (presentación; no bloquean la entrega):
 
-| # | Observación | Cómo verla | Propuesta |
-|---|---|---|---|
-| 1 | La página "No encontrado" de un vehículo mantiene en la pestaña del navegador el título "Detalle del vehículo · MicroLogist". | Abrir `/vehiculos/<id de otra empresa>` y mirar el título de la pestaña. | Que esa página use el título "No encontrado". Prioridad baja. |
-| 2 | En pantallas de menos de 640 px el encabezado no muestra el nombre de la empresa (está oculto a propósito para que quepa "Cerrar sesión"). | Abrir cualquier pantalla a 360 px con sesión. | Evaluar mostrarlo en otra línea o en el listado. Prioridad baja. |
+| # | Observación | Cómo verla | Propuesta | Estado |
+|---|---|---|---|---|
+| 1 | La página "No encontrado" de un vehículo mantiene en la pestaña del navegador el título "Detalle del vehículo · MicroLogist". | Abrir `/vehiculos/<id de otra empresa>` y mirar el título de la pestaña. | Que esa página use el título "No encontrado". Prioridad baja. | ✅ Corregida el 27-10-2026 (PR #28 y rama `sim-03-observaciones-corregidas`) |
+| 2 | En pantallas de menos de 640 px el encabezado no muestra el nombre de la empresa (está oculto a propósito para que quepa "Cerrar sesión"). | Abrir cualquier pantalla a 360 px con sesión. | Evaluar mostrarlo en otra línea o en el listado. Prioridad baja. | ✅ Corregida el 27-10-2026 (PR #29) |
+
+**Cómo se comprobaron las correcciones** (27-10-2026, en local con `npm run dev` en modo desarrollo, que usa la Empresa A sin inicio de sesión):
+
+- **Observación 1.** El PR #28 solo cambió el título del HTML inicial: al terminar de cargar, el navegador volvía a "Detalle del vehículo", porque la ficha tenía ese título fijo. Ahora la ficha calcula su título según si encuentra el vehículo. Con un vehículo de la Empresa B, un id que no existe y un id con otro formato, la pestaña se mantiene en "No encontrado · MicroLogist" después de cargar, la respuesta es 404 y no aparecen datos de la otra empresa. Con un vehículo propio (BBCD-12) sigue diciendo "Detalle del vehículo · MicroLogist".
+- **Observación 2.** A 360 px el nombre de la empresa aparece en una segunda línea del encabezado, debajo del menú, y el ancho del documento sigue siendo 360 px (sin desplazamiento horizontal). En computador se ve igual que antes.
 
 ---
 
@@ -191,5 +196,6 @@ El resto de los resultados (mensajes, códigos de respuesta y consultas a la bas
 - [x] Cada caso con pasos, resultado esperado y resultado obtenido (DoD, sección 3.3).
 - [x] Resultados confirmados en la base de datos con consultas de solo lectura (sección 4).
 - [x] Errores registrados: ninguno; observaciones menores con cómo reproducirlas (sección 6).
+- [x] Observaciones menores corregidas y comprobadas en la aplicación (sección 6).
 - [x] Evidencia sin datos personales reales: empresas y cuentas ficticias, sin contraseñas (secciones 2 y 7).
 - [ ] Revisión de José y Joaquín en el PR.
