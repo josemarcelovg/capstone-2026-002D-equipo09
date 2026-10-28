@@ -196,7 +196,7 @@ Planificada en la reunión del 27-10-2026.
 | 3 | [JOS-10] Validación y acceso a datos de conductores | Joaquín | M | JOS-09 |
 | 4 | [JOA-11] y [JOA-12] Pantallas de conductores | Joaquín | M | JOS-10 |
 | 5 | [SIM-08] Pruebas de conductores (y CP-INT-17 a 20 en SIM-04) | Simón | M | JOA-12 |
-| 6 | Despliegue en Vercel | Simón, con apoyo de José | M | JOS-07 |
+| 6 | [SIM-10] Desplegar la aplicación en Vercel | Simón, con apoyo de José | M | JOS-07 |
 | — | [SIM-06] Registrar esta retrospectiva | Simón | XS | — |
 
 Las reglas de los módulos de conductores (JOA-09, PR #33) y documentos (JOA-10, PR #35) y el cierre de la primera entrega (JOA-03, PR #36) ya se unieron a `main` en la Iteración 3. [SIM-09] (fechas en hora de Chile) pasa a la Iteración 5, porque recién se necesita para el módulo de documentos.
