@@ -6,7 +6,7 @@
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Revisión** | José Vargas (modelo de datos) y Simón Jofré (acceso y pruebas) |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 24-09-2026 |
+| **Fecha** | 24-09-2026 (actualizado el 28-10-2026) |
 
 Este documento fija las reglas que necesitan **JOS-02** (modelo de datos), **JOS-03** (lógica de vehículos), **JOA-02** (interfaz), **SIM-02** (acceso) y **SIM-03** (pruebas). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -98,7 +98,7 @@ La contraseña **no** se guarda en nuestras tablas: la maneja Supabase Auth.
 
 ### 2.3 Cómo se crean las cuentas en la primera entrega
 
-Se usan **cuentas de prueba creadas por el equipo**: dos empresas ficticias con un usuario cada una. El registro público (que una empresa se inscriba sola) queda **[POR CONFIRMAR]** para una entrega posterior.
+Se usan **cuentas de prueba creadas por el equipo**: dos empresas ficticias con un usuario cada una. El registro público (que una empresa se inscriba sola) queda **fuera del MVP** (acordado el 27-10-2026).
 
 ### 2.4 Permisos
 
