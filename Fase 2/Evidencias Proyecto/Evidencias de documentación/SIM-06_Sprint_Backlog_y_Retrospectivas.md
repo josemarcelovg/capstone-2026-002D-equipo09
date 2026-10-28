@@ -18,13 +18,14 @@ Las retrospectivas no se inventan: cada una trae los datos medibles de la iterac
 
 **Iteraciones del tablero** (campo *Iteration* del Project):
 
-| Iteración | Fechas | Duración | Estado al 21-10-2026 |
+| Iteración | Fechas | Duración | Estado al 28-10-2026 |
 |---|---|---|---|
 | 1 | 21-09 al 04-10 | 2 semanas | Completada |
 | 2 | 05-10 al 18-10 | 2 semanas | Completada |
-| 3 | 19-10 al 01-11 | 2 semanas | En curso |
+| 3 | 19-10 al 01-11 | 2 semanas | En curso; retrospectiva hecha el 27-10 |
+| 4 | 02-11 al 15-11 | 2 semanas | Planificada (sección 6) |
 
-Que la duración de los sprints sea la de estas iteraciones está **[POR CONFIRMAR]** (JOA-08, sección 8, y README).
+Los sprints duran 2 semanas, igual que estas iteraciones (acordado en la retrospectiva del 27-10-2026).
 
 **Ciclo de cada iteración:**
 
@@ -32,7 +33,7 @@ Que la duración de los sprints sea la de estas iteraciones está **[POR CONFIRM
 2. **Seguimiento** (reunión semanal): se revisa el tablero y los bloqueos.
 3. **Cierre** (último día): se revisa lo terminado según la [Definition of Done](SIM-05_Definition_of_Done.md) y se hace la retrospectiva (sección 4).
 
-**Estados del tablero:** *Todo*, *In progress* y *Done*. Una tarjeta pasa a *Done* cuando cumple sus criterios de aceptación y la Definition of Done, lo que incluye que su PR se una a `main` con un *Approve*. Las tarjetas no tienen estimación (*Estimate* en 0); cómo estimar está **[POR CONFIRMAR]** (JOA-08, sección 8).
+**Estados del tablero:** *Todo*, *In progress* y *Done*. Una tarjeta pasa a *Done* cuando cumple sus criterios de aceptación y la Definition of Done, lo que incluye que su PR se una a `main` con un *Approve*. Desde la Iteración 4, cada tarjeta se estima con una talla de XS a XL (campo *Size*) al planificar la iteración (acordado el 27-10-2026). Las tarjetas de las iteraciones 1 a 3 no tienen estimación.
 
 ---
 
@@ -182,14 +183,25 @@ Las acciones nacen de los temas de la sección 4. Estas se acordaron en la retro
 
 ---
 
-## 6. Próxima planificación
+## 6. Iteración 4 · 02-11 al 15-11
 
-**Iteración 4:** 02-11 al 15-11, si se mantiene la duración de 2 semanas **[POR CONFIRMAR]**. El tablero todavía no tiene creada esa iteración.
+Planificada en la reunión del 27-10-2026.
 
-Candidatos para la planificación (la prioridad la decide el Product Owner):
+**Objetivo:** cerrar ERR-01, desplegar en Vercel y terminar el módulo de conductores (registrar, listar, editar y desactivar), probado con dos empresas ficticias.
 
-- **Cerrar la primera entrega:** corregir ERR-01, ejecutar los casos pendientes del plan de pruebas (SIM-04, sección 9) y desplegar en Vercel.
-- **Preparar el MVP completo:** escribir las reglas de los módulos antes de desarrollarlos (JOA-08, sección 8), empezando por conductores (PB-08 a PB-10) y documentos (PB-11 a PB-13).
+| Orden | Tarea | Responsable | Talla | Depende de |
+|---|---|---|---|---|
+| 1 | [JOS-07] Cerrar ERR-01 (actualizar Next.js), el 02-11 | José | S | — |
+| 2 | [JOS-09] Tabla de conductores, migración con RLS y datos de prueba | Simón | M | JOS-07 |
+| 3 | [JOS-10] Validación y acceso a datos de conductores | Joaquín | M | JOS-09 |
+| 4 | [JOA-11] y [JOA-12] Pantallas de conductores | Joaquín | M | JOS-10 |
+| 5 | [SIM-08] Pruebas de conductores (y CP-INT-17 a 20 en SIM-04) | Simón | M | JOA-12 |
+| 6 | Despliegue en Vercel | Simón, con apoyo de José | M | JOS-07 |
+| — | [SIM-06] Registrar esta retrospectiva | Simón | XS | — |
+
+Las reglas de los módulos de conductores (JOA-09, PR #33) y documentos (JOA-10, PR #35) y el cierre de la primera entrega (JOA-03, PR #36) ya se unieron a `main` en la Iteración 3. [SIM-09] (fechas en hora de Chile) pasa a la Iteración 5, porque recién se necesita para el módulo de documentos.
+
+**Reunión de seguimiento:** jueves 06-11 en la noche, unos 20 minutos.
 
 ---
 
