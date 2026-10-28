@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (requisitos y backlog) y José Vargas (rendimiento y datos) |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración) y el 27-10-2026 (encabezados de seguridad) |
+| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración), el 27-10-2026 (encabezados de seguridad) y el 28-10-2026 (decisiones de la reunión del 27-10) |
 
 Este plan define cómo se prueba MicroLogist: qué tipos de prueba hay, con qué técnicas se ejecutan, en qué entorno y con qué datos, cuándo se hacen y cómo se registran los resultados y los errores. Cada caso de prueba tiene un identificador que no cambia, y cada requisito de [JOA-05](JOA-05_Requisitos_No_Funcionales.md) queda cubierto por al menos un caso (sección 10). Los casos de la primera entrega ya tienen un estado, gracias a la ejecución de [SIM-03](SIM-03_Pruebas_Primera_Entrega.md). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -28,7 +28,7 @@ Este plan define cómo se prueba MicroLogist: qué tipos de prueba hay, con qué
 
 ## 2. Tipos de prueba
 
-JOA-05 (sección 7) parte con cuatro tipos y deja pendiente qué hacer con rendimiento y disponibilidad. **Propuesta de SIM-04:** agregar un quinto tipo, *Rendimiento y disponibilidad*, para que esos requisitos no queden sin caso **[POR CONFIRMAR]** con el equipo (JOA-05, sección 8).
+JOA-05 (sección 7) partía con cuatro tipos y dejaba pendiente qué hacer con rendimiento y disponibilidad. El equipo acordó el 27-10-2026 agregar un quinto tipo, *Rendimiento y disponibilidad*, para que esos requisitos no queden sin caso.
 
 La revisión de las evidencias de Fase 1 y 2 (corte del 20-10-2026) pidió además cubrir las pruebas de **integración** con pruebas reales en el código. Por eso se agrega un sexto tipo, *Integración*, con casos automáticos (sección 6.6).
 
@@ -66,7 +66,7 @@ Los identificadores `CP-xxx-nn` no se reutilizan ni se renumeran, igual que los 
 |---|---|---|
 | **Local con Supabase** | La mayoría de los casos. | `npm run dev` desde `Aplicación`, Node.js 24, `.env` con el proyecto `micrologist-dev` ([SIM-02](SIM-02_Inicio_de_Sesion.md), sección 5). |
 | **Local con Docker** | Revisar la aplicación sin claves de Supabase. | No sirve para las pruebas de acceso: en Docker no se inicia sesión ([JOS-05](JOS-05_Entorno_Docker.md)). Las pruebas de integración con la base de datos sí corren con la base de Docker; las que necesitan Supabase se saltan con un aviso. |
-| **Versión desplegada (Vercel)** | HTTPS, rendimiento, disponibilidad y persistencia tras volver a desplegar. | Cuando exista el despliegue **[POR CONFIRMAR]**. |
+| **Versión desplegada (Vercel)** | HTTPS, rendimiento, disponibilidad y persistencia tras volver a desplegar. | Se despliega en la Iteración 4, del 02-11 al 15-11 (SIM-10). |
 
 **Datos de prueba:**
 
@@ -248,7 +248,7 @@ Si falta el `.env` o la aplicación no está corriendo, los casos que lo necesit
 | Momento | Qué se ejecuta |
 |---|---|
 | **En cada PR de código** | Pruebas automáticas (`npm test` y `npm run test:integracion`) y los casos del módulo que cambió (DoD, sección 3.1). |
-| **Al cierre de cada iteración** (cada 14 días **[POR CONFIRMAR]**) | Casos funcionales y de seguridad de lo terminado en la iteración, registrados en su documento de pruebas. |
+| **Al cierre de cada iteración** (cada 2 semanas, acordado el 27-10-2026) | Casos funcionales y de seguridad de lo terminado en la iteración, registrados en su documento de pruebas. |
 | **Primera entrega** (Iteración 3, 19-10 al 01-11) | Lo ejecutado en SIM-03 y los casos de primera entrega que siguen pendientes (sección 9). |
 | **Al desplegar en Vercel** | CP-SEG-11, CP-REN-01 a CP-REN-03 y la parte de CP-FUN-13 que requiere volver a desplegar. |
 | **MVP integrado** (semana 14 **[POR CONFIRMAR]**) | Todos los casos de la primera entrega otra vez (regresión) y los casos del MVP, ya detallados. |
@@ -282,7 +282,7 @@ Si falta el `.env` o la aplicación no está corriendo, los casos que lo necesit
 
 | ID | Caso | Descripción | Cómo reproducirlo | Severidad | Responsable | Estado |
 |---|---|---|---|---|---|---|
-| ERR-01 | CP-SEG-13 | `npm audit --omit=dev` informa 3 vulnerabilidades altas: `next` 16.3.6, `sharp` y `source-map-js` (las dos últimas llegan a través de Next.js). | Ejecutar `npm audit --omit=dev` desde `Aplicación`. | Mayor | José, con el umbral que confirme Simón (JOA-05, sección 8) | Abierto. La corrección ya está identificada en [JOS-06](JOS-06_Manual_Tecnico.md) (sección 9): actualizar Next.js a 16.4 y ejecutar `npm audit fix`. |
+| ERR-01 | CP-SEG-13 | `npm audit --omit=dev` informa 3 vulnerabilidades altas: `next` 16.3.6, `sharp` y `source-map-js` (las dos últimas llegan a través de Next.js). | Ejecutar `npm audit --omit=dev` desde `Aplicación`. | Mayor | José (JOS-07). Umbral acordado el 27-10-2026: sin vulnerabilidades altas ni críticas (RNF-SEG-10) | Abierto. La corrección ya está identificada en [JOS-06](JOS-06_Manual_Tecnico.md) (sección 9): actualizar Next.js a 16.4 y ejecutar `npm audit fix`. |
 
 Las dos observaciones menores de presentación de SIM-03 (sección 6) no eran errores; quedan registradas allí y se corrigieron el 27-10-2026.
 
@@ -328,7 +328,7 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 
 ## 12. Pendientes
 
-- **Confirmar con el equipo** el quinto tipo de prueba (sección 2) y los umbrales **[POR CONFIRMAR]** de JOA-05 (sección 8).
+- **Confirmar con el equipo** los umbrales **[POR CONFIRMAR]** que quedan en JOA-05 (sección 8). El quinto tipo de prueba (sección 2) se acordó el 27-10-2026.
 - **Proponer agregar `npm run test:integracion`** a la sección 3.1 de la Definition of Done (SIM-05), junto a `npm test`.
 - **Pruebas de rendimiento automáticas:** quedan para cuando exista el despliegue, porque los umbrales se miden sobre la versión desplegada (CP-REN-01 a CP-REN-03).
 - **Política de contenido con nonce:** la CSP de CP-SEG-14 todavía no restringe los scripts, para no interferir con Next.js. Restringirlos requiere generar un nonce en el proxy en cada solicitud.
@@ -341,7 +341,7 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 
 ## 13. Checklist de SIM-04
 
-- [x] Tipos de prueba definidos, con la propuesta para rendimiento y disponibilidad (sección 2).
+- [x] Tipos de prueba definidos, con el quinto tipo, rendimiento y disponibilidad, acordado el 27-10-2026 (sección 2).
 - [x] Técnicas, entornos, datos y criterios de entrada y de salida (secciones 3 a 5).
 - [x] Casos con identificador para la primera entrega, el MVP y el módulo opcional (sección 6).
 - [x] Cada requisito de JOA-05 cubierto por al menos un caso (sección 10).
