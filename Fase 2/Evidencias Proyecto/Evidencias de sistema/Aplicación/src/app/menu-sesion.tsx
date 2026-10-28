@@ -23,7 +23,13 @@ export async function MenuSesion() {
         Conductores
       </Link>
       <div className="ml-auto flex items-center gap-3">
-        <span className="hidden text-sm text-zinc-600 sm:inline">{usuario.empresaNombre}</span>
+        <Link
+          href="/empresa"
+          className="hidden text-sm text-zinc-600 hover:text-zinc-900 hover:underline sm:inline"
+          title="Mi empresa"
+        >
+          {usuario.empresaNombre}
+        </Link>
         {usuario.modo === "supabase" ? (
           <form action={cerrarSesion}>
             <button
@@ -40,9 +46,13 @@ export async function MenuSesion() {
         )}
       </div>
       {/* En celular no cabe junto a "Cerrar sesión": va en una segunda línea (observación 2 de SIM-03). */}
-      <p className="order-last basis-full truncate text-xs text-zinc-600 sm:hidden">
+      <Link
+        href="/empresa"
+        className="order-last basis-full truncate text-xs text-zinc-600 hover:underline sm:hidden"
+        title="Mi empresa"
+      >
         {usuario.empresaNombre}
-      </p>
+      </Link>
     </>
   );
 }
