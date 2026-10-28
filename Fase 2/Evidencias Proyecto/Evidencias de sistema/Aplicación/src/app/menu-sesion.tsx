@@ -19,6 +19,9 @@ export async function MenuSesion() {
       <Link href="/vehiculos" className="text-sm font-medium text-zinc-800 hover:underline">
         Vehículos
       </Link>
+      <Link href="/conductores" className="text-sm font-medium text-zinc-800 hover:underline">
+        Conductores
+      </Link>
       <div className="ml-auto flex items-center gap-3">
         <span className="hidden text-sm text-zinc-600 sm:inline">{usuario.empresaNombre}</span>
         {usuario.modo === "supabase" ? (
