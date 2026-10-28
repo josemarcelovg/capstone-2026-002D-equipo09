@@ -237,7 +237,7 @@ El conductor es un registro, no una cuenta: no inicia sesión (JOA-01, sección 
 | `nombre` | `varchar(100)` | Sí | 2 a 100 caracteres, con los espacios normalizados. |
 | `rut` | `varchar(10)` | Sí | Normalizado como `12345678-9` (sin puntos, `K` mayúscula), con dígito verificador válido (Zod). **Único dentro de la empresa**, incluidos los inactivos; otra empresa sí puede tenerlo (JOA-09, sección 2). |
 | `telefono` | `varchar(12)` | Sí | Normalizado como `+56` seguido de 9 dígitos (JOA-09, sección 3.2). |
-| `email` | `varchar(254)` | No | |
+| `email` | `varchar(254)` | No | Se guarda en minúsculas (JOS-10). No se usa para avisos: estos van al correo de la empresa ([JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md)). |
 | `activo` | `boolean` | Sí | Por defecto `true`. Un conductor inactivo no aparece en el listado por defecto ni se asigna a turnos nuevos (PB-10). |
 | `created_at`, `updated_at` | `timestamptz` | Sí | |
 
