@@ -123,7 +123,7 @@ Cada retrospectiva responde tres preguntas: **qué funcionó**, **qué no funcio
 
 | Qué funcionó | Qué no funcionó | Qué vamos a cambiar |
 |---|---|---|
-| **[POR COMPLETAR EN LA RETROSPECTIVA]** | **[POR COMPLETAR EN LA RETROSPECTIVA]** | **[POR COMPLETAR EN LA RETROSPECTIVA]** |
+| El reparto de tareas quedó bien y se terminaron las 4 tarjetas. | La Definition of Done llegó tarde y el PR #1 se unió antes de que existieran las reglas de trabajo. Faltó organizar mejor los tiempos, porque el proyecto se cruza con la práctica profesional de los tres. | Acordar la Definition of Done y las reglas de trabajo antes de empezar cada módulo. Planificar cada iteración según la carga de la práctica profesional de cada uno. |
 
 ### 4.2 Iteración 2
 
@@ -143,14 +143,16 @@ Cada retrospectiva responde tres preguntas: **qué funcionó**, **qué no funcio
 
 | Qué funcionó | Qué no funcionó | Qué vamos a cambiar |
 |---|---|---|
-| **[POR COMPLETAR EN LA RETROSPECTIVA]** | **[POR COMPLETAR EN LA RETROSPECTIVA]** | **[POR COMPLETAR EN LA RETROSPECTIVA]** |
+| Se terminaron las 8 tarjetas y avanzó harto la documentación. | Por apuro, se unieron PR sin revisión (10 de 16). El inicio de sesión partió tarde y frenó el cierre de la primera entrega. | Activar en `main` la regla que exige una aprobación antes de unir un PR. Al planificar, partir por las tareas que bloquean a otras. |
 
-### 4.3 Iteración 3 (se completa al cierre, el 01-11)
+### 4.3 Iteración 3
 
-**Datos al 21-10:**
+**Datos** (retrospectiva del 27-10-2026):
 
 - SIM-02, SIM-03 y SIM-04 unidas, las tres con *Approve* (PR #21 a #23).
 - Primera entrega: 14 de 14 criterios de JOA-01 aprobados en las pruebas de SIM-03.
+- Primera entrega cerrada: demo ensayada con inicio de sesión y README probado por José en su notebook (12 minutos, sin problemas).
+- Los 16 PR unidos en la iteración (#21 a #36) tienen *Approve*.
 - Un error abierto: ERR-01, con 3 vulnerabilidades altas en las dependencias ([SIM-04](SIM-04_Plan_de_Pruebas.md), sección 9).
 - El tablero no refleja el avance: el 21-10, SIM-02, SIM-03 y SIM-04 seguían en *Todo*, y SIM-04 y SIM-06 no tenían iteración asignada.
 
@@ -160,7 +162,7 @@ Cada retrospectiva responde tres preguntas: **qué funcionó**, **qué no funcio
 
 | Qué funcionó | Qué no funcionó | Qué vamos a cambiar |
 |---|---|---|
-| **[POR COMPLETAR EN LA RETROSPECTIVA]** | **[POR COMPLETAR EN LA RETROSPECTIVA]** | **[POR COMPLETAR EN LA RETROSPECTIVA]** |
+| Se cerró la primera entrega (14 de 14 criterios, demo ensayada) y todos los PR pasaron por revisión. | El tablero se atrasó: había tarjetas terminadas que seguían en *Todo*. ERR-01 sigue abierto y bloquea el inicio de conductores. | Quien aprieta *Merge* mueve la tarjeta a *Done* en ese mismo momento. Cerrar ERR-01 (JOS-07) el 02-11. |
 
 ---
 
