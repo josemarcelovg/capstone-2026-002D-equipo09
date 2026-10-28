@@ -199,7 +199,7 @@ Para el desarrollo del proyecto se utilizará una metodología ágil e increment
 - **Artefactos:** [Product Vision](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-04_Product_Vision.md>), [Product Backlog](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-08_Product_Backlog.md>) priorizado por el Product Owner, [Definition of Done](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-05_Definition_of_Done.md>) acordada por el equipo, y [Sprint Backlog y retrospectivas](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-06_Sprint_Backlog_y_Retrospectivas.md>) de cada iteración (SIM-06).
 - **Seguimiento:** un tablero en GitHub Projects con las tareas de cada integrante, sus responsables y criterios de aceptación, en estados pendiente, en curso y terminado. Se revisa en una reunión semanal.
 - **Revisión del trabajo:** cada tarea se hace en su propia rama y se une a `main` mediante un pull request revisado por otro integrante.
-- **Duración de los sprints:** el tablero usa iteraciones de 2 semanas (Iteración 3: 19-10 al 01-11). Que esa sea la duración de los sprints está **[POR CONFIRMAR]** con el equipo (SIM-06).
+- **Duración de los sprints:** los sprints duran 2 semanas, igual que las iteraciones del tablero (acordado el 27-10-2026, SIM-06). Cada tarea se estima con tallas XS a XL al planificar la iteración.
 
 ## Documentación del proyecto
 
