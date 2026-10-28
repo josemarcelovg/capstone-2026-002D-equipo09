@@ -3,9 +3,12 @@ import { randomUUID } from "node:crypto";
 import { after, describe, test } from "node:test";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Prisma, PrismaClient } from "../../src/generated/prisma/client.ts";
+import { validarConductor } from "../../src/lib/conductores.ts";
+import { conductorDeLaEmpresa, filtroConductores } from "../../src/lib/conductores-filtros.ts";
 import { formatearPatente, normalizarPatente, validarVehiculo } from "../../src/lib/vehiculos.ts";
 
-// Pruebas de integración de la aplicación con la base de datos (SIM-04, CP-INT-01 a CP-INT-10).
+// Pruebas de integración de la aplicación con la base de datos (SIM-04, CP-INT-01 a CP-INT-10,
+// y CP-INT-17 a CP-INT-20 para conductores).
 // Usan el cliente Prisma generado y la base de DATABASE_URL, igual que la aplicación.
 //
 // No dejan datos: cada prueba crea sus propias empresas y vehículos dentro de una transacción
@@ -236,15 +239,113 @@ describe("Separación entre empresas en la base de datos", { skip: sinBase }, ()
   });
 });
 
+/** Valida con el mismo esquema del formulario y del servidor (src/lib/conductores.ts). */
+async function crearConductor(tx: Tx, empresaId: string, cambios: Record<string, unknown> = {}) {
+  const resultado = validarConductor({
+    nombre: "Conductor de prueba",
+    rut: "11.111.111-1",
+    telefono: "9 0000 0001",
+    ...cambios,
+  });
+  assert.ok(resultado.ok, `Datos de prueba inválidos: ${JSON.stringify(resultado)}`);
+  return tx.conductor.create({ data: { ...resultado.datos, empresaId } });
+}
+
+describe("Conductores en la base de datos", { skip: sinBase }, () => {
+  test("CP-INT-17 · guarda el conductor normalizado y activo por defecto", async () => {
+    await sinGuardar(async (tx) => {
+      const empresa = await crearEmpresa(tx, "Empresa A");
+      const conductor = await crearConductor(tx, empresa, { nombre: "  Ana   Díaz ", email: "" });
+      assert.equal(conductor.nombre, "Ana Díaz");
+      assert.equal(conductor.rut, "11111111-1");
+      assert.equal(conductor.telefono, "+56900000001");
+      assert.equal(conductor.email, null);
+      assert.equal(conductor.activo, true);
+    });
+  });
+
+  test("CP-INT-18 · rechaza un RUT repetido en la empresa, aunque esté inactivo, y lo permite en otra", async () => {
+    await debeFallar("P2002", async (tx) => {
+      const empresa = await crearEmpresa(tx, "Empresa A");
+      await crearConductor(tx, empresa);
+      await tx.conductor.updateMany({ where: { empresaId: empresa }, data: { activo: false } });
+      await crearConductor(tx, empresa, { rut: "11111111-1", nombre: "Otro nombre" });
+    });
+
+    await sinGuardar(async (tx) => {
+      const empresaA = await crearEmpresa(tx, "Empresa A");
+      const empresaB = await crearEmpresa(tx, "Empresa B");
+      await crearConductor(tx, empresaA);
+      const enB = await crearConductor(tx, empresaB);
+      assert.equal(enB.rut, "11111111-1");
+    });
+  });
+
+  test("CP-INT-19 · buscar o editar un conductor con la empresa equivocada no encuentra ni cambia nada", async () => {
+    await sinGuardar(async (tx) => {
+      const empresaA = await crearEmpresa(tx, "Empresa A");
+      const empresaB = await crearEmpresa(tx, "Empresa B");
+      const deB = await crearConductor(tx, empresaB, { nombre: "Conductor de B" });
+
+      // El mismo filtro que usan obtenerConductor() y actualizarConductor().
+      const deBDesdeA = conductorDeLaEmpresa(deB.id, empresaA);
+      assert.equal(await tx.conductor.findFirst({ where: deBDesdeA }), null);
+      await assert.rejects(
+        tx.conductor.update({ where: deBDesdeA, data: { activo: false } }),
+        (error) => error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025",
+      );
+
+      const sinCambios = await tx.conductor.findUniqueOrThrow({ where: { id: deB.id } });
+      assert.equal(sinCambios.activo, true);
+      assert.equal(sinCambios.empresaId, empresaB);
+    });
+  });
+
+  test("CP-INT-20 · el listado trae solo los conductores de la empresa, ordenados y con su búsqueda", async () => {
+    await sinGuardar(async (tx) => {
+      const empresaA = await crearEmpresa(tx, "Empresa A");
+      const empresaB = await crearEmpresa(tx, "Empresa B");
+      await crearConductor(tx, empresaA, { nombre: "María Muñoz", rut: "22.222.222-2" });
+      await crearConductor(tx, empresaA, { nombre: "Ana Díaz", rut: "1000005-K" });
+      const inactivo = await crearConductor(tx, empresaA, { nombre: "Luis Rojas", rut: "33.333.333-3" });
+      await tx.conductor.update({ where: { id: inactivo.id }, data: { activo: false } });
+      // Su RUT contiene "222-2" y "1000005": no debe aparecer al buscar desde A.
+      await crearConductor(tx, empresaB, { nombre: "María de B", rut: "22.222.222-2" });
+
+      // El mismo filtro y orden que usa listarConductores().
+      const listar = async (buscar = "", incluirInactivos = false) =>
+        (
+          await tx.conductor.findMany({
+            where: filtroConductores(empresaA, { buscar, incluirInactivos }),
+            orderBy: [{ nombre: "asc" }, { rut: "asc" }],
+          })
+        ).map(({ nombre }) => nombre);
+
+      assert.deepEqual(await listar(), ["Ana Díaz", "María Muñoz"]);
+      assert.deepEqual(await listar("", true), ["Ana Díaz", "Luis Rojas", "María Muñoz"]);
+      assert.deepEqual(await listar("MUÑOZ"), ["María Muñoz"]);
+      assert.deepEqual(await listar("maría   muñoz"), ["María Muñoz"]);
+      for (const rut of ["22.222", "222222222", "22222222-2", "1000005k"]) {
+        assert.equal((await listar(rut)).length, 1, rut);
+      }
+      // Un RUT parcial no inventa un guion: "1000005" no es "100000-5".
+      assert.deepEqual(await listar("1000005"), ["Ana Díaz"]);
+      assert.deepEqual(await listar("3333"), []);
+      assert.deepEqual(await listar("3333", true), ["Luis Rojas"]);
+    });
+  });
+});
+
 describe("Seguridad del esquema", { skip: sinBase }, () => {
   test("CP-INT-10 · RLS activado en las tablas y sin columna de contraseña en usuario", async () => {
     const tablas = await prisma.$queryRaw<{ tabla: string; rls: boolean }[]>`
       select relname as tabla, relrowsecurity as rls
       from pg_class
       where relnamespace = 'public'::regnamespace
-        and relname in ('empresa', 'usuario', 'vehiculo')
+        and relname in ('conductor', 'empresa', 'usuario', 'vehiculo')
       order by relname`;
     assert.deepEqual(tablas, [
+      { tabla: "conductor", rls: true },
       { tabla: "empresa", rls: true },
       { tabla: "usuario", rls: true },
       { tabla: "vehiculo", rls: true },
