@@ -6,7 +6,7 @@
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Revisión** | José Vargas (vehículos y datos) y Simón Jofré (acceso y pruebas) |
 | **Estado** | Terminada: demo ensayada con inicio de sesión y README probado por otro integrante |
-| **Fecha** | 27-10-2026 (primera versión: 18-10-2026) |
+| **Fecha** | 28-10-2026 (primera versión: 18-10-2026) |
 
 Este documento sirve para dos cosas: comprobar que la primera entrega cumple lo acordado en la [sección 7 de JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md) y en la [Definition of Done](SIM-05_Definition_of_Done.md) (sección 5), y guiar la demostración para la profesora. Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -209,7 +209,7 @@ Las iteraciones quedan sujetas al acuerdo del equipo (SIM-01).
 - ~~Pruebas de SIM-03 ejecutadas con las dos empresas ficticias y sin errores que bloqueen el flujo.~~ Hecho (PR #22).
 - ~~Guion completo ensayado con el equipo, con inicio de sesión.~~ Hecho.
 - ~~README probado por otro integrante (sección 6.3).~~ Hecho: José, 12 minutos.
-- Decisiones **[POR CONFIRMAR]** que afectan esta entrega: duración de la sesión (RNF-SEG-06) y duración de los sprints. El largo mínimo de la contraseña quedó en 8 caracteres (SIM-02).
+- ~~Decisiones pendientes que afectan esta entrega: duración de la sesión (RNF-SEG-06) y duración de los sprints.~~ Hecho: se acordaron el 27-10-2026 (la sesión por defecto de Supabase y sprints de 2 semanas). El largo mínimo de la contraseña quedó en 8 caracteres (SIM-02).
 - Los PR #1, #5, #6, #7, #8, #9 y #14 se unieron sin un Approve registrado. Se regularizan con la revisión de José y Simón de los documentos correspondientes (Definition of Done, sección 2).
 
 ---
