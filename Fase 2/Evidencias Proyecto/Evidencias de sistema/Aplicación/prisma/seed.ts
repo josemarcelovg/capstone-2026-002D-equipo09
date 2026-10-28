@@ -117,6 +117,58 @@ const vehiculos: VehiculoSeed[] = [
   },
 ];
 
+type ConductorSeed = Omit<Prisma.ConductorUncheckedCreateInput, "createdAt" | "updatedAt"> & {
+  id: string;
+};
+
+// RUT de dígitos repetidos (válidos y claramente ficticios) y teléfonos +56 9 0000 00XX
+// (JOA-09, sección 5): ninguno es de una persona real.
+const conductores: ConductorSeed[] = [
+  // Empresa A
+  {
+    id: "a2000000-0000-4000-8000-000000000001",
+    empresaId: EMPRESA_A,
+    nombre: "Pedro Soto (ficticio)",
+    rut: "11111111-1",
+    telefono: "+56900000001",
+    activo: true,
+    email: "pedro.soto@cordillera.example",
+  },
+  {
+    id: "a2000000-0000-4000-8000-000000000002",
+    empresaId: EMPRESA_A,
+    nombre: "María Muñoz (ficticia)",
+    rut: "22222222-2",
+    telefono: "+56900000002",
+    activo: true,
+  },
+  {
+    id: "a2000000-0000-4000-8000-000000000003",
+    empresaId: EMPRESA_A,
+    nombre: "Luis Rojas (ficticio)",
+    rut: "33333333-3",
+    telefono: "+56900000003",
+    activo: false,
+  },
+  // Empresa B: repite el RUT 11111111-1 a propósito (otra empresa sí puede tenerlo).
+  {
+    id: "b2000000-0000-4000-8000-000000000001",
+    empresaId: EMPRESA_B,
+    nombre: "Pedro Soto (ficticio)",
+    rut: "11111111-1",
+    telefono: "+56900000001",
+    activo: true,
+  },
+  {
+    id: "b2000000-0000-4000-8000-000000000002",
+    empresaId: EMPRESA_B,
+    nombre: "Ana Díaz (ficticia)",
+    rut: "44444444-4",
+    telefono: "+56900000004",
+    activo: true,
+  },
+];
+
 async function main() {
   for (const { id, ...datos } of empresas) {
     await prisma.empresa.upsert({ where: { id }, update: datos, create: { id, ...datos } });
@@ -124,7 +176,12 @@ async function main() {
   for (const { id, ...datos } of vehiculos) {
     await prisma.vehiculo.upsert({ where: { id }, update: datos, create: { id, ...datos } });
   }
-  console.log(`Seed listo: ${empresas.length} empresas y ${vehiculos.length} vehículos.`);
+  for (const { id, ...datos } of conductores) {
+    await prisma.conductor.upsert({ where: { id }, update: datos, create: { id, ...datos } });
+  }
+  console.log(
+    `Seed listo: ${empresas.length} empresas, ${vehiculos.length} vehículos y ${conductores.length} conductores.`,
+  );
 }
 
 main()

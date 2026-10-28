@@ -6,7 +6,7 @@
 | **Responsable** | José Vargas (Developer) |
 | **Revisión** | Joaquín Orellana (coherencia con JOA-06 y JOA-08) |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 16-10-2026 |
+| **Fecha** | 16-10-2026 (actualizado el 28-10-2026) |
 
 Este documento describe la base de datos de MicroLogist: qué tablas tiene, cómo se relacionan, qué guarda cada columna y cómo se separan los datos entre empresas. Se basa en las reglas de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), en el diagrama de clases de [JOA-06](JOA-06_Diagramas_UML.md) (sección 3) y en el [Product Backlog](JOA-08_Product_Backlog.md).
 
@@ -18,8 +18,8 @@ El modelo tiene dos partes:
 
 | Parte | Tablas | Estado |
 |---|---|---|
-| **Implementada** | `empresa`, `usuario`, `vehiculo` | Creada en Supabase en JOS-02. Es exactamente lo que hay en `Base de datos/schema.prisma` y en la migración inicial. |
-| **Propuesta** | `conductor`, `documento`, `turno`, `aviso_enviado`, `ingreso` | Diseño para los módulos del MVP completo y el módulo opcional de ingresos. Se crea en la tarea de cada módulo, después de confirmar sus reglas. Lo no decidido está marcado **[POR CONFIRMAR]**. |
+| **Implementada** | `empresa`, `usuario`, `vehiculo`, `conductor` | Es exactamente lo que hay en `Base de datos/schema.prisma`. Las tres primeras vienen de la migración inicial (JOS-02); `conductor`, de la migración `conductores` (JOS-09). |
+| **Propuesta** | `documento`, `turno`, `aviso_enviado`, `ingreso` | Diseño para los módulos del MVP completo y el módulo opcional de ingresos. Se crea en la tarea de cada módulo, después de confirmar sus reglas. Lo no decidido está marcado **[POR CONFIRMAR]**. |
 
 Convenciones:
 
@@ -226,18 +226,18 @@ Perfil de quien inicia sesión. La contraseña no está aquí: la maneja Supabas
 
 Restricción única: `(empresa_id, patente)`. Para las tablas propuestas se agrega además `UNIQUE (id, empresa_id)`, que permite las claves foráneas compuestas de la sección 4.
 
-### 3.4 `conductor` · propuesta (PB-08 a PB-10)
+### 3.4 `conductor` · implementada en JOS-09 (PB-08 a PB-10)
 
-El conductor es un registro, no una cuenta: no inicia sesión (JOA-01, sección 2.1).
+El conductor es un registro, no una cuenta: no inicia sesión (JOA-01, sección 2.1). Las reglas de los campos están en [JOA-09](JOA-09_Reglas_Modulo_Conductores.md).
 
 | Columna | Tipo | Obl. | Restricciones y reglas |
 |---|---|---|---|
 | `id` | `uuid` | Sí | PK. |
 | `empresa_id` | `uuid` | Sí | FK a `empresa`. |
-| `nombre` | `varchar(100)` | Sí | 2 a 100 caracteres. |
-| `rut` | `varchar(10)` | Sí | Normalizado como `12345678-9` (sin puntos, `K` mayúscula), con dígito verificador válido (Zod). Único dentro de la empresa **[POR CONFIRMAR]** (PB-08). |
-| `telefono` | `varchar(20)` | **[POR CONFIRMAR]** | Propuesta: obligatorio. |
-| `email` | `varchar(254)` | No | **[POR CONFIRMAR]**. |
+| `nombre` | `varchar(100)` | Sí | 2 a 100 caracteres, con los espacios normalizados. |
+| `rut` | `varchar(10)` | Sí | Normalizado como `12345678-9` (sin puntos, `K` mayúscula), con dígito verificador válido (Zod). **Único dentro de la empresa**, incluidos los inactivos; otra empresa sí puede tenerlo (JOA-09, sección 2). |
+| `telefono` | `varchar(12)` | Sí | Normalizado como `+56` seguido de 9 dígitos (JOA-09, sección 3.2). |
+| `email` | `varchar(254)` | No | |
 | `activo` | `boolean` | Sí | Por defecto `true`. Un conductor inactivo no aparece en el listado por defecto ni se asigna a turnos nuevos (PB-10). |
 | `created_at`, `updated_at` | `timestamptz` | Sí | |
 
@@ -371,14 +371,14 @@ En todas las tablas, `empresa_id` es un detalle de cómo se guardan los datos (s
 | Tema | Propuesta | Dónde se decide |
 |---|---|---|
 | RUT de la empresa obligatorio | Opcional | JOA-01, 2.2 |
-| Campos obligatorios del conductor y RUT único por empresa | Nombre, RUT y teléfono obligatorios; RUT único | PB-08 |
-| Conductores sin eliminar, igual que vehículos | Sí (`activo`) | PB-10 |
 | Días para "por vencer" y zona horaria | 30 días, `America/Santiago` | PB-12 |
 | Historial de vencimientos y archivo adjunto | No en el MVP | PB-13, JOA-01 1.4 |
 | Jornadas del turno y si se puede asignar un vehículo en mantención | Mañana, tarde, noche; en mantención no | PB-17 |
 | Turno anulado: borrar o marcar | Marcar (`anulado`) | PB-19 |
 | Plazos de aviso, destinatario y reintentos | 30, 7, 1 y 0 días; `email_contacto`; registrar fallidos | PB-15, PB-16 |
 | Ingreso asociado a vehículo, servicio o ambos | Vehículo opcional y descripción libre | PB-22 |
+
+Las decisiones de conductores (campos obligatorios, RUT único por empresa y desactivar en vez de eliminar) se cerraron en JOA-09 y quedaron en la tabla `conductor` (sección 3.4).
 
 ---
 
@@ -388,4 +388,5 @@ En todas las tablas, `empresa_id` es un detalle de cómo se guardan los datos (s
 - [x] Diccionario de datos con campos, tipos, obligatoriedad, restricciones y reglas de unicidad (sección 3).
 - [x] Explicación de cómo se separan los datos entre empresas (sección 4).
 - [x] Coherencia con el esquema Prisma de JOS-02 (secciones 3.1 a 3.3) y con el diagrama de clases de JOA-06 (sección 5).
+- [x] Tabla `conductor` implementada en JOS-09, igual que la sección 3.4.
 - [ ] Revisión de Joaquín en el PR.

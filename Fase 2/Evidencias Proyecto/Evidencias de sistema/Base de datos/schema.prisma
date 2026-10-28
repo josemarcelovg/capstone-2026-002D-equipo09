@@ -49,8 +49,9 @@ model Empresa {
   createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
-  usuarios  Usuario[]
-  vehiculos Vehiculo[]
+  usuarios    Usuario[]
+  vehiculos   Vehiculo[]
+  conductores Conductor[]
 
   @@map("empresa")
 }
@@ -94,4 +95,30 @@ model Vehiculo {
   /// Otra empresa sí puede tenerla (JOA-01, 3.1).
   @@unique([empresaId, patente])
   @@map("vehiculo")
+}
+
+/// El conductor es un registro, no una cuenta: no inicia sesión (JOA-09, sección 1).
+model Conductor {
+  id        String   @id @default(uuid()) @db.Uuid
+  empresaId String   @map("empresa_id") @db.Uuid
+  /// Nombre completo, con los espacios normalizados.
+  nombre    String   @db.VarChar(100)
+  /// Normalizado como 12345678-9 (sin puntos, K mayúscula), con dígito verificador válido.
+  rut       String   @db.VarChar(10)
+  /// Normalizado como +56 seguido de 9 dígitos.
+  telefono  String   @db.VarChar(12)
+  email     String?  @db.VarChar(254)
+  /// No se elimina: se desactiva y se puede reactivar (JOA-09, sección 3.3).
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  empresa Empresa @relation(fields: [empresaId], references: [id])
+
+  /// Un RUT no se repite dentro de la misma empresa, incluidos los inactivos.
+  /// Otra empresa sí puede tenerlo (JOA-09, sección 2).
+  @@unique([empresaId, rut])
+  /// Destino de las claves foráneas compuestas de documentos y turnos (JOS-04, sección 4).
+  @@unique([id, empresaId])
+  @@map("conductor")
 }
