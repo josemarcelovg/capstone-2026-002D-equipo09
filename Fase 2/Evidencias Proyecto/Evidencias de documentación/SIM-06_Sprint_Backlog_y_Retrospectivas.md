@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (Product Owner) y José Vargas |
 | **Estado** | En curso: se actualiza al inicio y al cierre de cada iteración |
-| **Fecha** | 21-10-2026 |
+| **Fecha** | 21-10-2026 (actualizado el 28-10-2026) |
 
 Este documento registra qué tareas entraron en cada iteración (Sprint Backlog), cómo terminaron y qué aprendió el equipo en cada retrospectiva. Los datos salen del tablero del Project del equipo ("@josemarcelovg's Micrologist"), del historial de pull requests de GitHub y de los documentos [JOA-03](JOA-03_Validacion_Primera_Entrega.md) y [JOA-08](JOA-08_Product_Backlog.md). Los ítems del backlog se citan con su identificador `PB-xx`.
 
@@ -216,6 +216,7 @@ Las reglas de los módulos de conductores (JOA-09, PR #33) y documentos (JOA-10,
 | Fecha | Cambio |
 |---|---|
 | 21-10-2026 | Primera versión: Sprint Backlog de las iteraciones 1, 2 y 3, y datos y temas para sus retrospectivas. |
+| 28-10-2026 | Retrospectivas de las iteraciones 1 a 3 (reunión del 27-10-2026), acciones de mejora aceptadas y planificación de la Iteración 4. |
 
 ---
 
@@ -224,7 +225,8 @@ Las reglas de los módulos de conductores (JOA-09, PR #33) y documentos (JOA-10,
 - [x] Iteraciones y fechas tomadas del tablero (sección 1).
 - [x] Sprint Backlog de las iteraciones 1, 2 y 3, con tareas, responsables, ítems del backlog y PR (sección 3).
 - [x] Datos medibles y temas propuestos para cada retrospectiva (sección 4).
-- [ ] Retrospectivas de las iteraciones 1 y 2 completadas con el equipo (sección 4).
-- [ ] Acciones de mejora aceptadas, con responsable y fecha (sección 5).
-- [ ] Retrospectiva de la Iteración 3 al cierre, el 01-11.
+- [x] Retrospectivas de las iteraciones 1 y 2 completadas con el equipo (sección 4).
+- [x] Acciones de mejora aceptadas, con responsable y fecha (sección 5).
+- [x] Retrospectiva de la Iteración 3 al cierre, hecha el 27-10.
+- [x] Planificación de la Iteración 4 (sección 6).
 - [ ] Revisión de Joaquín y José en el PR.
