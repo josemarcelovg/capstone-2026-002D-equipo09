@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (Product Owner) y José Vargas |
 | **Estado** | En curso: se actualiza al inicio y al cierre de cada iteración |
-| **Fecha** | 21-10-2026 |
+| **Fecha** | 21-10-2026 (actualizado el 28-10-2026) |
 
 Este documento registra qué tareas entraron en cada iteración (Sprint Backlog), cómo terminaron y qué aprendió el equipo en cada retrospectiva. Los datos salen del tablero del Project del equipo ("@josemarcelovg's Micrologist"), del historial de pull requests de GitHub y de los documentos [JOA-03](JOA-03_Validacion_Primera_Entrega.md) y [JOA-08](JOA-08_Product_Backlog.md). Los ítems del backlog se citan con su identificador `PB-xx`.
 
@@ -18,13 +18,14 @@ Las retrospectivas no se inventan: cada una trae los datos medibles de la iterac
 
 **Iteraciones del tablero** (campo *Iteration* del Project):
 
-| Iteración | Fechas | Duración | Estado al 21-10-2026 |
+| Iteración | Fechas | Duración | Estado al 28-10-2026 |
 |---|---|---|---|
 | 1 | 21-09 al 04-10 | 2 semanas | Completada |
 | 2 | 05-10 al 18-10 | 2 semanas | Completada |
-| 3 | 19-10 al 01-11 | 2 semanas | En curso |
+| 3 | 19-10 al 01-11 | 2 semanas | En curso; retrospectiva hecha el 27-10 |
+| 4 | 02-11 al 15-11 | 2 semanas | Planificada (sección 6) |
 
-Que la duración de los sprints sea la de estas iteraciones está **[POR CONFIRMAR]** (JOA-08, sección 8, y README).
+Los sprints duran 2 semanas, igual que estas iteraciones (acordado en la retrospectiva del 27-10-2026).
 
 **Ciclo de cada iteración:**
 
@@ -32,7 +33,7 @@ Que la duración de los sprints sea la de estas iteraciones está **[POR CONFIRM
 2. **Seguimiento** (reunión semanal): se revisa el tablero y los bloqueos.
 3. **Cierre** (último día): se revisa lo terminado según la [Definition of Done](SIM-05_Definition_of_Done.md) y se hace la retrospectiva (sección 4).
 
-**Estados del tablero:** *Todo*, *In progress* y *Done*. Una tarjeta pasa a *Done* cuando cumple sus criterios de aceptación y la Definition of Done, lo que incluye que su PR se una a `main` con un *Approve*. Las tarjetas no tienen estimación (*Estimate* en 0); cómo estimar está **[POR CONFIRMAR]** (JOA-08, sección 8).
+**Estados del tablero:** *Todo*, *In progress* y *Done*. Una tarjeta pasa a *Done* cuando cumple sus criterios de aceptación y la Definition of Done, lo que incluye que su PR se una a `main` con un *Approve*. Desde la Iteración 4, cada tarjeta se estima con una talla de XS a XL (campo *Size*) al planificar la iteración (acordado el 27-10-2026). Las tarjetas de las iteraciones 1 a 3 no tienen estimación.
 
 ---
 
@@ -123,7 +124,7 @@ Cada retrospectiva responde tres preguntas: **qué funcionó**, **qué no funcio
 
 | Qué funcionó | Qué no funcionó | Qué vamos a cambiar |
 |---|---|---|
-| **[POR COMPLETAR EN LA RETROSPECTIVA]** | **[POR COMPLETAR EN LA RETROSPECTIVA]** | **[POR COMPLETAR EN LA RETROSPECTIVA]** |
+| El reparto de tareas quedó bien y se terminaron las 4 tarjetas. | La Definition of Done llegó tarde y el PR #1 se unió antes de que existieran las reglas de trabajo. Faltó organizar mejor los tiempos, porque el proyecto se cruza con la práctica profesional de los tres. | Acordar la Definition of Done y las reglas de trabajo antes de empezar cada módulo. Planificar cada iteración según la carga de la práctica profesional de cada uno. |
 
 ### 4.2 Iteración 2
 
@@ -143,14 +144,16 @@ Cada retrospectiva responde tres preguntas: **qué funcionó**, **qué no funcio
 
 | Qué funcionó | Qué no funcionó | Qué vamos a cambiar |
 |---|---|---|
-| **[POR COMPLETAR EN LA RETROSPECTIVA]** | **[POR COMPLETAR EN LA RETROSPECTIVA]** | **[POR COMPLETAR EN LA RETROSPECTIVA]** |
+| Se terminaron las 8 tarjetas y avanzó harto la documentación. | Por apuro, se unieron PR sin revisión (10 de 16). El inicio de sesión partió tarde y frenó el cierre de la primera entrega. | Activar en `main` la regla que exige una aprobación antes de unir un PR. Al planificar, partir por las tareas que bloquean a otras. |
 
-### 4.3 Iteración 3 (se completa al cierre, el 01-11)
+### 4.3 Iteración 3
 
-**Datos al 21-10:**
+**Datos** (retrospectiva del 27-10-2026):
 
 - SIM-02, SIM-03 y SIM-04 unidas, las tres con *Approve* (PR #21 a #23).
 - Primera entrega: 14 de 14 criterios de JOA-01 aprobados en las pruebas de SIM-03.
+- Primera entrega cerrada: demo ensayada con inicio de sesión y README probado por José en su notebook (12 minutos, sin problemas).
+- Los 16 PR unidos en la iteración (#21 a #36) tienen *Approve*.
 - Un error abierto: ERR-01, con 3 vulnerabilidades altas en las dependencias ([SIM-04](SIM-04_Plan_de_Pruebas.md), sección 9).
 - El tablero no refleja el avance: el 21-10, SIM-02, SIM-03 y SIM-04 seguían en *Todo*, y SIM-04 y SIM-06 no tenían iteración asignada.
 
@@ -160,32 +163,45 @@ Cada retrospectiva responde tres preguntas: **qué funcionó**, **qué no funcio
 
 | Qué funcionó | Qué no funcionó | Qué vamos a cambiar |
 |---|---|---|
-| **[POR COMPLETAR EN LA RETROSPECTIVA]** | **[POR COMPLETAR EN LA RETROSPECTIVA]** | **[POR COMPLETAR EN LA RETROSPECTIVA]** |
+| Se cerró la primera entrega (14 de 14 criterios, demo ensayada) y todos los PR pasaron por revisión. | El tablero se atrasó: había tarjetas terminadas que seguían en *Todo*. ERR-01 sigue abierto y bloquea el inicio de conductores. | Quien aprieta *Merge* mueve la tarjeta a *Done* en ese mismo momento. Cerrar ERR-01 (JOS-07) el 02-11. |
 
 ---
 
 ## 5. Acciones de mejora
 
-Las acciones nacen de los temas de la sección 4 y quedan como **propuestas** hasta que el equipo las acepte en la retrospectiva.
+Las acciones nacen de los temas de la sección 4. Estas se acordaron en la retrospectiva del 27-10-2026. Las acciones propuestas "regularizar los PR unidos sin *Approve*" y "avisar antes de mover carpetas" se descartaron.
 
 | # | Acción | Origen | Responsable | Fecha | Estado |
 |---|---|---|---|---|---|
-| 1 | Exigir una aprobación antes de unir un PR a `main` (regla de protección de la rama). | Iteración 2 | José, como dueño del repositorio | **[POR CONFIRMAR]** | Propuesta |
-| 2 | Regularizar los PR unidos sin *Approve* con una revisión posterior (JOA-03, sección 7.2). | Iteración 2 | Simón y José | **[POR CONFIRMAR]** | Propuesta |
-| 3 | Avisar en la reunión semanal antes de cambiar la estructura de carpetas. | Iteración 2 | Todos | — | Propuesta |
-| 4 | Mantener el tablero al día: asignar la iteración a cada tarjeta y moverla a *Done* cuando se une su PR. | Iteración 3 | Simón (SIM-01) | **[POR CONFIRMAR]** | Propuesta |
-| 5 | Confirmar que los sprints duran 2 semanas, como las iteraciones del tablero. | Iteraciones 1 a 3 | Todos | Próxima reunión | Propuesta |
+| 1 | Activar en `main` la regla que exige una aprobación antes de unir un PR. | Iteración 2 | José, como dueño del repositorio | 02-11 | Aceptada |
+| 2 | Acordar la Definition of Done y las reglas de trabajo antes de empezar cada módulo. | Iteración 1 | Todos | Al inicio de cada módulo | Aceptada |
+| 3 | Planificar cada iteración según la carga de la práctica profesional de cada uno. | Iteración 1 | Todos | En cada planificación | Aceptada |
+| 4 | Al planificar, partir por las tareas que bloquean a otras. | Iteración 2 | Joaquín (Product Owner) | En cada planificación | Aceptada |
+| 5 | Quien aprieta *Merge* mueve la tarjeta a *Done* en ese mismo momento. | Iteración 3 | Quien hace el *Merge* | Desde el 27-10 | Aceptada |
+| 6 | Cerrar ERR-01 actualizando Next.js (JOS-07). | Iteración 3 | José | 02-11 | Aceptada |
+| 7 | Sprints de 2 semanas, igual que las iteraciones del tablero. | Iteraciones 1 a 3 | Todos | Desde la Iteración 4 | Aceptada |
 
 ---
 
-## 6. Próxima planificación
+## 6. Iteración 4 · 02-11 al 15-11
 
-**Iteración 4:** 02-11 al 15-11, si se mantiene la duración de 2 semanas **[POR CONFIRMAR]**. El tablero todavía no tiene creada esa iteración.
+Planificada en la reunión del 27-10-2026.
 
-Candidatos para la planificación (la prioridad la decide el Product Owner):
+**Objetivo:** cerrar ERR-01, desplegar en Vercel y terminar el módulo de conductores (registrar, listar, editar y desactivar), probado con dos empresas ficticias.
 
-- **Cerrar la primera entrega:** corregir ERR-01, ejecutar los casos pendientes del plan de pruebas (SIM-04, sección 9) y desplegar en Vercel.
-- **Preparar el MVP completo:** escribir las reglas de los módulos antes de desarrollarlos (JOA-08, sección 8), empezando por conductores (PB-08 a PB-10) y documentos (PB-11 a PB-13).
+| Orden | Tarea | Responsable | Talla | Depende de |
+|---|---|---|---|---|
+| 1 | [JOS-07] Cerrar ERR-01 (actualizar Next.js), el 02-11 | José | S | — |
+| 2 | [JOS-09] Tabla de conductores, migración con RLS y datos de prueba | Simón | M | JOS-07 |
+| 3 | [JOS-10] Validación y acceso a datos de conductores | Joaquín | M | JOS-09 |
+| 4 | [JOA-11] y [JOA-12] Pantallas de conductores | Joaquín | M | JOS-10 |
+| 5 | [SIM-08] Pruebas de conductores (y CP-INT-17 a 20 en SIM-04) | Simón | M | JOA-12 |
+| 6 | [SIM-10] Desplegar la aplicación en Vercel | Simón, con apoyo de José | M | JOS-07 |
+| — | [SIM-06] Registrar esta retrospectiva | Simón | XS | — |
+
+Las reglas de los módulos de conductores (JOA-09, PR #33) y documentos (JOA-10, PR #35) y el cierre de la primera entrega (JOA-03, PR #36) ya se unieron a `main` en la Iteración 3. [SIM-09] (fechas en hora de Chile) pasa a la Iteración 5, porque recién se necesita para el módulo de documentos.
+
+**Reunión de seguimiento:** jueves 06-11 en la noche, unos 20 minutos.
 
 ---
 
@@ -200,6 +216,7 @@ Candidatos para la planificación (la prioridad la decide el Product Owner):
 | Fecha | Cambio |
 |---|---|
 | 21-10-2026 | Primera versión: Sprint Backlog de las iteraciones 1, 2 y 3, y datos y temas para sus retrospectivas. |
+| 28-10-2026 | Retrospectivas de las iteraciones 1 a 3 (reunión del 27-10-2026), acciones de mejora aceptadas y planificación de la Iteración 4. |
 
 ---
 
@@ -208,7 +225,8 @@ Candidatos para la planificación (la prioridad la decide el Product Owner):
 - [x] Iteraciones y fechas tomadas del tablero (sección 1).
 - [x] Sprint Backlog de las iteraciones 1, 2 y 3, con tareas, responsables, ítems del backlog y PR (sección 3).
 - [x] Datos medibles y temas propuestos para cada retrospectiva (sección 4).
-- [ ] Retrospectivas de las iteraciones 1 y 2 completadas con el equipo (sección 4).
-- [ ] Acciones de mejora aceptadas, con responsable y fecha (sección 5).
-- [ ] Retrospectiva de la Iteración 3 al cierre, el 01-11.
+- [x] Retrospectivas de las iteraciones 1 y 2 completadas con el equipo (sección 4).
+- [x] Acciones de mejora aceptadas, con responsable y fecha (sección 5).
+- [x] Retrospectiva de la Iteración 3 al cierre, hecha el 27-10.
+- [x] Planificación de la Iteración 4 (sección 6).
 - [ ] Revisión de Joaquín y José en el PR.
