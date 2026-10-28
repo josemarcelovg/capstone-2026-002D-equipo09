@@ -27,6 +27,7 @@ export async function MenuSesion() {
           href="/empresa"
           className="hidden text-sm text-zinc-600 hover:text-zinc-900 hover:underline sm:inline"
           title="Mi empresa"
+          aria-label={`Mi empresa: ${usuario.empresaNombre}`}
         >
           {usuario.empresaNombre}
         </Link>
@@ -48,8 +49,9 @@ export async function MenuSesion() {
       {/* En celular no cabe junto a "Cerrar sesión": va en una segunda línea (observación 2 de SIM-03). */}
       <Link
         href="/empresa"
-        className="order-last basis-full truncate text-xs text-zinc-600 hover:underline sm:hidden"
+        className="order-last block basis-full truncate py-1.5 text-xs text-zinc-600 hover:underline sm:hidden"
         title="Mi empresa"
+        aria-label={`Mi empresa: ${usuario.empresaNombre}`}
       >
         {usuario.empresaNombre}
       </Link>
