@@ -48,7 +48,7 @@ Fuera de este módulo:
 | Plazos saltados | Si un plazo no se avisó a tiempo, **solo se manda el plazo que corresponde hoy**; los anteriores no se envían atrasados. | Nunca llega "vence en 7 días" cuando faltan 5. El correo siempre dice los días reales. |
 | Dueños inactivos (PB-16) | Los documentos de vehículos y conductores **inactivos no generan avisos**. | Igual que en el listado de documentos (JOA-10, sección 2). |
 | Renovación | Un documento renovado (fecha nueva) empieza de cero sus 4 avisos. | Los avisos se registran con la fecha de vencimiento que tenía el documento (JOS-04, sección 3.7). |
-| Fecha | Iteración 6 (16-11 al 29-11). Requiere el módulo de documentos (Iteración 5) y la aplicación desplegada en Vercel (Iteración 4). | Sin documentos no hay qué avisar, y el envío diario necesita la aplicación publicada. |
+| Fecha | Iteración 6 (30-11 al 13-12). Requiere el módulo de documentos (Iteración 5) y la aplicación desplegada en Vercel (Iteración 4). | Sin documentos no hay qué avisar, y el envío diario necesita la aplicación publicada. |
 
 ---
 
