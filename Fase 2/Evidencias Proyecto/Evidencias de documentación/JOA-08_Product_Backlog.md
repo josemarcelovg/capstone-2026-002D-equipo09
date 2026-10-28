@@ -6,7 +6,7 @@
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Revisión** | José Vargas y Simón Jofré |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 12-10-2026 |
+| **Fecha** | 12-10-2026 (actualizado el 28-10-2026) |
 | **Actualización** | 18-10-2026 (cierre de la Iteración 2) |
 
 Este documento reúne todo lo que MicroLogist debe hacer, ordenado por prioridad. Parte de la [Product Vision](JOA-04_Product_Vision.md) y de las reglas de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md). De aquí salen los ítems de cada Sprint Backlog (SIM-06) y los casos del plan de pruebas (SIM-04). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
@@ -369,7 +369,7 @@ Este ítem responde a la necesidad 3 de la Product Vision ("ver el estado de la 
 **Evolución futura** (después del plazo del capstone, sección 7.1 de la Product Vision):
 
 - Varios usuarios por empresa con roles (por ejemplo, un operador que no puede desactivar).
-- Registro público, para que una empresa se inscriba sola **[POR CONFIRMAR]** (JOA-01, sección 2.3).
+- Registro público, para que una empresa se inscriba sola. Queda fuera del MVP (acordado el 27-10-2026; JOA-01, sección 2.3).
 - Reportes y analítica.
 
 **Fuera de alcance** (no se hará, sección 1.4 de JOA-01): GPS y seguimiento de rutas, aplicación móvil nativa, avisos por WhatsApp, SMS o notificaciones push, pagos y facturación, integraciones con organismos externos e inteligencia artificial.
@@ -378,8 +378,8 @@ Este ítem responde a la necesidad 3 de la Product Vision ("ver el estado de la 
 
 ## 8. Pendientes de este backlog
 
-- **Estimación:** los ítems no tienen estimación. El equipo decidirá si usa puntos o tallas y estimará cada ítem al planificar el sprint **[POR CONFIRMAR]**.
-- **Sprints:** el tablero del Project usa iteraciones de 14 días (Iteración 3: 19-10 al 01-11), pero el equipo todavía no confirma esa duración como la de los sprints **[POR CONFIRMAR]**. La asignación de ítems a cada sprint se registra en el Sprint Backlog (SIM-06).
+- **Estimación:** se estima con tallas XS a XL al planificar cada iteración (acordado el 27-10-2026). La talla de cada tarea queda en el campo *Size* del tablero.
+- **Sprints:** los sprints duran 2 semanas, igual que las iteraciones del tablero (acordado el 27-10-2026). La asignación de ítems a cada sprint se registra en el Sprint Backlog (SIM-06).
 - **Reglas de cada módulo:** conductores, documentos, turnos e ingresos necesitan un documento de reglas como JOA-01 antes de desarrollarse. Ahí se resuelven los **[POR CONFIRMAR]** de sus ítems. Conductores (PB-08 a PB-10): resueltos en [JOA-09](JOA-09_Reglas_Modulo_Conductores.md). Documentos (PB-11 a PB-13): resueltos en [JOA-10](JOA-10_Reglas_Modulo_Documentos.md).
 - **PB-20:** falta decidir si el resumen de la flota entra en el MVP.
 
@@ -398,6 +398,7 @@ Este ítem responde a la necesidad 3 de la Product Vision ("ver el estado de la 
 |---|---|
 | 12-10-2026 | Primera versión del backlog. |
 | 18-10-2026 | Cierre de la Iteración 2: PB-03 pasa a En curso, se agrega el avance de la primera entrega y se anota la duración de las iteraciones del tablero. |
+| 28-10-2026 | Decisiones de la reunión del 27-10-2026: sprints de 2 semanas, estimación con tallas y registro público fuera del MVP (secciones 7 y 8). |
 
 ---
 
