@@ -168,15 +168,17 @@ Cada retrospectiva responde tres preguntas: **qué funcionó**, **qué no funcio
 
 ## 5. Acciones de mejora
 
-Las acciones nacen de los temas de la sección 4 y quedan como **propuestas** hasta que el equipo las acepte en la retrospectiva.
+Las acciones nacen de los temas de la sección 4. Estas se acordaron en la retrospectiva del 27-10-2026. Las acciones propuestas "regularizar los PR unidos sin *Approve*" y "avisar antes de mover carpetas" se descartaron.
 
 | # | Acción | Origen | Responsable | Fecha | Estado |
 |---|---|---|---|---|---|
-| 1 | Exigir una aprobación antes de unir un PR a `main` (regla de protección de la rama). | Iteración 2 | José, como dueño del repositorio | **[POR CONFIRMAR]** | Propuesta |
-| 2 | Regularizar los PR unidos sin *Approve* con una revisión posterior (JOA-03, sección 7.2). | Iteración 2 | Simón y José | **[POR CONFIRMAR]** | Propuesta |
-| 3 | Avisar en la reunión semanal antes de cambiar la estructura de carpetas. | Iteración 2 | Todos | — | Propuesta |
-| 4 | Mantener el tablero al día: asignar la iteración a cada tarjeta y moverla a *Done* cuando se une su PR. | Iteración 3 | Simón (SIM-01) | **[POR CONFIRMAR]** | Propuesta |
-| 5 | Confirmar que los sprints duran 2 semanas, como las iteraciones del tablero. | Iteraciones 1 a 3 | Todos | Próxima reunión | Propuesta |
+| 1 | Activar en `main` la regla que exige una aprobación antes de unir un PR. | Iteración 2 | José, como dueño del repositorio | 02-11 | Aceptada |
+| 2 | Acordar la Definition of Done y las reglas de trabajo antes de empezar cada módulo. | Iteración 1 | Todos | Al inicio de cada módulo | Aceptada |
+| 3 | Planificar cada iteración según la carga de la práctica profesional de cada uno. | Iteración 1 | Todos | En cada planificación | Aceptada |
+| 4 | Al planificar, partir por las tareas que bloquean a otras. | Iteración 2 | Joaquín (Product Owner) | En cada planificación | Aceptada |
+| 5 | Quien aprieta *Merge* mueve la tarjeta a *Done* en ese mismo momento. | Iteración 3 | Quien hace el *Merge* | Desde el 27-10 | Aceptada |
+| 6 | Cerrar ERR-01 actualizando Next.js (JOS-07). | Iteración 3 | José | 02-11 | Aceptada |
+| 7 | Sprints de 2 semanas, igual que las iteraciones del tablero. | Iteraciones 1 a 3 | Todos | Desde la Iteración 4 | Aceptada |
 
 ---
 
