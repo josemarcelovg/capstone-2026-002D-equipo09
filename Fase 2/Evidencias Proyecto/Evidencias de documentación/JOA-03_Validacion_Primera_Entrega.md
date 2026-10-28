@@ -5,7 +5,7 @@
 | **Tarea** | [JOA-03] Validar primera entrega y preparar demostración |
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Revisión** | José Vargas (vehículos y datos) y Simón Jofré (acceso y pruebas) |
-| **Estado** | En curso: falta ensayar el guion completo y probar el README en otro computador |
+| **Estado** | Terminada: demo ensayada con inicio de sesión y README probado por otro integrante |
 | **Fecha** | 27-10-2026 (primera versión: 18-10-2026) |
 
 Este documento sirve para dos cosas: comprobar que la primera entrega cumple lo acordado en la [sección 7 de JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md) y en la [Definition of Done](SIM-05_Definition_of_Done.md) (sección 5), y guiar la demostración para la profesora. Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
@@ -44,11 +44,11 @@ Estado real al 27-10-2026. Las tareas son las de la sección 5 de la Definition 
 
 ### 3.1 El día anterior
 
-- [ ] Actualizar `main` y seguir el README: `npm install`, `npm run db:deploy`, `npm run db:seed` y `npm run db:comprobar`.
-- [ ] `npm run build`, `npm run lint` y `npm test` terminan sin errores (Definition of Done, sección 3.1).
-- [ ] `npm run dev` y abrir http://localhost:3000. Usar `localhost` y no la dirección "Network", que Next.js bloquea en modo desarrollo.
-- [ ] Elegir la patente que se registrará en la demo (sección 3.3) y comprobar que no existe.
-- [ ] Ensayar el guion completo con el equipo al menos una vez.
+- [x] Actualizar `main` y seguir el README: `npm install`, `npm run db:deploy`, `npm run db:seed` y `npm run db:comprobar`.
+- [x] `npm run build`, `npm run lint` y `npm test` terminan sin errores (Definition of Done, sección 3.1).
+- [x] `npm run dev` y abrir http://localhost:3000. Usar `localhost` y no la dirección "Network", que Next.js bloquea en modo desarrollo.
+- [x] Elegir la patente que se registrará en la demo (sección 3.3) y comprobar que no existe.
+- [x] Ensayar el guion completo con el equipo al menos una vez.
 
 ### 3.2 Datos de prueba
 
@@ -178,7 +178,7 @@ Se comprueba con RNF-DIS-05 de [JOA-05](JOA-05_Requisitos_No_Funcionales.md): ot
 
 | Fecha | Quién | Computador | Tiempo | Resultado |
 |---|---|---|---|---|
-| Pendiente | | | | |
+| 27-10-2026 | José Vargas | Su notebook | 12 minutos | Sin problemas. Cumple la meta de menos de 15 minutos (RNF-DIS-05). |
 
 Observación del 18-10-2026: en Windows, clonar el repositorio dentro de una carpeta con una ruta muy larga falla con el error "Filename too long". El README ya recomienda usar una carpeta corta, como `C:\Proyectos`.
 
@@ -207,8 +207,8 @@ Las iteraciones quedan sujetas al acuerdo del equipo (SIM-01).
 
 - ~~SIM-02 terminado y JOA-02 y JOS-03 integrados con la sesión.~~ Hecho (PR #21; integración comprobada en SIM-03). Falta marcar los criterios de JOA-02 y JOS-03 en el tablero.
 - ~~Pruebas de SIM-03 ejecutadas con las dos empresas ficticias y sin errores que bloqueen el flujo.~~ Hecho (PR #22).
-- Guion completo ensayado con el equipo, con inicio de sesión.
-- README probado por otro integrante (sección 6.3).
+- ~~Guion completo ensayado con el equipo, con inicio de sesión.~~ Hecho.
+- ~~README probado por otro integrante (sección 6.3).~~ Hecho: José, 12 minutos.
 - Decisiones **[POR CONFIRMAR]** que afectan esta entrega: duración de la sesión (RNF-SEG-06) y duración de los sprints. El largo mínimo de la contraseña quedó en 8 caracteres (SIM-02).
 - Los PR #1, #5, #6, #7, #8, #9 y #14 se unieron sin un Approve registrado. Se regularizan con la revisión de José y Simón de los documentos correspondientes (Definition of Done, sección 2).
 
@@ -219,7 +219,7 @@ Las iteraciones quedan sujetas al acuerdo del equipo (SIM-01).
 - [x] Guion de la demostración y matriz de validación preparados (secciones 4 y 5).
 - [x] Reglas del módulo de vehículos contrastadas con el código (sección 6.1).
 - [x] Tablero actualizado según lo realmente terminado (sección 6.4).
-- [ ] Demostración completa, con inicio de sesión, ensayada con el equipo.
+- [x] Demostración completa, con inicio de sesión, ensayada con el equipo.
 - [x] Sin errores que bloqueen el flujo principal, según las pruebas de SIM-03.
-- [ ] README probado por otro integrante en otro computador (sección 6.3).
-- [ ] Revisión de José y Simón en el PR.
+- [x] README probado por otro integrante en otro computador (sección 6.3).
+- [x] Revisión de José y Simón en el PR (#17 y #32).
