@@ -6,7 +6,7 @@
 | **Responsable** | José Vargas (Developer) |
 | **Revisión** | Simón Jofré (relación usuario–empresa con SIM-02) |
 | **Estado** | En revisión |
-| **Fecha** | 16-10-2026 |
+| **Fecha** | 16-10-2026 (actualizado el 28-10-2026) |
 
 Este documento explica cómo quedó la base de datos de la primera entrega y cómo levantarla. Las reglas vienen de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), secciones 2.2 y 3. El diagrama entidad-relación y el diccionario completo se harán en **JOS-04**.
 
@@ -69,7 +69,7 @@ No existe eliminar: las relaciones están en `RESTRICT`, así que no se puede bo
 
 Se usa el *session pooler* y no la conexión directa (`db.xxx.supabase.co`) porque la directa solo funciona con IPv6 en el plan gratuito, y muchas redes domésticas no lo tienen.
 
-**[POR CONFIRMAR]:** si el equipo comparte un solo proyecto de desarrollo en Supabase (invitando a los tres a la organización) o cada uno crea el suyo. Las credenciales se obtienen desde el panel de Supabase; nunca se envían por chat ni se suben al repositorio.
+**Proyectos del equipo** (acordado el 27-10-2026): los tres comparten un solo proyecto de desarrollo en Supabase, invitados a la organización, y producción usa otro proyecto aparte. Las credenciales se obtienen desde el panel de Supabase; nunca se envían por chat ni se suben al repositorio.
 
 ---
 

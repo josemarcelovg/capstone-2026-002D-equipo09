@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | José Vargas (código y relación usuario–empresa) y Joaquín Orellana (criterios de JOA-01) |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 16-10-2026 |
+| **Fecha** | 16-10-2026 (actualizado el 28-10-2026) |
 
 Este documento explica cómo funciona el inicio de sesión de MicroLogist, qué decisiones se tomaron y cómo configurarlo. Cubre los ítems **PB-01**, **PB-02** y **PB-03** del [Product Backlog](JOA-08_Product_Backlog.md) y los criterios 7.1 a 7.4 de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md). Las pruebas formales con dos empresas las hace **SIM-03**. Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -87,10 +87,10 @@ Esto resuelve el **[POR CONFIRMAR]** de [JOS-05](JOS-05_Entorno_Docker.md): **Do
 | Fallas del servicio | "No pudimos iniciar sesión. Intenta nuevamente." El detalle queda solo en el registro del servidor. | RNF-SEG-09: sin detalles técnicos en pantalla. |
 | Cuenta sin perfil en `usuario` | Se cierra la sesión y se muestra "Tu cuenta no tiene una empresa asignada. Contacta al equipo de MicroLogist." | Sin perfil no se sabe a qué empresa pertenece. Este mensaje aparece solo con credenciales correctas. |
 | Después de iniciar sesión | Siempre al listado de vehículos | JOA-01 criterio 7.1. No se recuerda la página pedida, para evitar redirecciones a sitios externos. |
-| Alcance del cierre de sesión | Solo en ese navegador | Cerrar sesión en un equipo no saca a quien usa la misma cuenta de prueba en otro. **[POR CONFIRMAR]** si se prefiere cerrar en todos los dispositivos. |
+| Alcance del cierre de sesión | Solo en ese navegador | Cerrar sesión en un equipo no saca a quien usa la misma cuenta de prueba en otro. Se mantiene así (acordado el 27-10-2026). |
 | Perfiles de las cuentas de prueba | Se crean a mano con `Base de datos/perfiles-prueba.sql` | Resuelve el **[POR CONFIRMAR]** de JOS-02 (sección 7). Basta para la primera entrega; un trigger en la base de datos queda para cuando exista el registro público. |
 | Largo mínimo de la contraseña | 8 caracteres, configurado en Supabase (sección 5) | Umbral de RNF-SEG-06 que le tocaba confirmar a Simón. |
-| Duración de la sesión | Configuración por defecto de Supabase: el token de acceso dura 1 hora y se renueva solo mientras se usa la aplicación; la sesión termina al cerrarla. | RNF-SEG-06. Limitar la duración total o por inactividad queda **[POR CONFIRMAR]**: se configura en Supabase (Authentication > Sessions) y hay que revisar si el plan gratuito lo permite. |
+| Duración de la sesión | Configuración por defecto de Supabase: el token de acceso dura 1 hora y se renueva solo mientras se usa la aplicación; la sesión termina al cerrarla. | RNF-SEG-06. En el MVP no se limita la duración total ni por inactividad (acordado el 27-10-2026). Si se necesita después, se configura en Supabase (Authentication > Sessions), revisando antes si el plan gratuito lo permite. |
 | Registro público | Desactivado en Supabase (sección 5) | La clave anónima es pública: con el registro activo, cualquiera podría crear una cuenta usando la API de Supabase. Aunque la creara, sin perfil no vería datos. |
 
 **Otros cambios del PR:**

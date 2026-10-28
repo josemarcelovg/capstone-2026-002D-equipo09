@@ -6,7 +6,7 @@
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Revisión** | Simón Jofré (seguridad) y José Vargas (rendimiento y datos) |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 12-10-2026 |
+| **Fecha** | 12-10-2026 (actualizado el 28-10-2026) |
 
 Los requisitos no funcionales dicen **cómo** debe comportarse MicroLogist: qué tan seguro, rápido, fácil de usar, compatible y disponible debe ser. Lo que el sistema hace está en las reglas de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md) y en el Product Backlog (JOA-08).
 
@@ -42,11 +42,11 @@ A coordinar con Simón (SIM-02 y SIM-03).
 | RNF-SEG-03 | La empresa del usuario se toma de la sesión, nunca de lo que envía el navegador. | Enviar un `empresa_id` distinto en el formulario o en la solicitud no cambia la empresa del registro. | Modificar la solicitud con las herramientas del navegador y comprobar en la base de datos a qué empresa quedó asociado el registro. | Primera entrega |
 | RNF-SEG-04 | Todos los datos se validan en el servidor. | El 100 % de los datos inválidos de la sección 6.2 de JOA-01 se rechaza, también cuando se envían sin pasar por el formulario. | Enviar solicitudes directas con datos inválidos. Ejecutar las pruebas automáticas del esquema de validación. | Primera entrega |
 | RNF-SEG-05 | Las contraseñas no se guardan en nuestras tablas y el inicio de sesión no revela si el correo existe. | No hay ninguna columna de contraseña en el modelo de datos. El mensaje de error es idéntico para un correo que no existe y para una contraseña incorrecta. | Revisar el esquema de Prisma. Probar ambos casos en el inicio de sesión (JOA-01, criterio 7.2). | Primera entrega |
-| RNF-SEG-06 | Las contraseñas y las sesiones tienen reglas mínimas. | Largo mínimo de la contraseña: 8 caracteres, configurado en Supabase Auth ([SIM-02](SIM-02_Inicio_de_Sesion.md), sección 4). Duración de la sesión: **[POR CONFIRMAR]**. Una sesión vencida redirige al inicio de sesión sin mostrar datos. | Revisar la configuración de Supabase Auth. Probar con una sesión vencida. | Primera entrega |
+| RNF-SEG-06 | Las contraseñas y las sesiones tienen reglas mínimas. | Largo mínimo de la contraseña: 8 caracteres, configurado en Supabase Auth ([SIM-02](SIM-02_Inicio_de_Sesion.md), sección 4). Duración de la sesión: la de Supabase por defecto, con un token de acceso de 1 hora que se renueva solo y sin límite por inactividad en el MVP (acordado el 27-10-2026). Una sesión vencida redirige al inicio de sesión sin mostrar datos. | Revisar la configuración de Supabase Auth. Probar con una sesión vencida. | Primera entrega |
 | RNF-SEG-07 | No hay secretos en el repositorio. | 0 contraseñas, claves o archivos `.env` en el repositorio y en su historial. Las claves viven en variables de entorno. | Revisión en cada pull request (Definition of Done) y búsqueda de claves en el historial antes de cada entrega. | Primera entrega |
 | RNF-SEG-08 | La aplicación desplegada usa una conexión cifrada. | El 100 % de las páginas se sirve por HTTPS. Entrar por `http://` redirige a `https://`. | Abrir la dirección desplegada con `http://` y comprobar la redirección y el candado del navegador. | Primera entrega |
 | RNF-SEG-09 | Los errores no muestran detalles técnicos. | Ningún mensaje al usuario incluye trazas de error, consultas ni nombres de tablas. | Forzar errores (por ejemplo, con la base de datos desconectada en un entorno de prueba) y revisar lo que aparece en pantalla. | Primera entrega |
-| RNF-SEG-10 | Las dependencias no tienen vulnerabilidades graves conocidas. | `npm audit --omit=dev` no informa vulnerabilidades altas ni críticas **[POR CONFIRMAR]**. | Ejecutar el comando antes de cada entrega y guardar el resultado como evidencia. | Primera entrega |
+| RNF-SEG-10 | Las dependencias no tienen vulnerabilidades graves conocidas. | `npm audit --omit=dev` no informa vulnerabilidades altas ni críticas (umbral acordado el 27-10-2026). | Ejecutar el comando antes de cada entrega y guardar el resultado como evidencia. | Primera entrega |
 
 ---
 
@@ -108,7 +108,7 @@ La disponibilidad depende de los planes gratuitos o de bajo costo de Vercel, Sup
 
 ## 7. Relación con el plan de pruebas (SIM-04)
 
-SIM-04 define cuatro tipos de prueba. Esta tabla indica qué requisitos cubre cada tipo. El identificador de cada caso de prueba lo asignará SIM-04; cuando exista, se agregará aquí.
+SIM-04 define los tipos de prueba. Esta tabla indica qué requisitos cubre cada tipo. El identificador de cada caso de prueba lo asignará SIM-04; cuando exista, se agregará aquí.
 
 | Tipo de prueba | Requisitos que debe cubrir | Caso de prueba |
 |---|---|---|
@@ -116,8 +116,9 @@ SIM-04 define cuatro tipos de prueba. Esta tabla indica qué requisitos cubre ca
 | **Funcionales** | RNF-USA-03, RNF-USA-04, RNF-USA-05, RNF-DIS-02 y RNF-DIS-04 | Por asignar en SIM-04 |
 | **Compatibilidad** | RNF-COM-01 a RNF-COM-05 | Por asignar en SIM-04 |
 | **Usabilidad** | RNF-USA-01, RNF-USA-02 y RNF-USA-06 | Por asignar en SIM-04 |
+| **Rendimiento y disponibilidad** | RNF-REN-01 a RNF-REN-04, RNF-DIS-01, RNF-DIS-03 y RNF-DIS-05 | Por asignar en SIM-04 |
 
-Los requisitos de rendimiento (RNF-REN-01 a RNF-REN-04) y los de disponibilidad que faltan (RNF-DIS-01, RNF-DIS-03 y RNF-DIS-05) no calzan en esos cuatro tipos. Falta decidir si SIM-04 agrega un tipo de prueba para ellos o si se comprueban aparte **[POR CONFIRMAR]**.
+Los requisitos de rendimiento y los de disponibilidad que no calzaban en los otros cuatro tipos tienen un quinto tipo, *Rendimiento y disponibilidad*, acordado el 27-10-2026 (SIM-04, sección 2).
 
 Requisitos que ya tienen un criterio de aceptación en la sección 7 de JOA-01, y que SIM-03 probará en la primera entrega:
 
@@ -135,9 +136,9 @@ Requisitos que ya tienen un criterio de aceptación en la sección 7 de JOA-01, 
 
 | Quién lo confirma | Qué falta acordar |
 |---|---|
-| **Simón** (seguridad) | Duración de la sesión (RNF-SEG-06; el largo mínimo de la contraseña quedó en 8 caracteres en SIM-02). Nivel de vulnerabilidades aceptado (RNF-SEG-10). |
+| **Simón** (seguridad) | Nada. El 27-10-2026 se acordaron la duración de la sesión (RNF-SEG-06) y el nivel de vulnerabilidades aceptado (RNF-SEG-10); el largo mínimo de la contraseña ya había quedado en 8 caracteres en SIM-02. |
 | **José** (rendimiento y datos) | Tiempos de carga y de respuesta (RNF-REN-01 y RNF-REN-02). Cantidad de vehículos por empresa (RNF-REN-03). Tiempo del proceso de avisos (RNF-REN-04). Frecuencia del respaldo (RNF-DIS-03). |
-| **Los tres** | Metas de las pruebas con usuarios (RNF-USA-01 y RNF-USA-02). Contraste y puntaje de accesibilidad (RNF-USA-06). Anchos de tablet y computador y lista de navegadores (RNF-COM-02 a RNF-COM-04). Porcentaje de disponibilidad y forma de medirlo (RNF-DIS-01). Si se agrega un tipo de prueba para rendimiento y disponibilidad (sección 7). |
+| **Los tres** | Metas de las pruebas con usuarios (RNF-USA-01 y RNF-USA-02). Contraste y puntaje de accesibilidad (RNF-USA-06). Anchos de tablet y computador y lista de navegadores (RNF-COM-02 a RNF-COM-04). Porcentaje de disponibilidad y forma de medirlo (RNF-DIS-01). |
 
 ---
 

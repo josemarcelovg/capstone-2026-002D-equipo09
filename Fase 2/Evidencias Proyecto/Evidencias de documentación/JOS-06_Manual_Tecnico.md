@@ -6,7 +6,7 @@
 | **Responsable** | José Vargas (Developer). Aportan Simón Jofré y Joaquín Orellana. |
 | **Revisión** | Simón Jofré y Joaquín Orellana |
 | **Versión** | 0.1 · primera entrega en curso |
-| **Fecha** | 16-10-2026 |
+| **Fecha** | 16-10-2026 (actualizado el 28-10-2026) |
 
 Este manual explica **cómo está construido MicroLogist y cómo se instala, configura, despliega y mantiene**. Está pensado para quien desarrolla o administra el sistema: el equipo, la profesora o quien continúe el proyecto. No es el manual de usuario: no explica cómo usar las pantallas.
 
@@ -80,7 +80,7 @@ Reglas de diseño que siguen todas las pantallas:
 | Prisma ORM | 7.10.1 | Esquema, migraciones y consultas. Usa el adaptador `@prisma/adapter-pg` con el driver `pg` |
 | PostgreSQL | 17 en Docker; la versión de Supabase la define el proyecto | Base de datos |
 | Supabase | Plan gratuito | Hospeda PostgreSQL y, desde SIM-02, el inicio de sesión |
-| Vercel | **[POR CONFIRMAR]** | Despliegue |
+| Vercel | Se configura en la Iteración 4 (SIM-10) | Despliegue |
 | Docker | Docker Desktop | Entorno local opcional (JOS-05) |
 
 Las versiones exactas están en `package.json` y `package-lock.json`. Prisma se fijó en 7.10.1 porque, al 16-10-2026, la etiqueta "latest" de su CLI apunta a una versión 8 en prueba.
@@ -211,7 +211,7 @@ La Definition of Done exige que `build` y `lint` pasen antes de unir un PR ([SIM
 
 ### 8.1 Vercel (aplicación) · Pendiente
 
-La aplicación todavía no está desplegada. Pasos previstos **[POR CONFIRMAR]**:
+La aplicación todavía no está desplegada. Se despliega en la Iteración 4, del 02-11 al 15-11 (SIM-10, acordado el 27-10-2026). Pasos previstos:
 
 1. Importar el repositorio de GitHub en Vercel y poner como **Root Directory** `Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación`, dejando activada la opción que incluye los archivos fuera de esa carpeta (Prisma necesita `../Base de datos`). Vercel detecta Next.js y usa `npm run build`. `npm install` ejecuta `prisma generate` automáticamente.
 2. Configurar las variables de producción de la sección 5.1 en el panel de Vercel.
@@ -225,8 +225,8 @@ Mientras no exista el inicio de sesión (SIM-02), `empresaDeLaSesion()` falla en
 | Tema | Estado |
 |---|---|
 | Proyecto de desarrollo | `micrologist-dev`, plan gratuito, región West US (Oregon). Migrado y con datos de prueba. |
-| Proyecto de producción | Si se usa uno separado del de desarrollo está **[POR CONFIRMAR]**. |
-| Acceso del equipo | Si los tres comparten el proyecto de desarrollo está **[POR CONFIRMAR]** ([JOS-02](JOS-02_Configuracion_Base_de_Datos.md), sección 3). |
+| Proyecto de producción | Uno aparte del de desarrollo (acordado el 27-10-2026). Se crea con el despliegue en Vercel (sección 8.1). |
+| Acceso del equipo | Los tres comparten el proyecto de desarrollo (acordado el 27-10-2026; [JOS-02](JOS-02_Configuracion_Base_de_Datos.md), sección 3). |
 | Respaldos | Según el plan de Supabase **[POR CONFIRMAR]** (RNF-DIS-03). |
 | Supabase Auth | Pendiente (SIM-02). El `id` de la tabla `usuario` es el de Supabase Auth. |
 
