@@ -188,7 +188,7 @@ Los criterios citan entre paréntesis el número del criterio de aceptación de 
 
 ## 5. Ítems del MVP completo
 
-Antes de desarrollar cada módulo hay que definir sus campos y reglas, como se hizo con los vehículos en JOA-01. Las reglas de conductores (PB-08 a PB-10) están en [JOA-09](JOA-09_Reglas_Modulo_Conductores.md), que resuelve los **[POR CONFIRMAR]** de esos tres ítems cuando se aprueba.
+Antes de desarrollar cada módulo hay que definir sus campos y reglas, como se hizo con los vehículos en JOA-01. Las reglas de conductores (PB-08 a PB-10) están en [JOA-09](JOA-09_Reglas_Modulo_Conductores.md), que resuelve los **[POR CONFIRMAR]** de esos tres ítems. Las de documentos (PB-11 a PB-13) están en [JOA-10](JOA-10_Reglas_Modulo_Documentos.md), que resuelve los de PB-11 a PB-13.
 
 ### PB-08 · Registrar conductor
 
@@ -380,7 +380,7 @@ Este ítem responde a la necesidad 3 de la Product Vision ("ver el estado de la 
 
 - **Estimación:** los ítems no tienen estimación. El equipo decidirá si usa puntos o tallas y estimará cada ítem al planificar el sprint **[POR CONFIRMAR]**.
 - **Sprints:** el tablero del Project usa iteraciones de 14 días (Iteración 3: 19-10 al 01-11), pero el equipo todavía no confirma esa duración como la de los sprints **[POR CONFIRMAR]**. La asignación de ítems a cada sprint se registra en el Sprint Backlog (SIM-06).
-- **Reglas de cada módulo:** conductores, documentos, turnos e ingresos necesitan un documento de reglas como JOA-01 antes de desarrollarse. Ahí se resuelven los **[POR CONFIRMAR]** de sus ítems. Conductores (PB-08 a PB-10): resueltos en [JOA-09](JOA-09_Reglas_Modulo_Conductores.md).
+- **Reglas de cada módulo:** conductores, documentos, turnos e ingresos necesitan un documento de reglas como JOA-01 antes de desarrollarse. Ahí se resuelven los **[POR CONFIRMAR]** de sus ítems. Conductores (PB-08 a PB-10): resueltos en [JOA-09](JOA-09_Reglas_Modulo_Conductores.md). Documentos (PB-11 a PB-13): resueltos en [JOA-10](JOA-10_Reglas_Modulo_Documentos.md).
 - **PB-20:** falta decidir si el resumen de la flota entra en el MVP.
 
 ---
