@@ -58,17 +58,19 @@ export type DatosEmpresa = z.infer<typeof esquemaEmpresa>;
 export type ErroresEmpresa = Partial<Record<keyof DatosEmpresa | "general", string>>;
 
 /**
- * Valida el formulario. Si la empresa ya tiene RUT, se conserva el guardado y se ignora
- * el que venga en el formulario: el RUT no se cambia desde la aplicación.
+ * Valida el formulario. Si la empresa ya tiene RUT, se conserva el guardado tal cual (sin
+ * volver a validarlo) y se ignora el que venga en el formulario: el RUT no se cambia desde
+ * la aplicación. Así un RUT antiguo con otro formato no bloquea el resto de los datos.
  */
 export function validarEmpresa(
   datos: unknown,
   rutGuardado: string | null = null,
 ): { ok: true; datos: DatosEmpresa } | { ok: false; errores: ErroresEmpresa } {
-  const entrada =
-    rutGuardado && datos && typeof datos === "object" ? { ...datos, rut: rutGuardado } : datos;
+  const entrada = rutGuardado && datos && typeof datos === "object" ? { ...datos, rut: "" } : datos;
   const resultado = esquemaEmpresa.safeParse(entrada);
-  if (resultado.success) return { ok: true, datos: resultado.data };
+  if (resultado.success) {
+    return { ok: true, datos: { ...resultado.data, rut: rutGuardado ?? resultado.data.rut } };
+  }
 
   const errores: ErroresEmpresa = {};
   for (const problema of resultado.error.issues) {

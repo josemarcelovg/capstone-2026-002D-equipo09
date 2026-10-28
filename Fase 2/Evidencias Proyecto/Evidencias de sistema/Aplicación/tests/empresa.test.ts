@@ -73,6 +73,13 @@ test("si la empresa ya tiene RUT, se conserva aunque el formulario mande otro", 
   assert.equal(sinRut.datos.rut, "11111111-1");
 });
 
+test("un RUT guardado con otro formato no bloquea el resto de los datos ni se reescribe", () => {
+  const resultado = validarEmpresa({ ...valido, emailContacto: "otro@a.example" }, "123-4");
+  assert.ok(resultado.ok);
+  assert.equal(resultado.datos.rut, "123-4");
+  assert.equal(resultado.datos.emailContacto, "otro@a.example");
+});
+
 test("ignora campos que no son de la empresa", () => {
   const resultado = validarEmpresa({ ...valido, id: "b0000000-0000-4000-8000-000000000002" });
   assert.ok(resultado.ok);

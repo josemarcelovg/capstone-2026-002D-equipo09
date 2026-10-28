@@ -7,6 +7,7 @@ import {
   actualizarMiEmpresa,
   obtenerMiEmpresa,
   RutDeEmpresaDuplicadoError,
+  RutYaRegistradoError,
 } from "@/lib/empresa-datos";
 
 /** Guarda los datos de la empresa de la sesión. Si todo sale bien, recarga la página con un mensaje. */
@@ -26,7 +27,11 @@ export async function guardarEmpresa(formulario: FormData): Promise<ErroresEmpre
     // Sin sesión, empresaDeLaSesion() redirige al login: esa redirección no es un error.
     unstable_rethrow(error);
     if (error instanceof RutDeEmpresaDuplicadoError) {
-      return { rut: "Ese RUT ya está registrado. Revisa que sea el de tu empresa." };
+      // Sin decir que el RUT pertenece a otra empresa, para no revelarlo.
+      return { rut: "No pudimos registrar ese RUT. Revisa que sea el de tu empresa o escríbenos." };
+    }
+    if (error instanceof RutYaRegistradoError) {
+      return { general: "El RUT de tu empresa ya estaba registrado. Recarga la página." };
     }
     console.error(error);
     return { general: "No pudimos guardar los datos. Intenta nuevamente." };
