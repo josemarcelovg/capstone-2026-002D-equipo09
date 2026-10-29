@@ -7,6 +7,7 @@ export const ZONA_HORARIA_CHILE = "America/Santiago";
 
 const DIA_MS = 24 * 60 * 60 * 1000;
 const FORMATO_ISO = /^\d{4}-\d{2}-\d{2}$/;
+const FORMATO_CHILENO = /^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/;
 
 const formateadorChile = new Intl.DateTimeFormat("en-CA", {
   timeZone: ZONA_HORARIA_CHILE,
@@ -60,4 +61,34 @@ export function sumarAnios(fecha: string, anios: number) {
 /** Días de calendario de `desde` a `hasta`: negativo si `hasta` ya pasó. */
 export function diasEntre(desde: string, hasta: string) {
   return Math.round((aMilisegundos(hasta) - aMilisegundos(desde)) / DIA_MS);
+}
+
+/**
+ * Lee lo que escribe el usuario: `01-12-2026`, `1/12/2026` o `2026-12-01` (lo que entrega un
+ * campo de tipo fecha) → `2026-12-01`. Devuelve `null` si la fecha no existe.
+ */
+export function leerFecha(valor: string) {
+  const texto = valor.trim();
+  const chileno = FORMATO_CHILENO.exec(texto);
+  const fecha = chileno
+    ? `${chileno[3]}-${chileno[2].padStart(2, "0")}-${chileno[1].padStart(2, "0")}`
+    : texto;
+  return esFechaValida(fecha) ? fecha : null;
+}
+
+/** `2026-12-01` → `01-12-2026`. Solo para mostrar (JOA-10, sección 3). */
+export function formatearFecha(fecha: string) {
+  const [anio, mes, dia] = fecha.split("-");
+  if (!dia) return fecha;
+  return `${dia}-${mes}-${anio}`;
+}
+
+/** Una columna `date` llega de Prisma como medianoche UTC: se lee su fecha en UTC. */
+export function fechaDesdeBase(valor: Date) {
+  return desdeMilisegundos(valor.getTime());
+}
+
+/** `2026-12-01` → medianoche UTC, que Prisma guarda como ese mismo día en una columna `date`. */
+export function fechaParaBase(fecha: string) {
+  return new Date(aMilisegundos(fecha));
 }
