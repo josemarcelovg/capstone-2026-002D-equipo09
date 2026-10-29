@@ -225,3 +225,4 @@ Para el desarrollo del proyecto se utilizará una metodología ágil e increment
 | [SIM-04 Plan de pruebas](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-04_Plan_de_Pruebas.md>) | Tipos de prueba (incluida la integración), casos con identificador, relación con JOA-05, calendario y estado de cada caso |
 | [SIM-05 Definition of Done](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-05_Definition_of_Done.md>) | Condiciones para dar una tarea por terminada |
 | [SIM-06 Sprint Backlog y retrospectivas](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-06_Sprint_Backlog_y_Retrospectivas.md>) | Tareas de cada iteración, datos para las retrospectivas y acciones de mejora |
+| [SIM-08 Pruebas de conductores](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-08_Pruebas_Conductores.md>) | Los 14 criterios de JOA-09 probados con las dos empresas ficticias y su verificación en la base de datos |
