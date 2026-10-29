@@ -5,8 +5,8 @@
 | **Tarea** | [JOS-06] Redactar manual técnico |
 | **Responsable** | José Vargas (Developer). Aportan Simón Jofré y Joaquín Orellana. |
 | **Revisión** | Simón Jofré y Joaquín Orellana |
-| **Versión** | 0.1 · primera entrega en curso |
-| **Fecha** | 16-10-2026 (actualizado el 28-10-2026) |
+| **Versión** | 0.1.1 |
+| **Fecha** | 16-10-2026 (actualizado el 29-10-2026) |
 
 Este manual explica **cómo está construido MicroLogist y cómo se instala, configura, despliega y mantiene**. Está pensado para quien desarrolla o administra el sistema: el equipo, la profesora o quien continúe el proyecto. No es el manual de usuario: no explica cómo usar las pantallas.
 
@@ -72,7 +72,7 @@ Reglas de diseño que siguen todas las pantallas:
 | Tecnología | Versión | Uso |
 |---|---|---|
 | Node.js | 24 | Entorno de ejecución (el equipo usa 24) |
-| Next.js | 16.3.6 | Framework web (App Router, server actions, Turbopack) |
+| Next.js | 16.4.3 | Framework web (App Router, server actions, Turbopack) |
 | React | 19.2.8 | Interfaz |
 | TypeScript | 5 | Lenguaje |
 | Tailwind CSS | 4 | Estilos adaptables a computador y celular |
@@ -256,7 +256,7 @@ Se implementa con el módulo de documentos (PB-15 y PB-16). Quedan por definir *
 | Contraseñas de usuarios fuera de nuestras tablas | Supabase Auth (SIM-02) |
 | Errores sin detalles técnicos | `src/app/vehiculos/error.tsx` |
 
-**Pendiente conocido:** al 16-10-2026, `npm audit --omit=dev` informa 3 vulnerabilidades altas (`next` 16.3.6, `sharp` y `source-map-js`). Se corrigen actualizando Next.js a 16.4 y ejecutando `npm audit fix` (sección 10).
+**Dependencias al día (JOS-07, 29-10-2026):** se actualizó Next.js de 16.3.6 a 16.4.3 y `zod` a 4.6.7, y se ejecutó `npm audit fix`. `npm audit` informa 0 vulnerabilidades, también en las dependencias de desarrollo. Esto cierra ERR-01 de [SIM-04](SIM-04_Plan_de_Pruebas.md).
 
 ---
 
@@ -264,7 +264,6 @@ Se implementa con el módulo de documentos (PB-15 y PB-16). Quedan por definir *
 
 | Mejora | Motivo |
 |---|---|
-| Actualizar Next.js a 16.4 y `npm audit fix` | Cumplir RNF-SEG-10 (sección 9) |
 | `engines.node` a `>=24` y `@types/node` a `^24` en `package.json` | Hoy dice `>=20.9.0`, pero el equipo usa Node 24 y `npm test` necesita una versión que tenga `--experimental-strip-types` |
 | Integración continua con GitHub Actions (lint, pruebas y build en cada PR) | Automatizar los chequeos de la Definition of Done |
 
@@ -277,7 +276,9 @@ Se implementa con el módulo de documentos (PB-15 y PB-16). Quedan por definir *
 | La página se ve vacía con la dirección "Network" | Next.js bloquea esa dirección en desarrollo. Usar `http://localhost:3000`. |
 | `P1001: Can't reach database server` | Revisar la conexión a internet y las direcciones del `.env`. |
 | `password authentication failed` | La contraseña del `.env` no coincide. Revisar que no quedaron los corchetes de `[YOUR-PASSWORD]`. |
-| `Cannot find module '@/generated/prisma/client'` | Falta generar el cliente: `npx prisma generate` (o `npm install`). |
+| `Cannot find module '@/generated/prisma/client'`, o TypeScript no reconoce una tabla nueva | Falta generar el cliente: `npx prisma generate` (o `npm install`). Pasa después de bajar una migración nueva. |
+| Después de actualizar Next.js, `npm run build` dice `Cannot find module '@tailwindcss/postcss'` | Quedó la caché de la versión anterior. Borrar la carpeta `.next` y compilar de nuevo. |
+| ESLint o Tailwind "no existen" después de `npm audit fix --omit=dev` | Ese comando quita de `node_modules` las dependencias de desarrollo. Ejecutar `npm install` para recuperarlas. |
 | Prisma no encuentra las variables | Prisma no lee el `.env` solo: lo carga `prisma.config.ts` con `dotenv`. Ejecutar los comandos desde la carpeta `Aplicación`. |
 | La aplicación muestra "No pudimos cargar los vehículos" | Revisar en la terminal el error real. En desarrollo, comprobar `EMPRESA_DESARROLLO_ID` y la conexión a la base de datos. |
 | Problemas con Docker | [JOS-05](JOS-05_Entorno_Docker.md), sección 5. |
@@ -289,6 +290,7 @@ Se implementa con el módulo de documentos (PB-15 y PB-16). Quedan por definir *
 | Versión | Fecha | Cambios |
 |---|---|---|
 | 0.1 | 16-10-2026 | Primera versión: arquitectura, estructura, instalación, variables, base de datos, pruebas, despliegue previsto y seguridad. Módulo de vehículos con base de datos; inicio de sesión pendiente. |
+| 0.1.1 | 29-10-2026 | JOS-07: Next.js 16.4.3 y dependencias sin vulnerabilidades (cierra ERR-01). Tres problemas frecuentes nuevos. |
 
 En cada entrega se actualizan las secciones 1, 5.1, 8 y 9, y se agrega una fila a esta tabla.
 
