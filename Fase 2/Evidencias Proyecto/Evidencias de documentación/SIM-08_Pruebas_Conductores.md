@@ -5,14 +5,14 @@
 | **Tarea** | [SIM-08] Probar el módulo de conductores con dos empresas ficticias |
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | José Vargas y Joaquín Orellana |
-| **Estado** | En preparación: se ejecuta cuando la migración de conductores esté aplicada en Supabase |
-| **Fecha** | 29-10-2026 |
+| **Estado** | Listo para ejecutar: la migración está aplicada en Supabase; falta cargar los conductores de prueba |
+| **Fecha** | 29-10-2026 (actualizado el 02-11-2026) |
 
 Este documento prueba el módulo de conductores (PB-08 a PB-10) con los 14 criterios de aceptación de [JOA-09](JOA-09_Reglas_Modulo_Conductores.md) (sección 6), con las dos empresas ficticias y con el mismo formato que [SIM-03](SIM-03_Pruebas_Primera_Entrega.md). Corresponde a los casos CP-FUN-20 a CP-FUN-22 y CP-INT-17 a CP-INT-22 del [plan de pruebas](SIM-04_Plan_de_Pruebas.md). La columna "Resultado obtenido" se completa al ejecutar cada caso.
 
 ---
 
-## 1. Estado al 29-10-2026
+## 1. Estado al 02-11-2026
 
 **Lo que ya está en `main`:**
 
@@ -20,7 +20,7 @@ Este documento prueba el módulo de conductores (PB-08 a PB-10) con los 14 crite
 - La validación y el acceso a datos (JOS-10, PR #42), con sus pruebas unitarias y CP-INT-17 a CP-INT-20.
 - Las pantallas (PR #43): listado con búsqueda e «Incluir inactivos», registro, y ficha con edición, desactivar y reactivar.
 
-**Lo que falta para ejecutar:** aplicar la migración en el proyecto `micrologist-dev`. `npx prisma migrate status` muestra pendiente `20261027204333_conductores`, así que hoy las pantallas de conductores no pueden consultar la tabla.
+**Base de datos:** la migración `20261027204333_conductores` se aplicó en `micrologist-dev` el 28-10-2026 a las 12:40 (hora de Chile), según `_prisma_migrations`, y `npx prisma migrate status` dice que el esquema está al día. Falta cargar los conductores de prueba: al 02-11-2026 las dos empresas tienen 0 conductores (consulta de solo lectura).
 
 **Pruebas automáticas ya ejecutadas:**
 
@@ -28,7 +28,7 @@ Este documento prueba el módulo de conductores (PB-08 a PB-10) con los 14 crite
 |---|---|
 | `npm test` | 55 de 55 aprobadas, incluidas las de validación de conductores (`tests/conductores.test.ts`). |
 | CP-INT-21 · páginas de conductores sin sesión | ✅ 29-10-2026: las 6 direcciones responden 307 hacia `/login`. |
-| CP-INT-22 · la API pública no lee `conductor` | 🟡 29-10-2026: respondió 404 porque la tabla todavía no existe en Supabase. Se repite con la migración aplicada. |
+| CP-INT-22 · la API pública no lee `conductor` | ✅ 29-10-2026. Revisado otra vez el 02-11-2026: responde 200 sin filas. |
 
 ---
 
@@ -58,9 +58,9 @@ Este documento prueba el módulo de conductores (PB-08 a PB-10) con los 14 crite
 
 ## 3. Orden de ejecución
 
-1. Avisar al equipo y aplicar la migración desde `main`: `npm run db:deploy`. Confirmar con `npx prisma migrate status`.
+1. Confirmar con `npx prisma migrate status` que el esquema está al día (lo está desde el 28-10-2026).
 2. **Antes del seed**, con la tabla vacía, probar el criterio 7 (mensaje cuando no hay conductores).
-3. Cargar los datos de prueba: `npm run db:seed`.
+3. Avisar al equipo y cargar los datos de prueba: `npm run db:seed`. El seed también devuelve el nombre de las empresas al del seed ("… (ficticia)"); hoy en la base aparecen sin esa palabra.
 4. Ejecutar `npm test` y `npm run test:integracion` completo (con `npm run dev` corriendo), para cerrar CP-INT-10 y CP-INT-17 a CP-INT-22.
 5. Ejecutar los casos manuales de la sección 4.
 6. Confirmar los resultados con las consultas de solo lectura de la sección 5.
@@ -163,6 +163,7 @@ Se completa al ejecutar. Cada error recibe su `ERR-nn` y se registra en la secci
 - [x] Casos preparados para los 14 criterios de JOA-09 (sección 4).
 - [x] CP-INT-17 a CP-INT-22 registrados en SIM-04 (sección 6.6).
 - [x] CP-INT-21 y CP-INT-22 automatizados y ejecutados (sección 1).
-- [ ] Migración aplicada en Supabase y pruebas automáticas completas.
+- [x] Migración aplicada en Supabase (28-10-2026).
+- [ ] Conductores de prueba cargados y pruebas automáticas completas.
 - [ ] Casos manuales ejecutados con las dos empresas y confirmados en la base.
 - [ ] Revisión de José y Joaquín en el PR.

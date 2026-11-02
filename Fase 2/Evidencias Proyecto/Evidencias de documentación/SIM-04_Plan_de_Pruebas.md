@@ -229,25 +229,25 @@ Si falta el `.env` o la aplicación no está corriendo, los casos que lo necesit
 | CP-INT-07 | La consulta del listado, con búsqueda, filtro por estado e «Incluir inactivos». | Solo vehículos de la empresa, ordenados por patente y filtrados correctamente. Complementa CP-FUN-06. | PB-05, RNF-SEG-02 | ✅ 22-10-2026 |
 | CP-INT-08 | Buscar y editar por id un vehículo de otra empresa, con la misma condición que usa la aplicación (id y empresa de la sesión). | No lo encuentra, la edición falla (P2025, que la aplicación muestra como "No encontrado") y el vehículo no cambia. | JOA-01 7.12, RNF-SEG-02 | ✅ 22-10-2026 |
 | CP-INT-09 | Guardar un vehículo en una empresa que no existe. | La base lo rechaza (P2003). | JOA-01 2.2, RNF-SEG-02 | ✅ 22-10-2026 |
-| CP-INT-10 | Seguridad del esquema en la base real. | RLS activado en `empresa`, `usuario`, `vehiculo` y `conductor`, y ninguna columna de contraseña en `usuario`. | RNF-SEG-02, RNF-SEG-05 | ✅ 22-10-2026 con las tres primeras tablas. Desde JOS-10 revisa también `conductor`: ⏳ falla hasta aplicar la migración `conductores` en Supabase |
+| CP-INT-10 | Seguridad del esquema en la base real. | RLS activado en `empresa`, `usuario`, `vehiculo` y `conductor`, y ninguna columna de contraseña en `usuario`. | RNF-SEG-02, RNF-SEG-05 | ✅ 22-10-2026 con las tres primeras tablas. Desde JOS-10 revisa también `conductor` (migración aplicada en Supabase el 28-10-2026): ⏳ falta volver a ejecutarlo |
 | CP-INT-11 | Abrir el inicio de sesión. | Responde 200, en español, con los campos de correo y contraseña. | PB-01 | ✅ 22-10-2026 |
 | CP-INT-12 | Abrir sin sesión `/`, `/vehiculos`, `/vehiculos?inactivos=1`, `/vehiculos/nuevo`, la ficha de un vehículo del seed y la de un id que no existe. | Todas responden 307 hacia `/login`, sin datos. Automatiza CP-SEG-01. | RNF-SEG-01, JOA-01 7.3 | ✅ 22-10-2026 |
 | CP-INT-13 | Enviar una cookie de sesión con el formato de Supabase, pero con un token de firma inventada. | Supabase rechaza el token y la aplicación redirige al inicio de sesión, sin datos. | RNF-SEG-01, RNF-SEG-06 | ✅ 22-10-2026 |
 | CP-INT-14 | Pedir un archivo público (`/favicon.ico`) sin sesión. | Se entrega sin redirigir: el proxy no bloquea los archivos estáticos. | SIM-02 (proxy) | ✅ 22-10-2026 |
 | CP-INT-15 | Leer `empresa`, `usuario` y `vehiculo` directo desde la API de Supabase con la clave pública, sin pasar por la aplicación. | No devuelve ninguna fila (RLS sin políticas públicas). | RNF-SEG-02 | ✅ 22-10-2026 |
 | CP-INT-16 | Pedir el inicio de sesión, un archivo público y una página privada sin sesión (redirección del proxy). | Las tres respuestas llevan todos los encabezados de seguridad y ninguna envía `X-Powered-By`. Automatiza CP-SEG-14. | CP-SEG-14 | ✅ 27-10-2026 |
-| CP-INT-17 | Un conductor validado por la aplicación se guarda en la base. | Queda normalizado: nombre sin espacios sobrantes, RUT `11111111-1`, teléfono `+56900000001`, correo vacío como nulo y activo. | PB-08, JOA-09 criterios 1 y 2 | ⏳ Pendiente: falta aplicar la migración `conductores` en Supabase |
-| CP-INT-18 | Guardar un RUT que ya existe en la empresa (aunque esté inactivo) y el mismo RUT en otra empresa. | La base rechaza el primero (P2002) y acepta el segundo. | PB-08, JOA-09 criterios 4 y 12 | ⏳ Pendiente (migración) |
-| CP-INT-19 | Buscar y editar por id un conductor de otra empresa, con el filtro que usa la aplicación. | No lo encuentra, la edición falla (P2025) y el conductor no cambia. | JOA-09 criterio 11, RNF-SEG-02 | ⏳ Pendiente (migración) |
-| CP-INT-20 | La consulta del listado, con búsqueda e «Incluir inactivos». | Solo conductores de la empresa, activos por defecto y ordenados por nombre; busca por nombre y por RUT, con o sin puntos. Complementa CP-FUN-21. | PB-09, JOA-09 criterios 6 y 10 | ⏳ Pendiente (migración) |
+| CP-INT-17 | Un conductor validado por la aplicación se guarda en la base. | Queda normalizado: nombre sin espacios sobrantes, RUT `11111111-1`, teléfono `+56900000001`, correo vacío como nulo y activo. | PB-08, JOA-09 criterios 1 y 2 | ⏳ Pendiente de ejecutar (SIM-08) |
+| CP-INT-18 | Guardar un RUT que ya existe en la empresa (aunque esté inactivo) y el mismo RUT en otra empresa. | La base rechaza el primero (P2002) y acepta el segundo. | PB-08, JOA-09 criterios 4 y 12 | ⏳ Pendiente de ejecutar (SIM-08) |
+| CP-INT-19 | Buscar y editar por id un conductor de otra empresa, con el filtro que usa la aplicación. | No lo encuentra, la edición falla (P2025) y el conductor no cambia. | JOA-09 criterio 11, RNF-SEG-02 | ⏳ Pendiente de ejecutar (SIM-08) |
+| CP-INT-20 | La consulta del listado, con búsqueda e «Incluir inactivos». | Solo conductores de la empresa, activos por defecto y ordenados por nombre; busca por nombre y por RUT, con o sin puntos. Complementa CP-FUN-21. | PB-09, JOA-09 criterios 6 y 10 | ⏳ Pendiente de ejecutar (SIM-08) |
 | CP-INT-21 | Abrir sin sesión `/conductores` (también con búsqueda e «Incluir inactivos»), `/conductores/nuevo`, la ficha de un conductor del seed y la de un id que no existe. | Todas responden 307 hacia `/login`, sin datos. | JOA-09 criterio 13, RNF-SEG-01 | ✅ 29-10-2026 |
-| CP-INT-22 | Leer `conductor` directo desde la API de Supabase con la clave pública. | No devuelve ninguna fila. | RNF-SEG-02 | 🟡 29-10-2026: respondió 404 porque la tabla todavía no existe en Supabase. Se repite después de aplicar la migración |
+| CP-INT-22 | Leer `conductor` directo desde la API de Supabase con la clave pública. | No devuelve ninguna fila. | RNF-SEG-02 | ✅ 29-10-2026. Revisado otra vez el 02-11-2026: la API responde 200 sin filas |
 
 **Ejecución del 22-10-2026:** 16 de 16 aprobadas (los 15 casos y la comprobación final de que no quedaron datos). Entorno: rama `sim-04-pruebas-integracion` desde `main` (`cb62a6d`), Node.js 24.20, proyecto `micrologist-dev` de Supabase y la aplicación con `npm run dev` en el puerto 3000. Antes y después de la ejecución, una consulta de solo lectura confirmó que la base seguía con las mismas 2 empresas y los mismos 11 vehículos.
 
 **Ejecución del 27-10-2026:** 17 de 17 aprobadas, con CP-INT-16 agregado. Entorno: rama `sim-encabezados-seguridad` desde `main` (`a5bce55`), mismo proyecto de Supabase y la aplicación con `npm run dev` en el puerto 3000.
 
-**Ejecución del 29-10-2026 (solo `aplicacion.test.ts`):** 8 de 8 aprobadas, con CP-INT-21 y CP-INT-22 agregados. Entorno: rama `sim-08-pruebas-conductores` desde `main` (`9978c9f`), mismo proyecto de Supabase y la aplicación con `npm run dev`. No se ejecutó `base-de-datos.test.ts`: `npx prisma migrate status` muestra pendiente la migración `20261027204333_conductores`, así que CP-INT-10 y CP-INT-17 a CP-INT-20 fallarían por falta de la tabla.
+**Ejecución del 29-10-2026 (solo `aplicacion.test.ts`):** 8 de 8 aprobadas, con CP-INT-21 y CP-INT-22 agregados. Entorno: rama `sim-08-pruebas-conductores` desde `main` (`9978c9f`), mismo proyecto de Supabase y la aplicación con `npm run dev`. No se ejecutó `base-de-datos.test.ts` (CP-INT-10 y CP-INT-17 a CP-INT-20): queda para la ejecución completa de SIM-08. La migración `conductores` está aplicada en Supabase desde el 28-10-2026.
 
 ---
 
@@ -343,7 +343,7 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 - **Ejecutar los 13 casos pendientes de la primera entrega** y cerrar ERR-01 antes de dar por terminada la entrega (sección 9).
 - **Agregar los ID de la sección 10** a la sección 7 de JOA-05 (a cargo de Joaquín).
 - **Detallar los casos del MVP** cuando estén los documentos de reglas de documentos, avisos y turnos. Los de conductores ya están (CP-FUN-20 a 22 y CP-INT-17 a 22).
-- **Aplicar la migración `conductores` en Supabase** y ejecutar `npm run test:integracion` completo, para cerrar CP-INT-10, CP-INT-17 a CP-INT-20 y CP-INT-22 (SIM-08).
+- **Cargar los conductores de prueba** (`npm run db:seed`) y ejecutar `npm run test:integracion` completo, para cerrar CP-INT-10 y CP-INT-17 a CP-INT-20 (SIM-08).
 - **Fechas exactas** de las semanas 14 y 18 **[POR CONFIRMAR]** con el cronograma.
 
 ---
