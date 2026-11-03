@@ -7,7 +7,7 @@
 | **Revisión** | José Vargas y Simón Jofré |
 | **Estado** | Propuesta para revisión del equipo |
 | **Fecha** | 12-10-2026 (actualizado el 28-10-2026) |
-| **Actualización** | 18-10-2026 (cierre de la Iteración 2) |
+| **Actualización** | 02-11-2026 (inicio de la Iteración 4) |
 
 Este documento reúne todo lo que MicroLogist debe hacer, ordenado por prioridad. Parte de la [Product Vision](JOA-04_Product_Vision.md) y de las reglas de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md). De aquí salen los ítems de cada Sprint Backlog (SIM-06) y los casos del plan de pruebas (SIM-04). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -34,24 +34,24 @@ Este backlog contiene funcionalidades del producto. Las tareas de documentación
 
 ## 2. Backlog priorizado
 
-Estado al 18-10-2026.
+Estado al 02-11-2026.
 
 | Prioridad | ID | Ítem | Módulo | Etapa | Estado |
 |---|---|---|---|---|---|
-| 1 | PB-01 | Iniciar sesión | Acceso | Primera entrega | Pendiente |
-| 2 | PB-02 | Cerrar sesión | Acceso | Primera entrega | Pendiente |
-| 3 | PB-03 | Separación de datos entre empresas | Acceso | Primera entrega | En curso |
-| 4 | PB-04 | Registrar vehículo | Vehículos | Primera entrega | En curso |
-| 5 | PB-05 | Listar y buscar vehículos | Vehículos | Primera entrega | En curso |
-| 6 | PB-06 | Ver detalle y editar vehículo | Vehículos | Primera entrega | En curso |
-| 7 | PB-07 | Desactivar y reactivar vehículo | Vehículos | Primera entrega | En curso |
-| 8 | PB-08 | Registrar conductor | Conductores | MVP completo | Pendiente |
-| 9 | PB-09 | Listar, buscar y editar conductores | Conductores | MVP completo | Pendiente |
-| 10 | PB-10 | Desactivar y reactivar conductor | Conductores | MVP completo | Pendiente |
+| 1 | PB-01 | Iniciar sesión | Acceso | Primera entrega | Terminado |
+| 2 | PB-02 | Cerrar sesión | Acceso | Primera entrega | Terminado |
+| 3 | PB-03 | Separación de datos entre empresas | Acceso | Primera entrega | Terminado |
+| 4 | PB-04 | Registrar vehículo | Vehículos | Primera entrega | Terminado |
+| 5 | PB-05 | Listar y buscar vehículos | Vehículos | Primera entrega | Terminado |
+| 6 | PB-06 | Ver detalle y editar vehículo | Vehículos | Primera entrega | Terminado |
+| 7 | PB-07 | Desactivar y reactivar vehículo | Vehículos | Primera entrega | Terminado |
+| 8 | PB-08 | Registrar conductor | Conductores | MVP completo | En curso |
+| 9 | PB-09 | Listar, buscar y editar conductores | Conductores | MVP completo | En curso |
+| 10 | PB-10 | Desactivar y reactivar conductor | Conductores | MVP completo | En curso |
 | 11 | PB-11 | Registrar documento con vencimiento | Documentos | MVP completo | Pendiente |
 | 12 | PB-12 | Ver documentos y su estado | Documentos | MVP completo | Pendiente |
 | 13 | PB-13 | Renovar o corregir documento | Documentos | MVP completo | Pendiente |
-| 14 | PB-14 | Datos de contacto de la empresa | Empresa | MVP completo | Pendiente |
+| 14 | PB-14 | Datos de contacto de la empresa | Empresa | MVP completo | En curso |
 | 15 | PB-15 | Aviso por correo antes del vencimiento | Avisos | MVP completo | Pendiente |
 | 16 | PB-16 | Avisos sin duplicados y con registro de envíos | Avisos | MVP completo | Pendiente |
 | 17 | PB-17 | Asignar turno | Turnos | MVP completo | Pendiente |
@@ -62,13 +62,12 @@ Estado al 18-10-2026.
 | 22 | PB-22 | Registrar ingreso | Ingresos | Opcional | Pendiente |
 | 23 | PB-23 | Ver ingresos por período | Ingresos | Opcional | Pendiente |
 
-### Avance de la primera entrega
+### Avance
 
-- **PB-04 a PB-07:** implementados y comprobados con dos empresas ficticias (JOA-02 y JOS-03, PR #5 y #12). Siguen en curso porque falta integrarlos con el inicio de sesión (criterio común 5 de la sección 3).
-- **PB-03:** todas las consultas de vehículos ya filtran por empresa (JOS-03), pero la empresa todavía no viene de una sesión real.
-- **PB-01 y PB-02:** pendientes. Dependen de SIM-02, planificado para la Iteración 3 (19-10 al 01-11).
-
-El detalle por criterio está en la matriz de validación de [JOA-03](JOA-03_Validacion_Primera_Entrega.md).
+- **Primera entrega (PB-01 a PB-07): terminada.** El inicio y cierre de sesión con Supabase Auth (SIM-02, PR #21) se integró con el módulo de vehículos, y las pruebas de SIM-03 aprobaron los 14 criterios de JOA-01 con dos empresas ficticias (PR #22). El detalle por criterio está en [JOA-03](JOA-03_Validacion_Primera_Entrega.md), que cerró la entrega con la demo ensayada (PR #36).
+- **Conductores (PB-08 a PB-10): en curso.** Están la tabla con su migración (JOS-09, PR #41), la validación y el acceso a datos (JOS-10, PR #42) y las pantallas (JOA-11 y JOA-12, PR #43). Falta probarlo con las dos empresas (SIM-08, Iteración 4).
+- **Datos de contacto de la empresa (PB-14): en curso.** La pantalla "Mi empresa" ya está (JOA-15, PR #44), con pruebas unitarias. Falta registrar sus casos en el plan de pruebas (SIM-04).
+- **Siguen:** documentos (PB-11 a PB-13) y avisos por correo (PB-15 y PB-16), con sus reglas ya definidas en [JOA-10](JOA-10_Reglas_Modulo_Documentos.md) y [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md). Después, turnos (PB-17 a PB-19, [JOA-14](JOA-14_Reglas_Modulo_Turnos.md)).
 
 ### Por qué este orden
 
@@ -188,7 +187,7 @@ Los criterios citan entre paréntesis el número del criterio de aceptación de 
 
 ## 5. Ítems del MVP completo
 
-Antes de desarrollar cada módulo hay que definir sus campos y reglas, como se hizo con los vehículos en JOA-01. Las reglas de conductores (PB-08 a PB-10) están en [JOA-09](JOA-09_Reglas_Modulo_Conductores.md), que resuelve los **[POR CONFIRMAR]** de esos tres ítems. Las de documentos (PB-11 a PB-13) están en [JOA-10](JOA-10_Reglas_Modulo_Documentos.md), que resuelve los de PB-11 a PB-13.
+Antes de desarrollar cada módulo hay que definir sus campos y reglas, como se hizo con los vehículos en JOA-01. Las reglas de conductores (PB-08 a PB-10) están en [JOA-09](JOA-09_Reglas_Modulo_Conductores.md), que resuelve los **[POR CONFIRMAR]** de esos tres ítems. Las de documentos (PB-11 a PB-13) están en [JOA-10](JOA-10_Reglas_Modulo_Documentos.md), las de los avisos por correo (PB-15 y PB-16, y el destinatario de PB-14) en [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md) y las de turnos (PB-17 a PB-19) en [JOA-14](JOA-14_Reglas_Modulo_Turnos.md). Cada uno resuelve los **[POR CONFIRMAR]** de sus ítems; los que siguen marcados en esta sección quedan como referencia de la versión anterior.
 
 ### PB-08 · Registrar conductor
 
@@ -399,6 +398,7 @@ Este ítem responde a la necesidad 3 de la Product Vision ("ver el estado de la 
 | 12-10-2026 | Primera versión del backlog. |
 | 18-10-2026 | Cierre de la Iteración 2: PB-03 pasa a En curso, se agrega el avance de la primera entrega y se anota la duración de las iteraciones del tablero. |
 | 28-10-2026 | Decisiones de la reunión del 27-10-2026: sprints de 2 semanas, estimación con tallas y registro público fuera del MVP (secciones 7 y 8). |
+| 02-11-2026 | Inicio de la Iteración 4: PB-01 a PB-07 pasan a Terminado (SIM-03 y JOA-03); PB-08 a PB-10 y PB-14 pasan a En curso. Se actualiza el avance y se enlazan las reglas de JOA-13 y JOA-14 en la sección 5. |
 
 ---
 
