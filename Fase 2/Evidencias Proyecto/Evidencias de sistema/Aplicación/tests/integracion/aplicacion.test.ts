@@ -4,7 +4,8 @@ import { describe, test } from "node:test";
 import { ENCABEZADOS_DE_SEGURIDAD } from "../../src/lib/seguridad.ts";
 
 // Pruebas de integración de la aplicación levantada con Supabase Auth (SIM-04, CP-INT-11 a
-// CP-INT-16): el proxy, las páginas y Supabase funcionando juntos, como los usa el navegador.
+// CP-INT-16, y CP-INT-21 y CP-INT-22 para conductores): el proxy, las páginas y Supabase
+// funcionando juntos, como los usa el navegador.
 // Solo leen: no inician sesión con cuentas reales ni crean datos.
 //
 // Necesitan la aplicación corriendo (npm run dev) con el mismo .env. Por defecto se prueba
@@ -14,8 +15,9 @@ const URL_APLICACION = process.env.URL_APLICACION ?? "http://localhost:3000";
 const URL_SUPABASE = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
 const CLAVE_SUPABASE = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
 
-// Un vehículo del seed de la Empresa A (prisma/seed.ts).
+// Un vehículo y un conductor del seed de la Empresa A (prisma/seed.ts).
 const VEHICULO_DEL_SEED = "a1000000-0000-4000-8000-000000000001";
+const CONDUCTOR_DEL_SEED = "a2000000-0000-4000-8000-000000000001";
 
 const sinSupabase =
   URL_SUPABASE && CLAVE_SUPABASE
@@ -46,7 +48,21 @@ async function comprobarQueVaAlLogin(ruta: string, encabezados?: Record<string, 
   const destino = new URL(respuesta.headers.get("location") ?? "", URL_APLICACION);
   assert.equal(respuesta.status, 307, `${ruta} respondió ${respuesta.status}`);
   assert.equal(destino.pathname, "/login", `${ruta} redirigió a ${destino.pathname}`);
-  assert.doesNotMatch(await respuesta.text(), /BBCD|Transportes Cordillera/, `${ruta} mostró datos`);
+  assert.doesNotMatch(await respuesta.text(), /BBCD|Transportes Cordillera|Pedro Soto/, `${ruta} mostró datos`);
+}
+
+/** Con la clave pública, la API de Supabase no devuelve filas de la tabla (RLS sin políticas). */
+async function comprobarQueNoSeLee(tabla: string) {
+  const respuesta = await fetch(`${URL_SUPABASE}/rest/v1/${tabla}?select=*&limit=1`, {
+    headers: { apikey: CLAVE_SUPABASE ?? "" },
+    signal: AbortSignal.timeout(30_000),
+  });
+  const cuerpo = await respuesta.json();
+  if (respuesta.ok) {
+    assert.deepEqual(cuerpo, [], `La API de Supabase devolvió filas de ${tabla}`);
+  } else {
+    assert.ok([401, 403, 404].includes(respuesta.status), `${tabla}: ${respuesta.status}`);
+  }
 }
 
 const base64url = (valor: string) => Buffer.from(valor).toString("base64url");
@@ -103,6 +119,20 @@ describe("Aplicación levantada", { skip: sinAplicacion }, () => {
     }
   });
 
+  test("CP-INT-21 · sin sesión, las páginas de conductores redirigen al inicio de sesión", { skip: sinSupabase }, async () => {
+    // JOA-09, criterio 13.
+    for (const ruta of [
+      "/conductores",
+      "/conductores?inactivos=1",
+      "/conductores?buscar=11111111",
+      "/conductores/nuevo",
+      `/conductores/${CONDUCTOR_DEL_SEED}`,
+      `/conductores/${randomUUID()}`,
+    ]) {
+      await comprobarQueVaAlLogin(ruta);
+    }
+  });
+
   test("CP-INT-13 · una sesión falsificada no da acceso", { skip: sinSupabase }, async () => {
     const encabezados = { cookie: cookieFalsificada() };
     await comprobarQueVaAlLogin("/vehiculos", encabezados);
@@ -130,16 +160,11 @@ describe("Aplicación levantada", { skip: sinAplicacion }, () => {
 describe("Supabase", { skip: sinSupabase }, () => {
   test("CP-INT-15 · la clave pública no permite leer las tablas sin pasar por la aplicación", async () => {
     for (const tabla of ["empresa", "usuario", "vehiculo"]) {
-      const respuesta = await fetch(`${URL_SUPABASE}/rest/v1/${tabla}?select=*&limit=1`, {
-        headers: { apikey: CLAVE_SUPABASE ?? "" },
-        signal: AbortSignal.timeout(30_000),
-      });
-      const cuerpo = await respuesta.json();
-      if (respuesta.ok) {
-        assert.deepEqual(cuerpo, [], `La API de Supabase devolvió filas de ${tabla}`);
-      } else {
-        assert.ok([401, 403, 404].includes(respuesta.status), `${tabla}: ${respuesta.status}`);
-      }
+      await comprobarQueNoSeLee(tabla);
     }
+  });
+
+  test("CP-INT-22 · la clave pública tampoco permite leer los conductores", async () => {
+    await comprobarQueNoSeLee("conductor");
   });
 });
