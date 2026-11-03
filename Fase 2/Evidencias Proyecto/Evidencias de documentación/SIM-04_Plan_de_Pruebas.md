@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (requisitos y backlog) y José Vargas (rendimiento y datos) |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración), el 27-10-2026 (encabezados de seguridad), el 28-10-2026 (decisiones de la reunión del 27-10), el 29-10-2026 (casos de conductores) y el 02-11-2026 (resultados de SIM-08) |
+| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración), el 27-10-2026 (encabezados de seguridad), el 28-10-2026 (decisiones de la reunión del 27-10), el 29-10-2026 (casos de conductores) y el 02-11-2026 (resultados de SIM-08 y entrega final en la semana 15) |
 
 Este plan define cómo se prueba MicroLogist: qué tipos de prueba hay, con qué técnicas se ejecutan, en qué entorno y con qué datos, cuándo se hacen y cómo se registran los resultados y los errores. Cada caso de prueba tiene un identificador que no cambia, y cada requisito de [JOA-05](JOA-05_Requisitos_No_Funcionales.md) queda cubierto por al menos un caso (sección 10). Los casos de la primera entrega ya tienen un estado, gracias a la ejecución de [SIM-03](SIM-03_Pruebas_Primera_Entrega.md). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -261,8 +261,7 @@ Si falta el `.env` o la aplicación no está corriendo, los casos que lo necesit
 | **Al cierre de cada iteración** (cada 2 semanas, acordado el 27-10-2026) | Casos funcionales y de seguridad de lo terminado en la iteración, registrados en su documento de pruebas. |
 | **Primera entrega** (Iteración 3, 19-10 al 01-11) | Lo ejecutado en SIM-03 y los casos de primera entrega que siguen pendientes (sección 9). |
 | **Al desplegar en Vercel** | CP-SEG-11, CP-REN-01 a CP-REN-03 y la parte de CP-FUN-13 que requiere volver a desplegar. |
-| **MVP integrado** (semana 14 **[POR CONFIRMAR]**) | Todos los casos de la primera entrega otra vez (regresión) y los casos del MVP, ya detallados. |
-| **Entrega final** (semana 18 **[POR CONFIRMAR]**) | Regresión completa y prueba con usuarios (CP-USA-01 y CP-USA-02). |
+| **Entrega final** (semana 15, según la profesora el 28-10-2026) | Todos los casos de la primera entrega otra vez (regresión), los casos del MVP ya detallados y la prueba con usuarios (CP-USA-01 y CP-USA-02). Antes se planificaban un MVP integrado en la semana 14 y la entrega final en la 18. |
 
 ---
 
@@ -345,7 +344,7 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 - **Ejecutar los 13 casos pendientes de la primera entrega** y cerrar ERR-01 antes de dar por terminada la entrega (sección 9).
 - **Agregar los ID de la sección 10** a la sección 7 de JOA-05 (a cargo de Joaquín).
 - **Detallar los casos del MVP** cuando estén los documentos de reglas de documentos, avisos y turnos. Los de conductores ya están (CP-FUN-20 a 22 y CP-INT-17 a 22).
-- **Fechas exactas** de las semanas 14 y 18 **[POR CONFIRMAR]** con el cronograma.
+- **Fecha exacta** de la entrega de la semana 15 **[POR CONFIRMAR]** con la profesora.
 
 ---
 
