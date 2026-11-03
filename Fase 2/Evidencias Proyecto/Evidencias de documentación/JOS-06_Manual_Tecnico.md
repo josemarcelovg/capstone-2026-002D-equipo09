@@ -5,7 +5,7 @@
 | **Tarea** | [JOS-06] Redactar manual técnico |
 | **Responsable** | José Vargas (Developer). Aportan Simón Jofré y Joaquín Orellana. |
 | **Revisión** | Simón Jofré y Joaquín Orellana |
-| **Versión** | 0.1.1 |
+| **Versión** | 0.2 |
 | **Fecha** | 16-10-2026 (actualizado el 02-11-2026) |
 
 Este manual explica **cómo está construido MicroLogist y cómo se instala, configura, despliega y mantiene**. Está pensado para quien desarrolla o administra el sistema: el equipo, la profesora o quien continúe el proyecto. No es el manual de usuario: no explica cómo usar las pantallas.
@@ -18,11 +18,14 @@ Se actualiza en cada entrega (sección 12). Lo que todavía no está decidido o 
 
 MicroLogist es una aplicación web para pequeñas y medianas empresas de transporte de pasajeros: centraliza vehículos, conductores, turnos y documentos, y avisa por correo antes de que venzan los documentos.
 
-| Módulo | Estado al 16-10-2026 |
+| Módulo | Estado al 02-11-2026 |
 |---|---|
 | Vehículos: registrar, listar, buscar, editar, desactivar y reactivar | Implementado, con datos en PostgreSQL (JOS-02 y JOS-03) |
-| Inicio y cierre de sesión | Pendiente (SIM-02) |
-| Conductores, documentos, avisos por correo y turnos | Pendiente (MVP completo) |
+| Inicio y cierre de sesión con Supabase Auth | Implementado ([SIM-02](SIM-02_Inicio_de_Sesion.md)) |
+| Conductores: registrar, listar, buscar, editar, desactivar y reactivar | Implementado y probado ([SIM-08](SIM-08_Pruebas_Conductores.md)) |
+| Mi empresa: datos de contacto | Implementado (JOA-15) |
+| Documentos | Validación y cálculo del estado listos (`src/lib/documentos.ts`); faltan la tabla y las pantallas |
+| Avisos por correo y turnos | Pendiente (MVP completo) |
 | Ingresos | Opcional, pendiente |
 
 Los requisitos están en [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), [JOA-05](JOA-05_Requisitos_No_Funcionales.md) y el [Product Backlog](JOA-08_Product_Backlog.md).
@@ -37,7 +40,7 @@ Los requisitos están en [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), [JOA-05](J
 |---|---|---|
 | Aplicación web (interfaz y servidor) | Next.js con App Router | Vercel (producción) o el computador (desarrollo) |
 | Base de datos | PostgreSQL | Supabase (desarrollo y producción) o Docker (local) |
-| Inicio de sesión | Supabase Auth | Supabase. Pendiente (SIM-02). |
+| Inicio de sesión | Supabase Auth, con la sesión en cookies (`@supabase/ssr`) | Supabase ([SIM-02](SIM-02_Inicio_de_Sesion.md)) |
 | Envío de avisos | Proceso diario y proveedor de correo | Pendiente **[POR CONFIRMAR]** |
 
 El diagrama general está en el [README](<../../../README.md#arquitectura>) y el diagrama de componentes en [JOA-06](JOA-06_Diagramas_UML.md), sección 4.
@@ -108,20 +111,32 @@ Aplicación/
 ├── src/
 │   ├── app/                      Páginas y rutas (App Router)
 │   │   ├── layout.tsx            Estructura común y menú
+│   │   ├── menu-sesion.tsx       Encabezado: empresa y «Cerrar sesión»
 │   │   ├── page.tsx              "/" redirige a /vehiculos
 │   │   ├── not-found.tsx         Página "No encontrado"
-│   │   └── vehiculos/
-│   │       ├── (listado)/        Listado (/vehiculos) y su pantalla de carga
-│   │       ├── nuevo/            Registro (/vehiculos/nuevo)
-│   │       ├── [id]/             Detalle y edición (/vehiculos/:id)
-│   │       ├── acciones.ts       Server actions: guardar y cambiar estado
-│   │       ├── error.tsx         Página de error sin detalles técnicos
-│   │       └── *.tsx             Formulario, botón de activación e insignia de estado
+│   │   ├── login/                Inicio y cierre de sesión (/login)
+│   │   ├── vehiculos/
+│   │   │   ├── (listado)/        Listado (/vehiculos) y su pantalla de carga
+│   │   │   ├── nuevo/            Registro (/vehiculos/nuevo)
+│   │   │   ├── [id]/             Detalle y edición (/vehiculos/:id)
+│   │   │   ├── acciones.ts       Server actions: guardar y cambiar estado
+│   │   │   ├── error.tsx         Página de error sin detalles técnicos
+│   │   │   └── *.tsx             Formulario, botón de activación e insignia de estado
+│   │   ├── conductores/          Igual que vehículos (/conductores)
+│   │   └── empresa/              Mi empresa: datos de contacto (/empresa)
 │   ├── lib/
 │   │   ├── vehiculos.ts          Esquema Zod, tipos y formato de patente
 │   │   ├── vehiculos-datos.ts    Acceso a datos de vehículos (filtra por empresa)
-│   │   ├── sesion.ts             Empresa de la sesión (SIM-02 la completa)
+│   │   ├── conductores*.ts       Lo mismo para conductores (esquema, datos y filtros)
+│   │   ├── empresa*.ts           Lo mismo para Mi empresa
+│   │   ├── sesion.ts             Usuario y empresa de la sesión
+│   │   ├── acceso.ts             Reglas del inicio de sesión y modo de acceso
+│   │   ├── supabase.ts           Cliente de Supabase (solo para la autenticación)
+│   │   ├── seguridad.ts          Encabezados de seguridad HTTP
+│   │   ├── rut.ts, fechas.ts     RUT chileno y fechas en hora de Chile
+│   │   ├── documentos.ts         Validación de documentos (todavía sin pantallas)
 │   │   └── prisma.ts             Cliente de Prisma para la aplicación
+│   ├── proxy.ts                  Sin sesión, redirige a /login antes de cada página
 │   └── generated/prisma/         Cliente generado por Prisma (no se sube al repositorio)
 ├── prisma/
 │   ├── seed.ts                   Datos ficticios de prueba
@@ -137,7 +152,7 @@ Aplicación/
 Convenciones:
 
 - **Nombres en español**, en el código y en la base de datos (`vehiculo`, `guardarVehiculo`). Código en camelCase; tablas y columnas en snake_case.
-- **Un módulo nuevo** (por ejemplo, conductores) sigue el patrón de vehículos: `src/lib/conductores.ts` (esquema), `src/lib/conductores-datos.ts` (acceso a datos) y `src/app/conductores/` (pantallas y acciones).
+- **Un módulo nuevo** (por ejemplo, documentos) sigue el patrón de vehículos y conductores: `src/lib/documentos.ts` (esquema), `src/lib/documentos-datos.ts` (acceso a datos) y `src/app/documentos/` (pantallas y acciones).
 - **Ramas y commits:** una rama por tarea (`jos-03-vehiculos-prisma`), commits que empiezan con el código de la tarea (`JOS-03: …`) y pull request revisado por otro integrante ([Definition of Done](SIM-05_Definition_of_Done.md)).
 
 ---
@@ -159,11 +174,13 @@ Se definen en `.env` (desarrollo), en `Aplicación/compose.yaml` (Docker) o en e
 |---|---|---|---|---|
 | `DATABASE_URL` | Conexión de la aplicación (Supabase: transaction pooler, puerto 6543, `?pgbouncer=true`) | `src/lib/prisma.ts` | Sí | Sí |
 | `DIRECT_URL` | Conexión para migraciones, seed y comprobación (Supabase: session pooler, puerto 5432) | `prisma.config.ts`, `prisma/seed.ts`, `prisma/comprobar.ts` | Sí | Solo donde se ejecuten las migraciones |
-| `EMPRESA_DESARROLLO_ID` | Empresa de trabajo mientras no existe el inicio de sesión | `src/lib/sesion.ts` | Sí | No: en producción no se usa |
-| `NEXT_PUBLIC_SUPABASE_URL` | Dirección del proyecto de Supabase | Supabase Auth (SIM-02) | Pendiente | Pendiente |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Clave pública de Supabase | Supabase Auth (SIM-02) | Pendiente | Pendiente |
+| `EMPRESA_DESARROLLO_ID` | Empresa con la que se trabaja sin Supabase Auth (modo desarrollo, por ejemplo en Docker) | `src/lib/acceso.ts` | Solo si faltan las dos variables de Supabase | No: en producción no se usa |
+| `NEXT_PUBLIC_SUPABASE_URL` | Dirección del proyecto de Supabase (*Project URL*) | Inicio de sesión (`src/lib/acceso.ts`) | Sí, para iniciar sesión | Sí |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Clave pública (*anon*) de Supabase; la clave `service_role` nunca se usa | Inicio de sesión (`src/lib/acceso.ts`) | Sí, para iniciar sesión | Sí |
 
-Cómo obtener las direcciones de Supabase: [JOS-02](JOS-02_Configuracion_Base_de_Datos.md), sección 3.
+Las dos variables de Supabase van juntas. Con las dos, se pide iniciar sesión, también en desarrollo. Sin ninguna, en desarrollo se trabaja con `EMPRESA_DESARROLLO_ID`. Con una sola, o sin ellas en producción, la aplicación no muestra datos ([SIM-02](SIM-02_Inicio_de_Sesion.md), sección 3).
+
+Cómo obtener las direcciones de la base de datos: [JOS-02](JOS-02_Configuracion_Base_de_Datos.md), sección 3. La dirección y la clave pública de Supabase Auth: [SIM-02](SIM-02_Inicio_de_Sesion.md), sección 5.
 
 ---
 
@@ -198,12 +215,13 @@ Reglas al cambiar el modelo:
 
 | Comando | Qué revisa |
 |---|---|
-| `npm test` | Pruebas automáticas con el runner de Node (`node --test`). Hoy cubren el esquema de vehículos con los casos de JOA-01 (9 pruebas en `tests/vehiculos.test.ts`). |
+| `npm test` | Pruebas automáticas con el runner de Node (`node --test`). Hoy son 85 en `tests/`: vehículos, conductores, Mi empresa, documentos, inicio de sesión, RUT, fechas y encabezados de seguridad. |
+| `npm run test:integracion` | Pruebas con la base de datos real y con la aplicación levantada (23 en `tests/integracion/`). Usan el `.env` ([SIM-04](SIM-04_Plan_de_Pruebas.md), sección 6.6). |
 | `npm run lint` | Reglas de ESLint de Next.js |
 | `npm run build` | Compila la aplicación; también revisa los tipos de TypeScript |
 | `npm run db:comprobar` | Funcionamiento de la base de datos y de la separación entre empresas |
 
-La Definition of Done exige que `build` y `lint` pasen antes de unir un PR ([SIM-05](SIM-05_Definition_of_Done.md), sección 3.1). El plan de pruebas completo lo define Simón en SIM-04 **[POR CONFIRMAR]**.
+La Definition of Done exige que `build` y `lint` pasen antes de unir un PR ([SIM-05](SIM-05_Definition_of_Done.md), sección 3.1). El plan de pruebas completo está en [SIM-04](SIM-04_Plan_de_Pruebas.md).
 
 ---
 
@@ -218,7 +236,7 @@ La aplicación todavía no está desplegada. Se despliega en la Iteración 4, de
 3. Aplicar las migraciones a la base de producción antes de cada despliegue que las incluya: `npm run db:deploy` con la `DIRECT_URL` de producción. Si esto se automatiza, se define al configurar Vercel.
 4. Elegir para las funciones de Vercel una región cercana a la de la base de datos, para reducir la latencia (el proyecto de desarrollo de Supabase está en West US, Oregon).
 
-Mientras no exista el inicio de sesión (SIM-02), `empresaDeLaSesion()` falla en producción a propósito, para no mostrar datos sin sesión. Por eso el primer despliegue útil requiere SIM-02.
+En producción, la aplicación necesita las dos variables de Supabase del proyecto de producción: sin ellas no muestra datos, a propósito ([SIM-02](SIM-02_Inicio_de_Sesion.md), sección 3). En ese proyecto hay que repetir la configuración de Supabase Auth de SIM-02 (sección 5): registro público desactivado, contraseña de 8 caracteres o más, y las cuentas con su perfil en `usuario`.
 
 ### 8.2 Supabase (base de datos e inicio de sesión)
 
@@ -228,7 +246,7 @@ Mientras no exista el inicio de sesión (SIM-02), `empresaDeLaSesion()` falla en
 | Proyecto de producción | Uno aparte del de desarrollo (acordado el 27-10-2026). Se crea con el despliegue en Vercel (sección 8.1). |
 | Acceso del equipo | Los tres comparten el proyecto de desarrollo (acordado el 27-10-2026; [JOS-02](JOS-02_Configuracion_Base_de_Datos.md), sección 3). |
 | Respaldos | Según el plan de Supabase **[POR CONFIRMAR]** (RNF-DIS-03). |
-| Supabase Auth | Pendiente (SIM-02). El `id` de la tabla `usuario` es el de Supabase Auth. |
+| Supabase Auth | Configurado en el proyecto de desarrollo el 19-10-2026 (SIM-02): inicio con correo y contraseña, registro público desactivado, contraseña de 8 caracteres o más, y una cuenta de prueba para la Empresa A y otra para la B, cada una con su perfil en `usuario`. El `id` de la tabla `usuario` es el de Supabase Auth. |
 
 Si una contraseña de la base de datos se filtra o hay que cambiarla: Supabase → **Project Settings → Database → Reset database password**, y luego actualizar `DATABASE_URL` y `DIRECT_URL` en cada `.env` y en Vercel. La contraseña va sin corchetes dentro de la URL.
 
@@ -249,12 +267,14 @@ Se implementa con el módulo de documentos (PB-15 y PB-16). Quedan por definir *
 | Medida | Dónde |
 |---|---|
 | Credenciales solo en variables de entorno; `.env` fuera del repositorio y fuera de las imágenes de Docker | `.gitignore`, `Dockerfile.dockerignore` |
-| La empresa se toma de la sesión y todas las consultas filtran por ella | `src/lib/sesion.ts`, `src/lib/vehiculos-datos.ts` |
-| Validación en el servidor con Zod | `src/lib/vehiculos.ts`, `acciones.ts` |
-| Patente única por empresa garantizada por la base de datos | Restricción `(empresa_id, patente)` |
-| La API pública de Supabase no puede leer las tablas (RLS activo sin políticas) | Migración inicial |
-| Contraseñas de usuarios fuera de nuestras tablas | Supabase Auth (SIM-02) |
-| Errores sin detalles técnicos | `src/app/vehiculos/error.tsx` |
+| Solo con sesión: el proxy redirige a `/login`, y cada página y acción vuelve a validar la sesión contra Supabase Auth | `src/proxy.ts`, `src/lib/sesion.ts` |
+| La empresa se toma de la sesión y todas las consultas filtran por ella | `src/lib/sesion.ts` y los `src/lib/*-datos.ts` |
+| Validación en el servidor con Zod | `src/lib/vehiculos.ts`, `src/lib/conductores.ts`, `src/lib/empresa.ts` y los `acciones.ts` |
+| Patente y RUT del conductor únicos por empresa, garantizados por la base de datos | Restricciones `(empresa_id, patente)` y `(empresa_id, rut)` |
+| La API pública de Supabase no puede leer las tablas (RLS activo sin políticas) | Migración de cada tabla |
+| Contraseñas fuera de nuestras tablas y el mismo mensaje si el correo no existe o la contraseña es incorrecta | Supabase Auth; `mensajeDeErrorDeAcceso()` en `src/lib/acceso.ts` |
+| Encabezados de seguridad (CSP, HSTS y otros) y sin `X-Powered-By` | `src/lib/seguridad.ts`, `next.config.ts` |
+| Errores sin detalles técnicos | `error.tsx` de vehículos, conductores y Mi empresa |
 
 **Dependencias al día (JOS-07, 02-11-2026):** se actualizaron Next.js y `eslint-config-next` de 16.3.6 a 16.4.4 y `zod` a 4.6.7, y se ejecutó `npm audit fix` (sin `--force`). No basta con cualquier 16.4: hasta la 16.4.0, Next.js tiene 2 vulnerabilidades críticas de ejecución remota de código. `npm audit --omit=dev` informa 0 vulnerabilidades, lo que cumple CP-SEG-13 y cierra ERR-01 de [SIM-04](SIM-04_Plan_de_Pruebas.md). `npm audit` completo informa 16 vulnerabilidades moderadas, todas en herramientas de desarrollo: vienen de `minimatch` ([GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249), publicado el 30-10-2026), que llega a través de ESLint y no forma parte de la aplicación en producción. No se usa `npm audit fix --force` porque propone bajar ESLint a la versión 4.
 
@@ -291,6 +311,7 @@ Se implementa con el módulo de documentos (PB-15 y PB-16). Quedan por definir *
 |---|---|---|
 | 0.1 | 16-10-2026 | Primera versión: arquitectura, estructura, instalación, variables, base de datos, pruebas, despliegue previsto y seguridad. Módulo de vehículos con base de datos; inicio de sesión pendiente. |
 | 0.1.1 | 02-11-2026 | JOS-07: Next.js 16.4.4 y dependencias de producción sin vulnerabilidades (cierra ERR-01). Dos problemas frecuentes nuevos y uno ampliado. |
+| 0.2 | 02-11-2026 | Inicio de sesión con Supabase Auth (SIM-02) en las secciones 1, 2.1, 4, 5.1, 8 y 9. Estado de los módulos, estructura del código y pruebas al día, con conductores y Mi empresa. |
 
 En cada entrega se actualizan las secciones 1, 5.1, 8 y 9, y se agrega una fila a esta tabla.
 
