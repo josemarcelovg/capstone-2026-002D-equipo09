@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (Product Owner) y José Vargas |
 | **Estado** | En curso: se actualiza al inicio y al cierre de cada iteración |
-| **Fecha** | 21-10-2026 (actualizado el 28-10-2026) |
+| **Fecha** | 21-10-2026 (actualizado el 02-11-2026) |
 
 Este documento registra qué tareas entraron en cada iteración (Sprint Backlog), cómo terminaron y qué aprendió el equipo en cada retrospectiva. Los datos salen del tablero del Project del equipo ("@josemarcelovg's Micrologist"), del historial de pull requests de GitHub y de los documentos [JOA-03](JOA-03_Validacion_Primera_Entrega.md) y [JOA-08](JOA-08_Product_Backlog.md). Los ítems del backlog se citan con su identificador `PB-xx`.
 
@@ -18,12 +18,12 @@ Las retrospectivas no se inventan: cada una trae los datos medibles de la iterac
 
 **Iteraciones del tablero** (campo *Iteration* del Project):
 
-| Iteración | Fechas | Duración | Estado al 28-10-2026 |
+| Iteración | Fechas | Duración | Estado al 02-11-2026 |
 |---|---|---|---|
 | 1 | 21-09 al 04-10 | 2 semanas | Completada |
 | 2 | 05-10 al 18-10 | 2 semanas | Completada |
-| 3 | 19-10 al 01-11 | 2 semanas | En curso; retrospectiva hecha el 27-10 |
-| 4 | 02-11 al 15-11 | 2 semanas | Planificada (sección 6) |
+| 3 | 19-10 al 01-11 | 2 semanas | Completada; retrospectiva hecha el 27-10 |
+| 4 | 02-11 al 15-11 | 2 semanas | En curso (sección 6) |
 
 Los sprints duran 2 semanas, igual que estas iteraciones (acordado en la retrospectiva del 27-10-2026).
 
@@ -89,7 +89,7 @@ En el tablero, la primera iteración se llama solo "Iteration" (sin número); es
 
 **Estado del backlog al cierre** (JOA-08, actualización del 18-10): PB-03 a PB-07 en curso; PB-01 y PB-02 pendientes, a la espera del inicio de sesión.
 
-### 3.3 Iteración 3 · 19-10 al 01-11 (en curso)
+### 3.3 Iteración 3 · 19-10 al 01-11
 
 **Objetivo** (JOA-03, secciones 6.4 y 7.2): *terminar la primera entrega*, es decir, inicio de sesión, vehículos con datos separados por empresa, pruebas con dos empresas ficticias y demostración.
 
@@ -203,6 +203,21 @@ Las reglas de los módulos de conductores (JOA-09, PR #33) y documentos (JOA-10,
 
 **Reunión de seguimiento:** jueves 06-11 en la noche, unos 20 minutos.
 
+### Avance al 02-11-2026
+
+| Tarea | Estado |
+|---|---|
+| [JOS-07] Cerrar ERR-01 | En curso. La rama `jos-07-actualizar-next` deja Next.js en 16.4.3 y Zod en 4.6.7, y `npm audit --omit=dev` queda sin vulnerabilidades; falta abrir el PR. |
+| [JOS-09] Tabla de conductores | ✅ PR #41, unido el 28-10. La migración se aplicó en Supabase el mismo día. |
+| [JOS-10] Validación y acceso a datos | ✅ PR #42, unido el 28-10. |
+| [JOA-11] y [JOA-12] Pantallas de conductores | ✅ PR #43, unido el 28-10. |
+| [SIM-08] Pruebas de conductores | ✅ Ejecutadas el 02-11: 14 de 14 criterios aprobados ([SIM-08](SIM-08_Pruebas_Conductores.md)). Falta abrir el PR. |
+| [SIM-10] Desplegar en Vercel | Sin empezar: depende de JOS-07. |
+
+El módulo de conductores, que era el objetivo principal de la iteración, quedó terminado y probado. Además se adelantaron tareas que no estaban en el plan: las reglas de alertas (JOA-13, PR #39) y de turnos (JOA-14, PR #40), la pantalla Mi empresa (JOA-15, PR #44) y SIM-09 (PR #45, abierto).
+
+**Cambio de fecha de la entrega final:** en la revisión del 28-10-2026 (semana 12), la profesora indicó que la última entrega es en la **semana 15**, no en la 18. Con eso no alcanza todo lo que quedaba para las iteraciones 5 y 6 (documentos, alertas y turnos). Además, pidió vincular el conductor al vehículo y ver sus documentos dentro de la ficha del vehículo. Qué entra en la entrega final lo decide el Product Owner con el equipo **[POR CONFIRMAR]**, junto con la fecha exacta de la semana 15.
+
 ---
 
 ## 7. Cómo se mantiene
@@ -217,6 +232,7 @@ Las reglas de los módulos de conductores (JOA-09, PR #33) y documentos (JOA-10,
 |---|---|
 | 21-10-2026 | Primera versión: Sprint Backlog de las iteraciones 1, 2 y 3, y datos y temas para sus retrospectivas. |
 | 28-10-2026 | Retrospectivas de las iteraciones 1 a 3 (reunión del 27-10-2026), acciones de mejora aceptadas y planificación de la Iteración 4. |
+| 02-11-2026 | Cierre de la Iteración 3, avance de la Iteración 4 y entrega final en la semana 15. |
 
 ---
 
@@ -229,4 +245,5 @@ Las reglas de los módulos de conductores (JOA-09, PR #33) y documentos (JOA-10,
 - [x] Acciones de mejora aceptadas, con responsable y fecha (sección 5).
 - [x] Retrospectiva de la Iteración 3 al cierre, hecha el 27-10.
 - [x] Planificación de la Iteración 4 (sección 6).
+- [x] Avance de la Iteración 4 al 02-11-2026 (sección 6).
 - [ ] Revisión de Joaquín y José en el PR.
