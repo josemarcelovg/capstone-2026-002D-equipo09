@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (requisitos y backlog) y José Vargas (rendimiento y datos) |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración), el 27-10-2026 (encabezados de seguridad), el 28-10-2026 (decisiones de la reunión del 27-10), el 29-10-2026 (casos de conductores) y el 02-11-2026 (resultados de SIM-08 y entrega final en la semana 15) |
+| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración), el 27-10-2026 (encabezados de seguridad), el 28-10-2026 (decisiones de la reunión del 27-10), el 29-10-2026 (casos de conductores) y el 02-11-2026 (resultados de SIM-08, entrega final en la semana 15, y CP-SEG-13 y ERR-01 con JOS-07) |
 
 Este plan define cómo se prueba MicroLogist: qué tipos de prueba hay, con qué técnicas se ejecutan, en qué entorno y con qué datos, cuándo se hacen y cómo se registran los resultados y los errores. Cada caso de prueba tiene un identificador que no cambia, y cada requisito de [JOA-05](JOA-05_Requisitos_No_Funcionales.md) queda cubierto por al menos un caso (sección 10). Los casos de la primera entrega ya tienen un estado, gracias a la ejecución de [SIM-03](SIM-03_Pruebas_Primera_Entrega.md). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -172,7 +172,7 @@ Cuando se agregue cada módulo del MVP (conductores, documentos, turnos e ingres
 | CP-SEG-10 | Buscar contraseñas, claves y archivos `.env` en el repositorio y en su historial. | 0 secretos. | RNF-SEG-07 | ✅ Revisión del 21-10-2026: 0 archivos `.env` y ningún patrón de clave en el historial |
 | CP-SEG-11 | Entrar a la versión desplegada con `http://`. | Redirige a `https://` y todas las páginas usan HTTPS. | RNF-SEG-08 | ⏳ Pendiente (no hay despliegue) |
 | CP-SEG-12 | Forzar errores (por ejemplo, con la base de datos desconectada en un entorno de prueba). | Ningún mensaje incluye trazas, consultas ni nombres de tablas. | RNF-SEG-09 | 🟡 Inicio de sesión con el servicio caído y pantalla de vehículos sin base de datos, sin detalles técnicos (SIM-02); falta repetirlo con sesión iniciada |
-| CP-SEG-13 | Ejecutar `npm audit --omit=dev`. | Sin vulnerabilidades altas ni críticas. | RNF-SEG-10 | ❌ 21-10-2026: 3 altas (`next` 16.3.6, `sharp` y `source-map-js`). Ver ERR-01 en la sección 9 |
+| CP-SEG-13 | Ejecutar `npm audit --omit=dev`. | Sin vulnerabilidades altas ni críticas. | RNF-SEG-10 | ✅ 02-11-2026: 0 vulnerabilidades con `next` 16.4.4 (JOS-07). Antes, ❌ el 21-10-2026: 3 altas (`next` 16.3.6, `sharp` y `source-map-js`). Ver ERR-01 en la sección 9 |
 | CP-SEG-14 | Revisar los encabezados HTTP de las respuestas. | Todas llevan los encabezados de seguridad de `src/lib/seguridad.ts` (CSP con `frame-ancestors`, `base-uri`, `form-action` y `object-src`; `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` y HSTS) y ninguna envía `X-Powered-By`. | Buenas prácticas de OWASP; complementa RNF-SEG-08 | ✅ 27-10-2026: `tests/seguridad.test.ts` y CP-INT-16 |
 
 ### 6.3 Compatibilidad (`CP-COM`)
@@ -280,18 +280,20 @@ Si falta el `.env` o la aplicación no está corriendo, los casos que lo necesit
 
 | Estado | Cantidad | Casos |
 |---|---|---|
-| ✅ Aprobado | 34 | CP-FUN-01 a 05, 07, 09 y 10; CP-SEG-01 a 08, 10 y 14; CP-INT-01 a 16 |
+| ✅ Aprobado | 35 | CP-FUN-01 a 05, 07, 09 y 10; CP-SEG-01 a 08, 10, 13 y 14; CP-INT-01 a 16 |
 | 🟡 Parcial | 5 | CP-FUN-13, CP-SEG-09, CP-SEG-12, CP-COM-01 y CP-COM-04 |
-| ❌ No aprobado | 1 | CP-SEG-13 |
+| ❌ No aprobado | 0 | — |
 | ⏳ Pendiente | 13 | CP-FUN-06, 08, 11 y 12; CP-SEG-11; CP-COM-02 y 03; CP-USA-01 y 03; CP-REN-01, 02, 03 y 07 |
+
+CP-SEG-13 pasó a aprobado el 02-11-2026, con JOS-07. Los demás estados son del 27-10-2026.
 
 **Casos del MVP y opcionales** (22): 18 por detallar y 4 pendientes. Se completan cuando existan las reglas de cada módulo.
 
-**Errores abiertos:**
+**Errores registrados:**
 
 | ID | Caso | Descripción | Cómo reproducirlo | Severidad | Responsable | Estado |
 |---|---|---|---|---|---|---|
-| ERR-01 | CP-SEG-13 | `npm audit --omit=dev` informa 3 vulnerabilidades altas: `next` 16.3.6, `sharp` y `source-map-js` (las dos últimas llegan a través de Next.js). | Ejecutar `npm audit --omit=dev` desde `Aplicación`. | Mayor | José (JOS-07). Umbral acordado el 27-10-2026: sin vulnerabilidades altas ni críticas (RNF-SEG-10) | Abierto. La corrección ya está identificada en [JOS-06](JOS-06_Manual_Tecnico.md) (sección 9): actualizar Next.js a 16.4 y ejecutar `npm audit fix`. |
+| ERR-01 | CP-SEG-13 | El 21-10-2026, `npm audit --omit=dev` informaba 3 vulnerabilidades altas: `next` 16.3.6, `sharp` y `source-map-js` (las dos últimas llegan a través de Next.js). Revisado de nuevo el 02-11-2026, con `next` 16.3.6 hay 2 avisos críticos y 5 altos. Los críticos son de ejecución remota de código sin iniciar sesión ([GHSA-2464-fhr4-w9xw](https://github.com/advisories/GHSA-2464-fhr4-w9xw) y [GHSA-673q-mjm6-r5xr](https://github.com/advisories/GHSA-673q-mjm6-r5xr)) y afectan a Next.js hasta la 16.4.0. Los altos son 2 de `next`, más `sharp`, `source-map-js` y `zod`. | Ejecutar `npm audit --omit=dev` desde `Aplicación`. | Bloqueante (antes Mayor): ejecutar código en el servidor permitiría ver o modificar datos de cualquier empresa (sección 5) | José (JOS-07). Umbral acordado el 27-10-2026: sin vulnerabilidades altas ni críticas (RNF-SEG-10) | Cerrado el 02-11-2026 (JOS-07): Next.js y `eslint-config-next` a 16.4.4 y `npm audit fix` sin `--force`; `npm audit --omit=dev` informa 0 vulnerabilidades. |
 
 Las dos observaciones menores de presentación de SIM-03 (sección 6) no eran errores; quedan registradas allí y se corrigieron el 27-10-2026.
 
@@ -341,7 +343,7 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 - **Proponer agregar `npm run test:integracion`** a la sección 3.1 de la Definition of Done (SIM-05), junto a `npm test`.
 - **Pruebas de rendimiento automáticas:** quedan para cuando exista el despliegue, porque los umbrales se miden sobre la versión desplegada (CP-REN-01 a CP-REN-03).
 - **Política de contenido con nonce:** la CSP de CP-SEG-14 todavía no restringe los scripts, para no interferir con Next.js. Restringirlos requiere generar un nonce en el proxy en cada solicitud.
-- **Ejecutar los 13 casos pendientes de la primera entrega** y cerrar ERR-01 antes de dar por terminada la entrega (sección 9).
+- **Ejecutar los 13 casos pendientes de la primera entrega** antes de darla por terminada (sección 9). ERR-01 se cerró el 02-11-2026 (JOS-07).
 - **Agregar los ID de la sección 10** a la sección 7 de JOA-05 (a cargo de Joaquín).
 - **Detallar los casos del MVP** cuando estén los documentos de reglas de documentos, avisos y turnos. Los de conductores ya están (CP-FUN-20 a 22 y CP-INT-17 a 22).
 - **Fecha exacta** de la entrega de la semana 15 **[POR CONFIRMAR]** con la profesora.
