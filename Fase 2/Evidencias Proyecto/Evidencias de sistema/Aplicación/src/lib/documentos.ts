@@ -44,6 +44,42 @@ export function esUnicoPorDueno(tipo: TipoDocumento) {
   return tipo !== "otro";
 }
 
+// --- Documento como se muestra --------------------------------------------------------------
+
+/** El vehículo o conductor al que pertenece un documento. */
+export type DuenoDocumento = {
+  tipo: TipoDueno;
+  id: string;
+  /** Patente con guion (`BBCD-12`) o nombre del conductor. */
+  nombre: string;
+  /** Un vehículo inactivo o un conductor desactivado no recibe documentos nuevos (JOA-10, sección 2). */
+  activo: boolean;
+};
+
+export type Documento = {
+  id: string;
+  tipo: TipoDocumento;
+  descripcion: string | null;
+  /** `AAAA-MM-DD`, el último día válido. */
+  fechaVencimiento: string;
+  observaciones: string | null;
+  dueno: DuenoDocumento;
+};
+
+/** "SOAP", "Licencia de conducir (Clase A3)" o, para "otro", su descripción. */
+export function nombreDelDocumento({ tipo, descripcion }: Pick<Documento, "tipo" | "descripcion">) {
+  if (tipo === "otro") return descripcion ?? ETIQUETA_TIPO_DOCUMENTO.otro;
+  return descripcion ? `${ETIQUETA_TIPO_DOCUMENTO[tipo]} (${descripcion})` : ETIQUETA_TIPO_DOCUMENTO[tipo];
+}
+
+/** La ficha del dueño: `/vehiculos/<id>` o `/conductores/<id>`. */
+export function fichaDelDueno(dueno: Pick<DuenoDocumento, "tipo" | "id">) {
+  return `/${dueno.tipo === "vehiculo" ? "vehiculos" : "conductores"}/${dueno.id}`;
+}
+
+/** Desde dónde se abrió el formulario: al guardar se vuelve ahí (JOA-10, sección 4). */
+export type Origen = "listado" | "ficha";
+
 // --- Estado -------------------------------------------------------------------------------
 
 export const ESTADOS_DOCUMENTO = ["vencido", "por_vencer", "vigente"] as const;
