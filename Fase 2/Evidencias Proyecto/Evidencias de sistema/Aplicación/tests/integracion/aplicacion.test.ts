@@ -4,8 +4,8 @@ import { describe, test } from "node:test";
 import { ENCABEZADOS_DE_SEGURIDAD } from "../../src/lib/seguridad.ts";
 
 // Pruebas de integración de la aplicación levantada con Supabase Auth (SIM-04, CP-INT-11 a
-// CP-INT-16, y CP-INT-21 y CP-INT-22 para conductores): el proxy, las páginas y Supabase
-// funcionando juntos, como los usa el navegador.
+// CP-INT-16, CP-INT-21 y CP-INT-22 para conductores, y CP-INT-23 para los avisos): el proxy, las
+// páginas y Supabase funcionando juntos, como los usa el navegador.
 // Solo leen: no inician sesión con cuentas reales ni crean datos.
 //
 // Necesitan la aplicación corriendo (npm run dev) con el mismo .env. Por defecto se prueba
@@ -137,6 +137,20 @@ describe("Aplicación levantada", { skip: sinAplicacion }, () => {
     const encabezados = { cookie: cookieFalsificada() };
     await comprobarQueVaAlLogin("/vehiculos", encabezados);
     await comprobarQueVaAlLogin(`/vehiculos/${VEHICULO_DEL_SEED}`, encabezados);
+  });
+
+  test("CP-INT-23 · la ruta de los avisos sin la clave de CRON_SECRET responde 401", async () => {
+    // JOA-13, criterio 12. El proxy no la manda al login: la protege la clave.
+    const casos: Record<string, string>[] = [
+      {},
+      { authorization: "Bearer clave-inventada" },
+      { authorization: "Bearer " },
+    ];
+    for (const encabezados of casos) {
+      const respuesta = await pedir("/api/avisos", encabezados);
+      assert.equal(respuesta.status, 401, JSON.stringify(encabezados));
+      assert.deepEqual(await respuesta.json(), { error: "No autorizado." });
+    }
   });
 
   test("CP-INT-14 · los archivos públicos se entregan sin pedir sesión", async () => {

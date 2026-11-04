@@ -49,6 +49,13 @@ enum TipoDocumento {
   @@map("tipo_documento")
 }
 
+enum EstadoAviso {
+  enviado
+  fallido
+
+  @@map("estado_aviso")
+}
+
 /// Los datos cuelgan de la empresa y no del usuario (JOA-01, 2.1).
 model Empresa {
   id            String   @id @default(uuid()) @db.Uuid
@@ -65,6 +72,7 @@ model Empresa {
   vehiculos   Vehiculo[]
   conductores Conductor[]
   documentos  Documento[]
+  avisos      AvisoEnviado[]
 
   @@map("empresa")
 }
@@ -159,10 +167,11 @@ model Documento {
   createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz
   updatedAt        DateTime      @updatedAt @map("updated_at") @db.Timestamptz
 
-  empresa   Empresa    @relation(fields: [empresaId], references: [id])
+  empresa   Empresa        @relation(fields: [empresaId], references: [id])
   /// Claves foráneas compuestas: el dueño tiene que ser de la misma empresa (JOS-04, sección 4).
-  vehiculo  Vehiculo?  @relation(fields: [vehiculoId, empresaId], references: [id, empresaId], onDelete: Restrict, onUpdate: Restrict)
-  conductor Conductor? @relation(fields: [conductorId, empresaId], references: [id, empresaId], onDelete: Restrict, onUpdate: Restrict)
+  vehiculo  Vehiculo?      @relation(fields: [vehiculoId, empresaId], references: [id, empresaId], onDelete: Restrict, onUpdate: Restrict)
+  conductor Conductor?     @relation(fields: [conductorId, empresaId], references: [id, empresaId], onDelete: Restrict, onUpdate: Restrict)
+  avisos    AvisoEnviado[]
 
   /// Un vehículo tiene un solo SOAP, revisión técnica y permiso de circulación, y un conductor
   /// una sola licencia. Los de tipo "otro" no tienen límite (JOA-10, sección 2).
@@ -174,4 +183,31 @@ model Documento {
   @@index([vehiculoId])
   @@index([conductorId])
   @@map("documento")
+}
+
+/// Registro de cada aviso por correo (JOA-13, sección 3.3). Primero se registra la fila y
+/// después se envía el correo, así que la restricción única impide mandar dos veces el mismo
+/// aviso, aunque el proceso diario corra de nuevo. Los fallidos se reintentan al día siguiente.
+/// La migración agrega a mano la regla CHECK de los plazos.
+model AvisoEnviado {
+  id               String      @id @default(uuid()) @db.Uuid
+  empresaId        String      @map("empresa_id") @db.Uuid
+  documentoId      String      @map("documento_id") @db.Uuid
+  /// La que tenía el documento al avisar: si se renueva, sus avisos empiezan de cero.
+  fechaVencimiento DateTime    @map("fecha_vencimiento") @db.Date
+  /// 30, 7 o 1 días antes, o 0 (el día del vencimiento).
+  diasAnticipacion Int         @map("dias_anticipacion") @db.SmallInt
+  /// Correo de contacto de la empresa al que se envió.
+  destinatario     String      @db.VarChar(254)
+  estado           EstadoAviso
+  /// Fecha y hora del último intento.
+  enviadoEn        DateTime    @map("enviado_en") @db.Timestamptz
+
+  empresa   Empresa   @relation(fields: [empresaId], references: [id])
+  /// Clave foránea compuesta: el documento tiene que ser de la misma empresa (JOS-04, sección 4).
+  documento Documento @relation(fields: [documentoId, empresaId], references: [id, empresaId], onDelete: Restrict, onUpdate: Restrict)
+
+  @@unique([documentoId, fechaVencimiento, diasAnticipacion])
+  @@index([empresaId])
+  @@map("aviso_enviado")
 }

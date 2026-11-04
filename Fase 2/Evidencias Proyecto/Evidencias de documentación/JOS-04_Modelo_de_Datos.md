@@ -6,7 +6,7 @@
 | **Responsable** | José Vargas (Developer) |
 | **Revisión** | Joaquín Orellana (coherencia con JOA-06 y JOA-08) |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 16-10-2026 (actualizado el 28-10-2026) |
+| **Fecha** | 16-10-2026 (actualizado el 04-11-2026) |
 
 Este documento describe la base de datos de MicroLogist: qué tablas tiene, cómo se relacionan, qué guarda cada columna y cómo se separan los datos entre empresas. Se basa en las reglas de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), en el diagrama de clases de [JOA-06](JOA-06_Diagramas_UML.md) (sección 3) y en el [Product Backlog](JOA-08_Product_Backlog.md).
 
@@ -18,8 +18,8 @@ El modelo tiene dos partes:
 
 | Parte | Tablas | Estado |
 |---|---|---|
-| **Implementada** | `empresa`, `usuario`, `vehiculo`, `conductor`, `documento` | Es exactamente lo que hay en `Base de datos/schema.prisma`. Las tres primeras vienen de la migración inicial (JOS-02); `conductor`, de la migración `conductores` (JOS-09); `documento`, de la migración `documentos`. |
-| **Propuesta** | `turno`, `aviso_enviado`, `ingreso` | Diseño para los módulos del MVP completo y el módulo opcional de ingresos. Se crea en la tarea de cada módulo, después de confirmar sus reglas. Lo no decidido está marcado **[POR CONFIRMAR]**. |
+| **Implementada** | `empresa`, `usuario`, `vehiculo`, `conductor`, `documento`, `aviso_enviado` | Es exactamente lo que hay en `Base de datos/schema.prisma`. Las tres primeras vienen de la migración inicial (JOS-02); `conductor`, de la migración `conductores` (JOS-09); `documento`, de la migración `documentos`; `aviso_enviado`, de la migración `avisos` (SIM-11). |
+| **Propuesta** | `turno`, `ingreso` | Diseño para los módulos del MVP completo y el módulo opcional de ingresos. Se crea en la tarea de cada módulo, después de confirmar sus reglas. Lo no decidido está marcado **[POR CONFIRMAR]**. |
 
 Convenciones:
 
@@ -292,9 +292,9 @@ Restricción única adicional: `(id, empresa_id)`.
 - Un vehículo o un conductor no puede estar en dos turnos de la misma fecha y jornada **[POR CONFIRMAR]** (PB-17). Se implementa con dos índices únicos parciales, `(vehiculo_id, fecha, jornada)` y `(conductor_id, fecha, jornada)`, que solo cuentan los turnos no anulados. Prisma no los define en el esquema, así que se agregan a mano en la migración, como el RLS de JOS-02.
 - Índice `(empresa_id, fecha)` para ver los turnos de un día (PB-18).
 
-### 3.7 `aviso_enviado` · propuesta (PB-15 y PB-16)
+### 3.7 `aviso_enviado` · implementada en SIM-11 (PB-15 y PB-16)
 
-Registro de los correos de aviso. Corresponde a la clase `AvisoEnviado` de JOA-06 y al "registro de correos" de la tarea.
+Registro de los correos de aviso. Corresponde a la clase `AvisoEnviado` de JOA-06 y al "registro de correos" de la tarea. Las reglas de los avisos están en [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md); el proceso que llena esta tabla, en `src/lib/avisos-datos.ts`.
 
 | Columna | Tipo | Obl. | Restricciones y reglas |
 |---|---|---|---|
@@ -302,12 +302,12 @@ Registro de los correos de aviso. Corresponde a la clase `AvisoEnviado` de JOA-0
 | `empresa_id` | `uuid` | Sí | FK a `empresa`. |
 | `documento_id` | `uuid` | Sí | FK compuesta `(documento_id, empresa_id)` a `documento`. |
 | `fecha_vencimiento` | `date` | Sí | La que tenía el documento al enviar el aviso. Si el documento se renueva, los avisos de la fecha nueva se cuentan aparte (PB-13). |
-| `dias_anticipacion` | `smallint` | Sí | 30, 7, 1 o 0 (el día del vencimiento) **[POR CONFIRMAR]** (PB-15). |
-| `destinatario` | `varchar(254)` | Sí | Correo al que se envió, para poder revisarlo después. |
-| `estado` | `estado_aviso` | Sí | `enviado` o `fallido`, para reintentar los que fallaron **[POR CONFIRMAR]** (PB-16). |
+| `dias_anticipacion` | `smallint` | Sí | 30, 7, 1 o 0 (el día del vencimiento), con una regla CHECK en la migración (JOA-13, sección 2). |
+| `destinatario` | `varchar(254)` | Sí | El correo de contacto de la empresa al que se envió, para poder revisarlo después. |
+| `estado` | `estado_aviso` | Sí | `enviado` o `fallido`. Los fallidos se reintentan al día siguiente (PB-16). |
 | `enviado_en` | `timestamptz` | Sí | Fecha y hora del último intento. |
 
-Restricción única: `(documento_id, fecha_vencimiento, dias_anticipacion)`. Así el mismo aviso no se envía dos veces (PB-16), aunque el proceso diario se ejecute de nuevo.
+Restricción única: `(documento_id, fecha_vencimiento, dias_anticipacion)`. El proceso registra cada aviso como `fallido` **antes** de enviar el correo y lo marca `enviado` al terminar, así que el mismo aviso no se envía dos veces (PB-16), aunque el proceso diario se ejecute de nuevo o dos veces a la vez. Índice `(empresa_id)`. RLS activado, como las demás tablas.
 
 ### 3.8 `ingreso` · propuesta, módulo opcional (PB-21 a PB-23)
 
@@ -333,7 +333,7 @@ Restricción única: `(documento_id, fecha_vencimiento, dias_anticipacion)`. As�
 | `estado_vehiculo` | `activo` (por defecto), `en_mantencion`, `inactivo` | Implementado |
 | `tipo_documento` | `revision_tecnica`, `soap`, `permiso_circulacion`, `licencia_conducir`, `otro` | Propuesta (de JOA-06) |
 | `jornada` | `manana`, `tarde`, `noche` | Propuesta **[POR CONFIRMAR]** (PB-17) |
-| `estado_aviso` | `enviado`, `fallido` | Propuesta **[POR CONFIRMAR]** (PB-16) |
+| `estado_aviso` | `enviado`, `fallido` | Implementado (SIM-11) |
 
 El estado del documento (`vigente`, `por_vencer`, `vencido`) no es un tipo de la base de datos: se calcula (sección 3.5).
 
@@ -378,10 +378,9 @@ En todas las tablas, `empresa_id` es un detalle de cómo se guardan los datos (s
 | Historial de vencimientos y archivo adjunto | No en el MVP | PB-13, JOA-01 1.4 |
 | Jornadas del turno y si se puede asignar un vehículo en mantención | Mañana, tarde, noche; en mantención no | PB-17 |
 | Turno anulado: borrar o marcar | Marcar (`anulado`) | PB-19 |
-| Plazos de aviso, destinatario y reintentos | 30, 7, 1 y 0 días; `email_contacto`; registrar fallidos | PB-15, PB-16 |
 | Ingreso asociado a vehículo, servicio o ambos | Vehículo opcional y descripción libre | PB-22 |
 
-Las decisiones de conductores (campos obligatorios, RUT único por empresa y desactivar en vez de eliminar) se cerraron en JOA-09 y quedaron en la tabla `conductor` (sección 3.4).
+Las decisiones de conductores (campos obligatorios, RUT único por empresa y desactivar en vez de eliminar) se cerraron en JOA-09 y quedaron en la tabla `conductor` (sección 3.4). Las de los avisos (plazos, destinatario y reintentos) se cerraron en JOA-13 y quedaron en la tabla `aviso_enviado` (sección 3.7).
 
 ---
 

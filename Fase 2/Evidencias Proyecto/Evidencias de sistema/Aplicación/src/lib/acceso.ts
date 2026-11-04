@@ -8,6 +8,9 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 /** Única pantalla que se puede abrir sin sesión. */
 export const RUTA_LOGIN = "/login";
 
+/** Proceso diario de avisos por correo (JOA-13). Vercel Cron no tiene sesión: la protege CRON_SECRET. */
+export const RUTA_AVISOS = "/api/avisos";
+
 const esquemaCredenciales = z.object({
   correo: z
     .string({ error: "Ingresa tu correo." })
@@ -97,7 +100,8 @@ export function accesoDelEntorno() {
 
 /**
  * El proxy manda al login a quien no tiene sesión. Las acciones del servidor quedan fuera:
- * cada una comprueba la sesión por su cuenta y redirige ella misma.
+ * cada una comprueba la sesión por su cuenta y redirige ella misma. La ruta de los avisos
+ * también, porque comprueba CRON_SECRET (src/app/api/avisos/route.ts).
  */
 export function debeRedirigirAlLogin(solicitud: {
   ruta: string;
@@ -105,5 +109,7 @@ export function debeRedirigirAlLogin(solicitud: {
   esAccion: boolean;
 }) {
   if (solicitud.conSesion || solicitud.esAccion) return false;
-  return solicitud.ruta !== RUTA_LOGIN && !solicitud.ruta.startsWith(`${RUTA_LOGIN}/`);
+  return ![RUTA_LOGIN, RUTA_AVISOS].some(
+    (ruta) => solicitud.ruta === ruta || solicitud.ruta.startsWith(`${ruta}/`),
+  );
 }

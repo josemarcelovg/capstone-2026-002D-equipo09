@@ -130,3 +130,9 @@ test("con sesión no redirige", () => {
 test("deja pasar las acciones del servidor, que comprueban la sesión por su cuenta", () => {
   assert.equal(debeRedirigirAlLogin({ ruta: "/vehiculos/nuevo", conSesion: false, esAccion: true }), false);
 });
+
+test("deja pasar la ruta de los avisos, que se protege con CRON_SECRET (JOA-13), pero no otras", () => {
+  assert.equal(debeRedirigirAlLogin({ ruta: "/api/avisos", conSesion: false, esAccion: false }), false);
+  assert.equal(debeRedirigirAlLogin({ ruta: "/api/avisos-falso", conSesion: false, esAccion: false }), true);
+  assert.equal(debeRedirigirAlLogin({ ruta: "/api/otra", conSesion: false, esAccion: false }), true);
+});

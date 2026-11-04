@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (requisitos y backlog) y José Vargas (rendimiento y datos) |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración), el 27-10-2026 (encabezados de seguridad), el 28-10-2026 (decisiones de la reunión del 27-10), el 29-10-2026 (casos de conductores) y el 02-11-2026 (resultados de SIM-08, entrega final en la semana 15, y CP-SEG-13 y ERR-01 con JOS-07) |
+| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración), el 27-10-2026 (encabezados de seguridad), el 28-10-2026 (decisiones de la reunión del 27-10), el 29-10-2026 (casos de conductores), el 02-11-2026 (resultados de SIM-08, entrega final en la semana 15, y CP-SEG-13 y ERR-01 con JOS-07) y el 04-11-2026 (avisos por correo) |
 
 Este plan define cómo se prueba MicroLogist: qué tipos de prueba hay, con qué técnicas se ejecutan, en qué entorno y con qué datos, cuándo se hacen y cómo se registran los resultados y los errores. Cada caso de prueba tiene un identificador que no cambia, y cada requisito de [JOA-05](JOA-05_Requisitos_No_Funcionales.md) queda cubierto por al menos un caso (sección 10). Los casos de la primera entrega ya tienen un estado, gracias a la ejecución de [SIM-03](SIM-03_Pruebas_Primera_Entrega.md). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -49,8 +49,8 @@ Los identificadores `CP-xxx-nn` no se reutilizan ni se renumeran, igual que los 
 
 | Técnica | Para qué se usa | Cómo |
 |---|---|---|
-| **Pruebas unitarias automáticas** | Reglas que no dependen de la pantalla ni de la base: validación de vehículos y reglas de acceso. | `npm test` desde `Evidencias de sistema/Aplicación` (hoy 55 pruebas en `tests/`). Corren en cada PR de código (DoD, sección 3.1). |
-| **Pruebas de integración automáticas** | Que la aplicación, la base de datos y Supabase funcionan juntas (sección 6.6). | `npm run test:integracion` desde `Aplicación` (hoy 23 pruebas en `tests/integracion/`). Usan el `.env`. Las de base de datos trabajan dentro de transacciones que se deshacen, así que no dejan datos; las de la aplicación necesitan `npm run dev` corriendo y solo leen. |
+| **Pruebas unitarias automáticas** | Reglas que no dependen de la pantalla ni de la base: validación de vehículos y reglas de acceso. | `npm test` desde `Evidencias de sistema/Aplicación` (hoy 109 pruebas en `tests/`). Corren en cada PR de código (DoD, sección 3.1). |
+| **Pruebas de integración automáticas** | Que la aplicación, la base de datos y Supabase funcionan juntas (sección 6.6). | `npm run test:integracion` desde `Aplicación` (hoy 24 pruebas en `tests/integracion/`). Usan el `.env`. Las de base de datos trabajan dentro de transacciones que se deshacen, así que no dejan datos; las de la aplicación necesitan `npm run dev` corriendo y solo leen. |
 | **Pruebas manuales en el navegador** | Flujos completos, como los vería el usuario. | Con las cuentas de prueba de la Empresa A y la Empresa B. |
 | **Solicitudes alteradas** | Comprobar que el servidor protege los datos aunque el navegador mande otra cosa. | Herramientas del navegador: modificar la solicitud antes de enviarla (por ejemplo, cambiar un id o agregar `empresa_id`). |
 | **Consultas de solo lectura a la base de datos** | Confirmar el efecto real de una acción, sin confiar solo en lo que dice la pantalla. | Consultas `select` sobre la tabla del módulo, antes y después de probar. Nunca se modifican datos a mano. |
@@ -139,8 +139,8 @@ Los identificadores `CP-xxx-nn` no se reutilizan ni se renumeran, igual que los 
 | CP-FUN-24 | Ver los documentos y su estado (vigente, por vencer, vencido). | PB-12 | 📝 |
 | CP-FUN-25 | Renovar o corregir un documento. | PB-13 | 📝 |
 | CP-FUN-26 | Ver y editar los datos de contacto de la empresa. | PB-14 | 📝 |
-| CP-FUN-27 | Aviso por correo antes del vencimiento. | PB-15 | 📝 |
-| CP-FUN-28 | Avisos sin duplicados y con registro de envíos. | PB-16 | 📝 |
+| CP-FUN-27 | Aviso por correo, con fechas controladas: un documento que vence en 30, 7 o 1 días, o hoy, aparece en el correo del día con los días que faltan; uno a 31 días o vencido, no; uno a 5 días recibe solo el de 7. Un correo por empresa en su `email_contacto`, sin documentos de otra empresa ni de dueños inactivos. | PB-15, JOA-13 criterios 1 a 7 | ⏳ Pendiente: reglas aprobadas en `tests/avisos.test.ts` ([SIM-11](SIM-11_Alertas_por_Correo.md)); falta un envío real |
+| CP-FUN-28 | Registro y duplicados: cada aviso queda en `aviso_enviado`; una segunda ejecución el mismo día no repite nada; un envío fallido se reintenta al día siguiente; un documento renovado vuelve a recibir sus avisos. | PB-16, JOA-13 criterios 8 a 11 | ⏳ Pendiente: reglas aprobadas (SIM-11); faltan las pruebas con la base de datos |
 | CP-FUN-29 | Asignar un turno. | PB-17 | 📝 |
 | CP-FUN-30 | Ver los turnos por fecha. | PB-18 | 📝 |
 | CP-FUN-31 | Editar o anular un turno. | PB-19 | 📝 |
@@ -214,7 +214,7 @@ Los umbrales de rendimiento se miden sobre la versión desplegada, no en el comp
 Son pruebas automáticas que comprueban que las partes del sistema funcionan juntas, sin pasar por la pantalla. Se ejecutan con `npm run test:integracion` desde `Aplicación` y están en dos archivos:
 
 - **`tests/integracion/base-de-datos.test.ts`** (CP-INT-01 a CP-INT-10 y CP-INT-17 a CP-INT-20): los esquemas de validación de la aplicación (`src/lib/vehiculos.ts` y `src/lib/conductores.ts`) y el cliente Prisma generado, contra la base de `DATABASE_URL`, igual que la aplicación. Cada caso crea sus propias empresas, vehículos y conductores dentro de una transacción que se deshace al final, así que no deja datos ni depende del seed.
-- **`tests/integracion/aplicacion.test.ts`** (CP-INT-11 a CP-INT-16, CP-INT-21 y CP-INT-22): la aplicación levantada con `npm run dev` (por defecto en `http://localhost:3000`; otra dirección va en `URL_APLICACION`), con su proxy y Supabase Auth, y la API de Supabase con la clave pública. Solo leen: no inician sesión con las cuentas de prueba ni crean datos.
+- **`tests/integracion/aplicacion.test.ts`** (CP-INT-11 a CP-INT-16 y CP-INT-21 a CP-INT-23): la aplicación levantada con `npm run dev` (por defecto en `http://localhost:3000`; otra dirección va en `URL_APLICACION`), con su proxy y Supabase Auth, y la API de Supabase con la clave pública. Solo leen: no inician sesión con las cuentas de prueba ni crean datos.
 
 Si falta el `.env` o la aplicación no está corriendo, los casos que lo necesitan se saltan con un aviso que dice qué falta, en vez de fallar.
 
@@ -242,6 +242,7 @@ Si falta el `.env` o la aplicación no está corriendo, los casos que lo necesit
 | CP-INT-20 | La consulta del listado, con búsqueda e «Incluir inactivos». | Solo conductores de la empresa, activos por defecto y ordenados por nombre; busca por nombre y por RUT, con o sin puntos. Complementa CP-FUN-21. | PB-09, JOA-09 criterios 6 y 10 | ✅ 02-11-2026 |
 | CP-INT-21 | Abrir sin sesión `/conductores` (también con búsqueda e «Incluir inactivos»), `/conductores/nuevo`, la ficha de un conductor del seed y la de un id que no existe. | Todas responden 307 hacia `/login`, sin datos. | JOA-09 criterio 13, RNF-SEG-01 | ✅ 29-10-2026 |
 | CP-INT-22 | Leer `conductor` directo desde la API de Supabase con la clave pública. | No devuelve ninguna fila. | RNF-SEG-02 | ✅ 29-10-2026. Revisado otra vez el 02-11-2026: la API responde 200 sin filas |
+| CP-INT-23 | Llamar `/api/avisos` sin la clave de `CRON_SECRET`, con una inventada y con una vacía. | Responde 401 y no redirige al inicio de sesión: el proxy la deja pasar y la ruta se protege con la clave. | JOA-13 criterio 12, RNF-SEG-01 | ✅ 04-11-2026 |
 
 **Ejecución del 22-10-2026:** 16 de 16 aprobadas (los 15 casos y la comprobación final de que no quedaron datos). Entorno: rama `sim-04-pruebas-integracion` desde `main` (`cb62a6d`), Node.js 24.20, proyecto `micrologist-dev` de Supabase y la aplicación con `npm run dev` en el puerto 3000. Antes y después de la ejecución, una consulta de solo lectura confirmó que la base seguía con las mismas 2 empresas y los mismos 11 vehículos.
 
@@ -250,6 +251,8 @@ Si falta el `.env` o la aplicación no está corriendo, los casos que lo necesit
 **Ejecución del 29-10-2026 (solo `aplicacion.test.ts`):** 8 de 8 aprobadas, con CP-INT-21 y CP-INT-22 agregados. Entorno: rama `sim-08-pruebas-conductores` desde `main` (`9978c9f`), mismo proyecto de Supabase y la aplicación con `npm run dev`. No se ejecutó `base-de-datos.test.ts` (CP-INT-10 y CP-INT-17 a CP-INT-20): quedó para la ejecución completa de SIM-08.
 
 **Ejecución del 02-11-2026 (SIM-08):** 23 de 23 aprobadas (los 22 casos y la comprobación final de que no quedaron datos). Entorno: rama `sim-08-pruebas-conductores` desde `main` (`9978c9f`), proyecto `micrologist-dev` con la migración `conductores` aplicada y la aplicación con `npm run dev`.
+
+**Ejecución del 04-11-2026 (solo `aplicacion.test.ts`, SIM-11):** 9 de 9 aprobadas, con CP-INT-23 agregado. Entorno: rama `sim-11-alertas-correo`, mismo proyecto de Supabase y la aplicación con `npm run dev`. Las pruebas del proceso de avisos con la base de datos se agregan cuando las migraciones de documentos y avisos estén aplicadas ([SIM-11](SIM-11_Alertas_por_Correo.md), sección 5).
 
 ---
 
@@ -305,7 +308,7 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 
 | Requisito | Caso(s) | | Requisito | Caso(s) |
 |---|---|---|---|---|
-| RNF-SEG-01 | CP-SEG-01, CP-SEG-02, CP-INT-12, CP-INT-13, CP-INT-21 | | RNF-USA-01 | CP-USA-01 |
+| RNF-SEG-01 | CP-SEG-01, CP-SEG-02, CP-INT-12, CP-INT-13, CP-INT-21, CP-INT-23 | | RNF-USA-01 | CP-USA-01 |
 | RNF-SEG-02 | CP-SEG-03, CP-SEG-04, CP-SEG-05, CP-INT-05, CP-INT-08, CP-INT-10, CP-INT-15, CP-INT-18, CP-INT-19, CP-INT-22 | | RNF-USA-02 | CP-USA-02 |
 | RNF-SEG-03 | CP-SEG-06 | | RNF-USA-03 | CP-FUN-05, CP-FUN-11 |
 | RNF-SEG-04 | CP-SEG-07 | | RNF-USA-04 | CP-FUN-09, CP-FUN-11 |
