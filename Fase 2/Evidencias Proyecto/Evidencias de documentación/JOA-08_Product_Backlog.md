@@ -7,7 +7,7 @@
 | **Revisión** | José Vargas y Simón Jofré |
 | **Estado** | Propuesta para revisión del equipo |
 | **Fecha** | 12-10-2026 (actualizado el 28-10-2026) |
-| **Actualización** | 03-11-2026 (alcance de la entrega final aprobado) |
+| **Actualización** | 04-11-2026 (documentos y PB-24 en curso; criterio 4 de PB-24 confirmado) |
 
 Este documento reúne todo lo que MicroLogist debe hacer, ordenado por prioridad. Parte de la [Product Vision](JOA-04_Product_Vision.md) y de las reglas de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md). De aquí salen los ítems de cada Sprint Backlog (SIM-06) y los casos del plan de pruebas (SIM-04). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -35,7 +35,7 @@ Este backlog contiene funcionalidades del producto. Las tareas de documentación
 
 ## 2. Backlog priorizado
 
-Estado al 03-11-2026.
+Estado al 04-11-2026.
 
 | Prioridad | ID | Ítem | Módulo | Etapa | Estado |
 |---|---|---|---|---|---|
@@ -49,10 +49,10 @@ Estado al 03-11-2026.
 | 8 | PB-08 | Registrar conductor | Conductores | MVP completo | Terminado |
 | 9 | PB-09 | Listar, buscar y editar conductores | Conductores | MVP completo | Terminado |
 | 10 | PB-10 | Desactivar y reactivar conductor | Conductores | MVP completo | Terminado |
-| 11 | PB-11 | Registrar documento con vencimiento | Documentos | MVP completo | Pendiente |
-| 12 | PB-12 | Ver documentos y su estado | Documentos | MVP completo | Pendiente |
-| 13 | PB-13 | Renovar o corregir documento | Documentos | MVP completo | Pendiente |
-| 14 | PB-24 | Conductor asignado al vehículo | Vehículos | MVP completo | Pendiente |
+| 11 | PB-11 | Registrar documento con vencimiento | Documentos | MVP completo | En curso |
+| 12 | PB-12 | Ver documentos y su estado | Documentos | MVP completo | En curso |
+| 13 | PB-13 | Renovar o corregir documento | Documentos | MVP completo | En curso |
+| 14 | PB-24 | Conductor asignado al vehículo | Vehículos | MVP completo | En curso |
 | 15 | PB-14 | Datos de contacto de la empresa | Empresa | MVP completo | En curso |
 | 16 | PB-15 | Aviso por correo antes del vencimiento | Avisos | MVP completo | Pendiente |
 | 17 | PB-16 | Avisos sin duplicados y con registro de envíos | Avisos | MVP completo | Pendiente |
@@ -69,7 +69,8 @@ Estado al 03-11-2026.
 - **Primera entrega (PB-01 a PB-07): terminada.** El inicio y cierre de sesión con Supabase Auth (SIM-02, PR #21) se integró con el módulo de vehículos, y las pruebas de SIM-03 aprobaron los 14 criterios de JOA-01 con dos empresas ficticias (PR #22). El detalle por criterio está en [JOA-03](JOA-03_Validacion_Primera_Entrega.md), que cerró la entrega con la demo ensayada (PR #36).
 - **Conductores (PB-08 a PB-10): terminado.** Están la tabla con su migración (JOS-09, PR #41), la validación y el acceso a datos (JOS-10, PR #42) y las pantallas (JOA-11 y JOA-12, PR #43). Las pruebas con las dos empresas aprobaron 14 de 14 (SIM-08, PR #47).
 - **Datos de contacto de la empresa (PB-14): en curso.** La pantalla "Mi empresa" ya está (JOA-15, PR #44), con pruebas unitarias. Falta registrar sus casos en el plan de pruebas (SIM-04).
-- **Documentos (PB-11 a PB-13): en desarrollo.** La validación y el cálculo del estado según [JOA-10](JOA-10_Reglas_Modulo_Documentos.md) ya están, con pruebas unitarias (PR #48). Faltan la tabla con su migración, el acceso a datos y las pantallas.
+- **Documentos (PB-11 a PB-13): en curso.** Están la validación y el cálculo del estado según [JOA-10](JOA-10_Reglas_Modulo_Documentos.md) (PR #48), la tabla con su migración (PR #53) y el acceso a datos con las pantallas, incluida la sección en la ficha del vehículo y del conductor (PR #56). Faltan sus pruebas con Supabase (CP-FUN-23 a CP-FUN-25).
+- **Conductor asignado (PB-24): en curso.** El vehículo tiene un conductor asignado opcional (solo activos de la empresa) y su ficha muestra al conductor con sus documentos. Faltan sus casos en el plan de pruebas (SIM-04).
 - **Siguen:** lo que entra en la entrega final, en el apartado siguiente.
 
 ### Alcance de la entrega final (semana 15)
@@ -361,7 +362,8 @@ Lo pidió la profesora en la revisión del 28-10-2026 (SIM-06, sección 6). Es d
 1. Al registrar o editar un vehículo puedo elegir su conductor asignado, o dejarlo sin conductor.
 2. Solo puedo elegir conductores activos de mi empresa.
 3. La ficha del vehículo muestra el conductor asignado y sus documentos con su estado, además de los documentos del propio vehículo.
-4. Si un conductor tiene más de un vehículo asignado, y qué pasa con la asignación al desactivar al conductor, está **[POR CONFIRMAR]** (propuesta: un conductor puede tener varios vehículos y al desactivarlo los vehículos quedan sin conductor asignado).
+4. Un conductor puede estar asignado a varios vehículos. Al desactivarlo, sus vehículos quedan sin conductor asignado, y la confirmación y el mensaje lo avisan; reactivarlo no los vuelve a asignar (confirmado por el Product Owner el 04-11-2026).
+5. La ficha del conductor muestra los vehículos que tiene asignados, con enlace a cada uno.
 
 ---
 
@@ -418,7 +420,7 @@ Lo pidió la profesora en la revisión del 28-10-2026 (SIM-06, sección 6). Es d
 - **Estimación:** se estima con tallas XS a XL al planificar cada iteración (acordado el 27-10-2026). La talla de cada tarea queda en el campo *Size* del tablero.
 - **Sprints:** los sprints duran 2 semanas, igual que las iteraciones del tablero (acordado el 27-10-2026). La asignación de ítems a cada sprint se registra en el Sprint Backlog (SIM-06).
 - **Reglas de cada módulo:** conductores, documentos, turnos e ingresos necesitan un documento de reglas como JOA-01 antes de desarrollarse. Ahí se resuelven los **[POR CONFIRMAR]** de sus ítems. Conductores (PB-08 a PB-10): resueltos en [JOA-09](JOA-09_Reglas_Modulo_Conductores.md). Documentos (PB-11 a PB-13): resueltos en [JOA-10](JOA-10_Reglas_Modulo_Documentos.md). Avisos (PB-14 a PB-16): resueltos en [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md). Turnos (PB-17 a PB-19): resueltos en [JOA-14](JOA-14_Reglas_Modulo_Turnos.md).
-- **PB-24:** falta confirmar su criterio 4 y agregar sus casos al plan de pruebas (SIM-04).
+- **PB-24:** falta agregar sus casos al plan de pruebas (SIM-04). Su criterio 4 se confirmó el 04-11-2026.
 
 ---
 
@@ -439,6 +441,7 @@ Lo pidió la profesora en la revisión del 28-10-2026 (SIM-06, sección 6). Es d
 | 02-11-2026 | Inicio de la Iteración 4: PB-01 a PB-07 pasan a Terminado (SIM-03 y JOA-03); PB-08 a PB-10 y PB-14 pasan a En curso. Se actualiza el avance y se enlazan las reglas de JOA-13 y JOA-14 en la sección 5. |
 | 02-11-2026 | PB-08 a PB-10 pasan a Terminado (SIM-08). Se agrega PB-24 (conductor asignado al vehículo), pedido por la profesora, y la propuesta de alcance para la entrega final de la semana 15 (sección 2). |
 | 03-11-2026 | El equipo aprueba el alcance de la entrega final (PR #50): se quita su [POR CONFIRMAR], turnos y PB-20 pasan a la etapa "Trabajo futuro" y los ítems fuera de la entrega se anotan en la sección 7. |
+| 04-11-2026 | PB-11 a PB-13 pasan a En curso (pantallas unidas en el PR #56; faltan sus pruebas). PB-24 pasa a En curso: se confirma su criterio 4 (varios vehículos por conductor y sin conductor al desactivarlo) y se agrega el criterio 5 (vehículos en la ficha del conductor). |
 
 ---
 
