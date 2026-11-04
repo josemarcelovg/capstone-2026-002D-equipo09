@@ -16,7 +16,7 @@ Este documento explica cómo se implementaron los avisos por correo (PB-15 y PB-
 
 | Parte | Dónde | Qué hace |
 |---|---|---|
-| Registro de avisos | Tabla `aviso_enviado` (`Base de datos/schema.prisma` y migración `20261104025354_avisos`) | Un registro por documento, fecha de vencimiento y plazo, con destinatario, estado y fecha del intento. Ver [JOS-04](JOS-04_Modelo_de_Datos.md), sección 3.7. |
+| Registro de avisos | Tabla `aviso_enviado` (`Aplicación/prisma/schema.prisma` y migración `20261104025354_avisos`) | Un registro por documento, fecha de vencimiento y plazo, con destinatario, estado y fecha del intento. Ver [JOS-04](JOS-04_Modelo_de_Datos.md), sección 3.7. |
 | Reglas | `src/lib/avisos.ts` | Plazo que corresponde, avisos pendientes, un grupo por empresa, el correo y la clave de la ruta. No usa la base ni Next.js. |
 | Envío | `src/lib/correo.ts` | Envía con la API HTTP de Resend, sin dependencias nuevas. |
 | Proceso diario | `src/lib/avisos-datos.ts` | Lee los documentos, registra cada aviso, envía un correo por empresa y marca enviado o fallido. |

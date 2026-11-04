@@ -75,7 +75,7 @@ flowchart LR
 | **Interfaz** | Pantallas adaptables a computador y celular, hechas con React y Tailwind CSS. | `Aplicación/src/app/` |
 | **Servidor** | Páginas y acciones del servidor de Next.js: comprueban la sesión, validan los datos y llaman al acceso a datos. La empresa del usuario siempre se toma de la sesión, nunca del formulario. | `Aplicación/src/app/` |
 | **Validación** | Las reglas de cada módulo en esquemas Zod, compartidas por el formulario y el servidor. | `Aplicación/src/lib/` |
-| **Acceso a datos** | Consultas a PostgreSQL con Prisma, siempre filtradas por la empresa del usuario. El modelo y las migraciones están en `Base de datos/`. | `Aplicación/src/lib/` |
+| **Acceso a datos** | Consultas a PostgreSQL con Prisma, siempre filtradas por la empresa del usuario. El modelo de Prisma está en `Aplicación/prisma/schema.prisma` y las migraciones, en `Base de datos/`. | `Aplicación/src/lib/` |
 | **Avisos** | Un proceso diario que busca documentos por vencer y envía un correo. El correo es el único canal de aviso. | `Aplicación/src/lib/avisos.ts` y `Aplicación/src/app/api/avisos/` |
 
 Los vehículos ya se guardan en PostgreSQL mediante Prisma (JOS-02 y JOS-03). El inicio de sesión usa Supabase Auth (SIM-02): el proxy (`src/proxy.ts`) manda al login a quien no tiene sesión, y cada página y acción vuelve a comprobarla en el servidor (`src/lib/sesion.ts`), que entrega la empresa del usuario. En desarrollo, sin las claves de Supabase, se entra sin iniciar sesión con la empresa de `EMPRESA_DESARROLLO_ID` del `.env` de `Aplicación/`.
@@ -99,7 +99,7 @@ El detalle está en el diagrama de componentes y en los diagramas de secuencia d
    cd "capstone-2026-002D-equipo09/Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación"
    ```
 
-2. Instalar las dependencias (también genera el cliente de Prisma a partir de `Base de datos/schema.prisma`):
+2. Instalar las dependencias (también genera el cliente de Prisma a partir de `Aplicación/prisma/schema.prisma`):
 
    ```bash
    npm install
@@ -168,10 +168,10 @@ Dentro de `Evidencias de sistema`:
 | `Aplicación/src/lib/` | Reglas de validación y acceso a datos |
 | `Aplicación/public/` | Imágenes y archivos estáticos |
 | `Aplicación/tests/` | Pruebas automáticas: unitarias en la carpeta y de integración en `tests/integracion/` |
-| `Aplicación/prisma/` | Datos de prueba (`seed.ts`) y comprobación de la conexión (`comprobar.ts`) |
+| `Aplicación/prisma/` | Modelo de datos (`schema.prisma`), datos de prueba (`seed.ts`) y comprobación de la conexión (`comprobar.ts`) |
 | `Aplicación/Capturas/` | Capturas de pantalla de la aplicación |
 | `Aplicación/` (raíz) | `Dockerfile`, `compose.yaml`, `.env.example` y configuración del proyecto |
-| `Base de datos/` | Modelo de datos (`schema.prisma`) y scripts SQL de las migraciones (`migrations/`) |
+| `Base de datos/` | Scripts SQL de las migraciones (`migrations/`) y de los perfiles de prueba (`perfiles-prueba.sql`) |
 
 ## Integrantes del equipo y roles
 

@@ -94,7 +94,6 @@ En la raíz del repositorio están las carpetas `Fase 1`, `Fase 2` y `Fase 3`, y
 ```
 Evidencias de sistema/
 ├── Base de datos/
-│   ├── schema.prisma             Modelo de datos
 │   ├── migrations/               Migraciones versionadas (scripts SQL)
 │   └── README.md                 Qué contiene y cómo se usa
 └── Aplicación/                   Desde aquí se ejecutan los comandos npm y Docker
@@ -124,13 +123,14 @@ Aplicación/
 │   │   └── prisma.ts             Cliente de Prisma para la aplicación
 │   └── generated/prisma/         Cliente generado por Prisma (no se sube al repositorio)
 ├── prisma/
+│   ├── schema.prisma             Modelo de datos
 │   ├── seed.ts                   Datos ficticios de prueba
 │   └── comprobar.ts              Comprobación de la base de datos
 ├── tests/                        Pruebas automáticas
 ├── Capturas/                     Capturas de pantalla de la aplicación
 ├── Dockerfile, compose.yaml,     Entorno Docker (JOS-05)
 │   iniciar.sh
-├── prisma.config.ts              Configuración del CLI de Prisma (apunta a «Base de datos»)
+├── prisma.config.ts              Configuración del CLI de Prisma (migraciones en «Base de datos»)
 └── .env.example                  Variables de entorno, sin valores secretos
 ```
 
@@ -186,7 +186,7 @@ Comandos principales:
 
 Reglas al cambiar el modelo:
 
-1. Editar `Base de datos/schema.prisma` y crear la migración con `npm run db:migrate` (desde `Aplicación`). La carpeta nueva de `Base de datos/migrations/` se sube en el mismo PR.
+1. Editar `prisma/schema.prisma` y crear la migración con `npm run db:migrate` (desde `Aplicación`). La carpeta nueva de `Base de datos/migrations/` se sube en el mismo PR.
 2. **Toda tabla nueva activa RLS en su migración** (`ALTER TABLE ... ENABLE ROW LEVEL SECURITY;`), como la migración inicial ([JOS-02](JOS-02_Configuracion_Base_de_Datos.md), sección 6).
 3. Toda tabla con datos de una empresa tiene `empresa_id` obligatorio ([JOS-04](JOS-04_Modelo_de_Datos.md), sección 4).
 4. Nunca se edita una migración que ya está en `main`: se corrige con una nueva.
@@ -213,7 +213,7 @@ La Definition of Done exige que `build` y `lint` pasen antes de unir un PR ([SIM
 
 La aplicación todavía no está desplegada. Se despliega en la Iteración 4, del 02-11 al 15-11 (SIM-10, acordado el 27-10-2026). Pasos previstos:
 
-1. Importar el repositorio de GitHub en Vercel y poner como **Root Directory** `Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación`, dejando activada la opción que incluye los archivos fuera de esa carpeta (Prisma necesita `../Base de datos`). Vercel detecta Next.js y usa `npm run build`. `npm install` ejecuta `prisma generate` automáticamente.
+1. Importar el repositorio de GitHub en Vercel y poner como **Root Directory** `Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación`, con la opción que incluye los archivos fuera de esa carpeta **desactivada**: si está activada, Vercel nombra las funciones con la ruta desde la raíz del repositorio, que tiene espacios, y el build falla. Por eso el esquema de Prisma está dentro de `Aplicación` ([SIM-10](SIM-10_Despliegue_Vercel.md)). Vercel detecta Next.js y usa `npm run build`. `npm install` ejecuta `prisma generate` automáticamente.
 2. Configurar las variables de producción de la sección 5.1 en el panel de Vercel.
 3. Aplicar las migraciones a la base de producción antes de cada despliegue que las incluya: `npm run db:deploy` con la `DIRECT_URL` de producción. Si esto se automatiza, se define al configurar Vercel.
 4. Elegir para las funciones de Vercel una región cercana a la de la base de datos, para reducir la latencia (el proyecto de desarrollo de Supabase está en West US, Oregon).

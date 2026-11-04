@@ -10,7 +10,7 @@
 
 Este documento explica cómo quedó la base de datos de la primera entrega y cómo levantarla. Las reglas vienen de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), secciones 2.2 y 3. El diagrama entidad-relación y el diccionario completo se harán en **JOS-04**.
 
-Desde el 18-10-2026, el modelo (`schema.prisma`) y las migraciones están en `Fase 2/Evidencias Proyecto/Evidencias de sistema/Base de datos`. El resto de las rutas de este documento (`prisma.config.ts`, `prisma/seed.ts`, `.env`, etc.) son de la carpeta `Aplicación`, que está al lado, y los comandos `npm` se ejecutan desde ahí.
+Desde el 18-10-2026, las migraciones están en `Fase 2/Evidencias Proyecto/Evidencias de sistema/Base de datos`. El modelo (`schema.prisma`) está en `Aplicación/prisma/` desde el 04-11-2026, para que Vercel pueda generar el cliente de Prisma sin archivos de fuera de esa carpeta ([SIM-10](SIM-10_Despliegue_Vercel.md)). El resto de las rutas de este documento (`prisma.config.ts`, `prisma/seed.ts`, `.env`, etc.) son de la carpeta `Aplicación`, que está al lado, y los comandos `npm` se ejecutan desde ahí.
 
 ---
 
@@ -27,7 +27,7 @@ Desde el 18-10-2026, el modelo (`schema.prisma`) y las migraciones están en `Fa
 
 ## 2. Modelo de datos
 
-En el código los campos van en camelCase (`capacidadPasajeros`); en la base de datos, las tablas y columnas quedan en snake_case (`capacidad_pasajeros`), como en JOA-01. El esquema está en `Base de datos/schema.prisma`.
+En el código los campos van en camelCase (`capacidadPasajeros`); en la base de datos, las tablas y columnas quedan en snake_case (`capacidad_pasajeros`), como en JOA-01. El esquema está en `prisma/schema.prisma`.
 
 ### 2.1 Tablas
 
@@ -82,7 +82,7 @@ Se usa el *session pooler* y no la conexión directa (`db.xxx.supabase.co`) porq
 | `npm run db:seed` | Carga las empresas y vehículos ficticios. Se puede ejecutar varias veces sin duplicar. |
 | `npm run db:comprobar` | Comprueba la creación y consulta de vehículos. No deja datos nuevos. |
 | `npm run db:studio` | Abre Prisma Studio para ver las tablas en el navegador. |
-| `npm run db:migrate -- --name descripcion` | Crea una migración nueva después de cambiar `Base de datos/schema.prisma`. |
+| `npm run db:migrate -- --name descripcion` | Crea una migración nueva después de cambiar `prisma/schema.prisma`. |
 
 Primera vez, con el `.env` listo:
 
@@ -95,7 +95,7 @@ npm run db:comprobar
 
 ### 4.1 Cómo cambiar el modelo más adelante
 
-1. Editar `Base de datos/schema.prisma`.
+1. Editar `prisma/schema.prisma`.
 2. Ejecutar `npm run db:migrate -- --name que-cambio` (por ejemplo `--name agregar-conductor`). Esto crea la migración y la aplica.
 3. Subir la carpeta nueva de `Base de datos/migrations/` en el mismo PR que el cambio.
 

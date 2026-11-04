@@ -205,7 +205,7 @@ Revisión hecha el 04-11-2026 sobre `main`. Las rutas son de `Fase 2/Evidencias 
 
 | Regla | Dónde está | ¿Cumple? |
 |---|---|---|
-| Tipos y dueño, un documento por dueño y tipo salvo "otro" (JOA-10, 2 y 3.1) | `src/lib/documentos.ts`, `src/lib/documentos-datos.ts` e índices únicos parciales en `Base de datos/schema.prisma` | Sí |
+| Tipos y dueño, un documento por dueño y tipo salvo "otro" (JOA-10, 2 y 3.1) | `src/lib/documentos.ts`, `src/lib/documentos-datos.ts` e índices únicos parciales en `Aplicación/prisma/schema.prisma` | Sí |
 | Estado calculado con la fecha de Chile, 30 días para "por vencer" (JOA-10, 2 y 3.2) | `calcularEstado` en `src/lib/documentos.ts` y `hoyEnChile` en `src/lib/fechas.ts` | Sí |
 | Dueños inactivos fuera del listado por defecto y sin documentos nuevos (JOA-10, 2) | `DUENO_ACTIVO` en `src/lib/documentos-filtros.ts` y `crearDocumento` en `src/lib/documentos-datos.ts` | Sí |
 | Un documento, vehículo o conductor de otra empresa responde "no encontrado" (JOA-10, 4) | `src/lib/documentos-datos.ts` y claves foráneas compuestas en `schema.prisma` | Sí |
