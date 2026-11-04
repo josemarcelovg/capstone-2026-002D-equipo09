@@ -26,6 +26,10 @@ export const ETIQUETA_ESTADO: Record<Estado, string> = {
 
 const ANIO_MINIMO = 1980;
 const PATENTE = /^([A-Z]{4}\d{2}|[A-Z]{2}\d{4})$/;
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** Si el conductor no es de la lista (otra empresa, inactivo o inventado). PB-24, criterio 2. */
+export const MENSAJE_CONDUCTOR_NO_VALIDO = "Selecciona un conductor activo de la lista.";
 
 /** `bb-cd 12` → `BBCD12`. Así se valida y se guarda. */
 export function normalizarPatente(valor: string) {
@@ -78,6 +82,13 @@ export function esquemaVehiculo(anioActual = new Date().getFullYear()) {
     color: textoOpcional(30, "El color puede tener hasta 30 caracteres."),
     estado: z.enum(ESTADOS, { error: "Selecciona un estado válido." }).default("activo"),
     observaciones: textoOpcional(500, "Las observaciones pueden tener hasta 500 caracteres."),
+    // Vacío es "sin conductor asignado". Que sea activo y de la empresa lo comprueba el acceso a datos.
+    conductorId: z
+      .string({ error: MENSAJE_CONDUCTOR_NO_VALIDO })
+      .trim()
+      .nullish()
+      .transform((valor) => valor || null)
+      .pipe(z.string().regex(UUID, MENSAJE_CONDUCTOR_NO_VALIDO).nullable()),
   });
 }
 

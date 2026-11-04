@@ -2,9 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect, unstable_rethrow } from "next/navigation";
-import { formatearPatente, validarVehiculo, type ErroresVehiculo } from "@/lib/vehiculos";
+import {
+  formatearPatente,
+  MENSAJE_CONDUCTOR_NO_VALIDO,
+  validarVehiculo,
+  type ErroresVehiculo,
+} from "@/lib/vehiculos";
 import {
   actualizarVehiculo,
+  ConductorNoValidoError,
   crearVehiculo,
   obtenerVehiculo,
   PatenteDuplicadaError,
@@ -45,6 +51,7 @@ export async function guardarVehiculo(
         patente: `Ya tienes un vehículo registrado con la patente ${formatearPatente(datos.patente)}.`,
       };
     }
+    if (error instanceof ConductorNoValidoError) return { conductorId: MENSAJE_CONDUCTOR_NO_VALIDO };
     console.error(error);
     return { general: "No pudimos guardar el vehículo. Intenta nuevamente." };
   }
