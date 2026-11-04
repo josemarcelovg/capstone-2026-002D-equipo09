@@ -107,15 +107,22 @@ model Vehiculo {
   color              String?        @db.VarChar(30)
   estado             EstadoVehiculo @default(activo)
   observaciones      String?        @db.VarChar(500)
+  /// Conductor habitual del vehículo (PB-24), sin fecha ni jornada: no es un turno. Opcional.
+  /// Un conductor puede tener varios vehículos; al desactivarlo, sus vehículos quedan sin conductor.
+  conductorId        String?        @map("conductor_id") @db.Uuid
   createdAt          DateTime       @default(now()) @map("created_at") @db.Timestamptz
   updatedAt          DateTime       @updatedAt @map("updated_at") @db.Timestamptz
 
   empresa    Empresa     @relation(fields: [empresaId], references: [id])
+  /// Clave foránea compuesta: el conductor tiene que ser de la misma empresa (JOS-04, sección 4).
+  conductor  Conductor?  @relation(fields: [conductorId, empresaId], references: [id, empresaId], onDelete: Restrict, onUpdate: Restrict)
   documentos Documento[]
 
   /// Una patente no se repite dentro de la misma empresa, incluidos los inactivos.
   /// Otra empresa sí puede tenerla (JOA-01, 3.1).
   @@unique([empresaId, patente])
+  /// Para los vehículos asignados en la ficha del conductor.
+  @@index([conductorId])
   /// Destino de las claves foráneas compuestas de documentos y turnos (JOS-04, sección 4).
   @@unique([id, empresaId])
   @@map("vehiculo")
@@ -137,13 +144,15 @@ model Conductor {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
-  empresa    Empresa     @relation(fields: [empresaId], references: [id])
-  documentos Documento[]
+  empresa            Empresa     @relation(fields: [empresaId], references: [id])
+  documentos         Documento[]
+  /// Los vehículos de los que es el conductor habitual (PB-24).
+  vehiculosAsignados Vehiculo[]
 
   /// Un RUT no se repite dentro de la misma empresa, incluidos los inactivos.
   /// Otra empresa sí puede tenerlo (JOA-09, sección 2).
   @@unique([empresaId, rut])
-  /// Destino de las claves foráneas compuestas de documentos y turnos (JOS-04, sección 4).
+  /// Destino de las claves foráneas compuestas de documentos, turnos y vehículos (JOS-04, sección 4).
   @@unique([id, empresaId])
   @@map("conductor")
 }
