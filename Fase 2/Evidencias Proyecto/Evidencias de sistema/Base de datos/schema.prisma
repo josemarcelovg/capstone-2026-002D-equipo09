@@ -4,8 +4,10 @@
 
 // El cliente se genera dentro de la aplicación (carpeta «Aplicación», al lado de esta).
 generator client {
-  provider = "prisma-client"
-  output   = "../Aplicación/src/generated/prisma"
+  provider        = "prisma-client"
+  output          = "../Aplicación/src/generated/prisma"
+  /// Para los índices únicos parciales de documento (un documento por dueño y tipo).
+  previewFeatures = ["partialIndexes"]
 }
 
 datasource db {
@@ -37,6 +39,16 @@ enum EstadoVehiculo {
   @@map("estado_vehiculo")
 }
 
+enum TipoDocumento {
+  revision_tecnica
+  soap
+  permiso_circulacion
+  licencia_conducir
+  otro
+
+  @@map("tipo_documento")
+}
+
 /// Los datos cuelgan de la empresa y no del usuario (JOA-01, 2.1).
 model Empresa {
   id            String   @id @default(uuid()) @db.Uuid
@@ -52,6 +64,7 @@ model Empresa {
   usuarios    Usuario[]
   vehiculos   Vehiculo[]
   conductores Conductor[]
+  documentos  Documento[]
 
   @@map("empresa")
 }
@@ -89,11 +102,14 @@ model Vehiculo {
   createdAt          DateTime       @default(now()) @map("created_at") @db.Timestamptz
   updatedAt          DateTime       @updatedAt @map("updated_at") @db.Timestamptz
 
-  empresa Empresa @relation(fields: [empresaId], references: [id])
+  empresa    Empresa     @relation(fields: [empresaId], references: [id])
+  documentos Documento[]
 
   /// Una patente no se repite dentro de la misma empresa, incluidos los inactivos.
   /// Otra empresa sí puede tenerla (JOA-01, 3.1).
   @@unique([empresaId, patente])
+  /// Destino de las claves foráneas compuestas de documentos y turnos (JOS-04, sección 4).
+  @@unique([id, empresaId])
   @@map("vehiculo")
 }
 
@@ -113,7 +129,8 @@ model Conductor {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
-  empresa Empresa @relation(fields: [empresaId], references: [id])
+  empresa    Empresa     @relation(fields: [empresaId], references: [id])
+  documentos Documento[]
 
   /// Un RUT no se repite dentro de la misma empresa, incluidos los inactivos.
   /// Otra empresa sí puede tenerlo (JOA-09, sección 2).
@@ -121,4 +138,40 @@ model Conductor {
   /// Destino de las claves foráneas compuestas de documentos y turnos (JOS-04, sección 4).
   @@unique([id, empresaId])
   @@map("conductor")
+}
+
+/// Pertenece a un vehículo o a un conductor, nunca a ambos (JOA-10, sección 2).
+/// El estado (vigente, por vencer, vencido) no se guarda: se calcula en src/lib/documentos.ts.
+/// No se elimina ni guarda historial: renovar es editar la fecha (PB-13).
+/// La migración agrega a mano las reglas CHECK de un solo dueño, tipo según el dueño
+/// y descripción obligatoria para "otro".
+model Documento {
+  id               String        @id @default(uuid()) @db.Uuid
+  empresaId        String        @map("empresa_id") @db.Uuid
+  tipo             TipoDocumento
+  /// Obligatoria cuando el tipo es "otro"; en los demás, opcional (por ejemplo, la clase de la licencia).
+  descripcion      String?       @db.VarChar(100)
+  vehiculoId       String?       @map("vehiculo_id") @db.Uuid
+  conductorId      String?       @map("conductor_id") @db.Uuid
+  /// Último día válido del documento.
+  fechaVencimiento DateTime      @map("fecha_vencimiento") @db.Date
+  observaciones    String?       @db.VarChar(500)
+  createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+
+  empresa   Empresa    @relation(fields: [empresaId], references: [id])
+  /// Claves foráneas compuestas: el dueño tiene que ser de la misma empresa (JOS-04, sección 4).
+  vehiculo  Vehiculo?  @relation(fields: [vehiculoId, empresaId], references: [id, empresaId], onDelete: Restrict, onUpdate: Restrict)
+  conductor Conductor? @relation(fields: [conductorId, empresaId], references: [id, empresaId], onDelete: Restrict, onUpdate: Restrict)
+
+  /// Un vehículo tiene un solo SOAP, revisión técnica y permiso de circulación, y un conductor
+  /// una sola licencia. Los de tipo "otro" no tienen límite (JOA-10, sección 2).
+  @@unique([vehiculoId, tipo], map: "documento_vehiculo_id_tipo_key", where: raw("tipo <> 'otro'"))
+  @@unique([conductorId, tipo], map: "documento_conductor_id_tipo_key", where: raw("tipo <> 'otro'"))
+  @@unique([id, empresaId])
+  /// Para el listado general y el proceso de avisos.
+  @@index([empresaId, fechaVencimiento])
+  @@index([vehiculoId])
+  @@index([conductorId])
+  @@map("documento")
 }
