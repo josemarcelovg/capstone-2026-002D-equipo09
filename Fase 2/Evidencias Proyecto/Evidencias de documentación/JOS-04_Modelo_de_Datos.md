@@ -18,8 +18,8 @@ El modelo tiene dos partes:
 
 | Parte | Tablas | Estado |
 |---|---|---|
-| **Implementada** | `empresa`, `usuario`, `vehiculo`, `conductor` | Es exactamente lo que hay en `Base de datos/schema.prisma`. Las tres primeras vienen de la migración inicial (JOS-02); `conductor`, de la migración `conductores` (JOS-09). |
-| **Propuesta** | `documento`, `turno`, `aviso_enviado`, `ingreso` | Diseño para los módulos del MVP completo y el módulo opcional de ingresos. Se crea en la tarea de cada módulo, después de confirmar sus reglas. Lo no decidido está marcado **[POR CONFIRMAR]**. |
+| **Implementada** | `empresa`, `usuario`, `vehiculo`, `conductor`, `documento` | Es exactamente lo que hay en `Base de datos/schema.prisma`. Las tres primeras vienen de la migración inicial (JOS-02); `conductor`, de la migración `conductores` (JOS-09); `documento`, de la migración `documentos`. |
+| **Propuesta** | `turno`, `aviso_enviado`, `ingreso` | Diseño para los módulos del MVP completo y el módulo opcional de ingresos. Se crea en la tarea de cada módulo, después de confirmar sus reglas. Lo no decidido está marcado **[POR CONFIRMAR]**. |
 
 Convenciones:
 
@@ -224,7 +224,7 @@ Perfil de quien inicia sesión. La contraseña no está aquí: la maneja Supabas
 | `observaciones` | `varchar(500)` | No | |
 | `created_at`, `updated_at` | `timestamptz` | Sí | Como en `empresa`. |
 
-Restricción única: `(empresa_id, patente)`. Para las tablas propuestas se agrega además `UNIQUE (id, empresa_id)`, que permite las claves foráneas compuestas de la sección 4.
+Restricciones únicas: `(empresa_id, patente)` y `(id, empresa_id)`. Esta última se agregó con la tabla `documento` y permite las claves foráneas compuestas de la sección 4.
 
 ### 3.4 `conductor` · implementada en JOS-09 (PB-08 a PB-10)
 
@@ -243,33 +243,36 @@ El conductor es un registro, no una cuenta: no inicia sesión (JOA-01, sección 
 
 Restricciones únicas: `(empresa_id, rut)` y `(id, empresa_id)`.
 
-### 3.5 `documento` · propuesta (PB-11 a PB-13)
+### 3.5 `documento` · implementada (PB-11 a PB-13)
 
-Un documento pertenece a un vehículo **o** a un conductor, nunca a ambos (nota del diagrama de clases de JOA-06).
+Un documento pertenece a un vehículo **o** a un conductor, nunca a ambos (nota del diagrama de clases de JOA-06). Las reglas de los campos están en [JOA-10](JOA-10_Reglas_Modulo_Documentos.md) y la migración es `20261103231748_documentos`.
 
 | Columna | Tipo | Obl. | Restricciones y reglas |
 |---|---|---|---|
 | `id` | `uuid` | Sí | PK. |
 | `empresa_id` | `uuid` | Sí | FK a `empresa`. |
 | `tipo` | `tipo_documento` | Sí | Ver sección 3.9. |
-| `descripcion` | `varchar(100)` | No | Obligatoria cuando `tipo` es `otro` **[POR CONFIRMAR]**. |
+| `descripcion` | `varchar(100)` | No | Obligatoria cuando `tipo` es `otro` (JOA-10, sección 2). |
 | `vehiculo_id` | `uuid` | No | FK compuesta `(vehiculo_id, empresa_id)` a `vehiculo`. |
 | `conductor_id` | `uuid` | No | FK compuesta `(conductor_id, empresa_id)` a `conductor`. |
 | `fecha_vencimiento` | `date` | Sí | |
 | `observaciones` | `varchar(500)` | No | |
 | `created_at`, `updated_at` | `timestamptz` | Sí | |
 
-Reglas (restricciones `CHECK` en la migración):
+Reglas (restricciones `CHECK` agregadas a mano en la migración, porque Prisma no las maneja):
 
-1. Exactamente uno de `vehiculo_id` o `conductor_id` tiene valor.
-2. `revision_tecnica`, `soap` y `permiso_circulacion` solo para vehículos; `licencia_conducir` solo para conductores; `otro` para ambos.
+1. Exactamente uno de `vehiculo_id` o `conductor_id` tiene valor (`documento_un_dueno_check`).
+2. `revision_tecnica`, `soap` y `permiso_circulacion` solo para vehículos; `licencia_conducir` solo para conductores; `otro` para ambos (`documento_tipo_dueno_check`).
+3. `descripcion` tiene valor cuando `tipo` es `otro` (`documento_descripcion_otro_check`).
+
+Un documento por dueño y tipo (JOA-10, sección 2): índices únicos parciales `(vehiculo_id, tipo)` y `(conductor_id, tipo)` con `WHERE tipo <> 'otro'`. Se declaran en `schema.prisma` con la opción `partialIndexes` de Prisma, así que una migración futura no los borra.
 
 Otros puntos:
 
-- **El estado no se guarda:** vigente, por vencer o vencido se calcula con `fecha_vencimiento` y la fecha de hoy. "Por vencer" es 30 días o menos **[POR CONFIRMAR]** (PB-12).
-- **Renovar es editar la fecha** (PB-13). Guardar el historial de vencimientos anteriores está **[POR CONFIRMAR]**; si se confirma, se agrega una tabla de historial.
-- **Sin archivo adjunto** en el MVP **[POR CONFIRMAR]** (JOA-01, sección 1.4).
-- Índice `(empresa_id, fecha_vencimiento)` para el listado general y para el proceso de avisos.
+- **El estado no se guarda:** vigente, por vencer o vencido se calcula con `fecha_vencimiento` y la fecha de hoy en Chile. "Por vencer" es 30 días o menos (JOA-10; `src/lib/documentos.ts`).
+- **Renovar es editar la fecha** (PB-13). Sin historial ni archivo adjunto en el MVP (JOA-10, sección 2).
+- **No se elimina**, y los vehículos y conductores con documentos tampoco se pueden borrar (claves foráneas `ON DELETE RESTRICT`).
+- Índice `(empresa_id, fecha_vencimiento)` para el listado general y para el proceso de avisos; índices `(vehiculo_id)` y `(conductor_id)` para la ficha de cada uno.
 
 Restricción única adicional: `(id, empresa_id)`.
 
@@ -389,4 +392,5 @@ Las decisiones de conductores (campos obligatorios, RUT único por empresa y des
 - [x] Explicación de cómo se separan los datos entre empresas (sección 4).
 - [x] Coherencia con el esquema Prisma de JOS-02 (secciones 3.1 a 3.3) y con el diagrama de clases de JOA-06 (sección 5).
 - [x] Tabla `conductor` implementada en JOS-09, igual que la sección 3.4.
+- [x] Tabla `documento` implementada, igual que la sección 3.5.
 - [ ] Revisión de Joaquín en el PR.
