@@ -19,6 +19,16 @@ export function digitosDeTelefono(valor: string) {
   return digitos.length === 11 && digitos.startsWith("56") ? digitos.slice(2) : digitos;
 }
 
+/**
+ * Lo que pasa con los vehículos asignados al desactivar al conductor (PB-24, criterio 4):
+ * "1 vehículo quedó sin conductor asignado." o "2 vehículos quedaron sin conductor asignado."
+ */
+export function textoVehiculosSinConductor(cantidad: number) {
+  return cantidad === 1
+    ? "1 vehículo quedó sin conductor asignado."
+    : `${cantidad} vehículos quedaron sin conductor asignado.`;
+}
+
 /** `+56912345678` → `+56 9 1234 5678`; `+56223456789` → `+56 2 2345 6789`. Solo para mostrar. */
 export function formatearTelefono(telefono: string) {
   return telefono.replace(/^\+56(\d)(\d{4})(\d{4})$/, "+56 $1 $2 $3");

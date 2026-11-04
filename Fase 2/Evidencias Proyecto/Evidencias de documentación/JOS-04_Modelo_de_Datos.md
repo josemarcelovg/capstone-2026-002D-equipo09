@@ -93,6 +93,7 @@ erDiagram
     empresa ||--o{ ingreso : "registra"
     vehiculo |o--o{ documento : "tiene"
     conductor |o--o{ documento : "tiene"
+    conductor |o--o{ vehiculo : "es el conductor asignado de"
     vehiculo ||--o{ turno : "se usa en"
     conductor ||--o{ turno : "maneja en"
     documento ||--o{ aviso_enviado : "genera"
@@ -114,6 +115,7 @@ erDiagram
         uuid empresa_id FK
         varchar patente
         estado_vehiculo estado
+        uuid conductor_id FK "conductor asignado, opcional"
     }
     conductor {
         uuid id PK
@@ -222,6 +224,7 @@ Perfil de quien inicia sesión. La contraseña no está aquí: la maneja Supabas
 | `color` | `varchar(30)` | No | |
 | `estado` | `estado_vehiculo` | Sí | Por defecto `activo`. Pasar a o desde `inactivo` solo con el botón de desactivar o reactivar. |
 | `observaciones` | `varchar(500)` | No | |
+| `conductor_id` | `uuid` | No | Conductor asignado, sin fecha ni jornada (PB-24). FK compuesta `(conductor_id, empresa_id)` a `conductor`. Solo un conductor activo de la empresa (acceso a datos). Un conductor puede estar asignado a varios vehículos; al desactivarlo, sus vehículos quedan con `null` (JOA-08, PB-24). Con índice. Migración `20261104042704_conductor_asignado`. |
 | `created_at`, `updated_at` | `timestamptz` | Sí | Como en `empresa`. |
 
 Restricciones únicas: `(empresa_id, patente)` y `(id, empresa_id)`. Esta última se agregó con la tabla `documento` y permite las claves foráneas compuestas de la sección 4.

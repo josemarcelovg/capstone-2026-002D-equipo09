@@ -336,6 +336,39 @@ describe("Conductores en la base de datos", { skip: sinBase }, () => {
   });
 });
 
+// PB-24. Sin número de caso todavía: se registran en SIM-04 junto con sus casos funcionales.
+describe("Conductor asignado al vehículo en la base de datos", { skip: sinBase }, () => {
+  test("PB-24 · un conductor puede estar asignado a varios vehículos y el vehículo puede no tener", async () => {
+    await sinGuardar(async (tx) => {
+      const empresa = await crearEmpresa(tx, "Empresa A");
+      const conductor = await crearConductor(tx, empresa);
+      await crearVehiculo(tx, empresa, { patente: "BBCD12", conductorId: conductor.id });
+      await crearVehiculo(tx, empresa, { patente: "AB1234", conductorId: conductor.id });
+      const sinConductor = await crearVehiculo(tx, empresa, { patente: "FGHJ34" });
+
+      // El mismo filtro y orden que usa vehiculosDelConductor().
+      const asignados = await tx.vehiculo.findMany({
+        where: { empresaId: empresa, conductorId: conductor.id },
+        orderBy: { patente: "asc" },
+      });
+      assert.deepEqual(
+        asignados.map(({ patente }) => patente),
+        ["AB1234", "BBCD12"],
+      );
+      assert.equal(sinConductor.conductorId, null);
+    });
+  });
+
+  test("PB-24 · no se puede asignar un conductor de otra empresa (clave foránea compuesta)", async () => {
+    await debeFallar("P2003", async (tx) => {
+      const empresaA = await crearEmpresa(tx, "Empresa A");
+      const empresaB = await crearEmpresa(tx, "Empresa B");
+      const deB = await crearConductor(tx, empresaB);
+      await crearVehiculo(tx, empresaA, { conductorId: deB.id });
+    });
+  });
+});
+
 describe("Seguridad del esquema", { skip: sinBase }, () => {
   test("CP-INT-10 · RLS activado en las tablas y sin columna de contraseña en usuario", async () => {
     const tablas = await prisma.$queryRaw<{ tabla: string; rls: boolean }[]>`

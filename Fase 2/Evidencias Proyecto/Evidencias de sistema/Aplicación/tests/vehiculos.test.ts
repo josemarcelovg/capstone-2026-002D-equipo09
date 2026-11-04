@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
   formatearPatente,
+  MENSAJE_CONDUCTOR_NO_VALIDO,
   normalizarPatente,
   validarVehiculo,
 } from "../src/lib/vehiculos.ts";
@@ -83,6 +84,25 @@ test("rechaza capacidades fuera de rango o no numéricas", () => {
 test("rechaza tipos y estados que no existen", () => {
   assert.ok(errores({ tipo: "camion" }).tipo);
   assert.ok(errores({ estado: "eliminado" }).estado);
+});
+
+test("el conductor asignado es opcional y tiene que ser un id válido (PB-24)", () => {
+  const sinConductor = validarVehiculo(valido, 2026);
+  assert.ok(sinConductor.ok);
+  assert.equal(sinConductor.datos.conductorId, null);
+
+  const vacio = validarVehiculo({ ...valido, conductorId: "  " }, 2026);
+  assert.ok(vacio.ok);
+  assert.equal(vacio.datos.conductorId, null);
+
+  const id = "a2000000-0000-4000-8000-000000000001";
+  const conConductor = validarVehiculo({ ...valido, conductorId: id }, 2026);
+  assert.ok(conConductor.ok);
+  assert.equal(conConductor.datos.conductorId, id);
+
+  for (const conductorId of ["hola", "123", "a2000000-0000-4000-8000"]) {
+    assert.equal(errores({ conductorId }).conductorId, MENSAJE_CONDUCTOR_NO_VALIDO);
+  }
 });
 
 test("ignora el empresa_id enviado en el formulario", () => {

@@ -47,8 +47,17 @@ function Campo({
   );
 }
 
-/** Formulario de registro (sin `vehiculo`) y de edición (con `vehiculo`). */
-export function VehiculoForm({ vehiculo }: { vehiculo?: Vehiculo }) {
+/**
+ * Formulario de registro (sin `vehiculo`) y de edición (con `vehiculo`). `conductores` son los
+ * conductores activos de la empresa que se pueden asignar (PB-24, criterio 2).
+ */
+export function VehiculoForm({
+  vehiculo,
+  conductores,
+}: {
+  vehiculo?: Vehiculo;
+  conductores: { id: string; nombre: string }[];
+}) {
   const [errores, setErrores] = useState<ErroresVehiculo>({});
   const [guardando, iniciarGuardado] = useTransition();
 
@@ -157,6 +166,17 @@ export function VehiculoForm({ vehiculo }: { vehiculo?: Vehiculo }) {
             </select>
           </Campo>
         )}
+
+        <Campo nombre="conductorId" etiqueta="Conductor asignado" error={errores.conductorId} opcional>
+          <select {...control("conductorId")}>
+            <option value="">Sin conductor asignado</option>
+            {conductores.map((conductor) => (
+              <option key={conductor.id} value={conductor.id}>
+                {conductor.nombre}
+              </option>
+            ))}
+          </select>
+        </Campo>
 
         <Campo
           nombre="observaciones"

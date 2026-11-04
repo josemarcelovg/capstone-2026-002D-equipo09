@@ -1,5 +1,10 @@
 import Link from "next/link";
-import { mensajeDuenoInactivo, nombreDelDocumento, type DuenoDocumento } from "@/lib/documentos";
+import {
+  mensajeDuenoInactivo,
+  nombreDelDocumento,
+  type Documento,
+  type DuenoDocumento,
+} from "@/lib/documentos";
 import { documentosDe } from "@/lib/documentos-datos";
 import { formatearFecha, hoyEnChile } from "@/lib/fechas";
 import { InsigniaVencimiento } from "./insignia-estado";
@@ -48,32 +53,42 @@ export async function SeccionDocumentos({ dueno }: { dueno: DuenoDocumento }) {
           registrados.
         </p>
       ) : (
-        <ul className="mt-3 divide-y divide-zinc-100">
-          {documentos.map((documento) => (
-            <li
-              key={documento.id}
-              className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
-            >
-              <div className="min-w-0">
-                <p className="font-medium break-words text-zinc-900">{nombreDelDocumento(documento)}</p>
-                <p className="text-sm text-zinc-600">Vence el {formatearFecha(documento.fechaVencimiento)}</p>
-              </div>
-              <div className="flex items-center justify-between gap-4 sm:justify-end">
-                <InsigniaVencimiento fechaVencimiento={documento.fechaVencimiento} hoy={hoy} />
-                <Link
-                  href={`/documentos/${documento.id}?volver=ficha`}
-                  className="text-sm font-medium text-blue-800 hover:underline"
-                  aria-label={`Editar ${nombreDelDocumento(documento)}`}
-                >
-                  Editar
-                </Link>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <ListaDocumentos documentos={documentos} hoy={hoy} />
       )}
 
       {!dueno.activo && <p className="mt-3 text-sm text-zinc-600">{mensajeDuenoInactivo(dueno.tipo)}</p>}
     </section>
+  );
+}
+
+/**
+ * Los documentos de un dueño con su estado y "Editar", que vuelve a la ficha de ese dueño.
+ * La usan esta sección y la del conductor asignado en la ficha del vehículo (PB-24).
+ */
+export function ListaDocumentos({ documentos, hoy }: { documentos: Documento[]; hoy: string }) {
+  return (
+    <ul className="mt-3 divide-y divide-zinc-100">
+      {documentos.map((documento) => (
+        <li
+          key={documento.id}
+          className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+        >
+          <div className="min-w-0">
+            <p className="font-medium break-words text-zinc-900">{nombreDelDocumento(documento)}</p>
+            <p className="text-sm text-zinc-600">Vence el {formatearFecha(documento.fechaVencimiento)}</p>
+          </div>
+          <div className="flex items-center justify-between gap-4 sm:justify-end">
+            <InsigniaVencimiento fechaVencimiento={documento.fechaVencimiento} hoy={hoy} />
+            <Link
+              href={`/documentos/${documento.id}?volver=ficha`}
+              className="text-sm font-medium text-blue-800 hover:underline"
+              aria-label={`Editar ${nombreDelDocumento(documento)}`}
+            >
+              Editar
+            </Link>
+          </div>
+        </li>
+      ))}
+    </ul>
   );
 }

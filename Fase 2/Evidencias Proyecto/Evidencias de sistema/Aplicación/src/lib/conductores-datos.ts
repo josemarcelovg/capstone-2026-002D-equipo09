@@ -75,6 +75,30 @@ export async function crearConductor(datos: DatosConductor): Promise<Conductor> 
 }
 
 /**
+ * Desactiva un conductor y, en la misma transacción, deja sin conductor asignado a sus
+ * vehículos (PB-24, criterio 4). Devuelve `null` si el conductor no existe en la empresa de la
+ * sesión, o cuántos vehículos quedaron sin conductor. Reactivarlo no los vuelve a asignar.
+ */
+export async function desactivarConductor(id: string): Promise<{ vehiculosSinConductor: number } | null> {
+  if (!UUID.test(id)) return null;
+  const empresaId = await empresaDeLaSesion();
+  try {
+    const [, liberados] = await prisma.$transaction([
+      prisma.conductor.update({
+        where: conductorDeLaEmpresa(id, empresaId),
+        data: { activo: false },
+        select: { id: true },
+      }),
+      prisma.vehiculo.updateMany({ where: { empresaId, conductorId: id }, data: { conductorId: null } }),
+    ]);
+    return { vehiculosSinConductor: liberados.count };
+  } catch (error) {
+    if (codigoPrisma(error) === "P2025") return null;
+    throw error;
+  }
+}
+
+/**
  * Devuelve `null` si el conductor no existe en la empresa de la sesión.
  * Lanza `RutDuplicadoError` si el RUT nuevo ya está en la empresa.
  */

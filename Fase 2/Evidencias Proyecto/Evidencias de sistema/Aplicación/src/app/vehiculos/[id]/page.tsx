@@ -4,9 +4,11 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import { formatearPatente } from "@/lib/vehiculos";
 import { obtenerVehiculo } from "@/lib/vehiculos-datos";
+import { opcionesDeDueno } from "../../documentos/opciones";
 import { mensajeDeDocumento, SeccionDocumentos } from "../../documentos/seccion-documentos";
 import { BotonActivacion } from "../boton-activacion";
 import { InsigniaEstado } from "../insignia-estado";
+import { SeccionConductor } from "../seccion-conductor";
 import { VehiculoForm } from "../vehiculo-form";
 
 // El título y la página buscan el mismo vehículo con una sola consulta por solicitud.
@@ -44,9 +46,11 @@ export default async function PaginaVehiculo({ params, searchParams }: PageProps
         </p>
       )}
 
-      <VehiculoForm vehiculo={vehiculo} />
+      <VehiculoForm vehiculo={vehiculo} conductores={(await opcionesDeDueno("conductor")).conductores} />
 
       <SeccionDocumentos dueno={{ tipo: "vehiculo", id: vehiculo.id, nombre: patente, activo: !inactivo }} />
+
+      <SeccionConductor conductorId={vehiculo.conductorId} />
 
       <section className="mt-6 flex flex-col gap-3 rounded-lg border border-zinc-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
         <p className="text-sm text-zinc-700">
