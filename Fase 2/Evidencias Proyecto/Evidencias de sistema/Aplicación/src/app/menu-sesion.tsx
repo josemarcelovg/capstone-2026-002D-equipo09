@@ -22,6 +22,9 @@ export async function MenuSesion() {
       <Link href="/conductores" className="text-sm font-medium text-zinc-800 hover:underline">
         Conductores
       </Link>
+      <Link href="/documentos" className="text-sm font-medium text-zinc-800 hover:underline">
+        Documentos
+      </Link>
       <div className="ml-auto flex items-center gap-3">
         <Link
           href="/empresa"
