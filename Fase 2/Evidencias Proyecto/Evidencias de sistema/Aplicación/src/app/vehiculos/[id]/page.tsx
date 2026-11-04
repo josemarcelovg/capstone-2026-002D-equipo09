@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import { formatearPatente } from "@/lib/vehiculos";
 import { obtenerVehiculo } from "@/lib/vehiculos-datos";
+import { mensajeDeDocumento, SeccionDocumentos } from "../../documentos/seccion-documentos";
 import { BotonActivacion } from "../boton-activacion";
 import { InsigniaEstado } from "../insignia-estado";
 import { VehiculoForm } from "../vehiculo-form";
@@ -18,13 +19,14 @@ export async function generateMetadata({ params }: PageProps<"/vehiculos/[id]">)
   return { title: (await buscarVehiculo(id)) ? "Detalle del vehículo" : "No encontrado" };
 }
 
-export default async function PaginaVehiculo({ params }: PageProps<"/vehiculos/[id]">) {
+export default async function PaginaVehiculo({ params, searchParams }: PageProps<"/vehiculos/[id]">) {
   const { id } = await params;
   const vehiculo = await buscarVehiculo(id);
   if (!vehiculo) notFound();
 
   const patente = formatearPatente(vehiculo.patente);
   const inactivo = vehiculo.estado === "inactivo";
+  const mensaje = mensajeDeDocumento((await searchParams).mensaje);
 
   return (
     <>
@@ -36,7 +38,15 @@ export default async function PaginaVehiculo({ params }: PageProps<"/vehiculos/[
         <InsigniaEstado estado={vehiculo.estado} />
       </div>
 
+      {mensaje && (
+        <p role="status" className="mb-4 rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+          {mensaje}
+        </p>
+      )}
+
       <VehiculoForm vehiculo={vehiculo} />
+
+      <SeccionDocumentos dueno={{ tipo: "vehiculo", id: vehiculo.id, nombre: patente, activo: !inactivo }} />
 
       <section className="mt-6 flex flex-col gap-3 rounded-lg border border-zinc-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
         <p className="text-sm text-zinc-700">
