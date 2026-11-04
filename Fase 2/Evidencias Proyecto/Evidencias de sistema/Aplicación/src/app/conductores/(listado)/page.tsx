@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Form from "next/form";
 import Link from "next/link";
-import { formatearTelefono } from "@/lib/conductores";
+import { formatearTelefono, textoVehiculosSinConductor } from "@/lib/conductores";
 import { listarConductores } from "@/lib/conductores-datos";
 import { formatearRut } from "@/lib/rut";
 import { InsigniaEstado } from "../insignia-estado";
@@ -27,7 +27,16 @@ export default async function PaginaConductores({ searchParams }: PageProps<"/co
   const parametros = await searchParams;
   const buscar = primero(parametros.buscar).slice(0, 100);
   const incluirInactivos = primero(parametros.inactivos) === "1";
-  const mensaje = MENSAJES.get(primero(parametros.mensaje));
+  const sinConductor = Number(primero(parametros.sinConductor));
+  const mensaje = [
+    MENSAJES.get(primero(parametros.mensaje)),
+    // Al desactivar, sus vehículos quedan sin conductor asignado (PB-24, criterio 4).
+    primero(parametros.mensaje) === "desactivado" && Number.isInteger(sinConductor) && sinConductor > 0
+      ? textoVehiculosSinConductor(sinConductor)
+      : undefined,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const conductores = await listarConductores({ buscar, incluirInactivos });
   const sinRegistros =

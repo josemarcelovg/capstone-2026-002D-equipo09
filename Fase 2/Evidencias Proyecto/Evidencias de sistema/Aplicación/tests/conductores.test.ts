@@ -4,8 +4,14 @@ import {
   digitosDeTelefono,
   formatearTelefono,
   normalizarNombre,
+  textoVehiculosSinConductor,
   validarConductor,
 } from "../src/lib/conductores.ts";
+
+test("al desactivar, avisa cuántos vehículos quedaron sin conductor (PB-24, criterio 4)", () => {
+  assert.equal(textoVehiculosSinConductor(1), "1 vehículo quedó sin conductor asignado.");
+  assert.equal(textoVehiculosSinConductor(3), "3 vehículos quedaron sin conductor asignado.");
+});
 
 // Casos tomados de JOA-09, secciones 3, 4 y 5. Solo RUT ficticios.
 

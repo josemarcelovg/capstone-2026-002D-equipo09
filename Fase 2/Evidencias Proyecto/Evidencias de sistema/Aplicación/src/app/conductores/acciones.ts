@@ -6,6 +6,7 @@ import { validarConductor, type ErroresConductor } from "@/lib/conductores";
 import {
   actualizarConductor,
   crearConductor,
+  desactivarConductor,
   RutDuplicadoError,
 } from "@/lib/conductores-datos";
 import { formatearRut } from "@/lib/rut";
@@ -62,15 +63,26 @@ export async function cambiarActivacion(id: string, activar: boolean) {
   // Las acciones del servidor se pueden llamar con cualquier dato: solo `true` reactiva.
   if (typeof id !== "string") redirect("/conductores");
   const reactivar = activar === true;
-  let conductor;
+  let encontrado: boolean;
+  let sinConductor = 0;
   try {
-    conductor = await actualizarConductor(id, { activo: reactivar });
+    if (reactivar) {
+      encontrado = (await actualizarConductor(id, { activo: true })) !== null;
+    } else {
+      // Sus vehículos quedan sin conductor asignado (PB-24, criterio 4).
+      const resultado = await desactivarConductor(id);
+      encontrado = resultado !== null;
+      sinConductor = resultado?.vehiculosSinConductor ?? 0;
+    }
   } catch (error) {
     unstable_rethrow(error);
     console.error(error);
     return "No pudimos cambiar el estado del conductor. Intenta nuevamente.";
   }
   revalidatePath("/conductores");
-  if (!conductor) redirect("/conductores");
-  redirect(`/conductores?mensaje=${reactivar ? "reactivado" : "desactivado"}`);
+  if (sinConductor > 0) revalidatePath("/vehiculos");
+  if (!encontrado) redirect("/conductores");
+  redirect(
+    `/conductores?mensaje=${reactivar ? "reactivado" : "desactivado"}${sinConductor > 0 ? `&sinConductor=${sinConductor}` : ""}`,
+  );
 }
