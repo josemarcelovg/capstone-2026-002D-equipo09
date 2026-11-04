@@ -226,3 +226,4 @@ Para el desarrollo del proyecto se utilizará una metodología ágil e increment
 | [SIM-05 Definition of Done](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-05_Definition_of_Done.md>) | Condiciones para dar una tarea por terminada |
 | [SIM-06 Sprint Backlog y retrospectivas](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-06_Sprint_Backlog_y_Retrospectivas.md>) | Tareas de cada iteración, datos para las retrospectivas y acciones de mejora |
 | [SIM-08 Pruebas de conductores](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-08_Pruebas_Conductores.md>) | Los 14 criterios de JOA-09 probados con las dos empresas ficticias y su verificación en la base de datos |
+| [SIM-10 Despliegue en Vercel](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-10_Despliegue_Vercel.md>) | Pasos para publicar la aplicación con un proyecto de Supabase de producción, variables y comprobaciones después de desplegar |
