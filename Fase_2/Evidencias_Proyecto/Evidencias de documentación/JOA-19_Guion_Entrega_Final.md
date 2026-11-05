@@ -201,7 +201,7 @@ Estado al 04-11-2026. "Desarrollo" quiere decir que se probó en el navegador al
 
 ### 6.1 Reglas contra el código
 
-Revisión hecha el 04-11-2026 sobre `main`. Las rutas son de `Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación`, salvo la de `Base de datos`.
+Revisión hecha el 04-11-2026 sobre `main`. Las rutas son de `Fase_2/Evidencias_Proyecto/Evidencias_de_sistema/Aplicación`, salvo la de `Base de datos`.
 
 | Regla | Dónde está | ¿Cumple? |
 |---|---|---|

@@ -32,7 +32,7 @@ Este documento registra las pruebas de la primera entrega ("iniciar sesión y re
 |---|---|
 | **Versión probada** | Rama `main` en el commit `259f429` (incluye SIM-02, PR #21) |
 | **Fecha y hora** | 21-10-2026, entre las 13:55 y las 14:15 (hora de Chile) |
-| **Dónde** | En local, con `npm run dev` desde `Evidencias de sistema/Aplicación`, Node.js 24.20 |
+| **Dónde** | En local, con `npm run dev` desde `Evidencias_de_sistema/Aplicación`, Node.js 24.20 |
 | **Base de datos e inicio de sesión** | Proyecto de desarrollo `micrologist-dev` en Supabase (Supabase Auth configurado según [SIM-02](SIM-02_Inicio_de_Sesion.md), sección 5) |
 | **Navegador** | Chromium, en tamaño de computador y emulando un celular de 360 × 740 px |
 | **Cuentas** | `admin.empresa.a@micrologist.cl` (Empresa A, "Transportes Cordillera (ficticia)") y `admin.empresa.b@micrologist.cl` (Empresa B, "Buses del Litoral (ficticia)"). Las contraseñas no se registran en este documento. |
@@ -169,7 +169,7 @@ Que el AB1234 de la Empresa B mantenga su hora de modificación del 16-10 demues
 
 ## 7. Evidencias
 
-Capturas en [`Evidencias de sistema/Aplicación/Capturas`](<../Evidencias de sistema/Aplicación/Capturas>), con sesión de la Empresa B a 360 px:
+Capturas en [`Evidencias_de_sistema/Aplicación/Capturas`](<../Evidencias_de_sistema/Aplicación/Capturas>), con sesión de la Empresa B a 360 px:
 
 | Archivo | Pantalla |
 |---|---|

@@ -9,7 +9,7 @@
 # Variables opcionales (EMPRESA_DESARROLLO_ID, DB_PUERTO, APP_PUERTO): se leen del
 # archivo .env de esta carpeta, si existe.
 #
-# Detalles: Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-05_Entorno_Docker.md
+# Detalles: Fase_2/Evidencias_Proyecto/Evidencias de documentación/JOS-05_Entorno_Docker.md
 
 name: micrologist
 
@@ -34,7 +34,7 @@ services:
 
   app:
     build:
-      # «Evidencias de sistema»: la imagen necesita «Aplicación» y «Base de datos».
+      # «Evidencias_de_sistema»: la imagen necesita «Aplicación» y «Base de datos».
       context: ..
       dockerfile: Aplicación/Dockerfile
     environment:

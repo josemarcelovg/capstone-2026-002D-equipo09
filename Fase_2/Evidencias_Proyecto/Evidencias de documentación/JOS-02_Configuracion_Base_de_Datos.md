@@ -10,7 +10,7 @@
 
 Este documento explica cómo quedó la base de datos de la primera entrega y cómo levantarla. Las reglas vienen de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), secciones 2.2 y 3. El diagrama entidad-relación y el diccionario completo se harán en **JOS-04**.
 
-Desde el 18-10-2026, las migraciones están en `Fase 2/Evidencias Proyecto/Evidencias de sistema/Base de datos`. El modelo (`schema.prisma`) está en `Aplicación/prisma/` desde el 04-11-2026, para que Vercel pueda generar el cliente de Prisma sin archivos de fuera de esa carpeta ([SIM-10](SIM-10_Despliegue_Vercel.md)). El resto de las rutas de este documento (`prisma.config.ts`, `prisma/seed.ts`, `.env`, etc.) son de la carpeta `Aplicación`, que está al lado, y los comandos `npm` se ejecutan desde ahí.
+Desde el 18-10-2026, las migraciones están en `Fase_2/Evidencias_Proyecto/Evidencias_de_sistema/Base de datos`. El modelo (`schema.prisma`) está en `Aplicación/prisma/` desde el 04-11-2026, para que Vercel pueda generar el cliente de Prisma sin archivos de fuera de esa carpeta ([SIM-10](SIM-10_Despliegue_Vercel.md)). El resto de las rutas de este documento (`prisma.config.ts`, `prisma/seed.ts`, `.env`, etc.) son de la carpeta `Aplicación`, que está al lado, y los comandos `npm` se ejecutan desde ahí.
 
 ---
 

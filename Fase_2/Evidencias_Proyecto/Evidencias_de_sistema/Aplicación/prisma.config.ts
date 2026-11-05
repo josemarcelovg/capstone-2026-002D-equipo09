@@ -8,9 +8,9 @@ import { defineConfig } from "prisma/config";
 // sin base de datos (por ejemplo, en Vercel o en CI).
 //
 // El esquema está en prisma/, junto al seed, para que `prisma generate` no necesite
-// archivos de fuera de esta carpeta (en Vercel, la ruta hasta aquí tiene espacios y
-// no se pueden incluir archivos de fuera del Root Directory; SIM-10). Las migraciones
-// siguen en la carpeta «Base de datos», al lado de esta («Evidencias de sistema»):
+// archivos de fuera de esta carpeta (Vercel construye solo con el Root Directory;
+// SIM-10). Las migraciones
+// siguen en la carpeta «Base de datos», al lado de esta («Evidencias_de_sistema»):
 // solo se usan al aplicarlas desde un computador o desde Docker.
 
 export default defineConfig({

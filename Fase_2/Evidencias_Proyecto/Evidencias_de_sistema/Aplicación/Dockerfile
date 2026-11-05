@@ -2,7 +2,7 @@
 # El código se copia dentro de la imagen: para ver cambios, volver a ejecutar
 # `docker compose up --build`.
 #
-# El contexto de construcción es la carpeta «Evidencias de sistema», para que la
+# El contexto de construcción es la carpeta «Evidencias_de_sistema», para que la
 # imagen tenga la aplicación («Aplicación», con el esquema en prisma/) y las
 # migraciones («Base de datos»). Lo que no se copia está en Dockerfile.dockerignore.
 
