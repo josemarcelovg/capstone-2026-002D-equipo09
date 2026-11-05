@@ -10,7 +10,7 @@
 
 Con un solo comando, Docker levanta MicroLogist y una base de datos PostgreSQL propia, con las tablas y los datos de prueba ya cargados. **No necesita las claves de Supabase**: cualquier integrante, o la profesora, puede ejecutar la aplicación sin pedir credenciales.
 
-Desde el 18-10-2026, el sistema está en `Fase_2/Evidencias_Proyecto/Evidencias_de_sistema`: la aplicación y los archivos de Docker en `Aplicación`, y el modelo y las migraciones en `Base de datos`.
+Desde el 18-10-2026, el sistema está en `Fase 2/Evidencias Proyecto/Evidencias de sistema`: la aplicación y los archivos de Docker en `Aplicación`, y el modelo y las migraciones en `Base de datos`.
 
 ---
 
@@ -32,7 +32,7 @@ Archivos:
 | Archivo | Contenido |
 |---|---|
 | `Aplicación/compose.yaml` | Los dos servicios, sus variables y puertos. |
-| `Aplicación/Dockerfile` | La imagen de la aplicación. Se construye con la carpeta `Evidencias_de_sistema` como contexto, para incluir `Aplicación` y `Base de datos`. |
+| `Aplicación/Dockerfile` | La imagen de la aplicación. Se construye con la carpeta `Evidencias de sistema` como contexto, para incluir `Aplicación` y `Base de datos`. |
 | `Aplicación/iniciar.sh` | Lo que hace la aplicación al arrancar. |
 | `Aplicación/Dockerfile.dockerignore` | Lo que no entra a la imagen. Entre otras cosas, **los archivos `.env`**: las credenciales nunca quedan dentro de una imagen. |
 | `Aplicación/.gitattributes` | Obliga a guardar los `.sh` con fin de línea LF. Si se guardaran con el de Windows (CRLF), el script fallaría dentro del contenedor. |
@@ -49,7 +49,7 @@ Archivos:
 
 ## 3. Uso
 
-Todos los comandos se ejecutan desde la carpeta `Fase_2/Evidencias_Proyecto/Evidencias_de_sistema/Aplicación`, donde está `compose.yaml`.
+Todos los comandos se ejecutan desde la carpeta `Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación`, donde está `compose.yaml`.
 
 | Para… | Comando |
 |---|---|

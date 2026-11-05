@@ -89,10 +89,10 @@ Las versiones exactas están en `package.json` y `package-lock.json`. Prisma se 
 
 ## 4. Estructura del código
 
-En la raíz del repositorio están las carpetas `Fase 1`, `Fase_2` y `Fase 3`, y el `README.md` con la descripción del proyecto y las instrucciones para ejecutarlo. El sistema está en `Fase_2/Evidencias_Proyecto/Evidencias_de_sistema`:
+En la raíz del repositorio están las carpetas `Fase 1`, `Fase 2` y `Fase 3`, y el `README.md` con la descripción del proyecto y las instrucciones para ejecutarlo. El sistema está en `Fase 2/Evidencias Proyecto/Evidencias de sistema`:
 
 ```
-Evidencias_de_sistema/
+Evidencias de sistema/
 ├── Base de datos/
 │   ├── migrations/               Migraciones versionadas (scripts SQL)
 │   └── README.md                 Qué contiene y cómo se usa
@@ -213,7 +213,7 @@ La Definition of Done exige que `build` y `lint` pasen antes de unir un PR ([SIM
 
 La aplicación todavía no está desplegada. Se despliega en la Iteración 4, del 02-11 al 15-11 (SIM-10, acordado el 27-10-2026). Pasos previstos:
 
-1. Importar el repositorio de GitHub en Vercel y poner como **Root Directory** `Fase_2/Evidencias_Proyecto/Evidencias_de_sistema/Aplicación`, con la opción que incluye los archivos fuera de esa carpeta **desactivada**: el esquema de Prisma está dentro de `Aplicación`. Las carpetas de esa ruta no tienen espacios porque Vercel nombra las funciones con la ruta desde la raíz del repositorio y no los acepta ([SIM-10](SIM-10_Despliegue_Vercel.md)). Vercel detecta Next.js y usa `npm run build`. `npm install` ejecuta `prisma generate` automáticamente.
+1. Importar el repositorio de GitHub en Vercel y poner como **Root Directory** `Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación`, con la opción que incluye los archivos fuera de esa carpeta **desactivada**: si está activada, Vercel nombra las funciones con la ruta desde la raíz del repositorio, que tiene espacios, y el build falla. Por eso el esquema de Prisma está dentro de `Aplicación` ([SIM-10](SIM-10_Despliegue_Vercel.md)). Vercel detecta Next.js y usa `npm run build`. `npm install` ejecuta `prisma generate` automáticamente.
 2. Configurar las variables de producción de la sección 5.1 en el panel de Vercel.
 3. Aplicar las migraciones a la base de producción antes de cada despliegue que las incluya: `npm run db:deploy` con la `DIRECT_URL` de producción. Si esto se automatiza, se define al configurar Vercel.
 4. Elegir para las funciones de Vercel una región cercana a la de la base de datos, para reducir la latencia (el proyecto de desarrollo de Supabase está en West US, Oregon).
