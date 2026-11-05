@@ -12,7 +12,6 @@ Aplicación/src/generated
 
 # No hacen falta para ejecutar la aplicación.
 **/.git
-**/.claude
 **/.vercel
 Aplicación/Capturas
 README.md
