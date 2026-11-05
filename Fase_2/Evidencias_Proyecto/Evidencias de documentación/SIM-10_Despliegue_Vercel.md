@@ -85,7 +85,7 @@ El repositorio es público y está en la cuenta de GitHub de José.
 1. José instala la aplicación de **Vercel para GitHub** en su cuenta, con acceso solo a `capstone-2026-002D-equipo09`.
 2. Simón entra a Vercel con su cuenta de GitHub y elige **Add New > Project > Import** del repositorio. Si el repositorio no aparece en su lista, José lo importa desde su propia cuenta de Vercel; el resto de los pasos es igual.
 3. En la configuración del proyecto:
-   - **Root Directory:** `Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación`, con la opción **Include files outside the root directory in the Build Step** activada, porque Prisma necesita `../Base de datos`.
+   - **Root Directory:** `Fase_2/Evidencias_Proyecto/Evidencias_de_sistema/Aplicación`, con la opción **Include files outside the root directory in the Build Step** **desactivada**, porque la aplicación ya no necesita nada de fuera de esa carpeta: desde el 04-11-2026 el esquema de Prisma está en `Aplicación/prisma/`. Las carpetas de la ruta no tienen espacios (`Fase_2`, `Evidencias_Proyecto`, `Evidencias_de_sistema`) porque Vercel nombra las funciones con la ruta desde la raíz del repositorio y no acepta espacios en ese nombre.
    - **Framework Preset:** Next.js (Vercel lo detecta). Comando de build: `npm run build`; de instalación: el de Vercel (`npm install`, que ejecuta `prisma generate`).
    - **Node.js Version:** 24.x, la misma que usa el equipo.
    - **Function Region:** São Paulo (`gru1`), la misma región de la base de datos de producción.
@@ -139,7 +139,8 @@ node --experimental-strip-types --test "tests/integracion/aplicacion.test.ts"
 
 | Problema | Qué hacer |
 |---|---|
-| El build falla con "Could not find Prisma Schema". | Revisar que esté activada la opción que incluye los archivos fuera del Root Directory (paso 4.3). |
+| El build falla con "Could not find Prisma Schema". | Revisar que `schema.prisma` esté en `Aplicación/prisma/` y que `prisma.config.ts` apunte ahí. |
+| El build falla con "A Serverless Function has an invalid name" ("must not contain any space"). | Alguna carpeta de la ruta del Root Directory tiene espacios. Por eso se renombraron el 04-11-2026 con guion bajo (`Fase_2/Evidencias_Proyecto/Evidencias_de_sistema`); revisar que el Root Directory de Vercel use esos nombres. |
 | Las páginas responden "No pudimos…" o error 500 después de desplegar. | Falta aplicar una migración en producción o falta una variable de entorno. Los detalles quedan en los logs de Vercel (**Deployments > Functions**). |
 | La aplicación responde lento. | Revisar que la región de las funciones de Vercel sea la misma de la base de datos (paso 4.3). |
 | Se filtra una clave. | Rotarla en Supabase (**Reset database password** o una clave pública nueva) y actualizarla en Vercel ([JOS-06](JOS-06_Manual_Tecnico.md), sección 8.2). |

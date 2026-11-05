@@ -2,10 +2,11 @@
 // En el código los campos van en camelCase; en la base de datos, las tablas
 // y columnas quedan en snake_case (@map / @@map), como en JOA-01.
 
-// El cliente se genera dentro de la aplicación (carpeta «Aplicación», al lado de esta).
+// El cliente se genera dentro de la aplicación (src/generated/prisma). Las migraciones
+// están en la carpeta «Base de datos» (ver prisma.config.ts).
 generator client {
   provider        = "prisma-client"
-  output          = "../Aplicación/src/generated/prisma"
+  output          = "../src/generated/prisma"
   /// Para los índices únicos parciales de documento (un documento por dueño y tipo).
   previewFeatures = ["partialIndexes"]
 }

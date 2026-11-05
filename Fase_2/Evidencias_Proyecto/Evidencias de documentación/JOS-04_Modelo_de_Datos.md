@@ -18,7 +18,7 @@ El modelo tiene dos partes:
 
 | Parte | Tablas | Estado |
 |---|---|---|
-| **Implementada** | `empresa`, `usuario`, `vehiculo`, `conductor`, `documento`, `aviso_enviado` | Es exactamente lo que hay en `Base de datos/schema.prisma`. Las tres primeras vienen de la migración inicial (JOS-02); `conductor`, de la migración `conductores` (JOS-09); `documento`, de la migración `documentos`; `aviso_enviado`, de la migración `avisos` (SIM-11). |
+| **Implementada** | `empresa`, `usuario`, `vehiculo`, `conductor`, `documento`, `aviso_enviado` | Es exactamente lo que hay en `Aplicación/prisma/schema.prisma`. Las tres primeras vienen de la migración inicial (JOS-02); `conductor`, de la migración `conductores` (JOS-09); `documento`, de la migración `documentos`; `aviso_enviado`, de la migración `avisos` (SIM-11). |
 | **Propuesta** | `turno`, `ingreso` | Diseño para los módulos del MVP completo y el módulo opcional de ingresos. Se crea en la tarea de cada módulo, después de confirmar sus reglas. Lo no decidido está marcado **[POR CONFIRMAR]**. |
 
 Convenciones:

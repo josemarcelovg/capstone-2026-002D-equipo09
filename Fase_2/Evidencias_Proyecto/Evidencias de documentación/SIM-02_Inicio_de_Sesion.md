@@ -32,7 +32,7 @@ No incluye (fuera del alcance de la primera entrega, JOA-01 sección 2):
 
 ## 2. Cómo funciona
 
-Las rutas del código son dentro de `Evidencias de sistema/Aplicación/`, como en el manual técnico (JOS-06).
+Las rutas del código son dentro de `Evidencias_de_sistema/Aplicación/`, como en el manual técnico (JOS-06).
 
 La sesión se comprueba en dos lugares. El proxy evita mostrar páginas privadas sin sesión, pero **el control que protege los datos es el del servidor**: cada página y cada acción vuelve a comprobar la sesión antes de leer o guardar algo (JOA-01, sección 2.4, regla 4).
 
