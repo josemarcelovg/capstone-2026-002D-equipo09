@@ -1,0 +1,133 @@
+# Pruebas y despliegue de MicroLogist en Vercel (SIM-10).
+#
+# Vercel no puede construir la aplicación directo desde el repositorio: arma el nombre de
+# las funciones con la ruta desde la raíz («Fase 2/Evidencias Proyecto/…»), que tiene
+# espacios, y la rechaza ("A Serverless Function has an invalid name"). Esa estructura de
+# carpetas la pide el curso, así que esta Action construye la aplicación con la CLI de
+# Vercel desde la carpeta «Aplicación» y sube el resultado ya construido
+# (`vercel deploy --prebuilt`). Para Vercel, la raíz del proyecto es «Aplicación».
+#
+# - Cada pull request: pruebas y una vista previa.
+# - Cada push a main: pruebas y producción.
+# - Sin los secretos de Vercel, igual construye y revisa los nombres de las funciones,
+#   pero no despliega.
+#
+# Secretos del repositorio (Settings > Secrets and variables > Actions):
+# VERCEL_TOKEN, VERCEL_ORG_ID y VERCEL_PROJECT_ID. Cómo obtenerlos: SIM-10, sección 4.
+
+name: Pruebas y despliegue en Vercel
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Un despliegue a la vez por rama: uno nuevo cancela el que estaba en curso.
+concurrency:
+  group: vercel-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+  VERCEL_TELEMETRY_DISABLED: "1"
+
+jobs:
+  pruebas:
+    name: Lint, tipos y pruebas
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: "Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación/package-lock.json"
+
+      # También genera el cliente de Prisma (postinstall); no necesita base de datos.
+      - run: npm ci
+
+      - run: npm run lint
+
+      # Los tipos de las rutas (PageProps) los genera Next.js antes de revisar los tipos.
+      - run: npx next typegen && npx tsc --noEmit
+
+      # Las de integración necesitan una base de datos y se ejecutan en local (SIM-04).
+      - run: npm test
+
+  vercel:
+    name: Despliegue en Vercel
+    needs: pruebas
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación"
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      # Producción solo desde main; todo lo demás es vista previa.
+      ENTORNO: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && 'production' || 'preview' }}
+      PROD: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && '--prod' || '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: "Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación/package-lock.json"
+
+      - name: Comprobar los secretos de Vercel
+        id: secretos
+        run: |
+          if [ -n "$VERCEL_TOKEN" ] && [ -n "$VERCEL_ORG_ID" ] && [ -n "$VERCEL_PROJECT_ID" ]; then
+            echo "listos=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "listos=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Faltan los secretos VERCEL_TOKEN, VERCEL_ORG_ID o VERCEL_PROJECT_ID. Se construye para comprobar que funciona, pero no se despliega (SIM-10, sección 4)."
+          fi
+
+      - name: Instalar la CLI de Vercel
+        run: npm install --global vercel@65
+
+      - name: Traer la configuración y las variables del proyecto de Vercel
+        if: steps.secretos.outputs.listos == 'true'
+        run: vercel pull --yes --environment="$ENTORNO" --token="$VERCEL_TOKEN"
+
+      - name: Configuración local, para construir sin los secretos
+        if: steps.secretos.outputs.listos != 'true'
+        run: |
+          mkdir -p .vercel
+          echo '{"projectId":"sin-secretos","orgId":"sin-secretos","settings":{"framework":"nextjs"}}' > .vercel/project.json
+
+      - name: Construir desde la carpeta de la aplicación
+        run: |
+          # La raíz del proyecto es esta carpeta, aunque en Vercel quede configurada otra.
+          node -e 'const fs = require("fs"); const archivo = ".vercel/project.json"; const proyecto = JSON.parse(fs.readFileSync(archivo, "utf8")); proyecto.settings = { ...proyecto.settings, rootDirectory: null }; fs.writeFileSync(archivo, JSON.stringify(proyecto));'
+          vercel build $PROD ${VERCEL_TOKEN:+--token="$VERCEL_TOKEN"}
+
+      - name: Revisar los nombres de las funciones
+        run: |
+          cd .vercel/output/functions
+          echo "### Funciones construidas" >> "$GITHUB_STEP_SUMMARY"
+          find . -name "*.func" -type d | sort | sed 's/^/- /' >> "$GITHUB_STEP_SUMMARY"
+          if find . -name "* *" | grep -q .; then
+            echo "::error::Hay funciones con espacios en el nombre: Vercel las rechazaría."
+            find . -name "* *"
+            exit 1
+          fi
+
+      - name: Desplegar
+        if: steps.secretos.outputs.listos == 'true'
+        run: |
+          url=$(vercel deploy --prebuilt $PROD --token="$VERCEL_TOKEN")
+          echo "Desplegado en $ENTORNO: $url" >> "$GITHUB_STEP_SUMMARY"
+          echo "$url"

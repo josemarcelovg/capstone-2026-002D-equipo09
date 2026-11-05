@@ -1,5 +1,5 @@
 # Lo que no se copia a la imagen de Docker (Dockerfile, en esta carpeta).
-# Las rutas son relativas al contexto de construcción: la carpeta «Evidencias_de_sistema».
+# Las rutas son relativas al contexto de construcción: la carpeta «Evidencias de sistema».
 
 # Se instalan y generan dentro de la imagen.
 **/node_modules
