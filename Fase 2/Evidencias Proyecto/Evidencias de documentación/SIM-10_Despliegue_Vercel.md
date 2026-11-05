@@ -5,8 +5,8 @@
 | **Tarea** | [SIM-10] Desplegar la aplicación en Vercel |
 | **Responsable** | Simón Jofré (Scrum Master), con apoyo de José Vargas |
 | **Revisión** | José Vargas y Joaquín Orellana |
-| **Estado** | Aplicación lista para desplegar; faltan las cuentas y el proyecto de producción |
-| **Fecha** | 03-11-2026 |
+| **Estado** | Publicada en Vercel; el despliegue pasa a una GitHub Action, falta cargar sus secretos (sección 4.5) |
+| **Fecha** | 03-11-2026 (actualizado el 05-11-2026) |
 
 Este documento explica cómo se publica MicroLogist en Vercel, con un proyecto de Supabase para producción separado del de desarrollo (acordado el 27-10-2026, [JOS-02](JOS-02_Configuracion_Base_de_Datos.md), sección 3). Completa la sección 8.1 de [JOS-06](JOS-06_Manual_Tecnico.md) y es parte del alcance de la entrega final de la semana 15 ([JOA-08](JOA-08_Product_Backlog.md), sección 2).
 
@@ -22,13 +22,15 @@ Este documento explica cómo se publica MicroLogist en Vercel, con un proyecto d
 
 **Falta:** crear el proyecto de Supabase de producción y el proyecto en Vercel. Son pasos con cuentas y claves, que hace cada integrante desde su navegador (sección 4). Las claves nunca se escriben en este documento ni en el repositorio.
 
+**Al 05-11-2026:** la aplicación está publicada en `https://micrologist-equipo09.vercel.app`: la raíz lleva al inicio de sesión y `/api/avisos` responde 401 sin la clave. Para lograrlo, el PR #60 renombró `Fase 2`, `Evidencias Proyecto` y `Evidencias de sistema` con guion bajo, porque Vercel no acepta espacios en el nombre de las funciones. En la reunión del 05-11-2026 la profesora pidió mantener los nombres que pide el curso y desplegar con **GitHub Actions**: las carpetas vuelven a tener espacios y una Action construye la aplicación desde `Aplicación` y la publica en el mismo proyecto de Vercel (secciones 4.3 y 4.5).
+
 ---
 
 ## 2. Qué se despliega
 
 | Parte | Dónde | Notas |
 |---|---|---|
-| Aplicación Next.js (páginas, acciones del servidor y proxy) | Vercel, plan Hobby (gratis) | Se construye desde la carpeta `Aplicación` del repositorio. |
+| Aplicación Next.js (páginas, acciones del servidor y proxy) | Vercel, plan Hobby (gratis) | La construye una GitHub Action desde la carpeta `Aplicación` y la sube ya construida (sección 4.5). |
 | Base de datos PostgreSQL | Supabase, proyecto de producción (gratis) | Separado de `micrologist-dev`, con las mismas migraciones. |
 | Inicio de sesión | Supabase Auth del proyecto de producción | Con sus propias cuentas de prueba. |
 
@@ -80,19 +82,20 @@ Remove-Item Env:DIRECT_URL
 
 ### 4.3 Proyecto en Vercel
 
-El repositorio es público y está en la cuenta de GitHub de José.
+El proyecto `micrologist-equipo09` ya existe, en la cuenta de Vercel de José. **No se conecta con el repositorio de GitHub**: si Vercel construye directo desde el repositorio, nombra las funciones con la ruta desde la raíz (`Fase 2/Evidencias Proyecto/…`), que tiene espacios, y el build falla ("A Serverless Function has an invalid name"). La aplicación la construye la GitHub Action de la sección 4.5.
 
-1. José instala la aplicación de **Vercel para GitHub** en su cuenta, con acceso solo a `capstone-2026-002D-equipo09`.
-2. Simón entra a Vercel con su cuenta de GitHub y elige **Add New > Project > Import** del repositorio. Si el repositorio no aparece en su lista, José lo importa desde su propia cuenta de Vercel; el resto de los pasos es igual.
-3. En la configuración del proyecto:
-   - **Root Directory:** `Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación`, con la opción **Include files outside the root directory in the Build Step** **desactivada**. Si está activada, Vercel nombra las funciones con la ruta desde la raíz del repositorio (`Fase 2/…`), que tiene espacios, y el build falla. Prisma no la necesita: desde el 04-11-2026 el esquema está en `Aplicación/prisma/`.
-   - **Framework Preset:** Next.js (Vercel lo detecta). Comando de build: `npm run build`; de instalación: el de Vercel (`npm install`, que ejecuta `prisma generate`).
+1. En **Project Settings > Git**, **Disconnect** el repositorio. Si sigue conectado, Vercel intenta construir en cada push y deja un check fallido en cada PR.
+2. En **Project Settings > Build and Deployment**:
+   - **Root Directory:** vacío. La Action ya construye desde `Aplicación` (y lo deja vacío al construir, aunque aquí diga otra cosa).
+   - **Framework Preset:** Next.js. Comando de build: `npm run build`; de instalación: el de Vercel (`npm install`, que ejecuta `prisma generate`). El esquema de Prisma está en `Aplicación/prisma/`, así que el build no necesita nada de fuera de esa carpeta.
    - **Node.js Version:** 24.x, la misma que usa el equipo.
-   - **Function Region:** São Paulo (`gru1`), la misma región de la base de datos de producción.
+3. **Function Region:** São Paulo (`gru1`), la misma región de la base de datos de producción.
 
 ### 4.4 Variables de entorno
 
-Se cargan en **Project Settings > Environment Variables**, para el entorno **Production**. Las escribe quien creó el proyecto de Supabase, copiándolas directamente desde el panel.
+Se cargan en **Project Settings > Environment Variables**, para el entorno **Production**. Las escribe quien creó el proyecto de Supabase, copiándolas directamente desde el panel. La Action las trae al construir (`vercel pull`), así que las `NEXT_PUBLIC_*` quedan en la aplicación publicada.
+
+Para el entorno **Preview**, el de las vistas previas de los PR, se cargan las mismas variables pero del proyecto de **desarrollo** (`micrologist-dev`): así el código de un PR que todavía no se revisa nunca escribe en la base de producción.
 
 | Variable | Valor | ¿En Vercel? |
 |---|---|---|
@@ -104,11 +107,29 @@ Se cargan en **Project Settings > Environment Variables**, para el entorno **Pro
 
 Las variables de las alertas por correo (`RESEND_API_KEY`, `CRON_SECRET` y el remitente) se agregan con SIM-11.
 
-### 4.5 Primer despliegue
+### 4.5 Despliegue con GitHub Actions
 
-1. **Deploy** desde Vercel. Al terminar, la dirección queda como `https://<proyecto>.vercel.app`.
-2. Desde ahí, cada vez que se une un PR a `main`, Vercel vuelve a desplegar solo. Los PR abiertos reciben una dirección de vista previa.
-3. Si un PR trae una migración nueva, se aplica en producción (paso 4.2, solo `npm run db:deploy`) **antes** de unirlo, para que el código nuevo no llegue antes que su tabla.
+La Action está en `.github/workflows/vercel.yml`, en la raíz del repositorio, donde GitHub la busca. La dirección de producción es `https://micrologist-equipo09.vercel.app`.
+
+| Cuándo | Qué hace |
+|---|---|
+| Cada PR | Lint, tipos y pruebas unitarias; construye la aplicación desde `Aplicación` con la CLI de Vercel, revisa que ninguna función tenga espacios en el nombre y publica una **vista previa**. La dirección queda en el resumen de la ejecución (**Actions**). |
+| Cada push a `main` (al unir un PR) | Lo mismo, pero publica en **producción**. |
+| A mano | **Actions > Pruebas y despliegue en Vercel > Run workflow**. |
+
+Si faltan los secretos, la Action igual construye y revisa los nombres de las funciones, pero no publica y deja un aviso.
+
+**Secretos.** Los carga José, como dueño del repositorio y del proyecto de Vercel, en GitHub **Settings > Secrets and variables > Actions > New repository secret**:
+
+| Secreto | De dónde sale |
+|---|---|
+| `VERCEL_TOKEN` | Vercel > **Account Settings > Tokens > Create**, con alcance al equipo del proyecto y una fecha de expiración posterior a la entrega final. |
+| `VERCEL_ORG_ID` | El id del equipo de Vercel, que empieza con `team_` (**Team Settings > General**). |
+| `VERCEL_PROJECT_ID` | El id del proyecto, que empieza con `prj_` (**Project Settings > General**). |
+
+Otra forma de ver los dos ids: `npx vercel link` desde `Aplicación` los deja en `.vercel/project.json`, que Git ignora. El token nunca se escribe en el repositorio ni en el chat.
+
+**Migraciones.** Si un PR trae una migración nueva, se aplica en producción (paso 4.2, solo `npm run db:deploy`) **antes** de unirlo, para que el código nuevo no llegue antes que su tabla.
 
 ---
 
@@ -140,7 +161,10 @@ node --experimental-strip-types --test "tests/integracion/aplicacion.test.ts"
 | Problema | Qué hacer |
 |---|---|
 | El build falla con "Could not find Prisma Schema". | Revisar que `schema.prisma` esté en `Aplicación/prisma/` y que `prisma.config.ts` apunte ahí. |
-| El build falla con "A Serverless Function has an invalid name" ("must not contain any space"). | Desactivar la opción que incluye los archivos fuera del Root Directory (paso 4.3) y volver a desplegar sin la caché de build. |
+| El build falla con "A Serverless Function has an invalid name" ("must not contain any space"). | Vercel está construyendo directo desde el repositorio. Desconectar Git en el proyecto de Vercel (paso 4.3): la aplicación la publica la Action. |
+| La Action avisa "Faltan los secretos" y no publica. | Cargar `VERCEL_TOKEN`, `VERCEL_ORG_ID` y `VERCEL_PROJECT_ID` (sección 4.5) y volver a ejecutarla con **Re-run jobs**. |
+| `vercel pull` falla con "Project not found" o "Not authorized". | El token no tiene acceso al equipo del proyecto, o los ids no corresponden. Revisar los tres secretos (sección 4.5). |
+| La vista previa de un PR no muestra datos. | Faltan las variables del entorno **Preview** (sección 4.4). |
 | Las páginas responden "No pudimos…" o error 500 después de desplegar. | Falta aplicar una migración en producción o falta una variable de entorno. Los detalles quedan en los logs de Vercel (**Deployments > Functions**). |
 | La aplicación responde lento. | Revisar que la región de las funciones de Vercel sea la misma de la base de datos (paso 4.3). |
 | Se filtra una clave. | Rotarla en Supabase (**Reset database password** o una clave pública nueva) y actualizarla en Vercel ([JOS-06](JOS-06_Manual_Tecnico.md), sección 8.2). |
@@ -152,6 +176,8 @@ node --experimental-strip-types --test "tests/integracion/aplicacion.test.ts"
 - [x] Build, auditoría y pruebas en modo producción en local (sección 3).
 - [x] Pasos de despliegue, variables y comprobaciones (secciones 4 y 5).
 - [ ] Proyecto de Supabase de producción creado, migrado y con sus cuentas de prueba.
-- [ ] Proyecto en Vercel desplegado, con su dirección anotada en este documento y en el README.
+- [x] Proyecto en Vercel desplegado, con su dirección anotada en este documento y en el README (`https://micrologist-equipo09.vercel.app`, 05-11-2026).
+- [x] GitHub Action de pruebas y despliegue, con las carpetas que pide el curso (sección 4.5).
+- [ ] Secretos de la Action cargados y Git desconectado en el proyecto de Vercel (secciones 4.3 y 4.5).
 - [ ] Comprobaciones de la sección 5 registradas.
 - [ ] Revisión de José y Joaquín en el PR.
