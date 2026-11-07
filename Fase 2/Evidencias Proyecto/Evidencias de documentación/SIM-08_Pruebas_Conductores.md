@@ -33,7 +33,7 @@ No se encontraron errores. Quedan 2 observaciones menores de textos de pantalla 
 |---|---|
 | **Versión probada** | `main` en el commit `9978c9f` (incluye JOS-09, JOS-10 y las pantallas de conductores, PR #41 a #43), más las pruebas CP-INT-21 y CP-INT-22 de esta rama |
 | **Fecha y hora** | 02-11-2026, entre las 22:08 y las 22:35 (hora de Chile) |
-| **Dónde** | En local, con `npm run dev` desde `Evidencias_de_sistema/Aplicación`, Node.js 24.20 |
+| **Dónde** | En local, con `npm run dev` desde `Evidencias de sistema/Aplicación`, Node.js 24.20 |
 | **Base de datos e inicio de sesión** | Proyecto `micrologist-dev` en Supabase. La migración `20261027204333_conductores` está aplicada desde el 28-10-2026 a las 12:40 (`_prisma_migrations`) y `npx prisma migrate status` dice que el esquema está al día |
 | **Navegador** | Chromium, en tamaño de computador y emulando un celular de 360 × 740 px |
 | **Cuentas** | `admin.empresa.a@micrologist.cl` (Empresa A, "Transportes Cordillera") y `admin.empresa.b@micrologist.cl` (Empresa B, "Buses del Litoral"). Las contraseñas no se registran en este documento. |

@@ -19,7 +19,7 @@ Este documento hace para la entrega final de la semana 15 lo mismo que [JOA-03](
 - **Duración:** 15 minutos de demostración y 5 de preguntas **[POR CONFIRMAR]**.
 - **Fecha:** semana 15 **[POR CONFIRMAR]** (SIM-06, sección 6). En este documento el día de la demo se llama **D**.
 - **Quién presenta:** Joaquín conduce el guion; José responde lo de datos y despliegue; Simón, lo de avisos y pruebas **[POR CONFIRMAR]**.
-- **Dónde:** en la dirección de Vercel, con el proyecto de Supabase de producción y sus cuentas de prueba ([SIM-10](SIM-10_Despliegue_Vercel.md)). **Plan B**, si el despliegue no está listo: en local con `npm run dev` y la base de desarrollo; todo el guion funciona igual, salvo que el aviso se ejecuta a mano (paso 20) en vez de llegar en la mañana.
+- **Dónde:** en `https://micrologist-equipo09.vercel.app`, con el proyecto de Supabase de producción y sus cuentas de prueba ([SIM-10](SIM-10_Despliegue_Vercel.md)). **Plan B**, si el despliegue no está listo: en local con `npm run dev` y la base de desarrollo; todo el guion funciona igual, salvo que el aviso se ejecuta a mano (paso 20) en vez de llegar en la mañana.
 
 ---
 
@@ -35,7 +35,7 @@ Estado real al 04-11-2026, según la sección 2 de JOA-08.
 | Conductor asignado al vehículo (PB-24) | ✅ PR #57 | ⏳ Probado en local en el PR #57, más 2 pruebas de integración | Sus casos en SIM-04 |
 | Datos de contacto de la empresa (PB-14) | ✅ PR #44 | ⏳ Pruebas unitarias | CP-FUN-26 |
 | Avisos por correo (PB-15 y PB-16) | ✅ PR #55 | ⏳ Reglas en `tests/avisos.test.ts`; CP-INT-23 ✅ | Cuenta de Resend y un envío real (CP-FUN-27 y CP-FUN-28, [SIM-11](SIM-11_Alertas_por_Correo.md)) |
-| Despliegue en Vercel (SIM-10) | ✅ Guía en el PR #54 | — | Proyecto de Supabase de producción y proyecto en Vercel (SIM-10, sección 4) |
+| Despliegue en Vercel (SIM-10) | ✅ Guía en el PR #54; publicada en `https://micrologist-equipo09.vercel.app` (PR #60) | ✅ Responde el inicio de sesión y `/api/avisos` exige la clave (05-11-2026) | Desplegar con la GitHub Action, como pidió la profesora: cargar sus secretos y desconectar Git en Vercel (SIM-10, secciones 4.3 y 4.5) |
 | Migraciones en Supabase | — | — | `npm run db:deploy` en desarrollo y producción: `documentos`, `avisos` y `conductor_asignado` |
 
 Turnos (PB-17 a PB-19), resumen de la flota (PB-20) e ingresos (PB-21 a PB-23) quedan fuera de esta entrega (JOA-08, sección 2).
@@ -48,7 +48,7 @@ Turnos (PB-17 a PB-19), resumen de la flota (PB-20) e ingresos (PB-21 a PB-23) q
 
 - [ ] Actualizar `main` y seguir el README: `npm install`, `npm run db:deploy`, `npm run db:seed` y `npm run db:comprobar`, en desarrollo y en producción (SIM-10, sección 4.2).
 - [ ] `npm run build`, `npm run lint` y `npm test` terminan sin errores (Definition of Done, sección 3.1).
-- [ ] Desplegar en Vercel y anotar la dirección en SIM-10 y en el README.
+- [ ] Que la última ejecución de la GitHub Action en `main` esté en verde y haya publicado en producción (SIM-10, sección 4.5).
 - [ ] Cuenta de Resend y variables `RESEND_API_KEY`, `CORREO_REMITENTE` y `CRON_SECRET` en Vercel (SIM-11, sección 3).
 - [ ] En **Mi empresa** de las dos empresas, cambiar el correo de contacto al correo de la cuenta de Resend y aceptar la confirmación: sin dominio propio, el plan gratis solo envía a los correos verificados (SIM-11, sección 3). Los dos correos llegan a la misma bandeja, cada uno con el nombre de su empresa.
 - [ ] En producción, en **D − 1 después de las 09:00**, registrar los documentos de la sección 3.3 con las fechas calculadas desde D. Así el proceso de esa mañana ya pasó y el primero que los avisa es el de la mañana de D.
@@ -201,7 +201,7 @@ Estado al 04-11-2026. "Desarrollo" quiere decir que se probó en el navegador al
 
 ### 6.1 Reglas contra el código
 
-Revisión hecha el 04-11-2026 sobre `main`. Las rutas son de `Fase_2/Evidencias_Proyecto/Evidencias_de_sistema/Aplicación`, salvo la de `Base de datos`.
+Revisión hecha el 04-11-2026 sobre `main`. Las rutas son de `Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación`, salvo la de `Base de datos`.
 
 | Regla | Dónde está | ¿Cumple? |
 |---|---|---|
@@ -221,7 +221,7 @@ No se conocen errores que bloqueen el flujo principal. Falta confirmarlo con las
 
 ### 6.3 README
 
-El README explica cómo ejecutar el sistema en local y con Docker. Falta agregar la dirección de Vercel cuando exista el despliegue (SIM-10, sección 7).
+El README explica cómo ejecutar el sistema en local y con Docker, y desde el 05-11-2026 tiene la dirección de producción (`https://micrologist-equipo09.vercel.app`) y cómo se publica con GitHub Actions.
 
 ### 6.4 Primer ensayo, en local
 
@@ -248,7 +248,7 @@ Falta el ensayo con el equipo en Vercel (sección 7.2).
 
 ### 7.2 Antes de dar por terminada la entrega
 
-- Migraciones aplicadas en desarrollo y producción, y despliegue en Vercel (SIM-10).
+- Migraciones aplicadas en desarrollo y producción, y la GitHub Action publicando en Vercel, con sus secretos cargados (SIM-10, sección 4.5).
 - Cuenta de Resend y un envío real (SIM-11).
 - Pruebas de SIM-04: CP-FUN-23 a CP-FUN-28 y los casos de PB-24.
 - Guion completo ensayado con el equipo, con inicio de sesión y en Vercel.

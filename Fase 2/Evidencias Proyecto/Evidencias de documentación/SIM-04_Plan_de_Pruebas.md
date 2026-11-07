@@ -49,7 +49,7 @@ Los identificadores `CP-xxx-nn` no se reutilizan ni se renumeran, igual que los 
 
 | Técnica | Para qué se usa | Cómo |
 |---|---|---|
-| **Pruebas unitarias automáticas** | Reglas que no dependen de la pantalla ni de la base: validación de vehículos y reglas de acceso. | `npm test` desde `Evidencias_de_sistema/Aplicación` (hoy 109 pruebas en `tests/`). Corren en cada PR de código (DoD, sección 3.1). |
+| **Pruebas unitarias automáticas** | Reglas que no dependen de la pantalla ni de la base: validación de vehículos y reglas de acceso. | `npm test` desde `Evidencias de sistema/Aplicación` (hoy 109 pruebas en `tests/`). Corren en cada PR de código (DoD, sección 3.1). |
 | **Pruebas de integración automáticas** | Que la aplicación, la base de datos y Supabase funcionan juntas (sección 6.6). | `npm run test:integracion` desde `Aplicación` (hoy 24 pruebas en `tests/integracion/`). Usan el `.env`. Las de base de datos trabajan dentro de transacciones que se deshacen, así que no dejan datos; las de la aplicación necesitan `npm run dev` corriendo y solo leen. |
 | **Pruebas manuales en el navegador** | Flujos completos, como los vería el usuario. | Con las cuentas de prueba de la Empresa A y la Empresa B. |
 | **Solicitudes alteradas** | Comprobar que el servidor protege los datos aunque el navegador mande otra cosa. | Herramientas del navegador: modificar la solicitud antes de enviarla (por ejemplo, cambiar un id o agregar `empresa_id`). |
@@ -273,7 +273,7 @@ Si falta el `.env` o la aplicación no está corriendo, los casos que lo necesit
 - **Cada ejecución** se registra en un documento con el formato de [SIM-03](SIM-03_Pruebas_Primera_Entrega.md): versión probada (commit), fecha, entorno, cuentas usadas y, por cada caso, su ID, los pasos, el resultado esperado, el resultado obtenido y el estado. Cuando el caso lo permite, el resultado se confirma con una consulta de solo lectura a la base de datos.
 - **Cada error** recibe un identificador `ERR-nn` y se registra con: el caso que lo encontró, los pasos para reproducirlo, el resultado esperado y el obtenido, la severidad (sección 5), el responsable y el estado. También se crea su tarjeta en el tablero del Project.
 - **Cada corrección se vuelve a probar** con el mismo caso, y el resultado se agrega al registro (DoD, sección 3.3).
-- **Evidencia:** las capturas van en `Evidencias_de_sistema/Aplicación/Capturas` y los documentos en `Evidencias de documentación`. Nunca contienen datos personales reales ni contraseñas.
+- **Evidencia:** las capturas van en `Evidencias de sistema/Aplicación/Capturas` y los documentos en `Evidencias de documentación`. Nunca contienen datos personales reales ni contraseñas.
 
 ---
 

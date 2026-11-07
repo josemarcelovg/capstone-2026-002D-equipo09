@@ -142,7 +142,7 @@ Estado de cada criterio de la sección 7 de JOA-01 al 27-10-2026. Todos se proba
 | 11 | La Empresa A no ve los vehículos de la B | Aprobado | SIM-03, caso 7.11 | 16 |
 | 12 | Un vehículo de otra empresa responde "no encontrado" | Aprobado | SIM-03, caso 7.12 (incluye la edición por solicitud directa) | 17 |
 | 13 | La misma patente en dos empresas | Aprobado | SIM-03, caso 7.13, y seed | 16 |
-| 14 | Computador y celular a 360 px | Aprobado | SIM-03, caso 7.14; PR #5 (JOA-02) y capturas en `Evidencias_de_sistema/Aplicación/Capturas` | 18 |
+| 14 | Computador y celular a 360 px | Aprobado | SIM-03, caso 7.14; PR #5 (JOA-02) y capturas en `Evidencias de sistema/Aplicación/Capturas` | 18 |
 
 SIM-03 no encontró errores. Las pruebas se hicieron en local; falta repetir los casos principales en Vercel cuando exista el despliegue (SIM-03, sección 8).
 
@@ -152,7 +152,7 @@ SIM-03 no encontró errores. Las pruebas se hicieron en local; falta repetir los
 
 ### 6.1 Reglas de vehículos contra el código
 
-Revisión hecha el 18-10-2026 sobre `main`. Las rutas son de `Fase_2/Evidencias_Proyecto/Evidencias_de_sistema/Aplicación`, salvo la de `Base de datos`.
+Revisión hecha el 18-10-2026 sobre `main`. Las rutas son de `Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación`, salvo la de `Base de datos`.
 
 | Regla de JOA-01 | Dónde está | ¿Cumple? |
 |---|---|---|
