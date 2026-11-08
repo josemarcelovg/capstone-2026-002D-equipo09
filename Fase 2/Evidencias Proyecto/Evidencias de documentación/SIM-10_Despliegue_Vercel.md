@@ -5,8 +5,8 @@
 | **Tarea** | [SIM-10] Desplegar la aplicación en Vercel |
 | **Responsable** | Simón Jofré (Scrum Master), con apoyo de José Vargas |
 | **Revisión** | José Vargas y Joaquín Orellana |
-| **Estado** | Publicada en Vercel; el despliegue pasa a una GitHub Action, falta cargar sus secretos (sección 4.5) |
-| **Fecha** | 03-11-2026 (actualizado el 05-11-2026) |
+| **Estado** | Publicada en Vercel con la GitHub Action (sección 4.5); faltan las comprobaciones de la sección 5 |
+| **Fecha** | 03-11-2026 (actualizado el 08-11-2026) |
 
 Este documento explica cómo se publica MicroLogist en Vercel, con un proyecto de Supabase para producción separado del de desarrollo (acordado el 27-10-2026, [JOS-02](JOS-02_Configuracion_Base_de_Datos.md), sección 3). Completa la sección 8.1 de [JOS-06](JOS-06_Manual_Tecnico.md) y es parte del alcance de la entrega final de la semana 15 ([JOA-08](JOA-08_Product_Backlog.md), sección 2).
 
@@ -58,7 +58,7 @@ Rama `sim-10-despliegue-vercel` desde `main` (`0057c51`), Node.js 24.20, el 03-1
 
 Lo crea José o Simón, en la organización de Supabase del equipo:
 
-1. **New project** con el nombre `micrologist-prod` y la región **South America (São Paulo)**, la más cercana a Chile. La contraseña de la base de datos se genera ahí y se guarda en el gestor de contraseñas de quien la creó, nunca en el repositorio ni en el chat.
+1. **New project** con el nombre `micrologist-prod`. Quedó en la región **East US (Ohio)**, `us-east-2`, y la región no se puede cambiar después de crearlo. Si hubiera que crear otro, la más cercana a Chile es South America (São Paulo). La contraseña de la base de datos se genera ahí y se guarda en el gestor de contraseñas de quien la creó, nunca en el repositorio ni en el chat.
 2. Configurar Supabase Auth igual que en desarrollo ([SIM-02](SIM-02_Inicio_de_Sesion.md), sección 5): inicio con correo y contraseña, **largo mínimo de 8** y **registro público desactivado** (*Allow new users to sign up* apagado).
 3. Anotar, para el paso 4.4:
    - En **Connect > ORMs > Prisma**: `DATABASE_URL` (transaction pooler, puerto 6543, con `?pgbouncer=true`) y `DIRECT_URL` (session pooler, puerto 5432).
@@ -89,7 +89,7 @@ El proyecto `micrologist-equipo09` ya existe, en la cuenta de Vercel de José. *
    - **Root Directory:** vacío. La Action ya construye desde `Aplicación` (y lo deja vacío al construir, aunque aquí diga otra cosa).
    - **Framework Preset:** Next.js. Comando de build: `npm run build`; de instalación: el de Vercel (`npm install`, que ejecuta `prisma generate`). El esquema de Prisma está en `Aplicación/prisma/`, así que el build no necesita nada de fuera de esa carpeta.
    - **Node.js Version:** 24.x, la misma que usa el equipo.
-3. **Function Region:** São Paulo (`gru1`), la misma región de la base de datos de producción.
+3. **Function Region** (en **Project Settings > Functions**): Cleveland, USA (East), `cle1`, la más cercana a la base de datos de producción (East US, Ohio). Con otra región la aplicación funciona igual, pero cada consulta a la base tarda más.
 
 ### 4.4 Variables de entorno
 
@@ -175,9 +175,9 @@ node --experimental-strip-types --test "tests/integracion/aplicacion.test.ts"
 
 - [x] Build, auditoría y pruebas en modo producción en local (sección 3).
 - [x] Pasos de despliegue, variables y comprobaciones (secciones 4 y 5).
-- [ ] Proyecto de Supabase de producción creado, migrado y con sus cuentas de prueba.
+- [x] Proyecto de Supabase de producción creado, migrado y con sus cuentas de prueba (las 5 migraciones y 2 empresas, 08-11-2026).
 - [x] Proyecto en Vercel desplegado, con su dirección anotada en este documento y en el README (`https://micrologist-equipo09.vercel.app`, 05-11-2026).
 - [x] GitHub Action de pruebas y despliegue, con las carpetas que pide el curso (sección 4.5).
-- [ ] Secretos de la Action cargados y Git desconectado en el proyecto de Vercel (secciones 4.3 y 4.5).
+- [x] Secretos de la Action cargados y Git desconectado en el proyecto de Vercel (secciones 4.3 y 4.5). La Action publicó en producción el 08-11-2026.
 - [ ] Comprobaciones de la sección 5 registradas.
 - [ ] Revisión de José y Joaquín en el PR.

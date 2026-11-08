@@ -58,7 +58,7 @@ No existe eliminar: las relaciones están en `RESTRICT`, así que no se puede bo
 1. Entrar a [supabase.com](https://supabase.com) y crear un proyecto:
    - **Name:** `micrologist-dev`
    - **Database Password:** generar una y guardarla. Conviene que tenga solo letras y números, porque los símbolos hay que codificarlos en la URL.
-   - **Region:** South America (São Paulo), la más cercana a Chile.
+   - **Region:** el proyecto `micrologist-dev` quedó en West US (Oregon), `us-west-2`, y la región no se puede cambiar después de crearlo. Para uno nuevo, la más cercana a Chile es South America (São Paulo).
 2. Cuando termine de crearse, abrir **Connect → ORMs → Prisma** y copiar `DATABASE_URL` y `DIRECT_URL`.
 3. Copiar `.env.example` como `.env`, pegar los dos valores y reemplazar la contraseña.
 

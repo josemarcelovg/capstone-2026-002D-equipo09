@@ -216,7 +216,7 @@ La aplicación todavía no está desplegada. Se despliega en la Iteración 4, de
 1. El proyecto de Vercel **no se conecta con GitHub**: Vercel nombra las funciones con la ruta desde la raíz del repositorio, que tiene espacios (`Fase 2/…`), y el build falla. La aplicación la construye y publica la GitHub Action `.github/workflows/vercel.yml`, con la CLI de Vercel y desde la carpeta `Aplicación`: una vista previa en cada PR y producción en cada push a `main` ([SIM-10](SIM-10_Despliegue_Vercel.md), secciones 4.3 y 4.5). El esquema de Prisma está dentro de `Aplicación` para que el build no necesite nada de fuera. `npm install` ejecuta `prisma generate` automáticamente.
 2. Configurar las variables de producción de la sección 5.1 en el panel de Vercel.
 3. Aplicar las migraciones a la base de producción antes de cada despliegue que las incluya: `npm run db:deploy` con la `DIRECT_URL` de producción. Si esto se automatiza, se define al configurar Vercel.
-4. Elegir para las funciones de Vercel una región cercana a la de la base de datos, para reducir la latencia (el proyecto de desarrollo de Supabase está en West US, Oregon).
+4. Elegir para las funciones de Vercel una región cercana a la de la base de datos, para reducir la latencia (el proyecto de producción de Supabase está en East US, Ohio, así que corresponde Cleveland, `cle1`; [SIM-10](SIM-10_Despliegue_Vercel.md), sección 4.3).
 
 Mientras no exista el inicio de sesión (SIM-02), `empresaDeLaSesion()` falla en producción a propósito, para no mostrar datos sin sesión. Por eso el primer despliegue útil requiere SIM-02.
 
@@ -225,7 +225,7 @@ Mientras no exista el inicio de sesión (SIM-02), `empresaDeLaSesion()` falla en
 | Tema | Estado |
 |---|---|
 | Proyecto de desarrollo | `micrologist-dev`, plan gratuito, región West US (Oregon). Migrado y con datos de prueba. |
-| Proyecto de producción | Uno aparte del de desarrollo (acordado el 27-10-2026). Se crea con el despliegue en Vercel (sección 8.1). |
+| Proyecto de producción | `micrologist-prod`, aparte del de desarrollo (acordado el 27-10-2026), plan gratuito, región East US (Ohio). Con las mismas migraciones que desarrollo ([SIM-10](SIM-10_Despliegue_Vercel.md), sección 4.2). |
 | Acceso del equipo | Los tres comparten el proyecto de desarrollo (acordado el 27-10-2026; [JOS-02](JOS-02_Configuracion_Base_de_Datos.md), sección 3). |
 | Respaldos | Según el plan de Supabase **[POR CONFIRMAR]** (RNF-DIS-03). |
 | Supabase Auth | Pendiente (SIM-02). El `id` de la tabla `usuario` es el de Supabase Auth. |
