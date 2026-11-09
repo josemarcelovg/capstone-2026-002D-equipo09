@@ -97,7 +97,6 @@ En la raíz del repositorio están las carpetas `Fase 1`, `Fase 2` y `Fase 3`, y
 ```
 Evidencias de sistema/
 ├── Base de datos/
-│   ├── schema.prisma             Modelo de datos
 │   ├── migrations/               Migraciones versionadas (scripts SQL)
 │   └── README.md                 Qué contiene y cómo se usa
 └── Aplicación/                   Desde aquí se ejecutan los comandos npm y Docker
@@ -139,13 +138,14 @@ Aplicación/
 │   ├── proxy.ts                  Sin sesión, redirige a /login antes de cada página
 │   └── generated/prisma/         Cliente generado por Prisma (no se sube al repositorio)
 ├── prisma/
+│   ├── schema.prisma             Modelo de datos
 │   ├── seed.ts                   Datos ficticios de prueba
 │   └── comprobar.ts              Comprobación de la base de datos
 ├── tests/                        Pruebas automáticas
 ├── Capturas/                     Capturas de pantalla de la aplicación
 ├── Dockerfile, compose.yaml,     Entorno Docker (JOS-05)
 │   iniciar.sh
-├── prisma.config.ts              Configuración del CLI de Prisma (apunta a «Base de datos»)
+├── prisma.config.ts              Configuración del CLI de Prisma (migraciones en «Base de datos»)
 └── .env.example                  Variables de entorno, sin valores secretos
 ```
 
@@ -203,7 +203,7 @@ Comandos principales:
 
 Reglas al cambiar el modelo:
 
-1. Editar `Base de datos/schema.prisma` y crear la migración con `npm run db:migrate` (desde `Aplicación`). La carpeta nueva de `Base de datos/migrations/` se sube en el mismo PR.
+1. Editar `prisma/schema.prisma` y crear la migración con `npm run db:migrate` (desde `Aplicación`). La carpeta nueva de `Base de datos/migrations/` se sube en el mismo PR.
 2. **Toda tabla nueva activa RLS en su migración** (`ALTER TABLE ... ENABLE ROW LEVEL SECURITY;`), como la migración inicial ([JOS-02](JOS-02_Configuracion_Base_de_Datos.md), sección 6).
 3. Toda tabla con datos de una empresa tiene `empresa_id` obligatorio ([JOS-04](JOS-04_Modelo_de_Datos.md), sección 4).
 4. Nunca se edita una migración que ya está en `main`: se corrige con una nueva.
@@ -231,10 +231,10 @@ La Definition of Done exige que `build` y `lint` pasen antes de unir un PR ([SIM
 
 La aplicación todavía no está desplegada. Se despliega en la Iteración 4, del 02-11 al 15-11 (SIM-10, acordado el 27-10-2026). Pasos previstos:
 
-1. Importar el repositorio de GitHub en Vercel y poner como **Root Directory** `Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación`, dejando activada la opción que incluye los archivos fuera de esa carpeta (Prisma necesita `../Base de datos`). Vercel detecta Next.js y usa `npm run build`. `npm install` ejecuta `prisma generate` automáticamente.
+1. El proyecto de Vercel **no se conecta con GitHub**: Vercel nombra las funciones con la ruta desde la raíz del repositorio, que tiene espacios (`Fase 2/…`), y el build falla. La aplicación la construye y publica la GitHub Action `.github/workflows/vercel.yml`, con la CLI de Vercel y desde la carpeta `Aplicación`: una vista previa en cada PR y producción en cada push a `main` ([SIM-10](SIM-10_Despliegue_Vercel.md), secciones 4.3 y 4.5). El esquema de Prisma está dentro de `Aplicación` para que el build no necesite nada de fuera. `npm install` ejecuta `prisma generate` automáticamente.
 2. Configurar las variables de producción de la sección 5.1 en el panel de Vercel.
 3. Aplicar las migraciones a la base de producción antes de cada despliegue que las incluya: `npm run db:deploy` con la `DIRECT_URL` de producción. Si esto se automatiza, se define al configurar Vercel.
-4. Elegir para las funciones de Vercel una región cercana a la de la base de datos, para reducir la latencia (el proyecto de desarrollo de Supabase está en West US, Oregon).
+4. Elegir para las funciones de Vercel una región cercana a la de la base de datos, para reducir la latencia (el proyecto de producción de Supabase está en East US, Ohio, así que corresponde Cleveland, `cle1`; [SIM-10](SIM-10_Despliegue_Vercel.md), sección 4.3).
 
 En producción, la aplicación necesita las dos variables de Supabase del proyecto de producción: sin ellas no muestra datos, a propósito ([SIM-02](SIM-02_Inicio_de_Sesion.md), sección 3). En ese proyecto hay que repetir la configuración de Supabase Auth de SIM-02 (sección 5): registro público desactivado, contraseña de 8 caracteres o más, y las cuentas con su perfil en `usuario`.
 
@@ -243,7 +243,7 @@ En producción, la aplicación necesita las dos variables de Supabase del proyec
 | Tema | Estado |
 |---|---|
 | Proyecto de desarrollo | `micrologist-dev`, plan gratuito, región West US (Oregon). Migrado y con datos de prueba. |
-| Proyecto de producción | Uno aparte del de desarrollo (acordado el 27-10-2026). Se crea con el despliegue en Vercel (sección 8.1). |
+| Proyecto de producción | `micrologist-prod`, aparte del de desarrollo (acordado el 27-10-2026), plan gratuito, región East US (Ohio). Con las mismas migraciones que desarrollo ([SIM-10](SIM-10_Despliegue_Vercel.md), sección 4.2). |
 | Acceso del equipo | Los tres comparten el proyecto de desarrollo (acordado el 27-10-2026; [JOS-02](JOS-02_Configuracion_Base_de_Datos.md), sección 3). |
 | Respaldos | Según el plan de Supabase **[POR CONFIRMAR]** (RNF-DIS-03). |
 | Supabase Auth | Configurado en el proyecto de desarrollo el 19-10-2026 (SIM-02): inicio con correo y contraseña, registro público desactivado, contraseña de 8 caracteres o más, y una cuenta de prueba para la Empresa A y otra para la B, cada una con su perfil en `usuario`. El `id` de la tabla `usuario` es el de Supabase Auth. |

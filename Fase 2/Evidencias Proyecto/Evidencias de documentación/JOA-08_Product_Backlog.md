@@ -7,7 +7,7 @@
 | **Revisión** | José Vargas y Simón Jofré |
 | **Estado** | Propuesta para revisión del equipo |
 | **Fecha** | 12-10-2026 (actualizado el 28-10-2026) |
-| **Actualización** | 02-11-2026 (inicio de la Iteración 4) |
+| **Actualización** | 08-11-2026 (avisos en curso; criterios de PB-08 a PB-16 con las decisiones de JOA-09, JOA-10 y JOA-13) |
 
 Este documento reúne todo lo que MicroLogist debe hacer, ordenado por prioridad. Parte de la [Product Vision](JOA-04_Product_Vision.md) y de las reglas de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md). De aquí salen los ítems de cada Sprint Backlog (SIM-06) y los casos del plan de pruebas (SIM-04). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -22,8 +22,9 @@ Este documento reúne todo lo que MicroLogist debe hacer, ordenado por prioridad
 | Etapa | Qué significa |
 |---|---|
 | **Primera entrega** | Iniciar sesión y registrar, listar y editar vehículos con datos separados por empresa. |
-| **MVP completo** | Conductores, documentos, avisos por correo y turnos. |
-| **Opcional** | Ingresos. Se hace solo si el avance lo permite. |
+| **MVP completo** | Conductores, documentos, conductor asignado al vehículo, datos de la empresa y avisos por correo. Es lo que entra en la entrega final de la semana 15. |
+| **Opcional** | Ingresos. Se haría solo si el avance lo permitía; queda fuera de la entrega final (sección 7). |
+| **Trabajo futuro** | Turnos y resumen de la flota. Quedan fuera de la entrega final (sección 7). |
 
 - **Estado:** `Pendiente`, `En curso` o `Terminado`. Un ítem está terminado cuando cumple sus criterios de aceptación y la [Definition of Done](SIM-05_Definition_of_Done.md).
 - **Usuario:** en todas las historias es el dueño o responsable de la empresa (rol `admin`). En el MVP no hay otros roles y los conductores no inician sesión.
@@ -34,7 +35,7 @@ Este backlog contiene funcionalidades del producto. Las tareas de documentación
 
 ## 2. Backlog priorizado
 
-Estado al 02-11-2026.
+Estado al 08-11-2026.
 
 | Prioridad | ID | Ítem | Módulo | Etapa | Estado |
 |---|---|---|---|---|---|
@@ -48,17 +49,17 @@ Estado al 02-11-2026.
 | 8 | PB-08 | Registrar conductor | Conductores | MVP completo | Terminado |
 | 9 | PB-09 | Listar, buscar y editar conductores | Conductores | MVP completo | Terminado |
 | 10 | PB-10 | Desactivar y reactivar conductor | Conductores | MVP completo | Terminado |
-| 11 | PB-11 | Registrar documento con vencimiento | Documentos | MVP completo | Pendiente |
-| 12 | PB-12 | Ver documentos y su estado | Documentos | MVP completo | Pendiente |
-| 13 | PB-13 | Renovar o corregir documento | Documentos | MVP completo | Pendiente |
-| 14 | PB-24 | Conductor asignado al vehículo | Vehículos | MVP completo | Pendiente |
+| 11 | PB-11 | Registrar documento con vencimiento | Documentos | MVP completo | En curso |
+| 12 | PB-12 | Ver documentos y su estado | Documentos | MVP completo | En curso |
+| 13 | PB-13 | Renovar o corregir documento | Documentos | MVP completo | En curso |
+| 14 | PB-24 | Conductor asignado al vehículo | Vehículos | MVP completo | En curso |
 | 15 | PB-14 | Datos de contacto de la empresa | Empresa | MVP completo | En curso |
-| 16 | PB-15 | Aviso por correo antes del vencimiento | Avisos | MVP completo | Pendiente |
-| 17 | PB-16 | Avisos sin duplicados y con registro de envíos | Avisos | MVP completo | Pendiente |
-| 18 | PB-17 | Asignar turno | Turnos | MVP completo | Pendiente |
-| 19 | PB-18 | Ver turnos por fecha | Turnos | MVP completo | Pendiente |
-| 20 | PB-19 | Editar o anular turno | Turnos | MVP completo | Pendiente |
-| 21 | PB-20 | Resumen de la flota | Inicio | MVP completo **[POR CONFIRMAR]** | Pendiente |
+| 16 | PB-15 | Aviso por correo antes del vencimiento | Avisos | MVP completo | En curso |
+| 17 | PB-16 | Avisos sin duplicados y con registro de envíos | Avisos | MVP completo | En curso |
+| 18 | PB-17 | Asignar turno | Turnos | Trabajo futuro | Pendiente |
+| 19 | PB-18 | Ver turnos por fecha | Turnos | Trabajo futuro | Pendiente |
+| 20 | PB-19 | Editar o anular turno | Turnos | Trabajo futuro | Pendiente |
+| 21 | PB-20 | Resumen de la flota | Inicio | Trabajo futuro | Pendiente |
 | 22 | PB-21 | Activar el módulo de ingresos | Ingresos | Opcional | Pendiente |
 | 23 | PB-22 | Registrar ingreso | Ingresos | Opcional | Pendiente |
 | 24 | PB-23 | Ver ingresos por período | Ingresos | Opcional | Pendiente |
@@ -67,13 +68,16 @@ Estado al 02-11-2026.
 
 - **Primera entrega (PB-01 a PB-07): terminada.** El inicio y cierre de sesión con Supabase Auth (SIM-02, PR #21) se integró con el módulo de vehículos, y las pruebas de SIM-03 aprobaron los 14 criterios de JOA-01 con dos empresas ficticias (PR #22). El detalle por criterio está en [JOA-03](JOA-03_Validacion_Primera_Entrega.md), que cerró la entrega con la demo ensayada (PR #36).
 - **Conductores (PB-08 a PB-10): terminado.** Están la tabla con su migración (JOS-09, PR #41), la validación y el acceso a datos (JOS-10, PR #42) y las pantallas (JOA-11 y JOA-12, PR #43). Las pruebas con las dos empresas aprobaron 14 de 14 (SIM-08, PR #47).
-- **Datos de contacto de la empresa (PB-14): en curso.** La pantalla "Mi empresa" ya está (JOA-15, PR #44), con pruebas unitarias. Falta registrar sus casos en el plan de pruebas (SIM-04).
-- **Documentos (PB-11 a PB-13): en desarrollo.** La validación y el cálculo del estado según [JOA-10](JOA-10_Reglas_Modulo_Documentos.md) ya están, con pruebas unitarias (PR #48). Faltan la tabla con su migración, el acceso a datos y las pantallas.
-- **Siguen:** lo que se propone para la entrega final, en el apartado siguiente.
+- **Datos de contacto de la empresa (PB-14): en curso.** La pantalla "Mi empresa" ya está (JOA-15, PR #44), con pruebas unitarias. Su correo de contacto es el destinatario de los avisos (JOA-13). Falta detallar y ejecutar su caso CP-FUN-26 (SIM-04).
+- **Documentos (PB-11 a PB-13): en curso.** Están la validación y el cálculo del estado según [JOA-10](JOA-10_Reglas_Modulo_Documentos.md) (PR #48), la tabla con su migración (PR #53) y el acceso a datos con las pantallas, incluida la sección en la ficha del vehículo y del conductor (PR #56). Faltan sus pruebas con Supabase (CP-FUN-23 a CP-FUN-25).
+- **Conductor asignado (PB-24): en curso.** El vehículo tiene un conductor asignado opcional (solo activos de la empresa) y su ficha muestra al conductor con sus documentos. Tiene dos pruebas de integración con la base de datos (PR #57). Faltan sus casos en el plan de pruebas (SIM-04).
+- **Avisos por correo (PB-15 y PB-16): en curso.** Están el proceso diario que llama Vercel Cron, el envío con Resend y el registro en `aviso_enviado`, con su migración, según las reglas de [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md) (SIM-11, PR #55). Sus reglas tienen pruebas unitarias. Faltan la cuenta de Resend con un envío real (CP-FUN-27) y las pruebas con la base de datos (CP-FUN-28).
+- **Despliegue (SIM-10):** a pedido de la profesora (05-11-2026), una GitHub Action ejecuta las pruebas y publica en Vercel en cada push a `main` (PR #62). Falta cargar sus secretos en GitHub para que publique.
+- **Siguen:** lo que entra en la entrega final, en el apartado siguiente.
 
-### Alcance propuesto para la entrega final (semana 15) **[POR CONFIRMAR]**
+### Alcance de la entrega final (semana 15)
 
-En la revisión del 28-10-2026 la profesora adelantó la entrega final a la semana 15 (SIM-06, sección 6) y pidió dos cosas: vincular el conductor al vehículo y ver los documentos dentro de la ficha del vehículo. Con unas dos semanas de trabajo, no alcanza para todo el MVP completo. Esta es la propuesta del Product Owner; el equipo la aprueba en el PR.
+En la revisión del 28-10-2026 la profesora adelantó la entrega final a la semana 15 (SIM-06, sección 6) y pidió dos cosas: vincular el conductor al vehículo y ver los documentos dentro de la ficha del vehículo. Con unas dos semanas de trabajo, no alcanza para todo el MVP completo. El Product Owner propuso este alcance y el equipo lo aprobó en el PR #50 (03-11-2026).
 
 | Entra en la entrega final | Ítems | Por qué |
 |---|---|---|
@@ -89,7 +93,7 @@ En la revisión del 28-10-2026 la profesora adelantó la entrega final a la sema
 | Resumen de la flota | PB-20 | Nunca se confirmó que entrara en el MVP. |
 | Ingresos | PB-21 a PB-23 | Son opcionales. |
 
-Si se aprueba, los ítems que quedan fuera pasan a la sección 7 como evolución futura y se quita este **[POR CONFIRMAR]**.
+Los ítems que quedan fuera siguen en este backlog con la etapa "Trabajo futuro" u "Opcional", con sus criterios, por si el equipo los retoma después del capstone (sección 7).
 
 ### Por qué este orden
 
@@ -210,7 +214,7 @@ Los criterios citan entre paréntesis el número del criterio de aceptación de 
 
 ## 5. Ítems del MVP completo
 
-Antes de desarrollar cada módulo hay que definir sus campos y reglas, como se hizo con los vehículos en JOA-01. Las reglas de conductores (PB-08 a PB-10) están en [JOA-09](JOA-09_Reglas_Modulo_Conductores.md), que resuelve los **[POR CONFIRMAR]** de esos tres ítems. Las de documentos (PB-11 a PB-13) están en [JOA-10](JOA-10_Reglas_Modulo_Documentos.md), las de los avisos por correo (PB-15 y PB-16, y el destinatario de PB-14) en [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md) y las de turnos (PB-17 a PB-19) en [JOA-14](JOA-14_Reglas_Modulo_Turnos.md). Cada uno resuelve los **[POR CONFIRMAR]** de sus ítems; los que siguen marcados en esta sección quedan como referencia de la versión anterior.
+Antes de desarrollar cada módulo hay que definir sus campos y reglas, como se hizo con los vehículos en JOA-01. Las reglas de conductores (PB-08 a PB-10) están en [JOA-09](JOA-09_Reglas_Modulo_Conductores.md), que resuelve los **[POR CONFIRMAR]** de esos tres ítems. Las de documentos (PB-11 a PB-13) están en [JOA-10](JOA-10_Reglas_Modulo_Documentos.md), las de los avisos por correo (PB-15 y PB-16, y el destinatario de PB-14) en [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md) y las de turnos (PB-17 a PB-19) en [JOA-14](JOA-14_Reglas_Modulo_Turnos.md). Cada uno resuelve los **[POR CONFIRMAR]** de sus ítems. Los criterios de los ítems de la entrega final (PB-08 a PB-16) ya están escritos con esas decisiones, y la sección 6 de cada documento de reglas tiene sus criterios detallados para las pruebas. Los que siguen marcados en turnos (PB-17 a PB-19) quedan como referencia de la versión anterior: sus decisiones están en JOA-14.
 
 ### PB-08 · Registrar conductor
 
@@ -218,8 +222,8 @@ Antes de desarrollar cada módulo hay que definir sus campos y reglas, como se h
 
 **Criterios de aceptación:**
 
-1. Puedo registrar un conductor con sus datos obligatorios. La lista de campos está **[POR CONFIRMAR]** (propuesta: nombre, RUT, teléfono y correo).
-2. El RUT se valida con su dígito verificador y no se repite dentro de la empresa **[POR CONFIRMAR]**.
+1. Puedo registrar un conductor con su nombre, RUT y teléfono, que son obligatorios. El correo es opcional.
+2. El RUT se valida con su dígito verificador y no se repite dentro de la empresa, aunque el conductor esté inactivo. Otra empresa sí puede registrar el mismo RUT.
 3. Los datos inválidos muestran su error y no se guardan.
 4. El conductor es un registro y no una cuenta: no inicia sesión en el sistema (JOA-01, sección 2.1).
 
@@ -229,7 +233,7 @@ Antes de desarrollar cada módulo hay que definir sus campos y reglas, como se h
 
 **Criterios de aceptación:**
 
-1. Veo el listado de los conductores de mi empresa y puedo buscar por nombre o RUT **[POR CONFIRMAR]**.
+1. Veo el listado de los conductores de mi empresa y puedo buscar por nombre o RUT en un solo cuadro.
 2. Puedo abrir un conductor y editar sus datos; los cambios persisten al recargar.
 3. Si no hay conductores, aparece un mensaje claro y un botón para registrar.
 
@@ -241,7 +245,7 @@ Antes de desarrollar cada módulo hay que definir sus campos y reglas, como se h
 
 1. Puedo desactivar un conductor, con confirmación, y reactivarlo después.
 2. Un conductor desactivado no aparece en el listado por defecto ni se puede asignar a turnos nuevos.
-3. Que los conductores no se eliminen, igual que los vehículos, está **[POR CONFIRMAR]**.
+3. Los conductores no se eliminan, igual que los vehículos: se desactivan y se conserva su historial.
 
 ### PB-11 · Registrar documento con vencimiento
 
@@ -250,9 +254,9 @@ Antes de desarrollar cada módulo hay que definir sus campos y reglas, como se h
 **Criterios de aceptación:**
 
 1. Puedo registrar un documento de un vehículo (revisión técnica, SOAP, permiso de circulación u otro) o de un conductor (licencia de conducir u otro).
-2. Cada documento tiene tipo, a quién pertenece y fecha de vencimiento obligatoria. Los demás campos están **[POR CONFIRMAR]**.
+2. Cada documento tiene tipo, a quién pertenece y fecha de vencimiento obligatoria. La descripción es obligatoria solo en el tipo "otro", y las observaciones son opcionales.
 3. Solo puedo asociarlo a vehículos y conductores de mi empresa.
-4. Adjuntar el archivo del documento está **[POR CONFIRMAR]** (JOA-01, sección 1.4).
+4. En el MVP no se adjunta el archivo del documento.
 
 ### PB-12 · Ver documentos y su estado
 
@@ -261,9 +265,9 @@ Antes de desarrollar cada módulo hay que definir sus campos y reglas, como se h
 **Criterios de aceptación:**
 
 1. Cada documento muestra su estado según la fecha de hoy: vigente, por vencer o vencido.
-2. "Por vencer" significa que faltan 30 días o menos **[POR CONFIRMAR]**.
+2. "Por vencer" significa que faltan 30 días o menos, contando el día del vencimiento.
 3. Puedo ver los documentos de un vehículo o de un conductor, y un listado general ordenado por fecha de vencimiento con filtro por estado.
-4. La fecha se evalúa en hora de Chile (`America/Santiago`) **[POR CONFIRMAR]**.
+4. La fecha se evalúa en hora de Chile (`America/Santiago`).
 
 ### PB-13 · Renovar o corregir documento
 
@@ -273,7 +277,7 @@ Antes de desarrollar cada módulo hay que definir sus campos y reglas, como se h
 
 1. Puedo editar un documento y cambiar su fecha de vencimiento; su estado se recalcula.
 2. Después de renovarlo, los avisos se calculan con la nueva fecha.
-3. Guardar el historial de vencimientos anteriores está **[POR CONFIRMAR]**.
+3. En el MVP no se guarda el historial de vencimientos anteriores: renovar reemplaza la fecha.
 
 ### PB-14 · Datos de contacto de la empresa
 
@@ -283,7 +287,7 @@ Antes de desarrollar cada módulo hay que definir sus campos y reglas, como se h
 
 1. Puedo ver y editar el nombre, el correo de contacto y el teléfono de mi empresa (campos de JOA-01, sección 2.2).
 2. El correo de contacto es obligatorio y se valida su formato.
-3. Que ese correo sea el destinatario de los avisos está **[POR CONFIRMAR]** (JOA-01, sección 5).
+3. Ese correo es el destinatario de los avisos de vencimiento (JOA-13, sección 2).
 
 ### PB-15 · Aviso por correo antes del vencimiento
 
@@ -291,11 +295,11 @@ Antes de desarrollar cada módulo hay que definir sus campos y reglas, como se h
 
 **Criterios de aceptación:**
 
-1. Recibo un correo cuando a un documento le faltan 30, 7 y 1 días para vencer, y el día en que vence **[POR CONFIRMAR]**.
-2. El correo indica qué documento vence, de qué vehículo o conductor es y en qué fecha.
-3. El envío se hace una vez al día, en la mañana, hora de Chile **[POR CONFIRMAR]**.
+1. Recibo un correo cuando a un documento le faltan 30, 7 y 1 días para vencer, y el día en que vence. Si un plazo no se avisó a tiempo, solo llega el que corresponde ese día, con los días que faltan de verdad.
+2. Llega un solo correo al día por empresa, con todos sus documentos que tienen aviso. Indica qué documento vence, de qué vehículo o conductor es y en qué fecha.
+3. El envío se hace una vez al día, a las 11:00 UTC: llega entre las 07:00 y las 08:00 hora de Chile, según la época del año.
 4. El único canal es el correo: no hay avisos por WhatsApp, SMS ni notificaciones push.
-5. El proveedor de correo está **[POR CONFIRMAR]**.
+5. El proveedor de correo es Resend, en su plan gratis.
 
 ### PB-16 · Avisos sin duplicados y con registro de envíos
 
@@ -303,9 +307,10 @@ Antes de desarrollar cada módulo hay que definir sus campos y reglas, como se h
 
 **Criterios de aceptación:**
 
-1. Cada envío queda registrado (documento, plazo y fecha de envío) y el mismo aviso no se repite **[POR CONFIRMAR]**.
-2. Los documentos de vehículos inactivos no generan avisos **[POR CONFIRMAR]**.
-3. Si un envío falla, queda registrado para poder reintentarlo **[POR CONFIRMAR]**.
+1. Cada envío queda registrado (documento, fecha de vencimiento, plazo, destinatario, estado y fecha del intento) y el mismo aviso no se repite, aunque el proceso corra de nuevo.
+2. Los documentos de vehículos y conductores inactivos no generan avisos.
+3. Si un envío falla, queda registrado como fallido y se reintenta al día siguiente.
+4. Un documento renovado (con fecha de vencimiento nueva) vuelve a recibir sus avisos.
 
 ### PB-17 · Asignar turno
 
@@ -342,7 +347,7 @@ Antes de desarrollar cada módulo hay que definir sus campos y reglas, como se h
 
 **Historia:** como responsable, quiero ver un resumen de mi flota al entrar, para saber de un vistazo qué necesita atención.
 
-Este ítem responde a la necesidad 3 de la Product Vision ("ver el estado de la flota de un vistazo"), pero no figura como módulo en su sección 5.1. Que entre en el MVP está **[POR CONFIRMAR]**.
+Este ítem responde a la necesidad 3 de la Product Vision ("ver el estado de la flota de un vistazo"), pero no figura como módulo en su sección 5.1. Queda como trabajo futuro (sección 2, aprobado en el PR #50).
 
 **Criterios de aceptación:**
 
@@ -360,7 +365,8 @@ Lo pidió la profesora en la revisión del 28-10-2026 (SIM-06, sección 6). Es d
 1. Al registrar o editar un vehículo puedo elegir su conductor asignado, o dejarlo sin conductor.
 2. Solo puedo elegir conductores activos de mi empresa.
 3. La ficha del vehículo muestra el conductor asignado y sus documentos con su estado, además de los documentos del propio vehículo.
-4. Si un conductor tiene más de un vehículo asignado, y qué pasa con la asignación al desactivar al conductor, está **[POR CONFIRMAR]** (propuesta: un conductor puede tener varios vehículos y al desactivarlo los vehículos quedan sin conductor asignado).
+4. Un conductor puede estar asignado a varios vehículos. Al desactivarlo, sus vehículos quedan sin conductor asignado, y la confirmación y el mensaje lo avisan; reactivarlo no los vuelve a asignar (confirmado por el Product Owner el 04-11-2026).
+5. La ficha del conductor muestra los vehículos que tiene asignados, con enlace a cada uno.
 
 ---
 
@@ -406,6 +412,7 @@ Lo pidió la profesora en la revisión del 28-10-2026 (SIM-06, sección 6). Es d
 - Varios usuarios por empresa con roles (por ejemplo, un operador que no puede desactivar).
 - Registro público, para que una empresa se inscriba sola. Queda fuera del MVP (acordado el 27-10-2026; JOA-01, sección 2.3).
 - Reportes y analítica.
+- Turnos (PB-17 a PB-19), resumen de la flota (PB-20) e ingresos (PB-21 a PB-23). Quedan fuera de la entrega final de la semana 15 (sección 2, aprobado en el PR #50); sus ítems se mantienen en este backlog.
 
 **Fuera de alcance** (no se hará, sección 1.4 de JOA-01): GPS y seguimiento de rutas, aplicación móvil nativa, avisos por WhatsApp, SMS o notificaciones push, pagos y facturación, integraciones con organismos externos e inteligencia artificial.
 
@@ -416,9 +423,7 @@ Lo pidió la profesora en la revisión del 28-10-2026 (SIM-06, sección 6). Es d
 - **Estimación:** se estima con tallas XS a XL al planificar cada iteración (acordado el 27-10-2026). La talla de cada tarea queda en el campo *Size* del tablero.
 - **Sprints:** los sprints duran 2 semanas, igual que las iteraciones del tablero (acordado el 27-10-2026). La asignación de ítems a cada sprint se registra en el Sprint Backlog (SIM-06).
 - **Reglas de cada módulo:** conductores, documentos, turnos e ingresos necesitan un documento de reglas como JOA-01 antes de desarrollarse. Ahí se resuelven los **[POR CONFIRMAR]** de sus ítems. Conductores (PB-08 a PB-10): resueltos en [JOA-09](JOA-09_Reglas_Modulo_Conductores.md). Documentos (PB-11 a PB-13): resueltos en [JOA-10](JOA-10_Reglas_Modulo_Documentos.md). Avisos (PB-14 a PB-16): resueltos en [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md). Turnos (PB-17 a PB-19): resueltos en [JOA-14](JOA-14_Reglas_Modulo_Turnos.md).
-- **PB-20:** falta decidir si el resumen de la flota entra en el MVP. La propuesta de la sección 2 lo deja como trabajo futuro.
-- **Alcance de la entrega final:** falta que el equipo apruebe la propuesta de la sección 2.
-- **PB-24:** falta confirmar su criterio 4 y agregar sus casos al plan de pruebas (SIM-04).
+- **PB-24:** falta agregar sus casos al plan de pruebas (SIM-04). Su criterio 4 se confirmó el 04-11-2026.
 
 ---
 
@@ -438,6 +443,9 @@ Lo pidió la profesora en la revisión del 28-10-2026 (SIM-06, sección 6). Es d
 | 28-10-2026 | Decisiones de la reunión del 27-10-2026: sprints de 2 semanas, estimación con tallas y registro público fuera del MVP (secciones 7 y 8). |
 | 02-11-2026 | Inicio de la Iteración 4: PB-01 a PB-07 pasan a Terminado (SIM-03 y JOA-03); PB-08 a PB-10 y PB-14 pasan a En curso. Se actualiza el avance y se enlazan las reglas de JOA-13 y JOA-14 en la sección 5. |
 | 02-11-2026 | PB-08 a PB-10 pasan a Terminado (SIM-08). Se agrega PB-24 (conductor asignado al vehículo), pedido por la profesora, y la propuesta de alcance para la entrega final de la semana 15 (sección 2). |
+| 03-11-2026 | El equipo aprueba el alcance de la entrega final (PR #50): se quita su [POR CONFIRMAR], turnos y PB-20 pasan a la etapa "Trabajo futuro" y los ítems fuera de la entrega se anotan en la sección 7. |
+| 04-11-2026 | PB-11 a PB-13 pasan a En curso (pantallas unidas en el PR #56; faltan sus pruebas). PB-24 pasa a En curso: se confirma su criterio 4 (varios vehículos por conductor y sin conductor al desactivarlo) y se agrega el criterio 5 (vehículos en la ficha del conductor). |
+| 08-11-2026 | PB-15 y PB-16 pasan a En curso (SIM-11, PR #55). Los criterios de los ítems de la entrega final (PB-08 a PB-16) se escriben con las decisiones de JOA-09, JOA-10 y JOA-13 y se les quita el [POR CONFIRMAR], sin cambiar su numeración; PB-16 suma el criterio 4 (documento renovado). Se agregan al avance los avisos y el despliegue con GitHub Actions (PR #62). |
 
 ---
 

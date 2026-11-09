@@ -40,6 +40,8 @@ La plataforma centraliza esta información en un solo lugar, facilitando el segu
 
 MicroLogist es una aplicación web en Next.js, desplegada en Vercel, que usa Supabase para la base de datos (PostgreSQL) y para el inicio de sesión (Supabase Auth). No necesita GPS ni equipos instalados en los vehículos.
 
+Está publicada en **https://micrologist-equipo09.vercel.app**. La publica una GitHub Action en cada cambio a `main`, y cada pull request recibe una vista previa ([SIM-10](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-10_Despliegue_Vercel.md>), sección 4.5).
+
 ```mermaid
 flowchart LR
     usuario["Responsable de la empresa<br/>computador, tablet o celular"]
@@ -75,8 +77,8 @@ flowchart LR
 | **Interfaz** | Pantallas adaptables a computador y celular, hechas con React y Tailwind CSS. | `Aplicación/src/app/` |
 | **Servidor** | Páginas y acciones del servidor de Next.js: comprueban la sesión, validan los datos y llaman al acceso a datos. La empresa del usuario siempre se toma de la sesión, nunca del formulario. | `Aplicación/src/app/` |
 | **Validación** | Las reglas de cada módulo en esquemas Zod, compartidas por el formulario y el servidor. | `Aplicación/src/lib/` |
-| **Acceso a datos** | Consultas a PostgreSQL con Prisma, siempre filtradas por la empresa del usuario. El modelo y las migraciones están en `Base de datos/`. | `Aplicación/src/lib/` |
-| **Avisos** | Un proceso diario que busca documentos por vencer y envía un correo. El correo es el único canal de aviso. | Pendiente |
+| **Acceso a datos** | Consultas a PostgreSQL con Prisma, siempre filtradas por la empresa del usuario. El modelo de Prisma está en `Aplicación/prisma/schema.prisma` y las migraciones, en `Base de datos/`. | `Aplicación/src/lib/` |
+| **Avisos** | Un proceso diario que busca documentos por vencer y envía un correo. El correo es el único canal de aviso. | `Aplicación/src/lib/avisos.ts` y `Aplicación/src/app/api/avisos/` |
 
 Los vehículos ya se guardan en PostgreSQL mediante Prisma (JOS-02 y JOS-03). El inicio de sesión usa Supabase Auth (SIM-02): el proxy (`src/proxy.ts`) manda al login a quien no tiene sesión, y cada página y acción vuelve a comprobarla en el servidor (`src/lib/sesion.ts`), que entrega la empresa del usuario. En desarrollo, sin las claves de Supabase, se entra sin iniciar sesión con la empresa de `EMPRESA_DESARROLLO_ID` del `.env` de `Aplicación/`.
 
@@ -99,7 +101,7 @@ El detalle está en el diagrama de componentes y en los diagramas de secuencia d
    cd "capstone-2026-002D-equipo09/Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación"
    ```
 
-2. Instalar las dependencias (también genera el cliente de Prisma a partir de `Base de datos/schema.prisma`):
+2. Instalar las dependencias (también genera el cliente de Prisma a partir de `Aplicación/prisma/schema.prisma`):
 
    ```bash
    npm install
@@ -150,7 +152,7 @@ Levanta la aplicación y una base de datos PostgreSQL local con los datos de pru
 
 ### Estructura del repositorio
 
-En la raíz están las carpetas de cada fase y este README.
+En la raíz están las carpetas de cada fase, este README y `.github/workflows/`, con la GitHub Action que prueba la aplicación y la publica en Vercel ([SIM-10](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-10_Despliegue_Vercel.md>)).
 
 | Carpeta | Contenido |
 |---|---|
@@ -168,10 +170,10 @@ Dentro de `Evidencias de sistema`:
 | `Aplicación/src/lib/` | Reglas de validación y acceso a datos |
 | `Aplicación/public/` | Imágenes y archivos estáticos |
 | `Aplicación/tests/` | Pruebas automáticas: unitarias en la carpeta y de integración en `tests/integracion/` |
-| `Aplicación/prisma/` | Datos de prueba (`seed.ts`) y comprobación de la conexión (`comprobar.ts`) |
+| `Aplicación/prisma/` | Modelo de datos (`schema.prisma`), datos de prueba (`seed.ts`) y comprobación de la conexión (`comprobar.ts`) |
 | `Aplicación/Capturas/` | Capturas de pantalla de la aplicación |
 | `Aplicación/` (raíz) | `Dockerfile`, `compose.yaml`, `.env.example` y configuración del proyecto |
-| `Base de datos/` | Modelo de datos (`schema.prisma`) y scripts SQL de las migraciones (`migrations/`) |
+| `Base de datos/` | Scripts SQL de las migraciones (`migrations/`) y de los perfiles de prueba (`perfiles-prueba.sql`) |
 
 ## Integrantes del equipo y roles
 
@@ -216,6 +218,7 @@ Para el desarrollo del proyecto se utilizará una metodología ágil e increment
 | [JOA-10 Reglas del módulo de documentos](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-10_Reglas_Modulo_Documentos.md>) | Tipos y dueño, estado (vigente, por vencer, vencido) en hora de Chile, mensajes y criterios de aceptación de PB-11 a PB-13 |
 | [JOA-13 Reglas de las alertas de vencimiento](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-13_Reglas_Alertas_Vencimiento.md>) | Plazos (30, 7, 1 y 0 días), destinatario, correo diario por empresa con Resend, registro de envíos, reintentos y criterios de aceptación de PB-15 y PB-16 |
 | [JOA-14 Reglas del módulo de turnos](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-14_Reglas_Modulo_Turnos.md>) | Jornadas, sin duplicados por fecha y jornada, anular con motivo, vista por día, mensajes y criterios de aceptación de PB-17 a PB-19 |
+| [JOA-19 Validación de la entrega final](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOA-19_Guion_Entrega_Final.md>) | Estado del alcance de la semana 15, preparación, guion de la demostración con los criterios de cada paso y matriz de validación |
 | [JOS-02 Configuración de la base de datos](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-02_Configuracion_Base_de_Datos.md>) | Supabase, Prisma, migraciones y datos de prueba |
 | [JOS-04 Modelo de datos](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-04_Modelo_de_Datos.md>) | Diagrama entidad-relación, diccionario de datos y separación entre empresas |
 | [JOS-05 Entorno Docker](<Fase 2/Evidencias Proyecto/Evidencias de documentación/JOS-05_Entorno_Docker.md>) | Levantar la aplicación con una base de datos local, sin claves de Supabase |
@@ -226,3 +229,5 @@ Para el desarrollo del proyecto se utilizará una metodología ágil e increment
 | [SIM-05 Definition of Done](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-05_Definition_of_Done.md>) | Condiciones para dar una tarea por terminada |
 | [SIM-06 Sprint Backlog y retrospectivas](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-06_Sprint_Backlog_y_Retrospectivas.md>) | Tareas de cada iteración, datos para las retrospectivas y acciones de mejora |
 | [SIM-08 Pruebas de conductores](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-08_Pruebas_Conductores.md>) | Los 14 criterios de JOA-09 probados con las dos empresas ficticias y su verificación en la base de datos |
+| [SIM-10 Despliegue en Vercel](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-10_Despliegue_Vercel.md>) | Pasos para publicar la aplicación con GitHub Actions y un proyecto de Supabase de producción, secretos, variables y comprobaciones después de desplegar |
+| [SIM-11 Alertas por correo](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-11_Alertas_por_Correo.md>) | Proceso diario de avisos con Resend y Vercel Cron, configuración, cómo probarlo a mano y límites del MVP |

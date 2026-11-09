@@ -3,9 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { obtenerConductor } from "@/lib/conductores-datos";
+import { vehiculosDelConductor } from "@/lib/vehiculos-datos";
+import { mensajeDeDocumento, SeccionDocumentos } from "../../documentos/seccion-documentos";
 import { BotonActivacion } from "../boton-activacion";
 import { ConductorForm } from "../conductor-form";
 import { InsigniaEstado } from "../insignia-estado";
+import { VehiculosAsignados } from "../vehiculos-asignados";
 
 // El título y la página buscan el mismo conductor con una sola consulta por solicitud.
 const buscarConductor = cache(obtenerConductor);
@@ -17,10 +20,12 @@ export async function generateMetadata({ params }: PageProps<"/conductores/[id]"
   return { title: (await buscarConductor(id)) ? "Detalle del conductor" : "No encontrado" };
 }
 
-export default async function PaginaConductor({ params }: PageProps<"/conductores/[id]">) {
+export default async function PaginaConductor({ params, searchParams }: PageProps<"/conductores/[id]">) {
   const { id } = await params;
   const conductor = await buscarConductor(id);
   if (!conductor) notFound();
+  const mensaje = mensajeDeDocumento((await searchParams).mensaje);
+  const vehiculos = await vehiculosDelConductor(conductor.id);
 
   return (
     <>
@@ -32,7 +37,19 @@ export default async function PaginaConductor({ params }: PageProps<"/conductore
         <InsigniaEstado activo={conductor.activo} />
       </div>
 
+      {mensaje && (
+        <p role="status" className="mb-4 rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+          {mensaje}
+        </p>
+      )}
+
       <ConductorForm conductor={conductor} />
+
+      <VehiculosAsignados vehiculos={vehiculos} />
+
+      <SeccionDocumentos
+        dueno={{ tipo: "conductor", id: conductor.id, nombre: conductor.nombre, activo: conductor.activo }}
+      />
 
       <section className="mt-6 flex flex-col gap-3 rounded-lg border border-zinc-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
         <p className="text-sm text-zinc-700">
@@ -40,7 +57,12 @@ export default async function PaginaConductor({ params }: PageProps<"/conductore
             ? "Si el conductor ya no trabaja en la empresa, desactívalo. No se elimina y se puede reactivar."
             : "Este conductor está inactivo y no aparece en el listado. Puedes reactivarlo cuando quieras."}
         </p>
-        <BotonActivacion id={conductor.id} nombre={conductor.nombre} inactivo={!conductor.activo} />
+        <BotonActivacion
+          id={conductor.id}
+          nombre={conductor.nombre}
+          inactivo={!conductor.activo}
+          vehiculosAsignados={vehiculos.length}
+        />
       </section>
     </>
   );

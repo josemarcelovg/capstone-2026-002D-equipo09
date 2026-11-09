@@ -6,7 +6,7 @@
 | **Responsable** | José Vargas (Developer) |
 | **Revisión** | Joaquín Orellana (coherencia con JOA-06 y JOA-08) |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 16-10-2026 (actualizado el 28-10-2026) |
+| **Fecha** | 16-10-2026 (actualizado el 04-11-2026) |
 
 Este documento describe la base de datos de MicroLogist: qué tablas tiene, cómo se relacionan, qué guarda cada columna y cómo se separan los datos entre empresas. Se basa en las reglas de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), en el diagrama de clases de [JOA-06](JOA-06_Diagramas_UML.md) (sección 3) y en el [Product Backlog](JOA-08_Product_Backlog.md).
 
@@ -18,8 +18,8 @@ El modelo tiene dos partes:
 
 | Parte | Tablas | Estado |
 |---|---|---|
-| **Implementada** | `empresa`, `usuario`, `vehiculo`, `conductor` | Es exactamente lo que hay en `Base de datos/schema.prisma`. Las tres primeras vienen de la migración inicial (JOS-02); `conductor`, de la migración `conductores` (JOS-09). |
-| **Propuesta** | `documento`, `turno`, `aviso_enviado`, `ingreso` | Diseño para los módulos del MVP completo y el módulo opcional de ingresos. Se crea en la tarea de cada módulo, después de confirmar sus reglas. Lo no decidido está marcado **[POR CONFIRMAR]**. |
+| **Implementada** | `empresa`, `usuario`, `vehiculo`, `conductor`, `documento`, `aviso_enviado` | Es exactamente lo que hay en `Aplicación/prisma/schema.prisma`. Las tres primeras vienen de la migración inicial (JOS-02); `conductor`, de la migración `conductores` (JOS-09); `documento`, de la migración `documentos`; `aviso_enviado`, de la migración `avisos` (SIM-11). |
+| **Propuesta** | `turno`, `ingreso` | Diseño para los módulos del MVP completo y el módulo opcional de ingresos. Se crea en la tarea de cada módulo, después de confirmar sus reglas. Lo no decidido está marcado **[POR CONFIRMAR]**. |
 
 Convenciones:
 
@@ -93,6 +93,7 @@ erDiagram
     empresa ||--o{ ingreso : "registra"
     vehiculo |o--o{ documento : "tiene"
     conductor |o--o{ documento : "tiene"
+    conductor |o--o{ vehiculo : "es el conductor asignado de"
     vehiculo ||--o{ turno : "se usa en"
     conductor ||--o{ turno : "maneja en"
     documento ||--o{ aviso_enviado : "genera"
@@ -114,6 +115,7 @@ erDiagram
         uuid empresa_id FK
         varchar patente
         estado_vehiculo estado
+        uuid conductor_id FK "conductor asignado, opcional"
     }
     conductor {
         uuid id PK
@@ -222,9 +224,10 @@ Perfil de quien inicia sesión. La contraseña no está aquí: la maneja Supabas
 | `color` | `varchar(30)` | No | |
 | `estado` | `estado_vehiculo` | Sí | Por defecto `activo`. Pasar a o desde `inactivo` solo con el botón de desactivar o reactivar. |
 | `observaciones` | `varchar(500)` | No | |
+| `conductor_id` | `uuid` | No | Conductor asignado, sin fecha ni jornada (PB-24). FK compuesta `(conductor_id, empresa_id)` a `conductor`. Solo un conductor activo de la empresa (acceso a datos). Un conductor puede estar asignado a varios vehículos; al desactivarlo, sus vehículos quedan con `null` (JOA-08, PB-24). Con índice. Migración `20261104042704_conductor_asignado`. |
 | `created_at`, `updated_at` | `timestamptz` | Sí | Como en `empresa`. |
 
-Restricción única: `(empresa_id, patente)`. Para las tablas propuestas se agrega además `UNIQUE (id, empresa_id)`, que permite las claves foráneas compuestas de la sección 4.
+Restricciones únicas: `(empresa_id, patente)` y `(id, empresa_id)`. Esta última se agregó con la tabla `documento` y permite las claves foráneas compuestas de la sección 4.
 
 ### 3.4 `conductor` · implementada en JOS-09 (PB-08 a PB-10)
 
@@ -243,33 +246,36 @@ El conductor es un registro, no una cuenta: no inicia sesión (JOA-01, sección 
 
 Restricciones únicas: `(empresa_id, rut)` y `(id, empresa_id)`.
 
-### 3.5 `documento` · propuesta (PB-11 a PB-13)
+### 3.5 `documento` · implementada (PB-11 a PB-13)
 
-Un documento pertenece a un vehículo **o** a un conductor, nunca a ambos (nota del diagrama de clases de JOA-06).
+Un documento pertenece a un vehículo **o** a un conductor, nunca a ambos (nota del diagrama de clases de JOA-06). Las reglas de los campos están en [JOA-10](JOA-10_Reglas_Modulo_Documentos.md) y la migración es `20261103231748_documentos`.
 
 | Columna | Tipo | Obl. | Restricciones y reglas |
 |---|---|---|---|
 | `id` | `uuid` | Sí | PK. |
 | `empresa_id` | `uuid` | Sí | FK a `empresa`. |
 | `tipo` | `tipo_documento` | Sí | Ver sección 3.9. |
-| `descripcion` | `varchar(100)` | No | Obligatoria cuando `tipo` es `otro` **[POR CONFIRMAR]**. |
+| `descripcion` | `varchar(100)` | No | Obligatoria cuando `tipo` es `otro` (JOA-10, sección 2). |
 | `vehiculo_id` | `uuid` | No | FK compuesta `(vehiculo_id, empresa_id)` a `vehiculo`. |
 | `conductor_id` | `uuid` | No | FK compuesta `(conductor_id, empresa_id)` a `conductor`. |
 | `fecha_vencimiento` | `date` | Sí | |
 | `observaciones` | `varchar(500)` | No | |
 | `created_at`, `updated_at` | `timestamptz` | Sí | |
 
-Reglas (restricciones `CHECK` en la migración):
+Reglas (restricciones `CHECK` agregadas a mano en la migración, porque Prisma no las maneja):
 
-1. Exactamente uno de `vehiculo_id` o `conductor_id` tiene valor.
-2. `revision_tecnica`, `soap` y `permiso_circulacion` solo para vehículos; `licencia_conducir` solo para conductores; `otro` para ambos.
+1. Exactamente uno de `vehiculo_id` o `conductor_id` tiene valor (`documento_un_dueno_check`).
+2. `revision_tecnica`, `soap` y `permiso_circulacion` solo para vehículos; `licencia_conducir` solo para conductores; `otro` para ambos (`documento_tipo_dueno_check`).
+3. `descripcion` tiene valor cuando `tipo` es `otro` (`documento_descripcion_otro_check`).
+
+Un documento por dueño y tipo (JOA-10, sección 2): índices únicos parciales `(vehiculo_id, tipo)` y `(conductor_id, tipo)` con `WHERE tipo <> 'otro'`. Se declaran en `schema.prisma` con la opción `partialIndexes` de Prisma, así que una migración futura no los borra.
 
 Otros puntos:
 
-- **El estado no se guarda:** vigente, por vencer o vencido se calcula con `fecha_vencimiento` y la fecha de hoy. "Por vencer" es 30 días o menos **[POR CONFIRMAR]** (PB-12).
-- **Renovar es editar la fecha** (PB-13). Guardar el historial de vencimientos anteriores está **[POR CONFIRMAR]**; si se confirma, se agrega una tabla de historial.
-- **Sin archivo adjunto** en el MVP **[POR CONFIRMAR]** (JOA-01, sección 1.4).
-- Índice `(empresa_id, fecha_vencimiento)` para el listado general y para el proceso de avisos.
+- **El estado no se guarda:** vigente, por vencer o vencido se calcula con `fecha_vencimiento` y la fecha de hoy en Chile. "Por vencer" es 30 días o menos (JOA-10; `src/lib/documentos.ts`).
+- **Renovar es editar la fecha** (PB-13). Sin historial ni archivo adjunto en el MVP (JOA-10, sección 2).
+- **No se elimina**, y los vehículos y conductores con documentos tampoco se pueden borrar (claves foráneas `ON DELETE RESTRICT`).
+- Índice `(empresa_id, fecha_vencimiento)` para el listado general y para el proceso de avisos; índices `(vehiculo_id)` y `(conductor_id)` para la ficha de cada uno.
 
 Restricción única adicional: `(id, empresa_id)`.
 
@@ -289,9 +295,9 @@ Restricción única adicional: `(id, empresa_id)`.
 - Un vehículo o un conductor no puede estar en dos turnos de la misma fecha y jornada **[POR CONFIRMAR]** (PB-17). Se implementa con dos índices únicos parciales, `(vehiculo_id, fecha, jornada)` y `(conductor_id, fecha, jornada)`, que solo cuentan los turnos no anulados. Prisma no los define en el esquema, así que se agregan a mano en la migración, como el RLS de JOS-02.
 - Índice `(empresa_id, fecha)` para ver los turnos de un día (PB-18).
 
-### 3.7 `aviso_enviado` · propuesta (PB-15 y PB-16)
+### 3.7 `aviso_enviado` · implementada en SIM-11 (PB-15 y PB-16)
 
-Registro de los correos de aviso. Corresponde a la clase `AvisoEnviado` de JOA-06 y al "registro de correos" de la tarea.
+Registro de los correos de aviso. Corresponde a la clase `AvisoEnviado` de JOA-06 y al "registro de correos" de la tarea. Las reglas de los avisos están en [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md); el proceso que llena esta tabla, en `src/lib/avisos-datos.ts`.
 
 | Columna | Tipo | Obl. | Restricciones y reglas |
 |---|---|---|---|
@@ -299,12 +305,12 @@ Registro de los correos de aviso. Corresponde a la clase `AvisoEnviado` de JOA-0
 | `empresa_id` | `uuid` | Sí | FK a `empresa`. |
 | `documento_id` | `uuid` | Sí | FK compuesta `(documento_id, empresa_id)` a `documento`. |
 | `fecha_vencimiento` | `date` | Sí | La que tenía el documento al enviar el aviso. Si el documento se renueva, los avisos de la fecha nueva se cuentan aparte (PB-13). |
-| `dias_anticipacion` | `smallint` | Sí | 30, 7, 1 o 0 (el día del vencimiento) **[POR CONFIRMAR]** (PB-15). |
-| `destinatario` | `varchar(254)` | Sí | Correo al que se envió, para poder revisarlo después. |
-| `estado` | `estado_aviso` | Sí | `enviado` o `fallido`, para reintentar los que fallaron **[POR CONFIRMAR]** (PB-16). |
+| `dias_anticipacion` | `smallint` | Sí | 30, 7, 1 o 0 (el día del vencimiento), con una regla CHECK en la migración (JOA-13, sección 2). |
+| `destinatario` | `varchar(254)` | Sí | El correo de contacto de la empresa al que se envió, para poder revisarlo después. |
+| `estado` | `estado_aviso` | Sí | `enviado` o `fallido`. Los fallidos se reintentan al día siguiente (PB-16). |
 | `enviado_en` | `timestamptz` | Sí | Fecha y hora del último intento. |
 
-Restricción única: `(documento_id, fecha_vencimiento, dias_anticipacion)`. Así el mismo aviso no se envía dos veces (PB-16), aunque el proceso diario se ejecute de nuevo.
+Restricción única: `(documento_id, fecha_vencimiento, dias_anticipacion)`. El proceso registra cada aviso como `fallido` **antes** de enviar el correo y lo marca `enviado` al terminar, así que el mismo aviso no se envía dos veces (PB-16), aunque el proceso diario se ejecute de nuevo o dos veces a la vez. Índice `(empresa_id)`. RLS activado, como las demás tablas.
 
 ### 3.8 `ingreso` · propuesta, módulo opcional (PB-21 a PB-23)
 
@@ -330,7 +336,7 @@ Restricción única: `(documento_id, fecha_vencimiento, dias_anticipacion)`. As�
 | `estado_vehiculo` | `activo` (por defecto), `en_mantencion`, `inactivo` | Implementado |
 | `tipo_documento` | `revision_tecnica`, `soap`, `permiso_circulacion`, `licencia_conducir`, `otro` | Propuesta (de JOA-06) |
 | `jornada` | `manana`, `tarde`, `noche` | Propuesta **[POR CONFIRMAR]** (PB-17) |
-| `estado_aviso` | `enviado`, `fallido` | Propuesta **[POR CONFIRMAR]** (PB-16) |
+| `estado_aviso` | `enviado`, `fallido` | Implementado (SIM-11) |
 
 El estado del documento (`vigente`, `por_vencer`, `vencido`) no es un tipo de la base de datos: se calcula (sección 3.5).
 
@@ -375,10 +381,9 @@ En todas las tablas, `empresa_id` es un detalle de cómo se guardan los datos (s
 | Historial de vencimientos y archivo adjunto | No en el MVP | PB-13, JOA-01 1.4 |
 | Jornadas del turno y si se puede asignar un vehículo en mantención | Mañana, tarde, noche; en mantención no | PB-17 |
 | Turno anulado: borrar o marcar | Marcar (`anulado`) | PB-19 |
-| Plazos de aviso, destinatario y reintentos | 30, 7, 1 y 0 días; `email_contacto`; registrar fallidos | PB-15, PB-16 |
 | Ingreso asociado a vehículo, servicio o ambos | Vehículo opcional y descripción libre | PB-22 |
 
-Las decisiones de conductores (campos obligatorios, RUT único por empresa y desactivar en vez de eliminar) se cerraron en JOA-09 y quedaron en la tabla `conductor` (sección 3.4).
+Las decisiones de conductores (campos obligatorios, RUT único por empresa y desactivar en vez de eliminar) se cerraron en JOA-09 y quedaron en la tabla `conductor` (sección 3.4). Las de los avisos (plazos, destinatario y reintentos) se cerraron en JOA-13 y quedaron en la tabla `aviso_enviado` (sección 3.7).
 
 ---
 
@@ -389,4 +394,5 @@ Las decisiones de conductores (campos obligatorios, RUT único por empresa y des
 - [x] Explicación de cómo se separan los datos entre empresas (sección 4).
 - [x] Coherencia con el esquema Prisma de JOS-02 (secciones 3.1 a 3.3) y con el diagrama de clases de JOA-06 (sección 5).
 - [x] Tabla `conductor` implementada en JOS-09, igual que la sección 3.4.
+- [x] Tabla `documento` implementada, igual que la sección 3.5.
 - [ ] Revisión de Joaquín en el PR.
