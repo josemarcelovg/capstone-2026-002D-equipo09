@@ -264,7 +264,6 @@ Se implementa con el módulo de documentos (PB-15 y PB-16). Quedan por definir *
 
 | Mejora | Motivo |
 |---|---|
-| `engines.node` a `>=24` y `@types/node` a `^24` en `package.json` | Hoy dice `>=20.9.0`, pero el equipo usa Node 24 y `npm test` necesita una versión que tenga `--experimental-strip-types` |
 | Integración continua con GitHub Actions (lint, pruebas y build en cada PR) | Automatizar los chequeos de la Definition of Done |
 
 ---
@@ -291,6 +290,7 @@ Se implementa con el módulo de documentos (PB-15 y PB-16). Quedan por definir *
 |---|---|---|
 | 0.1 | 16-10-2026 | Primera versión: arquitectura, estructura, instalación, variables, base de datos, pruebas, despliegue previsto y seguridad. Módulo de vehículos con base de datos; inicio de sesión pendiente. |
 | 0.1.1 | 02-11-2026 | JOS-07: Next.js 16.4.4 y dependencias de producción sin vulnerabilidades (cierra ERR-01). Dos problemas frecuentes nuevos y uno ampliado. |
+| 0.1.2 | 10-11-2026 | `engines.node` pasa a `>=24.0.0` y `@types/node` a `^24`, como el README, CI y Docker (sale de las mejoras pendientes de la sección 10). Con Node 20, `npm test` ni siquiera arranca: `--experimental-strip-types` existe desde Node 22.6 y Prisma 7 pide `^22.12` o `>=24`. |
 
 En cada entrega se actualizan las secciones 1, 5.1, 8 y 9, y se agrega una fila a esta tabla.
 
