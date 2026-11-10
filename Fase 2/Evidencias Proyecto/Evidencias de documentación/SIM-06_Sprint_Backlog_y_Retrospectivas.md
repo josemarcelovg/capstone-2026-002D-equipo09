@@ -259,16 +259,16 @@ Otras mejoras de Joaquín unidas el 10-11:
 | El seed crea solo lo que falta, sin pisar los datos editados | #72 |
 | Las acciones del servidor de vehículos comprueban sus argumentos | #73 |
 | Node.js 24 o superior en `engines` y `@types/node` 24 | #75 |
+| JOS-06 con el estado de cada módulo al 10-11 | #76 |
+| Configuración del despliegue: región `cle1`, URL pública del enlace de los correos y orígenes de desarrollo por variable | #77 |
 
-En revisión al 10-11: #76 (estado de cada módulo en JOS-06) y #77 (configuración del despliegue: región `cle1`, URL pública del correo y orígenes de desarrollo por variable).
-
-**Datos para la retrospectiva (al 10-11):** del 02-11 al 10-11 se unieron 30 PR a `main` (#45 a #75, salvo el #59), todos con *Merge commit*.
+**Datos para la retrospectiva (al 10-11):** del 02-11 al 10-11 se unieron 32 PR a `main` (#45 a #77, salvo el #59), todos con *Merge commit*.
 
 **Pendiente para el cierre del 15-11:**
 
 - SIM-10: las comprobaciones con sesión y Lighthouse.
 - SIM-11: la cuenta de Resend y un envío real. Lo necesita el paso 19 del guion de la demostración ([JOA-19](JOA-19_Guion_Entrega_Final.md)).
-- Revisar #76 y #77.
+- SIM-04: detallar y ejecutar los casos de documentos y de la empresa (CP-FUN-23 a CP-FUN-26) y los de PB-24, para que PB-11 a PB-14 y PB-24 pasen a *Terminado* en JOA-08 (JOA-19, sección 7.2).
 - La retrospectiva de la Iteración 4 con el equipo.
 
 ---
