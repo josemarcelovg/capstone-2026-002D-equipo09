@@ -8,7 +8,7 @@ import type { MensajeCorreo } from "../../src/lib/correo.ts";
 import { fechaDesdeBase, fechaParaBase, hoyEnChile, sumarDias } from "../../src/lib/fechas.ts";
 
 // Pruebas de integración del proceso de avisos por correo con la base de datos (SIM-04,
-// CP-INT-24 a CP-INT-28; criterios de JOA-13). Usan el cliente Prisma generado y la base de
+// CP-INT-24 a CP-INT-33; criterios de JOA-13). Usan el cliente Prisma generado y la base de
 // DATABASE_URL, igual que la aplicación.
 //
 // No dejan datos ni mandan correos: cada prueba trabaja dentro de una transacción que se deshace
@@ -254,12 +254,12 @@ describe("Avisos por correo en la base de datos", { skip: sinBase }, () => {
     );
   });
 
-  // Casos de JOA-13 que CP-INT-24 a CP-INT-28 no revisan por separado. Sin número de caso
-  // todavía: se registran en SIM-04.
+  // CP-INT-29 a CP-INT-33: casos de JOA-13 que CP-INT-24 a CP-INT-28 no revisan por separado
+  // (criterios 1, 3, 4, 5, 6 y 7).
   const plazosYEstados = async (tx: Tx, empresaId: string) =>
     (await registrosDe(tx, empresaId)).map(({ diasAnticipacion, estado }) => [diasAnticipacion, estado]);
 
-  test("PB-15 · cada uno de los cuatro plazos genera su aviso, registrado como enviado (JOA-13, criterio 1)", async () => {
+  test("CP-INT-29 · cada uno de los cuatro plazos genera su aviso, registrado como enviado", async () => {
     await sinGuardar(async (tx) => {
       const a = await crearEmpresa(tx, "Empresa A");
       const vehiculo = await crearVehiculo(tx, a.id, "SIMA29");
@@ -287,7 +287,7 @@ describe("Avisos por correo en la base de datos", { skip: sinBase }, () => {
     });
   });
 
-  test("PB-15 · un documento a 5 días sin avisos recibe solo el de 7, con los días reales (JOA-13, criterio 3)", async () => {
+  test("CP-INT-30 · un documento a 5 días sin avisos recibe solo el de 7, con los días reales", async () => {
     await sinGuardar(async (tx) => {
       const a = await crearEmpresa(tx, "Empresa A");
       const vehiculo = await crearVehiculo(tx, a.id, "SIMA30");
@@ -309,7 +309,7 @@ describe("Avisos por correo en la base de datos", { skip: sinBase }, () => {
     });
   });
 
-  test("PB-16 · un vehículo en mantención recibe avisos; un conductor inactivo, no (JOA-13, criterio 6)", async () => {
+  test("CP-INT-31 · un vehículo en mantención recibe avisos; un conductor inactivo, no", async () => {
     await sinGuardar(async (tx) => {
       const a = await crearEmpresa(tx, "Empresa A");
       const enMantencion = await crearVehiculo(tx, a.id, "SIMM31", "en_mantencion");
@@ -332,7 +332,7 @@ describe("Avisos por correo en la base de datos", { skip: sinBase }, () => {
     });
   });
 
-  test("PB-15 · cada empresa recibe un correo solo con sus documentos (JOA-13, criterios 4 y 7)", async () => {
+  test("CP-INT-32 · cada empresa recibe un correo solo con sus documentos", async () => {
     await sinGuardar(async (tx) => {
       const a = await crearEmpresa(tx, "Empresa A");
       const b = await crearEmpresa(tx, "Empresa B");
@@ -359,6 +359,37 @@ describe("Avisos por correo en la base de datos", { skip: sinBase }, () => {
       assert.match(paraB[0].texto, /SOAP · SIMB-32/);
       assert.doesNotMatch(paraB[0].texto, /SIMA-32|Empresa A/);
       assert.ok((await registrosDe(tx, b.id)).every(({ destinatario }) => destinatario === b.correo));
+    });
+  });
+
+  test("CP-INT-33 · una empresa sin documentos con aviso ese día no recibe correo ni genera registros", async () => {
+    await sinGuardar(async (tx) => {
+      const a = await crearEmpresa(tx, "Empresa A");
+      const vehiculo = await crearVehiculo(tx, a.id, "SIMA33");
+      // Ninguno tiene aviso hoy: falta más de 30 días, ya venció, o su aviso de 7 ya se envió.
+      await crearDocumento(tx, a.id, 31, { vehiculoId: vehiculo.id }, "revision_tecnica");
+      await crearDocumento(tx, a.id, -1, { vehiculoId: vehiculo.id }, "permiso_circulacion");
+      const soap = await crearDocumento(tx, a.id, 7, { vehiculoId: vehiculo.id }, "soap");
+      await tx.avisoEnviado.create({
+        data: {
+          empresaId: a.id,
+          documentoId: soap.id,
+          fechaVencimiento: fechaParaBase(sumarDias(HOY, 7)),
+          diasAnticipacion: 7,
+          destinatario: a.correo,
+          estado: "enviado",
+          enviadoEn: AHORA,
+        },
+      });
+      const sinDocumentos = await crearEmpresa(tx, "Empresa B");
+
+      const { enviados, enviar } = enviadorDePrueba();
+      await procesarAvisos({ db: tx, enviar, ahora: AHORA, urlDocumentos: URL_DOCUMENTOS });
+
+      assert.equal(correosPara(enviados, a.correo).length, 0);
+      assert.equal(correosPara(enviados, sinDocumentos.correo).length, 0);
+      assert.deepEqual(await plazosYEstados(tx, a.id), [[7, "enviado"]]);
+      assert.deepEqual(await registrosDe(tx, sinDocumentos.id), []);
     });
   });
 
