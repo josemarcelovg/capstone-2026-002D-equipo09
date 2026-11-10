@@ -45,6 +45,7 @@ Este documento explica cómo se implementaron los avisos por correo (PB-15 y PB-
 | `RESEND_API_KEY` | Clave para enviar correos con Resend | Resend > **API Keys** > **Create API Key**, con permiso de envío. |
 | `CORREO_REMITENTE` | Remitente de los correos | Sin dominio propio: `MicroLogist <onboarding@resend.dev>`, el remitente de prueba de Resend. |
 | `CRON_SECRET` | Clave que Vercel Cron envía al llamar la ruta | Una cadena larga y aleatoria, por ejemplo la que muestra `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`. |
+| `URL_PUBLICA` | Dirección del enlace "Ver documentos" del correo | En producción, `https://micrologist-equipo09.vercel.app`. Si falta o no es una dirección http(s), el enlace usa la dirección con la que llegó la llamada del cron (`urlDeDocumentos` en `src/lib/avisos.ts`). |
 
 Las tres van en el `.env` para probar en local y en **Vercel > Project Settings > Environment Variables** para producción ([SIM-10](SIM-10_Despliegue_Vercel.md), sección 4.4). Ninguna se sube al repositorio.
 
