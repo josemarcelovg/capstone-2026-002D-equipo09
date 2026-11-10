@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master), con apoyo de José Vargas |
 | **Revisión** | José Vargas y Joaquín Orellana |
 | **Estado** | Publicada en Vercel con la GitHub Action (sección 4.5); faltan las comprobaciones de la sección 5 |
-| **Fecha** | 03-11-2026 (actualizado el 08-11-2026) |
+| **Fecha** | 03-11-2026 (actualizado el 09-11-2026) |
 
 Este documento explica cómo se publica MicroLogist en Vercel, con un proyecto de Supabase para producción separado del de desarrollo (acordado el 27-10-2026, [JOS-02](JOS-02_Configuracion_Base_de_Datos.md), sección 3). Completa la sección 8.1 de [JOS-06](JOS-06_Manual_Tecnico.md) y es parte del alcance de la entrega final de la semana 15 ([JOA-08](JOA-08_Product_Backlog.md), sección 2).
 
@@ -139,8 +139,8 @@ Se registran en esta sección y en el plan de pruebas ([SIM-04](SIM-04_Plan_de_P
 
 | Caso | Qué se hace | Resultado esperado | Estado |
 |---|---|---|---|
-| CP-SEG-11 | Entrar con `http://` y recorrer las páginas. | Redirige a `https://` y todas usan HTTPS. | ⏳ |
-| CP-INT-11 a 16, 21 y 22 | Ejecutar `tests/integracion/aplicacion.test.ts` contra la dirección de Vercel (comando abajo). | 8 de 8 aprobadas. | ⏳ |
+| CP-SEG-11 | Entrar con `http://` y recorrer las páginas. | Redirige a `https://` y todas usan HTTPS. | ✅ 09-11-2026: `http://…/login` responde 308 hacia `https://…/login`, y las respuestas llevan HSTS (`max-age=63072000; includeSubDomains`) |
+| CP-INT-11 a 16 y 21 a 23 | Ejecutar `tests/integracion/aplicacion.test.ts` contra la dirección de Vercel (comando abajo). | 9 de 9 aprobadas. | ✅ 09-11-2026: 9 de 9. CP-INT-13, CP-INT-15 y CP-INT-22 se ejecutaron con la clave pública de desarrollo; falta repetirlos con la de producción |
 | CP-SEG-03 y CP-SEG-04 | Iniciar sesión con la cuenta A y con la B. | Cada una ve solo lo suyo; un registro de la otra responde "No encontrado". | ⏳ |
 | CP-FUN-13 | Registrar un vehículo de prueba, volver a desplegar y revisarlo. | El vehículo sigue ahí. | ⏳ |
 | CP-REN-01 a CP-REN-03 | Lighthouse en modo móvil, 3 mediciones por pantalla. | Contenido principal en 2,5 s o menos (RNF-REN-01). | ⏳ |
@@ -148,7 +148,7 @@ Se registran en esta sección y en el plan de pruebas ([SIM-04](SIM-04_Plan_de_P
 Comando para las pruebas de integración contra producción, desde `Aplicación`. Sin `--env-file`, para no mezclar el `.env` de desarrollo:
 
 ```powershell
-$env:URL_APLICACION = "https://<proyecto>.vercel.app"
+$env:URL_APLICACION = "https://micrologist-equipo09.vercel.app"
 $env:NEXT_PUBLIC_SUPABASE_URL = "<Project URL de producción>"
 $env:NEXT_PUBLIC_SUPABASE_ANON_KEY = "<clave pública de producción>"
 node --experimental-strip-types --test "tests/integracion/aplicacion.test.ts"
