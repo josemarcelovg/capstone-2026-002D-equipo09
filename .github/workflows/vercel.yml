@@ -96,6 +96,11 @@ jobs:
       - name: Pruebas de integración
         run: npm run test:integracion
 
+      # Pruebas de rendimiento con la misma base (SIM-04, sección 6.5): consultas del listado y
+      # proceso de avisos con 100 vehículos y 300 documentos, dentro de una transacción que se deshace.
+      - name: Pruebas de rendimiento
+        run: npm run test:rendimiento
+
   vercel:
     name: Despliegue en Vercel
     needs: pruebas
