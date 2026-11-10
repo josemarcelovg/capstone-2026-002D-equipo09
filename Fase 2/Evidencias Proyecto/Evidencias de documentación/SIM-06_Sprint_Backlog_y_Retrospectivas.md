@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (Product Owner) y José Vargas |
 | **Estado** | En curso: se actualiza al inicio y al cierre de cada iteración |
-| **Fecha** | 21-10-2026 (actualizado el 09-11-2026) |
+| **Fecha** | 21-10-2026 (actualizado el 10-11-2026) |
 
 Este documento registra qué tareas entraron en cada iteración (Sprint Backlog), cómo terminaron y qué aprendió el equipo en cada retrospectiva. Los datos salen del tablero del Project del equipo ("@josemarcelovg's Micrologist"), del historial de pull requests de GitHub y de los documentos [JOA-03](JOA-03_Validacion_Primera_Entrega.md) y [JOA-08](JOA-08_Product_Backlog.md). Los ítems del backlog se citan con su identificador `PB-xx`.
 
@@ -18,7 +18,7 @@ Las retrospectivas no se inventan: cada una trae los datos medibles de la iterac
 
 **Iteraciones del tablero** (campo *Iteration* del Project):
 
-| Iteración | Fechas | Duración | Estado al 09-11-2026 |
+| Iteración | Fechas | Duración | Estado al 10-11-2026 |
 |---|---|---|---|
 | 1 | 21-09 al 04-10 | 2 semanas | Completada |
 | 2 | 05-10 al 18-10 | 2 semanas | Completada |
@@ -242,6 +242,35 @@ Además se terminaron tareas del alcance aprobado que no estaban en el plan del 
 
 **Pendiente para el cierre del 15-11:** las comprobaciones con sesión de SIM-10, terminar SIM-11, la revisión del PR #66 (recomendaciones de la revisión de Fase 1 y 2) y la retrospectiva de la Iteración 4 con el equipo.
 
+### Avance al 10-11-2026
+
+| Tarea | Responsable | Estado |
+|---|---|---|
+| [SIM-10] Desplegar en Vercel | Simón, con José y Joaquín | En curso. Las comprobaciones sin sesión del 09-11 quedaron registradas en SIM-10 y SIM-04 (PR #67). Faltan las comprobaciones con sesión en la versión publicada (CP-SEG-03, CP-SEG-04 y la parte de CP-FUN-13 que requiere volver a desplegar) y Lighthouse (CP-REN-01 a CP-REN-03). |
+| [SIM-11] Avisos por correo | Simón, con Joaquín | En curso. El proceso ya está probado con la base de datos: CP-INT-24 a CP-INT-28 (Simón, PR #68) y CP-INT-29 a CP-INT-33 (Joaquín, PR #70). Además, un envío que falla se reintenta una vez en la misma ejecución, para no perder el aviso de "vence hoy" (Joaquín, PR #74, con CP-INT-34). Faltan la cuenta de Resend, sus variables en Vercel y un envío real (CP-FUN-27 y CP-FUN-28). |
+| Recomendaciones de la revisión de Fase 1 y 2 | Simón | ✅ PR #66: las autoevaluaciones 1.1 de Simón y José en `.docx`, y `.mailmap` para que los commits de cada integrante salgan con su nombre real. |
+| [SIM-06] Sprint Backlog | Simón | Avance al 09-11 (PR #69) y este avance. La retrospectiva de la iteración se hace al cierre, el 15-11. |
+
+Otras mejoras de Joaquín unidas el 10-11:
+
+| Cambio | PR |
+|---|---|
+| Las pruebas de integración corren en cada PR con PostgreSQL 17, junto con `npm audit` | #71 |
+| El seed crea solo lo que falta, sin pisar los datos editados | #72 |
+| Las acciones del servidor de vehículos comprueban sus argumentos | #73 |
+| Node.js 24 o superior en `engines` y `@types/node` 24 | #75 |
+
+En revisión al 10-11: #76 (estado de cada módulo en JOS-06) y #77 (configuración del despliegue: región `cle1`, URL pública del correo y orígenes de desarrollo por variable).
+
+**Datos para la retrospectiva (al 10-11):** del 02-11 al 10-11 se unieron 30 PR a `main` (#45 a #75, salvo el #59), todos con *Merge commit*.
+
+**Pendiente para el cierre del 15-11:**
+
+- SIM-10: las comprobaciones con sesión y Lighthouse.
+- SIM-11: la cuenta de Resend y un envío real. Lo necesita el paso 19 del guion de la demostración ([JOA-19](JOA-19_Guion_Entrega_Final.md)).
+- Revisar #76 y #77.
+- La retrospectiva de la Iteración 4 con el equipo.
+
 ---
 
 ## 7. Cómo se mantiene
@@ -258,6 +287,7 @@ Además se terminaron tareas del alcance aprobado que no estaban en el plan del 
 | 28-10-2026 | Retrospectivas de las iteraciones 1 a 3 (reunión del 27-10-2026), acciones de mejora aceptadas y planificación de la Iteración 4. |
 | 02-11-2026 | Cierre de la Iteración 3, avance de la Iteración 4 y entrega final en la semana 15. |
 | 09-11-2026 | Avance de la Iteración 4 al 09-11 y alcance aprobado de la entrega final. |
+| 10-11-2026 | Avance de la Iteración 4 al 10-11: PR #66 a #75 y datos para la retrospectiva. |
 
 ---
 
@@ -271,4 +301,6 @@ Además se terminaron tareas del alcance aprobado que no estaban en el plan del 
 - [x] Retrospectiva de la Iteración 3 al cierre, hecha el 27-10.
 - [x] Planificación de la Iteración 4 (sección 6).
 - [x] Avance de la Iteración 4 al 02-11-2026 (sección 6).
+- [x] Avance de la Iteración 4 al 09-11 y al 10-11-2026 (sección 6).
+- [ ] Retrospectiva de la Iteración 4 al cierre, el 15-11.
 - [ ] Revisión de Joaquín y José en el PR.
