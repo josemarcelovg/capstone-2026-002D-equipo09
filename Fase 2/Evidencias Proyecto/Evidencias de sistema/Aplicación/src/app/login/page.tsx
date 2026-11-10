@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { accesoDelEntorno } from "@/lib/acceso";
 import { usuarioDeLaSesion } from "@/lib/sesion";
-import { IconoDocumento, IconoEscudo } from "../iconos";
+import { IconoEscudo } from "../iconos";
 import { Logo } from "../logo";
 import fotoFlota from "./foto-flota.jpg";
 import { FormularioLogin } from "./formulario-login";
@@ -49,28 +49,12 @@ export default async function PaginaLogin() {
             Centraliza tus vehículos, organiza a tus conductores y mantén sus documentos al día.
           </p>
         </div>
-
-        <div className="relative hidden md:block">
-          <div className="flex items-center gap-3 rounded-2xl border border-white/15 bg-stone-950/60 p-4 backdrop-blur-sm">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-orange-600 text-white">
-              <IconoDocumento className="size-5" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold">Documentos al día</p>
-              <p className="text-xs text-stone-300">Avisos por correo antes de cada vencimiento</p>
-              <div aria-hidden="true" className="mt-2 h-1.5 rounded-full bg-white/15">
-                <div className="h-1.5 w-2/3 rounded-full bg-orange-500" />
-              </div>
-            </div>
-          </div>
-          <p className="mt-6 text-xs text-stone-400">MicroLogist · Gestión de transporte</p>
-        </div>
       </section>
 
       {/* Derecha: el formulario. */}
       <section className="flex flex-col justify-center px-6 py-10 sm:px-12">
         <div className="mx-auto w-full max-w-sm">
-          <h1 className="text-3xl font-bold tracking-tight text-stone-900">Hola de nuevo</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-stone-900">Iniciar sesión</h1>
           <p className="mt-1 text-sm text-stone-600">
             Ingresa con el correo y la contraseña de tu empresa.
           </p>
