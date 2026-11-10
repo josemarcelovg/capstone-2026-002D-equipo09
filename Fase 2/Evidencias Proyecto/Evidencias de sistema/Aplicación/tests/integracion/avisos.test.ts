@@ -59,7 +59,12 @@ async function crearEmpresa(tx: Tx, nombre: string) {
   return { id: empresa.id, correo };
 }
 
-async function crearVehiculo(tx: Tx, empresaId: string, patente: string, estado: "activo" | "inactivo" = "activo") {
+async function crearVehiculo(
+  tx: Tx,
+  empresaId: string,
+  patente: string,
+  estado: "activo" | "en_mantencion" | "inactivo" = "activo",
+) {
   return tx.vehiculo.create({
     data: { empresaId, patente, tipo: "van", marca: "Prueba", modelo: "Avisos", anio: 2022, capacidadPasajeros: 12, estado },
     select: { id: true },
@@ -247,6 +252,114 @@ describe("Avisos por correo en la base de datos", { skip: sinBase }, () => {
       prisma.$transaction((tx) => registrar(tx, 5, 1), { maxWait: 10_000, timeout: 30_000 }),
       /aviso_enviado_dias_anticipacion_check|check constraint/i,
     );
+  });
+
+  // Casos de JOA-13 que CP-INT-24 a CP-INT-28 no revisan por separado. Sin número de caso
+  // todavía: se registran en SIM-04.
+  const plazosYEstados = async (tx: Tx, empresaId: string) =>
+    (await registrosDe(tx, empresaId)).map(({ diasAnticipacion, estado }) => [diasAnticipacion, estado]);
+
+  test("PB-15 · cada uno de los cuatro plazos genera su aviso, registrado como enviado (JOA-13, criterio 1)", async () => {
+    await sinGuardar(async (tx) => {
+      const a = await crearEmpresa(tx, "Empresa A");
+      const vehiculo = await crearVehiculo(tx, a.id, "SIMA29");
+      const conductor = await crearConductor(tx, a.id);
+      await crearDocumento(tx, a.id, 30, { vehiculoId: vehiculo.id }, "revision_tecnica");
+      await crearDocumento(tx, a.id, 7, { vehiculoId: vehiculo.id }, "soap");
+      await crearDocumento(tx, a.id, 1, { vehiculoId: vehiculo.id }, "permiso_circulacion");
+      await crearDocumento(tx, a.id, 0, { conductorId: conductor.id }, "licencia_conducir");
+
+      const { enviados, enviar } = enviadorDePrueba();
+      await procesarAvisos({ db: tx, enviar, ahora: AHORA, urlDocumentos: URL_DOCUMENTOS });
+
+      const deA = correosPara(enviados, a.correo);
+      assert.equal(deA.length, 1);
+      assert.match(deA[0].texto, /Revisión técnica · SIMA-29 · .* · Vence en 30 días/);
+      assert.match(deA[0].texto, /SOAP · SIMA-29 · .* · Vence en 7 días/);
+      assert.match(deA[0].texto, /Permiso de circulación · SIMA-29 · .* · Vence mañana/);
+      assert.match(deA[0].texto, /Licencia de conducir · Conductor de prueba · .* · Vence hoy/);
+      assert.deepEqual(await plazosYEstados(tx, a.id), [
+        [0, "enviado"],
+        [1, "enviado"],
+        [7, "enviado"],
+        [30, "enviado"],
+      ]);
+    });
+  });
+
+  test("PB-15 · un documento a 5 días sin avisos recibe solo el de 7, con los días reales (JOA-13, criterio 3)", async () => {
+    await sinGuardar(async (tx) => {
+      const a = await crearEmpresa(tx, "Empresa A");
+      const vehiculo = await crearVehiculo(tx, a.id, "SIMA30");
+      await crearDocumento(tx, a.id, 5, { vehiculoId: vehiculo.id });
+
+      const hoy = enviadorDePrueba();
+      await procesarAvisos({ db: tx, enviar: hoy.enviar, ahora: AHORA, urlDocumentos: URL_DOCUMENTOS });
+      const deA = correosPara(hoy.enviados, a.correo);
+      assert.equal(deA.length, 1);
+      assert.match(deA[0].texto, /SOAP · SIMA-30 · .* · Vence en 5 días/);
+      assert.deepEqual(await plazosYEstados(tx, a.id), [[7, "enviado"]]);
+
+      // Al día siguiente (faltan 4) sigue tocando el de 7, que ya se envió: no llega nada, y el de
+      // 30 nunca se manda atrasado.
+      const manana = enviadorDePrueba();
+      await procesarAvisos({ db: tx, enviar: manana.enviar, ahora: MANANA, urlDocumentos: URL_DOCUMENTOS });
+      assert.equal(correosPara(manana.enviados, a.correo).length, 0);
+      assert.deepEqual(await plazosYEstados(tx, a.id), [[7, "enviado"]]);
+    });
+  });
+
+  test("PB-16 · un vehículo en mantención recibe avisos; un conductor inactivo, no (JOA-13, criterio 6)", async () => {
+    await sinGuardar(async (tx) => {
+      const a = await crearEmpresa(tx, "Empresa A");
+      const enMantencion = await crearVehiculo(tx, a.id, "SIMM31", "en_mantencion");
+      const inactivo = await crearConductor(tx, a.id, false);
+      const soap = await crearDocumento(tx, a.id, 7, { vehiculoId: enMantencion.id }, "soap");
+      await crearDocumento(tx, a.id, 7, { conductorId: inactivo.id }, "licencia_conducir");
+
+      const { enviados, enviar } = enviadorDePrueba();
+      await procesarAvisos({ db: tx, enviar, ahora: AHORA, urlDocumentos: URL_DOCUMENTOS });
+
+      const deA = correosPara(enviados, a.correo);
+      assert.equal(deA.length, 1);
+      assert.match(deA[0].texto, /SOAP · SIMM-31 · .* · Vence en 7 días/);
+      assert.doesNotMatch(deA[0].texto, /Licencia de conducir/);
+      const registros = await registrosDe(tx, a.id);
+      assert.deepEqual(
+        registros.map(({ documentoId }) => documentoId),
+        [soap.id],
+      );
+    });
+  });
+
+  test("PB-15 · cada empresa recibe un correo solo con sus documentos (JOA-13, criterios 4 y 7)", async () => {
+    await sinGuardar(async (tx) => {
+      const a = await crearEmpresa(tx, "Empresa A");
+      const b = await crearEmpresa(tx, "Empresa B");
+      const deA = await crearVehiculo(tx, a.id, "SIMA32");
+      const deB = await crearVehiculo(tx, b.id, "SIMB32");
+      await crearDocumento(tx, a.id, 7, { vehiculoId: deA.id }, "soap");
+      await crearDocumento(tx, a.id, 1, { vehiculoId: deA.id }, "revision_tecnica");
+      await crearDocumento(tx, b.id, 7, { vehiculoId: deB.id }, "soap");
+
+      const { enviados, enviar } = enviadorDePrueba();
+      await procesarAvisos({ db: tx, enviar, ahora: AHORA, urlDocumentos: URL_DOCUMENTOS });
+
+      const paraA = correosPara(enviados, a.correo);
+      const paraB = correosPara(enviados, b.correo);
+      assert.equal(paraA.length, 1);
+      assert.equal(paraB.length, 1);
+      assert.equal(paraA[0].asunto, "MicroLogist: 2 documentos por vencer");
+      assert.equal(paraB[0].asunto, "MicroLogist: 1 documento por vencer");
+      assert.match(paraA[0].texto, /^Hola, Empresa A /);
+      assert.match(paraA[0].texto, /Revisión técnica · SIMA-32/);
+      assert.match(paraA[0].texto, /SOAP · SIMA-32/);
+      assert.doesNotMatch(paraA[0].texto, /SIMB-32|Empresa B/);
+      assert.match(paraB[0].texto, /^Hola, Empresa B /);
+      assert.match(paraB[0].texto, /SOAP · SIMB-32/);
+      assert.doesNotMatch(paraB[0].texto, /SIMA-32|Empresa A/);
+      assert.ok((await registrosDe(tx, b.id)).every(({ destinatario }) => destinatario === b.correo));
+    });
   });
 
   test("no quedan datos de estas pruebas en la base", async () => {
