@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (requisitos y backlog) y José Vargas (rendimiento y datos) |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración), el 27-10-2026 (encabezados de seguridad), el 28-10-2026 (decisiones de la reunión del 27-10), el 29-10-2026 (casos de conductores), el 02-11-2026 (resultados de SIM-08, entrega final en la semana 15, y CP-SEG-13 y ERR-01 con JOS-07), el 04-11-2026 (avisos por correo), el 09-11-2026 (versión publicada) y el 10-11-2026 (avisos con la base de datos y pruebas de rendimiento) |
+| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración), el 27-10-2026 (encabezados de seguridad), el 28-10-2026 (decisiones de la reunión del 27-10), el 29-10-2026 (casos de conductores), el 02-11-2026 (resultados de SIM-08, entrega final en la semana 15, y CP-SEG-13 y ERR-01 con JOS-07), el 04-11-2026 (avisos por correo), el 09-11-2026 (versión publicada) y el 10-11-2026 (avisos con la base de datos, pruebas de rendimiento y resultados de SIM-12) |
 
 Este plan define cómo se prueba MicroLogist: qué tipos de prueba hay, con qué técnicas se ejecutan, en qué entorno y con qué datos, cuándo se hacen y cómo se registran los resultados y los errores. Cada caso de prueba tiene un identificador que no cambia, y cada requisito de [JOA-05](JOA-05_Requisitos_No_Funcionales.md) queda cubierto por al menos un caso (sección 10). Los casos de la primera entrega ya tienen un estado, gracias a la ejecución de [SIM-03](SIM-03_Pruebas_Primera_Entrega.md). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -135,16 +135,17 @@ Los identificadores `CP-xxx-nn` no se reutilizan ni se renumeran, igual que los 
 | CP-FUN-20 | Registrar un conductor: válido, con RUT y teléfono que se normalizan, con dígito verificador incorrecto, con un RUT que ya existe (también inactivo) y con campos vacíos o fuera de formato. | PB-08, JOA-09 criterios 1 a 5 | ✅ [SIM-08](SIM-08_Pruebas_Conductores.md) (02-11-2026) |
 | CP-FUN-21 | Listado (solo activos, por nombre), búsqueda por nombre y por RUT con o sin puntos, mensaje sin conductores y edición. | PB-09, JOA-09 criterios 6 a 8 | ✅ SIM-08 |
 | CP-FUN-22 | Desactivar con confirmación, ver con "Incluir inactivos" y reactivar. | PB-10, JOA-09 criterio 9 | ✅ SIM-08 |
-| CP-FUN-23 | Registrar un documento con su vencimiento. | PB-11 | 📝 |
-| CP-FUN-24 | Ver los documentos y su estado (vigente, por vencer, vencido). | PB-12 | 📝 |
-| CP-FUN-25 | Renovar o corregir un documento. | PB-13 | 📝 |
-| CP-FUN-26 | Ver y editar los datos de contacto de la empresa. | PB-14 | 📝 |
+| CP-FUN-23 | Registrar un documento: uno válido de un vehículo y uno de un conductor (siguen al recargar); con un tipo que no corresponde al dueño, sin dueño o con un dueño inactivo; un segundo documento del mismo tipo para el mismo dueño; con fecha vacía, inexistente o fuera de rango, y con una fecha pasada dentro del rango. | PB-11, JOA-10 criterios 1 a 4 | ✅ [SIM-12](SIM-12_Pruebas_Documentos_Empresa_y_Conductor.md) (10-11-2026) |
+| CP-FUN-24 | Estado y listados: "Vigente", "Por vencer" con los días que faltan, "Vence hoy" y "Vencido"; orden por vencimiento y filtros por estado y tipo; documentos de dueños inactivos solo con "Incluir inactivos"; sección "Documentos" de la ficha del vehículo y del conductor con "Agregar documento"; mensaje cuando no hay documentos. | PB-12, JOA-10 criterios 5 a 10 | ✅ SIM-12 (el criterio 6, con `tests/fechas.test.ts` y `tests/documentos.test.ts`) |
+| CP-FUN-25 | Renovar un documento vencido con una fecha futura y cambiar su dueño a otro vehículo; cambiarlo de un vehículo a un conductor no se permite. | PB-13, JOA-10 criterios 11 y 12 | ✅ SIM-12 |
+| CP-FUN-26 | Ver y editar en "Mi empresa" el nombre, el correo de contacto y el teléfono; el correo es obligatorio y se valida su formato. | PB-14, criterios 1 y 2 (el 3 lo cubren CP-INT-24 y CP-FUN-27) | ✅ SIM-12 |
 | CP-FUN-27 | Aviso por correo, con fechas controladas: un documento que vence en 30, 7 o 1 días, o hoy, aparece en el correo del día con los días que faltan; uno a 31 días o vencido, no; uno a 5 días recibe solo el de 7. Un correo por empresa en su `email_contacto`, sin documentos de otra empresa ni de dueños inactivos. | PB-15, JOA-13 criterios 1 a 7 | 🟡 Reglas aprobadas en `tests/avisos.test.ts` y con la base de datos en CP-INT-24 (10-11-2026, [SIM-11](SIM-11_Alertas_por_Correo.md)); falta un envío real |
 | CP-FUN-28 | Registro y duplicados: cada aviso queda en `aviso_enviado`; una segunda ejecución el mismo día no repite nada; un envío fallido se reintenta al día siguiente; un documento renovado vuelve a recibir sus avisos. | PB-16, JOA-13 criterios 8 a 11 | 🟡 Reglas aprobadas (SIM-11) y con la base de datos en CP-INT-24 a CP-INT-28 (10-11-2026); falta comprobarlo con un envío real |
 | CP-FUN-29 | Asignar un turno. | PB-17 | 📝 |
 | CP-FUN-30 | Ver los turnos por fecha. | PB-18 | 📝 |
 | CP-FUN-31 | Editar o anular un turno. | PB-19 | 📝 |
 | CP-FUN-32 | Resumen de la flota (si entra en el MVP). | PB-20 | 📝 |
+| CP-FUN-33 | Conductor asignado: elegirlo al registrar y al editar un vehículo, o dejarlo sin conductor (solo aparecen los activos de la empresa); la ficha del vehículo muestra al conductor y sus documentos con su estado; un conductor con varios vehículos; al desactivarlo, sus vehículos quedan sin conductor y la confirmación lo avisa, y al reactivarlo no se vuelven a asignar; la ficha del conductor muestra sus vehículos con enlace. | PB-24, criterios 1 a 5 | ✅ SIM-12 |
 
 **Opcional**
 
@@ -156,14 +157,14 @@ Los identificadores `CP-xxx-nn` no se reutilizan ni se renumeran, igual que los 
 
 ### 6.2 Seguridad (`CP-SEG`)
 
-Cuando se agregue cada módulo del MVP (conductores, documentos, turnos e ingresos), los casos CP-SEG-01, CP-SEG-03, CP-SEG-04 y CP-SEG-06 se repiten para ese módulo. Para conductores están en [SIM-08](SIM-08_Pruebas_Conductores.md) (criterios 10 a 13 de JOA-09).
+Cuando se agregue cada módulo del MVP (conductores, documentos, turnos e ingresos), los casos CP-SEG-01, CP-SEG-03, CP-SEG-04 y CP-SEG-06 se repiten para ese módulo. Para conductores están en [SIM-08](SIM-08_Pruebas_Conductores.md) (criterios 10 a 13 de JOA-09), y para documentos en [SIM-12](SIM-12_Pruebas_Documentos_Empresa_y_Conductor.md) (criterios 13 a 15 de JOA-10).
 
 | ID | Qué se comprueba | Resultado esperado | Origen | Estado |
 |---|---|---|---|---|
 | CP-SEG-01 | Abrir cada página privada sin sesión. | Todas redirigen al inicio de sesión. | RNF-SEG-01, JOA-01 7.3 | ✅ SIM-03 |
 | CP-SEG-02 | Después de cerrar sesión, volver atrás y enviar una operación privada. | No se muestran ni se modifican datos. | RNF-SEG-01, JOA-01 7.4 | ✅ SIM-03 |
-| CP-SEG-03 | Listado de cada empresa. | Ninguna ve registros de la otra. | RNF-SEG-02, JOA-01 7.11 | ✅ SIM-03 |
-| CP-SEG-04 | Abrir o modificar un registro de otra empresa por su dirección o con una solicitud alterada. | "No encontrado" (404, nunca 403) y los datos de la otra empresa no cambian. | RNF-SEG-02, JOA-01 7.12 | ✅ SIM-03, confirmado en la base de datos |
+| CP-SEG-03 | Listado de cada empresa. | Ninguna ve registros de la otra. | RNF-SEG-02, JOA-01 7.11 | ✅ SIM-03; para conductores, SIM-08; para documentos, SIM-12 (10-11-2026) |
+| CP-SEG-04 | Abrir o modificar un registro de otra empresa por su dirección o con una solicitud alterada. | "No encontrado" (404, nunca 403) y los datos de la otra empresa no cambian. | RNF-SEG-02, JOA-01 7.12 | ✅ SIM-03, confirmado en la base de datos; para conductores, SIM-08; para documentos, SIM-12 (10-11-2026) |
 | CP-SEG-05 | Registrar en dos empresas la misma patente. | Se acepta en ambas, sin conflicto. | RNF-SEG-02, JOA-01 7.13 | ✅ SIM-03 |
 | CP-SEG-06 | Enviar un `empresa_id` distinto en la solicitud. | El registro queda en la empresa de la sesión. | RNF-SEG-03 | ✅ SIM-03, confirmado en la base de datos |
 | CP-SEG-07 | Enviar datos inválidos sin pasar por el formulario y ejecutar las pruebas automáticas. | El servidor rechaza el 100 % de los datos inválidos de la sección 6.2 de JOA-01. | RNF-SEG-04 | ✅ SIM-03 y `npm test` (24 de 24) |
@@ -378,7 +379,7 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 - **Política de contenido con nonce:** la CSP de CP-SEG-14 todavía no restringe los scripts, para no interferir con Next.js. Restringirlos requiere generar un nonce en el proxy en cada solicitud.
 - **Ejecutar los 13 casos pendientes de la primera entrega** antes de darla por terminada (sección 9). ERR-01 se cerró el 02-11-2026 (JOS-07).
 - **Agregar los ID de la sección 10** a la sección 7 de JOA-05 (a cargo de Joaquín).
-- **Detallar los casos del MVP** cuando estén los documentos de reglas de documentos, avisos y turnos. Los de conductores ya están (CP-FUN-20 a 22 y CP-INT-17 a 22).
+- **Detallar los casos de turnos** si entran en una entrega (JOA-14, trabajo futuro). Los de conductores, documentos, empresa, conductor asignado y avisos ya están (CP-FUN-20 a 28 y CP-FUN-33, CP-INT-17 a 34).
 - **Fecha exacta** de la entrega de la semana 15 **[POR CONFIRMAR]** con la profesora.
 
 ---
@@ -396,4 +397,5 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 - [x] Casos de conductores: CP-FUN-20 a 22 y CP-INT-17 a 22, aprobados el 02-11-2026 en SIM-08 (secciones 6.1 y 6.6).
 - [x] Avisos por correo: CP-INT-23 a 28 aprobados, los de la base de datos el 10-11-2026 en SIM-11 (sección 6.6). CP-FUN-27 y 28 esperan un envío real.
 - [x] Pruebas de rendimiento en el código: la parte de la base de CP-REN-03 y CP-REN-04, aprobadas el 10-11-2026 (sección 6.5).
+- [x] Casos de documentos, datos de la empresa y conductor asignado: CP-FUN-23 a CP-FUN-26 y CP-FUN-33, aprobados el 10-11-2026 en SIM-12 (sección 6.1).
 - [ ] Revisión de Joaquín y José en el PR.
