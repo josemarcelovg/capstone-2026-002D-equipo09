@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (Product Owner) y José Vargas |
 | **Estado** | En curso: se actualiza al inicio y al cierre de cada iteración |
-| **Fecha** | 21-10-2026 (actualizado el 02-11-2026) |
+| **Fecha** | 21-10-2026 (actualizado el 09-11-2026) |
 
 Este documento registra qué tareas entraron en cada iteración (Sprint Backlog), cómo terminaron y qué aprendió el equipo en cada retrospectiva. Los datos salen del tablero del Project del equipo ("@josemarcelovg's Micrologist"), del historial de pull requests de GitHub y de los documentos [JOA-03](JOA-03_Validacion_Primera_Entrega.md) y [JOA-08](JOA-08_Product_Backlog.md). Los ítems del backlog se citan con su identificador `PB-xx`.
 
@@ -18,7 +18,7 @@ Las retrospectivas no se inventan: cada una trae los datos medibles de la iterac
 
 **Iteraciones del tablero** (campo *Iteration* del Project):
 
-| Iteración | Fechas | Duración | Estado al 02-11-2026 |
+| Iteración | Fechas | Duración | Estado al 09-11-2026 |
 |---|---|---|---|
 | 1 | 21-09 al 04-10 | 2 semanas | Completada |
 | 2 | 05-10 al 18-10 | 2 semanas | Completada |
@@ -216,7 +216,31 @@ Las reglas de los módulos de conductores (JOA-09, PR #33) y documentos (JOA-10,
 
 El módulo de conductores, que era el objetivo principal de la iteración, quedó terminado y probado. Además se adelantaron tareas que no estaban en el plan: las reglas de alertas (JOA-13, PR #39) y de turnos (JOA-14, PR #40), la pantalla Mi empresa (JOA-15, PR #44) y SIM-09 (PR #45, abierto).
 
-**Cambio de fecha de la entrega final:** en la revisión del 28-10-2026 (semana 12), la profesora indicó que la última entrega es en la **semana 15**, no en la 18. Con eso no alcanza todo lo que quedaba para las iteraciones 5 y 6 (documentos, alertas y turnos). Además, pidió vincular el conductor al vehículo y ver sus documentos dentro de la ficha del vehículo. Qué entra en la entrega final lo decide el Product Owner con el equipo **[POR CONFIRMAR]**, junto con la fecha exacta de la semana 15.
+**Cambio de fecha de la entrega final:** en la revisión del 28-10-2026 (semana 12), la profesora indicó que la última entrega es en la **semana 15**, no en la 18. Con eso no alcanza todo lo que quedaba para las iteraciones 5 y 6 (documentos, alertas y turnos). Además, pidió vincular el conductor al vehículo y ver sus documentos dentro de la ficha del vehículo. Qué entra en la entrega final lo decide el Product Owner con el equipo: se aprobó el 03-11-2026 (ver el avance al 09-11). La fecha exacta de la semana 15 sigue **[POR CONFIRMAR]**.
+
+### Avance al 09-11-2026
+
+**Alcance aprobado para la entrega final** (JOA-08, sección 2; PR #50 y #52, 03-11-2026): documentos con su sección en la ficha del vehículo y del conductor, conductor asignado al vehículo (PB-24), datos de contacto de la empresa, avisos por correo en versión mínima y despliegue en Vercel. Turnos, resumen de la flota e ingresos quedan como trabajo futuro.
+
+| Tarea | Responsable | Estado |
+|---|---|---|
+| [JOS-07] Cerrar ERR-01 | José | ✅ PR #51, unido el 02-11: Next.js 16.4.4 y `npm audit --omit=dev` sin vulnerabilidades. |
+| [JOS-09], [JOS-10], [JOA-11] y [JOA-12] Conductores | Simón y Joaquín | ✅ PR #41 a #43, unidos el 28-10. |
+| [SIM-08] Pruebas de conductores | Simón | ✅ PR #47, unido el 02-11: 14 de 14 criterios. |
+| [SIM-10] Desplegar en Vercel | Simón, con José y Joaquín | En curso. Publicada en `https://micrologist-equipo09.vercel.app` con la GitHub Action (PR #54, #60, #62 y #65). Sin sesión pasan CP-SEG-11 y 9 de 9 pruebas de `aplicacion.test.ts` (09-11). Faltan las comprobaciones con sesión y Lighthouse ([SIM-10](SIM-10_Despliegue_Vercel.md), sección 5). |
+| [SIM-06] Sprint Backlog | Simón | Este avance; la retrospectiva de la iteración se hace al cierre, el 15-11. |
+
+Además se terminaron tareas del alcance aprobado que no estaban en el plan del 27-10:
+
+| Tarea | Responsable | Estado |
+|---|---|---|
+| Documentos (PB-11 a PB-13): validación y estado, tabla, pantallas y pruebas de integración | Joaquín | ✅ PR #48, #53, #56 y #64. |
+| [PB-24] Conductor asignado al vehículo | Joaquín | ✅ PR #57. |
+| [SIM-09] Fechas en hora de Chile | Simón | ✅ PR #45, unido el 02-11. |
+| [SIM-11] Avisos por correo | Simón | En curso. Implementado y probado sin base de datos (PR #55). Faltan la cuenta de Resend, sus variables en Vercel y las pruebas del proceso con la base ([SIM-11](SIM-11_Alertas_por_Correo.md)). |
+| [JOA-19] Validación de la entrega final y guion de la demostración | Joaquín | ✅ PR #58. |
+
+**Pendiente para el cierre del 15-11:** las comprobaciones con sesión de SIM-10, terminar SIM-11, la revisión del PR #66 (recomendaciones de la revisión de Fase 1 y 2) y la retrospectiva de la Iteración 4 con el equipo.
 
 ---
 
@@ -233,6 +257,7 @@ El módulo de conductores, que era el objetivo principal de la iteración, qued�
 | 21-10-2026 | Primera versión: Sprint Backlog de las iteraciones 1, 2 y 3, y datos y temas para sus retrospectivas. |
 | 28-10-2026 | Retrospectivas de las iteraciones 1 a 3 (reunión del 27-10-2026), acciones de mejora aceptadas y planificación de la Iteración 4. |
 | 02-11-2026 | Cierre de la Iteración 3, avance de la Iteración 4 y entrega final en la semana 15. |
+| 09-11-2026 | Avance de la Iteración 4 al 09-11 y alcance aprobado de la entrega final. |
 
 ---
 
