@@ -44,7 +44,7 @@ Los requisitos están en [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), [JOA-05](J
 |---|---|---|
 | Aplicación web (interfaz y servidor) | Next.js con App Router | Vercel (producción) o el computador (desarrollo) |
 | Base de datos | PostgreSQL | Supabase (desarrollo y producción) o Docker (local) |
-| Inicio de sesión | Supabase Auth | Supabase. Pendiente (SIM-02). |
+| Inicio de sesión | Supabase Auth | Supabase ([SIM-02](SIM-02_Inicio_de_Sesion.md)). |
 | Envío de avisos | Proceso diario y proveedor de correo | Pendiente **[POR CONFIRMAR]** |
 
 El diagrama general está en el [README](<../../../README.md#arquitectura>) y el diagrama de componentes en [JOA-06](JOA-06_Diagramas_UML.md), sección 4.
@@ -235,7 +235,7 @@ Mientras no exista el inicio de sesión (SIM-02), `empresaDeLaSesion()` falla en
 | Proyecto de producción | `micrologist-prod`, aparte del de desarrollo (acordado el 27-10-2026), plan gratuito, región East US (Ohio). Con las mismas migraciones que desarrollo ([SIM-10](SIM-10_Despliegue_Vercel.md), sección 4.2). |
 | Acceso del equipo | Los tres comparten el proyecto de desarrollo (acordado el 27-10-2026; [JOS-02](JOS-02_Configuracion_Base_de_Datos.md), sección 3). |
 | Respaldos | Según el plan de Supabase **[POR CONFIRMAR]** (RNF-DIS-03). |
-| Supabase Auth | Pendiente (SIM-02). El `id` de la tabla `usuario` es el de Supabase Auth. |
+| Supabase Auth | Configurado en desarrollo y producción ([SIM-02](SIM-02_Inicio_de_Sesion.md) y [SIM-10](SIM-10_Despliegue_Vercel.md)). El `id` de la tabla `usuario` es el de Supabase Auth. |
 
 Si una contraseña de la base de datos se filtra o hay que cambiarla: Supabase → **Project Settings → Database → Reset database password**, y luego actualizar `DATABASE_URL` y `DIRECT_URL` en cada `.env` y en Vercel. La contraseña va sin corchetes dentro de la URL.
 
