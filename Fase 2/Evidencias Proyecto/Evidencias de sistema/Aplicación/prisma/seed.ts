@@ -5,6 +5,9 @@ import { PrismaClient, type Prisma } from "../src/generated/prisma/client.ts";
 // Datos ficticios para desarrollo y para las pruebas de SIM-03 (JOA-01, secciones 6 y 7).
 // Dos empresas inventadas; ninguna persona ni empresa real.
 // Los id son fijos para que el seed se pueda ejecutar varias veces sin duplicar datos.
+// Solo crea lo que falta: si una empresa, vehículo o conductor ya existe, no lo toca. Así no
+// deshace lo que se editó en la aplicación (por ejemplo, el correo de contacto que se cambia
+// para la demo, JOA-19) cada vez que se ejecuta o que arranca Docker (JOS-05).
 // Los usuarios no se crean aquí: su id debe ser el de Supabase Auth (ver SIM-02).
 
 const prisma = new PrismaClient({
@@ -171,13 +174,13 @@ const conductores: ConductorSeed[] = [
 
 async function main() {
   for (const { id, ...datos } of empresas) {
-    await prisma.empresa.upsert({ where: { id }, update: datos, create: { id, ...datos } });
+    await prisma.empresa.upsert({ where: { id }, update: {}, create: { id, ...datos } });
   }
   for (const { id, ...datos } of vehiculos) {
-    await prisma.vehiculo.upsert({ where: { id }, update: datos, create: { id, ...datos } });
+    await prisma.vehiculo.upsert({ where: { id }, update: {}, create: { id, ...datos } });
   }
   for (const { id, ...datos } of conductores) {
-    await prisma.conductor.upsert({ where: { id }, update: datos, create: { id, ...datos } });
+    await prisma.conductor.upsert({ where: { id }, update: {}, create: { id, ...datos } });
   }
   console.log(
     `Seed listo: ${empresas.length} empresas, ${vehiculos.length} vehículos y ${conductores.length} conductores.`,

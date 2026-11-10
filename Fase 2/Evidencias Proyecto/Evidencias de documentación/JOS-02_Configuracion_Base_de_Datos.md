@@ -79,7 +79,7 @@ Se usa el *session pooler* y no la conexión directa (`db.xxx.supabase.co`) porq
 |---|---|
 | `npm install` | Instala dependencias y genera el cliente de Prisma (`postinstall`). |
 | `npm run db:deploy` | Aplica las migraciones pendientes. Es lo primero en una base nueva. |
-| `npm run db:seed` | Carga las empresas y vehículos ficticios. Se puede ejecutar varias veces sin duplicar. |
+| `npm run db:seed` | Carga las empresas, vehículos y conductores ficticios. Se puede ejecutar varias veces sin duplicar: solo crea los que faltan y no cambia los que ya existen, aunque se hayan editado. |
 | `npm run db:comprobar` | Comprueba la creación y consulta de vehículos. No deja datos nuevos. |
 | `npm run db:studio` | Abre Prisma Studio para ver las tablas en el navegador. |
 | `npm run db:migrate -- --name descripcion` | Crea una migración nueva después de cambiar `prisma/schema.prisma`. |
