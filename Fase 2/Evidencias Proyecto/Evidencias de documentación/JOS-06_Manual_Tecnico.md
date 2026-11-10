@@ -6,7 +6,7 @@
 | **Responsable** | José Vargas (Developer). Aportan Simón Jofré y Joaquín Orellana. |
 | **Revisión** | Simón Jofré y Joaquín Orellana |
 | **Versión** | 0.1.1 |
-| **Fecha** | 16-10-2026 (actualizado el 02-11-2026) |
+| **Fecha** | 16-10-2026 (actualizado el 10-11-2026) |
 
 Este manual explica **cómo está construido MicroLogist y cómo se instala, configura, despliega y mantiene**. Está pensado para quien desarrolla o administra el sistema: el equipo, la profesora o quien continúe el proyecto. No es el manual de usuario: no explica cómo usar las pantallas.
 
@@ -18,12 +18,19 @@ Se actualiza en cada entrega (sección 12). Lo que todavía no está decidido o 
 
 MicroLogist es una aplicación web para pequeñas y medianas empresas de transporte de pasajeros: centraliza vehículos, conductores, turnos y documentos, y avisa por correo antes de que venzan los documentos.
 
-| Módulo | Estado al 16-10-2026 |
+| Módulo | Estado al 10-11-2026 (según el [Product Backlog](JOA-08_Product_Backlog.md), sección 2) |
 |---|---|
-| Vehículos: registrar, listar, buscar, editar, desactivar y reactivar | Implementado, con datos en PostgreSQL (JOS-02 y JOS-03) |
-| Inicio y cierre de sesión | Pendiente (SIM-02) |
-| Conductores, documentos, avisos por correo y turnos | Pendiente (MVP completo) |
-| Ingresos | Opcional, pendiente |
+| Inicio y cierre de sesión, y separación de datos entre empresas (PB-01 a PB-03) | Terminado, con Supabase Auth ([SIM-02](SIM-02_Inicio_de_Sesion.md)) |
+| Vehículos: registrar, listar, buscar, editar, desactivar y reactivar (PB-04 a PB-07) | Terminado |
+| Conductores: registrar, listar, buscar, editar, desactivar y reactivar (PB-08 a PB-10) | Terminado |
+| Conductor asignado al vehículo (PB-24) | Implementado; faltan sus casos en el plan de pruebas (SIM-04) |
+| Documentos con vencimiento, en su listado y en la ficha del vehículo y del conductor (PB-11 a PB-13) | Implementado, con pruebas de integración; faltan sus pruebas funcionales (SIM-04) |
+| Datos de contacto de la empresa, "Mi empresa" (PB-14) | Implementado; falta su caso funcional (SIM-04) |
+| Avisos por correo con Resend y Vercel Cron (PB-15 y PB-16) | Implementado, con pruebas de integración ([SIM-11](SIM-11_Alertas_por_Correo.md)); falta un envío real |
+| Turnos y resumen de la flota (PB-17 a PB-20) | Trabajo futuro: fuera de la entrega final |
+| Ingresos (PB-21 a PB-23) | Opcional: fuera de la entrega final |
+
+La aplicación está publicada en Vercel con una GitHub Action ([SIM-10](SIM-10_Despliegue_Vercel.md)).
 
 Los requisitos están en [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), [JOA-05](JOA-05_Requisitos_No_Funcionales.md) y el [Product Backlog](JOA-08_Product_Backlog.md).
 
@@ -290,7 +297,7 @@ Se implementa con el módulo de documentos (PB-15 y PB-16). Quedan por definir *
 |---|---|---|
 | 0.1 | 16-10-2026 | Primera versión: arquitectura, estructura, instalación, variables, base de datos, pruebas, despliegue previsto y seguridad. Módulo de vehículos con base de datos; inicio de sesión pendiente. |
 | 0.1.1 | 02-11-2026 | JOS-07: Next.js 16.4.4 y dependencias de producción sin vulnerabilidades (cierra ERR-01). Dos problemas frecuentes nuevos y uno ampliado. |
-| 0.1.2 | 10-11-2026 | `engines.node` pasa a `>=24.0.0` y `@types/node` a `^24`, como el README, CI y Docker (sale de las mejoras pendientes de la sección 10). Con Node 20, `npm test` ni siquiera arranca: `--experimental-strip-types` existe desde Node 22.6 y Prisma 7 pide `^22.12` o `>=24`. |
+| 0.1.2 | 10-11-2026 | `engines.node` pasa a `>=24.0.0` y `@types/node` a `^24`, como el README, CI y Docker (sale de las mejoras pendientes de la sección 10). Con Node 20, `npm test` ni siquiera arranca: `--experimental-strip-types` existe desde Node 22.6 y Prisma 7 pide `^22.12` o `>=24`. La sección 1 se pone al día con el estado de cada módulo según JOA-08. |
 
 En cada entrega se actualizan las secciones 1, 5.1, 8 y 9, y se agrega una fila a esta tabla.
 
