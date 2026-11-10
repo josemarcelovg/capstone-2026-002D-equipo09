@@ -42,6 +42,26 @@ jobs:
     defaults:
       run:
         working-directory: "Fase 2/Evidencias Proyecto/Evidencias de sistema/Aplicación"
+    # Una base PostgreSQL vacía solo para estas pruebas, que se borra al terminar el trabajo.
+    # Es la misma versión que usan Supabase y Docker (JOS-05). Nunca toca la de producción.
+    # La clave es solo de esta base desechable, como la de compose.yaml: no es un secreto.
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: micrologist
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d micrologist"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/micrologist
+      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/micrologist
     steps:
       - uses: actions/checkout@v4
 
@@ -59,8 +79,22 @@ jobs:
       # Los tipos de las rutas (PageProps) los genera Next.js antes de revisar los tipos.
       - run: npx next typegen && npx tsc --noEmit
 
-      # Las de integración necesitan una base de datos y se ejecutan en local (SIM-04).
       - run: npm test
+
+      # Dependencias de producción sin vulnerabilidades altas ni críticas (RNF-SEG-10).
+      - run: npm audit --omit=dev --audit-level=high
+
+      # Pruebas de integración (SIM-04, sección 6.6) contra la base del servicio: primero las
+      # migraciones del repositorio y el seed, igual que en Docker (JOS-05). Las que necesitan la
+      # aplicación levantada o Supabase se saltan solas.
+      - name: Migraciones en la base de prueba
+        run: npm run db:deploy
+
+      - name: Datos de prueba
+        run: npm run db:seed
+
+      - name: Pruebas de integración
+        run: npm run test:integracion
 
   vercel:
     name: Despliegue en Vercel

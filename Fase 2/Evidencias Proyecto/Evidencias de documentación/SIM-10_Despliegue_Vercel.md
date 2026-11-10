@@ -113,7 +113,7 @@ La Action está en `.github/workflows/vercel.yml`, en la raíz del repositorio, 
 
 | Cuándo | Qué hace |
 |---|---|
-| Cada PR | Lint, tipos y pruebas unitarias; construye la aplicación desde `Aplicación` con la CLI de Vercel, revisa que ninguna función tenga espacios en el nombre y publica una **vista previa**. La dirección queda en el resumen de la ejecución (**Actions**). |
+| Cada PR | Lint, tipos, pruebas unitarias y `npm audit` de las dependencias de producción (RNF-SEG-10); las pruebas de integración contra un PostgreSQL 17 desechable, con las migraciones y el seed (SIM-04, sección 6.6); construye la aplicación desde `Aplicación` con la CLI de Vercel, revisa que ninguna función tenga espacios en el nombre y publica una **vista previa**. La dirección queda en el resumen de la ejecución (**Actions**). |
 | Cada push a `main` (al unir un PR) | Lo mismo, pero publica en **producción**. |
 | A mano | **Actions > Pruebas y despliegue en Vercel > Run workflow**. |
 
@@ -129,7 +129,7 @@ Si faltan los secretos, la Action igual construye y revisa los nombres de las fu
 
 Otra forma de ver los dos ids: `npx vercel link` desde `Aplicación` los deja en `.vercel/project.json`, que Git ignora. El token nunca se escribe en el repositorio ni en el chat.
 
-**Migraciones.** Si un PR trae una migración nueva, se aplica en producción (paso 4.2, solo `npm run db:deploy`) **antes** de unirlo, para que el código nuevo no llegue antes que su tabla.
+**Migraciones.** Si un PR trae una migración nueva, se aplica en producción (paso 4.2, solo `npm run db:deploy`) **antes** de unirlo, para que el código nuevo no llegue antes que su tabla. La Action aplica las migraciones solo en su base de prueba, que se borra al terminar: **nunca migra producción**, porque eso necesita la `DIRECT_URL` de producción y no debe pasar sin que alguien lo decida. Que la Action quede en verde con una migración nueva no significa que producción la tenga.
 
 ---
 
