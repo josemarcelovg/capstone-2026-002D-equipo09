@@ -1,13 +1,13 @@
 /**
  * Logo de MicroLogist: un volante con el centro naranja y el nombre. El volante es decorativo
- * (aria-hidden); el nombre se lee como texto.
+ * (aria-hidden); el nombre se lee como texto. `claro` es para fondos oscuros.
  */
-export function Logo({ grande = false }: { grande?: boolean }) {
+export function Logo({ grande = false, claro = false }: { grande?: boolean; claro?: boolean }) {
   return (
     <span
-      className={`inline-flex items-center gap-2 font-bold tracking-tight text-stone-900 ${
-        grande ? "text-2xl" : "text-lg"
-      }`}
+      className={`inline-flex items-center gap-2 font-bold tracking-tight ${
+        claro ? "text-white" : "text-stone-900"
+      } ${grande ? "text-2xl" : "text-lg"}`}
     >
       <svg
         viewBox="0 0 26 26"

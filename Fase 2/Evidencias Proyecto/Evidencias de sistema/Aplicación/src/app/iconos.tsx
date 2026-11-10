@@ -122,6 +122,33 @@ export function IconoReloj(props: PropsIcono) {
   );
 }
 
+export function IconoOjo(props: PropsIcono) {
+  return (
+    <Icono {...props}>
+      <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" />
+      <circle cx="12" cy="12" r="3" />
+    </Icono>
+  );
+}
+
+export function IconoOjoTachado(props: PropsIcono) {
+  return (
+    <Icono {...props}>
+      <path d="M9.9 5.7A9.6 9.6 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a16 16 0 0 1-2.6 3.4M6.6 6.6C3.9 8.4 2.5 12 2.5 12s3.5 6.5 9.5 6.5a9 9 0 0 0 5.4-1.6" />
+      <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2M3 3l18 18" />
+    </Icono>
+  );
+}
+
+export function IconoEscudo(props: PropsIcono) {
+  return (
+    <Icono {...props}>
+      <path d="M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6z" />
+      <path d="m9 12 2 2 4-4" />
+    </Icono>
+  );
+}
+
 export function IconoVigente(props: PropsIcono) {
   return (
     <Icono {...props}>
