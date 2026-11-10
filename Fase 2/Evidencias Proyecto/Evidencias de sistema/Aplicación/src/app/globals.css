@@ -1,8 +1,14 @@
 @import "tailwindcss";
 
+/*
+ * Colores de la aplicación: gris cálido (stone) para fondos y textos, y naranja como color
+ * principal. Los botones usan orange-700, que con letra blanca cumple el contraste AA;
+ * el naranja más vivo (orange-600) queda para detalles como la franja superior y la marca.
+ * Los estados siguen en verde, amarillo y rojo, siempre con texto (RNF-USA-06).
+ */
 :root {
-  --background: #fafafa;
-  --foreground: #171717;
+  --background: #fafaf9; /* stone-50 */
+  --foreground: #1c1917; /* stone-900 */
 }
 
 @theme inline {
@@ -18,9 +24,15 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
-/* Foco visible al navegar con teclado por enlaces y botones. */
+/* Foco visible al navegar con teclado por enlaces, botones y el menú del celular. */
 a:focus-visible,
-button:focus-visible {
-  outline: 2px solid #1d4ed8;
+button:focus-visible,
+summary:focus-visible {
+  outline: 2px solid #c2410c; /* orange-700 */
   outline-offset: 2px;
+}
+
+/* El menú del celular usa <details>: sin el triángulo que agrega el navegador. */
+summary::-webkit-details-marker {
+  display: none;
 }

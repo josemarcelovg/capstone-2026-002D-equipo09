@@ -56,19 +56,19 @@ export default async function PaginaNuevoDocumento({ searchParams }: PageProps<"
 
   return (
     <>
-      <Link href={volver.href} className="text-sm font-medium text-blue-800 hover:underline">
+      <Link href={volver.href} className="text-sm font-medium text-orange-800 hover:underline">
         {volver.texto}
       </Link>
-      <h1 className="mt-2 text-2xl font-semibold text-zinc-900">Registrar documento</h1>
+      <h1 className="mt-2 text-2xl font-bold tracking-tight text-stone-900 sm:text-3xl">Registrar documento</h1>
       {dueno && (
-        <p className="mt-1 text-zinc-700">
+        <p className="mt-1 text-stone-700">
           {dueno.tipo === "vehiculo" ? `Del vehículo ${dueno.nombre}` : `De ${dueno.nombre}`}
         </p>
       )}
 
       <div className="mt-4">
         {dueno && !dueno.activo ? (
-          <p role="alert" className="rounded-lg border border-zinc-200 bg-white px-4 py-6 text-zinc-700">
+          <p role="alert" className="rounded-xl border border-stone-200 bg-white shadow-sm px-4 py-6 text-stone-700">
             {mensajeDuenoInactivo(dueno.tipo)}
           </p>
         ) : (

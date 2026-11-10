@@ -11,10 +11,10 @@ export default async function PaginaNuevoVehiculo() {
 
   return (
     <>
-      <Link href="/vehiculos" className="text-sm font-medium text-blue-800 hover:underline">
+      <Link href="/vehiculos" className="text-sm font-medium text-orange-800 hover:underline">
         ← Volver al listado
       </Link>
-      <h1 className="mt-2 mb-4 text-2xl font-semibold text-zinc-900">Registrar vehículo</h1>
+      <h1 className="mt-2 mb-4 text-2xl font-bold tracking-tight text-stone-900 sm:text-3xl">Registrar vehículo</h1>
       <VehiculoForm conductores={conductores} />
     </>
   );

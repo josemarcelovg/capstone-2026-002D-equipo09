@@ -41,16 +41,16 @@ export default async function PaginaDocumento({ params, searchParams }: PageProp
 
   return (
     <>
-      <Link href={volver.href} className="text-sm font-medium text-blue-800 hover:underline">
+      <Link href={volver.href} className="text-sm font-medium text-orange-800 hover:underline">
         {volver.texto}
       </Link>
       <div className="mt-2 flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-semibold break-words text-zinc-900">{nombreDelDocumento(documento)}</h1>
+        <h1 className="text-2xl font-semibold break-words text-stone-900">{nombreDelDocumento(documento)}</h1>
         <InsigniaVencimiento fechaVencimiento={documento.fechaVencimiento} hoy={hoyEnChile()} />
       </div>
-      <p className="mt-1 mb-4 text-sm text-zinc-700">
+      <p className="mt-1 mb-4 text-sm text-stone-700">
         {dueno.tipo === "vehiculo" ? "Del vehículo " : "De "}
-        <Link href={ficha} className="font-medium text-blue-800 hover:underline">
+        <Link href={ficha} className="font-medium text-orange-800 hover:underline">
           {dueno.nombre}
         </Link>
         {!dueno.activo && " (inactivo)"}. Para renovarlo, cambia la fecha de vencimiento por la del

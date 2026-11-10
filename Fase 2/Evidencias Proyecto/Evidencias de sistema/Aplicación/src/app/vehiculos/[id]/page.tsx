@@ -32,16 +32,16 @@ export default async function PaginaVehiculo({ params, searchParams }: PageProps
 
   return (
     <>
-      <Link href="/vehiculos" className="text-sm font-medium text-blue-800 hover:underline">
+      <Link href="/vehiculos" className="text-sm font-medium text-orange-800 hover:underline">
         ← Volver al listado
       </Link>
       <div className="mt-2 mb-4 flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-semibold text-zinc-900">Vehículo {patente}</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-stone-900 sm:text-3xl">Vehículo {patente}</h1>
         <InsigniaEstado estado={vehiculo.estado} />
       </div>
 
       {mensaje && (
-        <p role="status" className="mb-4 rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+        <p role="status" className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-medium text-emerald-900">
           {mensaje}
         </p>
       )}
@@ -52,8 +52,8 @@ export default async function PaginaVehiculo({ params, searchParams }: PageProps
 
       <SeccionConductor conductorId={vehiculo.conductorId} />
 
-      <section className="mt-6 flex flex-col gap-3 rounded-lg border border-zinc-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-        <p className="text-sm text-zinc-700">
+      <section className="mt-6 flex flex-col gap-3 rounded-xl border border-stone-200 bg-white shadow-sm p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+        <p className="text-sm text-stone-700">
           {inactivo
             ? "Este vehículo está inactivo y no aparece en el listado. Puedes reactivarlo cuando quieras."
             : "Si el vehículo se vendió o dejó de usarse, desactívalo. No se elimina y se puede reactivar."}

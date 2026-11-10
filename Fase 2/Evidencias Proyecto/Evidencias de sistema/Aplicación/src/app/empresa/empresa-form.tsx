@@ -10,9 +10,9 @@ import {
 } from "@/lib/empresa";
 import { formatearRut } from "@/lib/rut";
 import { guardarEmpresa } from "./acciones";
+import { BOTON_PRINCIPAL, CONTROL as CONTROL_BASE } from "../estilos";
 
-const CONTROL =
-  "mt-1 block w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-900 focus:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700/30 aria-invalid:border-red-600 read-only:bg-zinc-100 read-only:text-zinc-600";
+const CONTROL = `${CONTROL_BASE} read-only:bg-stone-100 read-only:text-stone-600`;
 
 function Campo({
   nombre,
@@ -31,9 +31,9 @@ function Campo({
 }) {
   return (
     <div>
-      <label htmlFor={nombre} className="text-sm font-medium text-zinc-800">
+      <label htmlFor={nombre} className="text-sm font-medium text-stone-800">
         {etiqueta}
-        {opcional && <span className="font-normal text-zinc-500"> (opcional)</span>}
+        {opcional && <span className="font-normal text-stone-500"> (opcional)</span>}
       </label>
       {children}
       {error ? (
@@ -42,7 +42,7 @@ function Campo({
         </p>
       ) : (
         ayuda && (
-          <p id={`${nombre}-ayuda`} className="mt-1 text-xs text-zinc-600">
+          <p id={`${nombre}-ayuda`} className="mt-1 text-xs text-stone-600">
             {ayuda}
           </p>
         )
@@ -97,9 +97,9 @@ export function EmpresaForm({ empresa }: { empresa: DatosEmpresa }) {
   });
 
   return (
-    <form onSubmit={enviar} noValidate className="rounded-lg border border-zinc-200 bg-white p-4 sm:p-6">
+    <form onSubmit={enviar} noValidate className="rounded-xl border border-stone-200 bg-white shadow-sm p-4 sm:p-6">
       {errores.general && (
-        <p role="alert" className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-800">
+        <p role="alert" className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-800">
           {errores.general}
         </p>
       )}
@@ -166,7 +166,7 @@ export function EmpresaForm({ empresa }: { empresa: DatosEmpresa }) {
         <button
           type="submit"
           disabled={guardando}
-          className="w-full rounded-md bg-blue-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-800 disabled:opacity-60 sm:w-auto"
+          className={`${BOTON_PRINCIPAL} w-full sm:w-auto`}
         >
           {guardando ? "Guardando…" : "Guardar cambios"}
         </button>

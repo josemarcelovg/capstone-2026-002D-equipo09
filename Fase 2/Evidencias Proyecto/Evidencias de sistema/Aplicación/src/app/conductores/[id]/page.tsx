@@ -29,16 +29,16 @@ export default async function PaginaConductor({ params, searchParams }: PageProp
 
   return (
     <>
-      <Link href="/conductores" className="text-sm font-medium text-blue-800 hover:underline">
+      <Link href="/conductores" className="text-sm font-medium text-orange-800 hover:underline">
         ← Volver al listado
       </Link>
       <div className="mt-2 mb-4 flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-semibold break-words text-zinc-900">{conductor.nombre}</h1>
+        <h1 className="text-2xl font-semibold break-words text-stone-900">{conductor.nombre}</h1>
         <InsigniaEstado activo={conductor.activo} />
       </div>
 
       {mensaje && (
-        <p role="status" className="mb-4 rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+        <p role="status" className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-medium text-emerald-900">
           {mensaje}
         </p>
       )}
@@ -51,8 +51,8 @@ export default async function PaginaConductor({ params, searchParams }: PageProp
         dueno={{ tipo: "conductor", id: conductor.id, nombre: conductor.nombre, activo: conductor.activo }}
       />
 
-      <section className="mt-6 flex flex-col gap-3 rounded-lg border border-zinc-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-        <p className="text-sm text-zinc-700">
+      <section className="mt-6 flex flex-col gap-3 rounded-xl border border-stone-200 bg-white shadow-sm p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+        <p className="text-sm text-stone-700">
           {conductor.activo
             ? "Si el conductor ya no trabaja en la empresa, desactívalo. No se elimina y se puede reactivar."
             : "Este conductor está inactivo y no aparece en el listado. Puedes reactivarlo cuando quieras."}
