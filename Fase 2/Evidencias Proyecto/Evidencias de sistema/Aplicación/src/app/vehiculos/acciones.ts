@@ -26,6 +26,10 @@ export async function guardarVehiculo(
   id: string | null,
   formulario: FormData,
 ): Promise<ErroresVehiculo> {
+  // Las acciones del servidor se pueden llamar con cualquier dato, no solo desde el formulario.
+  if (!(formulario instanceof FormData) || (id !== null && typeof id !== "string")) {
+    return { general: NO_ENCONTRADO };
+  }
   const resultado = validarVehiculo(Object.fromEntries(formulario));
   if (!resultado.ok) return resultado.errores;
   const { datos } = resultado;
@@ -65,6 +69,8 @@ export async function guardarVehiculo(
  * Si algo falla devuelve el mensaje para mostrar.
  */
 export async function cambiarActivacion(id: string, activar: boolean) {
+  // Las acciones del servidor se pueden llamar con cualquier dato: solo `true` reactiva.
+  if (typeof id !== "string") redirect("/vehiculos");
   const reactivar = activar === true;
   let vehiculo;
   try {
