@@ -8,7 +8,7 @@ import type { MensajeCorreo } from "../../src/lib/correo.ts";
 import { fechaDesdeBase, fechaParaBase, hoyEnChile, sumarDias } from "../../src/lib/fechas.ts";
 
 // Pruebas de integración del proceso de avisos por correo con la base de datos (SIM-04,
-// CP-INT-24 a CP-INT-33; criterios de JOA-13). Usan el cliente Prisma generado y la base de
+// CP-INT-24 a CP-INT-34; criterios de JOA-13). Usan el cliente Prisma generado y la base de
 // DATABASE_URL, igual que la aplicación.
 //
 // No dejan datos ni mandan correos: cada prueba trabaja dentro de una transacción que se deshace
@@ -390,6 +390,29 @@ describe("Avisos por correo en la base de datos", { skip: sinBase }, () => {
       assert.equal(correosPara(enviados, sinDocumentos.correo).length, 0);
       assert.deepEqual(await plazosYEstados(tx, a.id), [[7, "enviado"]]);
       assert.deepEqual(await registrosDe(tx, sinDocumentos.id), []);
+    });
+  });
+
+  test("CP-INT-34 · si el envío falla una vez, se reintenta de inmediato y el aviso de «vence hoy» no se pierde", async () => {
+    await sinGuardar(async (tx) => {
+      const a = await crearEmpresa(tx, "Empresa A");
+      const vehiculo = await crearVehiculo(tx, a.id, "SIMA34");
+      await crearDocumento(tx, a.id, 0, { vehiculoId: vehiculo.id });
+
+      // Falla solo el primer intento para esta empresa.
+      let intentos = 0;
+      const enviados: MensajeCorreo[] = [];
+      const enviar = async (mensaje: MensajeCorreo) => {
+        if (mensaje.para === a.correo && ++intentos === 1) throw new Error("Falla pasajera de prueba");
+        enviados.push(mensaje);
+      };
+      await procesarAvisos({ db: tx, enviar, ahora: AHORA, urlDocumentos: URL_DOCUMENTOS });
+
+      assert.equal(intentos, 2);
+      const deA = correosPara(enviados, a.correo);
+      assert.equal(deA.length, 1);
+      assert.match(deA[0].texto, /SOAP · SIMA-34 · .* · Vence hoy/);
+      assert.deepEqual(await plazosYEstados(tx, a.id), [[0, "enviado"]]);
     });
   });
 

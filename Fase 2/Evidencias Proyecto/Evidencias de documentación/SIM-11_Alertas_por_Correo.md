@@ -33,7 +33,7 @@ Este documento explica cómo se implementaron los avisos por correo (PB-15 y PB-
 3. Para cada documento con dueño activo, elige el **plazo que corresponde** (30, 7, 1 o 0 días). Si ese aviso ya está registrado como `enviado`, lo salta.
 4. **Registra el aviso como `fallido` antes de enviar.** Si otra ejecución ya lo registró, la restricción única lo impide y lo salta. Un aviso fallido de un día anterior se vuelve a tomar; uno que falló hoy, se reintenta mañana.
 5. Arma **un correo por empresa** con todos sus avisos y lo envía a su `email_contacto`.
-6. Si Resend acepta el correo, marca sus avisos como `enviado`. Si no, quedan `fallido` y se reintentan al día siguiente.
+6. Si Resend acepta el correo, marca sus avisos como `enviado`. Si no, lo intenta una vez más de inmediato; si vuelve a fallar, quedan `fallido` y se reintentan al día siguiente (JOA-13, criterio 10).
 7. Responde los totales: `{ hoy, correos, enviados, fallidos }`.
 
 ---
