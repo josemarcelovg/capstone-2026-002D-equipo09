@@ -7,7 +7,7 @@ import {
   type AvisoPendiente,
   type DocumentoParaAviso,
 } from "./avisos.ts";
-import type { EnviarCorreo } from "./correo.ts";
+import type { EnviarCorreo, MensajeCorreo } from "./correo.ts";
 import { fechaDesdeBase, fechaParaBase, hoyEnChile, sumarDias } from "./fechas.ts";
 import { formatearPatente } from "./vehiculos.ts";
 
@@ -143,9 +143,10 @@ export async function procesarAvisos({
     );
     resultado.correos++;
     try {
-      await enviar({ para: destinatario, ...correo });
+      await enviarConReintento(enviar, { para: destinatario, ...correo });
     } catch (error) {
-      // Quedan como fallidos y se reintentan al día siguiente (JOA-13, sección 2).
+      // Falló también el reintento: quedan como fallidos y se reintentan al día siguiente
+      // (JOA-13, sección 2).
       console.error(`No se pudo enviar el correo de avisos de la empresa ${empresaId}.`, error);
       resultado.fallidos += ids.length;
       continue;
@@ -158,6 +159,21 @@ export async function procesarAvisos({
   }
 
   return resultado;
+}
+
+/**
+ * Envía el correo y, si falla, lo intenta una vez más de inmediato (JOA-13, sección 2). Sin este
+ * reintento, un aviso de "vence hoy" que falla se perdería: al día siguiente el documento ya
+ * venció y no le corresponde ningún plazo. Si el segundo intento también falla, lanza su error.
+ */
+async function enviarConReintento(enviar: EnviarCorreo, mensaje: MensajeCorreo) {
+  try {
+    await enviar(mensaje);
+  } catch (error) {
+    // Sin el correo del destinatario en el registro, igual que el error de más arriba.
+    console.warn("Falló el envío del correo de avisos; se intenta una vez más.", error);
+    await enviar(mensaje);
+  }
 }
 
 /**
