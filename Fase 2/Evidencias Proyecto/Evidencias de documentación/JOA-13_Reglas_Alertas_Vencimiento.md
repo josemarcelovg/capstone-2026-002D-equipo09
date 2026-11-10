@@ -7,6 +7,7 @@
 | **Revisión** | José Vargas (datos) y Simón Jofré (implementación y pruebas) |
 | **Estado** | Propuesta para revisión del equipo |
 | **Fecha** | 28-10-2026 |
+| **Actualización** | 10-11-2026: un envío que falla se reintenta una vez de inmediato (sección 2, "Fallas", y criterio 10), aprobado por el Product Owner |
 
 Este documento fija las reglas de los ítems **PB-15** y **PB-16** del [Product Backlog](JOA-08_Product_Backlog.md) y el destinatario de PB-14. Cierra los **[POR CONFIRMAR]** de la sección 5 de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), de esos ítems y de la tabla `aviso_enviado` del [modelo de datos](JOS-04_Modelo_de_Datos.md) (sección 3.7). Las decisiones se acordaron en equipo el 28-10-2026, después de la revisión del avance con la profesora.
 
@@ -44,7 +45,7 @@ Fuera de este módulo:
 | Proveedor (PB-15) | **Resend**, plan gratis (100 correos al día y 3.000 al mes). | Se integra con Next.js y Vercel con una sola clave. Con un correo diario por empresa alcanza de sobra para el MVP. |
 | Programador | **Vercel Cron**, que llama una ruta protegida de la aplicación. | Viene con Vercel, donde se despliega la aplicación. |
 | Sin duplicados (PB-16) | Un mismo aviso (documento + fecha de vencimiento + plazo) **nunca se envía dos veces**, aunque el proceso corra de nuevo. | Restricción única de `aviso_enviado` (JOS-04, sección 3.7). |
-| Fallas (PB-16) | Cada intento queda registrado como `enviado` o `fallido`. Los fallidos **se reintentan al día siguiente**. | No se pierde un aviso por una caída del proveedor. |
+| Fallas (PB-16) | Si el envío falla, **se intenta una vez más de inmediato**. Si vuelve a fallar, el aviso queda registrado como `fallido` y **se reintenta al día siguiente**. | No se pierde un aviso por una caída del proveedor. El reintento inmediato cubre el aviso de "vence hoy": al día siguiente el documento ya venció y no le corresponde ningún plazo. |
 | Plazos saltados | Si un plazo no se avisó a tiempo, **solo se manda el plazo que corresponde hoy**; los anteriores no se envían atrasados. | Nunca llega "vence en 7 días" cuando faltan 5. El correo siempre dice los días reales. |
 | Dueños inactivos (PB-16) | Los documentos de vehículos y conductores **inactivos no generan avisos**. | Igual que en el listado de documentos (JOA-10, sección 2). |
 | Renovación | Un documento renovado (fecha nueva) empieza de cero sus 4 avisos. | Los avisos se registran con la fecha de vencimiento que tenía el documento (JOS-04, sección 3.7). |
@@ -149,7 +150,7 @@ Base para las pruebas (SIM-04, casos CP-FUN-27 y CP-FUN-28). Se prueban con fech
 
 8. Cada documento incluido queda registrado en `aviso_enviado` con su plazo, destinatario, estado y fecha.
 9. Si el proceso corre dos veces el mismo día, no se envía ningún aviso repetido.
-10. Si el envío falla, queda `fallido` y se reintenta al día siguiente.
+10. Si el envío falla, se intenta una vez más de inmediato; si vuelve a fallar, queda `fallido` y se reintenta al día siguiente.
 11. Al renovar un documento (fecha nueva), vuelve a recibir sus avisos desde el plazo que corresponda.
 
 **Seguridad**

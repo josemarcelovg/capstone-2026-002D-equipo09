@@ -1,4 +1,4 @@
-import { Prisma } from "@/generated/prisma/client";
+import type { Prisma } from "../generated/prisma/client.ts";
 import {
   agruparPorEmpresa,
   armarCorreo,
@@ -6,15 +6,15 @@ import {
   PLAZOS_AVISO,
   type AvisoPendiente,
   type DocumentoParaAviso,
-} from "@/lib/avisos";
-import type { EnviarCorreo } from "@/lib/correo";
-import { fechaDesdeBase, fechaParaBase, hoyEnChile, sumarDias } from "@/lib/fechas";
-import { prisma } from "@/lib/prisma";
-import { formatearPatente } from "@/lib/vehiculos";
+} from "./avisos.ts";
+import type { EnviarCorreo, MensajeCorreo } from "./correo.ts";
+import { fechaDesdeBase, fechaParaBase, hoyEnChile, sumarDias } from "./fechas.ts";
+import { formatearPatente } from "./vehiculos.ts";
 
 // Proceso diario de avisos por correo (JOA-13, sección 3). Lo ejecuta la ruta /api/avisos, que
 // llama Vercel Cron. Recibe la base de datos y la función de envío para poder probarlo dentro de
-// una transacción que se deshace y sin mandar correos reales.
+// una transacción que se deshace y sin mandar correos reales (tests/integracion/avisos.test.ts).
+// Por eso importa con rutas relativas y no usa src/lib/prisma.ts: la ruta le pasa el cliente.
 //
 // No filtra por empresa: recorre los documentos de todas, pero arma un correo por empresa con
 // solo sus documentos y lo manda a su correo de contacto (criterio 7 de JOA-13).
@@ -47,15 +47,15 @@ export type ResultadoAvisos = {
  * avisos (criterio 9 de JOA-13).
  */
 export async function procesarAvisos({
+  db,
   enviar,
   urlDocumentos,
   ahora = new Date(),
-  db = prisma,
 }: {
+  db: BaseDeDatos;
   enviar: EnviarCorreo;
   urlDocumentos: string;
   ahora?: Date;
-  db?: BaseDeDatos;
 }): Promise<ResultadoAvisos> {
   const hoy = hoyEnChile(ahora);
   const resultado: ResultadoAvisos = { hoy, correos: 0, enviados: 0, fallidos: 0 };
@@ -143,9 +143,10 @@ export async function procesarAvisos({
     );
     resultado.correos++;
     try {
-      await enviar({ para: destinatario, ...correo });
+      await enviarConReintento(enviar, { para: destinatario, ...correo });
     } catch (error) {
-      // Quedan como fallidos y se reintentan al día siguiente (JOA-13, sección 2).
+      // Falló también el reintento: quedan como fallidos y se reintentan al día siguiente
+      // (JOA-13, sección 2).
       console.error(`No se pudo enviar el correo de avisos de la empresa ${empresaId}.`, error);
       resultado.fallidos += ids.length;
       continue;
@@ -158,6 +159,21 @@ export async function procesarAvisos({
   }
 
   return resultado;
+}
+
+/**
+ * Envía el correo y, si falla, lo intenta una vez más de inmediato (JOA-13, sección 2). Sin este
+ * reintento, un aviso de "vence hoy" que falla se perdería: al día siguiente el documento ya
+ * venció y no le corresponde ningún plazo. Si el segundo intento también falla, lanza su error.
+ */
+async function enviarConReintento(enviar: EnviarCorreo, mensaje: MensajeCorreo) {
+  try {
+    await enviar(mensaje);
+  } catch (error) {
+    // Sin el correo del destinatario en el registro, igual que el error de más arriba.
+    console.warn("Falló el envío del correo de avisos; se intenta una vez más.", error);
+    await enviar(mensaje);
+  }
 }
 
 /**
@@ -197,7 +213,8 @@ async function reservar(
       });
       return creado.id;
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") return null;
+      // P2002: la restricción única ya tiene ese aviso, así que otra ejecución lo tomó.
+      if ((error as { code?: unknown } | null)?.code === "P2002") return null;
       throw error;
     }
   }

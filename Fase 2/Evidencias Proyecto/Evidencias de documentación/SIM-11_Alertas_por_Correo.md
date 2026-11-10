@@ -5,8 +5,8 @@
 | **Tarea** | [SIM-11] Implementar las alertas de vencimiento por correo |
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | José Vargas y Joaquín Orellana |
-| **Estado** | Implementado y probado sin base de datos; falta configurar Resend y probar con documentos en la base |
-| **Fecha** | 04-11-2026 |
+| **Estado** | Implementado y probado, también con la base de datos de desarrollo; falta configurar Resend y probar un envío real |
+| **Fecha** | 04-11-2026 · actualizado el 10-11-2026 (pruebas con la base de datos) |
 
 Este documento explica cómo se implementaron los avisos por correo (PB-15 y PB-16) según las reglas de [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md), en la versión mínima que entra en la entrega final de la semana 15 ([JOA-08](JOA-08_Product_Backlog.md), sección 2). Usa la tabla `documento` (PR #53), el cálculo del estado de [JOA-10](JOA-10_Reglas_Modulo_Documentos.md) y la fecha de hoy en Chile (SIM-09).
 
@@ -19,7 +19,7 @@ Este documento explica cómo se implementaron los avisos por correo (PB-15 y PB-
 | Registro de avisos | Tabla `aviso_enviado` (`Aplicación/prisma/schema.prisma` y migración `20261104025354_avisos`) | Un registro por documento, fecha de vencimiento y plazo, con destinatario, estado y fecha del intento. Ver [JOS-04](JOS-04_Modelo_de_Datos.md), sección 3.7. |
 | Reglas | `src/lib/avisos.ts` | Plazo que corresponde, avisos pendientes, un grupo por empresa, el correo y la clave de la ruta. No usa la base ni Next.js. |
 | Envío | `src/lib/correo.ts` | Envía con la API HTTP de Resend, sin dependencias nuevas. |
-| Proceso diario | `src/lib/avisos-datos.ts` | Lee los documentos, registra cada aviso, envía un correo por empresa y marca enviado o fallido. |
+| Proceso diario | `src/lib/avisos-datos.ts` | Lee los documentos, registra cada aviso, envía un correo por empresa y marca enviado o fallido. Recibe la base de datos y el envío desde la ruta, para poder probarlo dentro de una transacción que se deshace. |
 | Ruta | `src/app/api/avisos/route.ts` | `GET /api/avisos`, protegida con `CRON_SECRET`. Responde solo los totales. |
 | Programación | `vercel.json` | Vercel Cron la llama todos los días a las 11:00 UTC (`0 11 * * *`). |
 | Proxy | `src/lib/acceso.ts` | Deja pasar `/api/avisos` sin sesión, porque Vercel Cron no tiene una. |
@@ -33,7 +33,7 @@ Este documento explica cómo se implementaron los avisos por correo (PB-15 y PB-
 3. Para cada documento con dueño activo, elige el **plazo que corresponde** (30, 7, 1 o 0 días). Si ese aviso ya está registrado como `enviado`, lo salta.
 4. **Registra el aviso como `fallido` antes de enviar.** Si otra ejecución ya lo registró, la restricción única lo impide y lo salta. Un aviso fallido de un día anterior se vuelve a tomar; uno que falló hoy, se reintenta mañana.
 5. Arma **un correo por empresa** con todos sus avisos y lo envía a su `email_contacto`.
-6. Si Resend acepta el correo, marca sus avisos como `enviado`. Si no, quedan `fallido` y se reintentan al día siguiente.
+6. Si Resend acepta el correo, marca sus avisos como `enviado`. Si no, lo intenta una vez más de inmediato; si vuelve a fallar, quedan `fallido` y se reintentan al día siguiente (JOA-13, criterio 10).
 7. Responde los totales: `{ hoy, correos, enviados, fallidos }`.
 
 ---
@@ -45,6 +45,7 @@ Este documento explica cómo se implementaron los avisos por correo (PB-15 y PB-
 | `RESEND_API_KEY` | Clave para enviar correos con Resend | Resend > **API Keys** > **Create API Key**, con permiso de envío. |
 | `CORREO_REMITENTE` | Remitente de los correos | Sin dominio propio: `MicroLogist <onboarding@resend.dev>`, el remitente de prueba de Resend. |
 | `CRON_SECRET` | Clave que Vercel Cron envía al llamar la ruta | Una cadena larga y aleatoria, por ejemplo la que muestra `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`. |
+| `URL_PUBLICA` | Dirección del enlace "Ver documentos" del correo | En producción, `https://micrologist-equipo09.vercel.app`. Si falta o no es una dirección http(s), el enlace usa la dirección con la que llegó la llamada del cron (`urlDeDocumentos` en `src/lib/avisos.ts`). |
 
 Las tres van en el `.env` para probar en local y en **Vercel > Project Settings > Environment Variables** para producción ([SIM-10](SIM-10_Despliegue_Vercel.md), sección 4.4). Ninguna se sube al repositorio.
 
@@ -85,9 +86,20 @@ Rama `sim-11-alertas-correo`, desde el PR #53 (tabla `documento`), el 04-11-2026
 | CP-INT-23 · la ruta sin clave responde 401 | ✅ Con la aplicación levantada: sin clave, con una clave inventada y con una vacía, responde 401 y no redirige al inicio de sesión. `aplicacion.test.ts`: 9 de 9. |
 | `npx tsc --noEmit`, `npm run lint` y `npm run build` | ✅ Sin errores; el build incluye la ruta `/api/avisos`. |
 
+**Pruebas con la base de datos (10-11-2026).** Rama `sim-11-pruebas-integracion`, contra el proyecto `micrologist-dev` con las cinco migraciones aplicadas. Están en `tests/integracion/avisos.test.ts`: cada caso crea sus datos dentro de una transacción que se deshace y reemplaza el envío por una función que solo guarda los correos, así que no deja datos ni manda correos reales.
+
+| Prueba | Resultado |
+|---|---|
+| CP-INT-24 · un correo por empresa con sus avisos del día | ✅ Un correo por empresa con el SOAP a 7 días y la licencia que vence hoy; sin el documento a 31 días, el vencido, el de un vehículo inactivo ni los de otra empresa. Los avisos quedan `enviado` con su plazo y destinatario. |
+| CP-INT-25 · una segunda ejecución el mismo día | ✅ No manda correos ni crea registros. |
+| CP-INT-26 · envío fallido y reintento | ✅ Queda `fallido`, no se reintenta el mismo día y al día siguiente se envía y queda `enviado`. |
+| CP-INT-27 · documento renovado | ✅ Con la nueva fecha recibe su aviso otra vez; queda un registro por cada fecha. |
+| CP-INT-28 · reglas de la tabla | ✅ La base rechaza un aviso repetido (P2002) y un plazo de 5 días (regla CHECK). |
+| `npm run test:integracion` | ✅ 37 de 37: los 5 casos nuevos, la comprobación de que no quedaron datos y las demás pruebas con la base. |
+| `npm test`, `npx tsc --noEmit`, `npm run lint` y `npm run build` | ✅ 120 de 120 y sin errores; el build incluye `/api/avisos`. |
+
 **Pendiente:**
 
-- **Pruebas de integración del proceso con la base de datos**, en una transacción que se deshace y con un envío de prueba: un correo por empresa, sin repetir en una segunda ejecución, fallido y reintento al día siguiente, y renovación. Se agregan cuando las migraciones de documentos y avisos estén aplicadas en Supabase.
 - **CP-FUN-27 y CP-FUN-28** ([SIM-04](SIM-04_Plan_de_Pruebas.md)) con un envío real, cuando exista la cuenta de Resend.
 
 ---
@@ -107,7 +119,9 @@ Rama `sim-11-alertas-correo`, desde el PR #53 (tabla `documento`), el 04-11-2026
 - [x] Reglas de los plazos, duplicados, reintentos y correo, con sus pruebas (sección 5).
 - [x] Ruta protegida con `CRON_SECRET`, Vercel Cron y variables en `.env.example`.
 - [ ] Cuenta de Resend y variables en Vercel.
-- [ ] Migraciones aplicadas en desarrollo y producción.
-- [ ] Pruebas de integración del proceso, y CP-FUN-27 y CP-FUN-28 con un envío real.
+- [x] Migraciones aplicadas en desarrollo (revisado el 10-11-2026).
+- [ ] Migraciones aplicadas en producción.
+- [x] Pruebas de integración del proceso con la base de datos: CP-INT-24 a CP-INT-28 (sección 5).
+- [ ] CP-FUN-27 y CP-FUN-28 con un envío real.
 - [ ] Variables y operación en JOS-06 (secciones 5.1 y 8.3).
 - [ ] Revisión de José y Joaquín en el PR.

@@ -1,6 +1,7 @@
-import { esLlamadaAutorizada } from "@/lib/avisos";
+import { esLlamadaAutorizada, urlDeDocumentos } from "@/lib/avisos";
 import { procesarAvisos } from "@/lib/avisos-datos";
 import { enviadorResend } from "@/lib/correo";
+import { prisma } from "@/lib/prisma";
 
 // Proceso diario de avisos por correo (JOA-13). Lo llama Vercel Cron todos los días a las 11:00
 // UTC (vercel.json) con `Authorization: Bearer <CRON_SECRET>`. No usa la sesión: el proxy lo deja
@@ -14,8 +15,9 @@ export async function GET(request: Request) {
 
   try {
     const resultado = await procesarAvisos({
+      db: prisma,
       enviar: enviadorResend(),
-      urlDocumentos: new URL("/documentos", request.url).toString(),
+      urlDocumentos: urlDeDocumentos(process.env.URL_PUBLICA, request.url),
     });
     return Response.json(resultado);
   } catch (error) {

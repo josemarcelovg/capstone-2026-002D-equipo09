@@ -6,7 +6,7 @@
 | **Responsable** | José Vargas (Developer). Aportan Simón Jofré y Joaquín Orellana. |
 | **Revisión** | Simón Jofré y Joaquín Orellana |
 | **Versión** | 0.2 |
-| **Fecha** | 16-10-2026 (actualizado el 09-11-2026) |
+| **Fecha** | 16-10-2026 (actualizado el 10-11-2026) |
 
 Este manual explica **cómo está construido MicroLogist y cómo se instala, configura, despliega y mantiene**. Está pensado para quien desarrolla o administra el sistema: el equipo, la profesora o quien continúe el proyecto. No es el manual de usuario: no explica cómo usar las pantallas.
 
@@ -18,17 +18,17 @@ Se actualiza en cada entrega (sección 12). Lo que todavía no está decidido o 
 
 MicroLogist es una aplicación web para pequeñas y medianas empresas de transporte de pasajeros: centraliza vehículos, conductores, turnos y documentos, y avisa por correo antes de que venzan los documentos.
 
-| Módulo | Estado al 09-11-2026 |
+| Módulo | Estado al 10-11-2026 (según el [Product Backlog](JOA-08_Product_Backlog.md), sección 2) |
 |---|---|
-| Vehículos: registrar, listar, buscar, editar, desactivar y reactivar | Implementado, con datos en PostgreSQL (JOS-02 y JOS-03) |
-| Inicio y cierre de sesión con Supabase Auth | Implementado ([SIM-02](SIM-02_Inicio_de_Sesion.md)) |
-| Conductores: registrar, listar, buscar, editar, desactivar y reactivar | Implementado y probado ([SIM-08](SIM-08_Pruebas_Conductores.md)) |
-| Conductor asignado al vehículo (PB-24) | Implementado; faltan sus casos en el plan de pruebas |
-| Mi empresa: datos de contacto | Implementado (JOA-15) |
-| Documentos: registrar, listar y editar, y su sección en la ficha del vehículo y del conductor | Implementado; faltan sus pruebas con Supabase |
-| Avisos por correo antes del vencimiento | Implementado ([SIM-11](SIM-11_Alertas_por_Correo.md)); falta configurar Resend y probar un envío real |
-| Turnos | Trabajo futuro: fuera de la entrega final ([JOA-08](JOA-08_Product_Backlog.md)) |
-| Ingresos | Opcional, trabajo futuro |
+| Inicio y cierre de sesión, y separación de datos entre empresas (PB-01 a PB-03) | Terminado, con Supabase Auth ([SIM-02](SIM-02_Inicio_de_Sesion.md)) |
+| Vehículos: registrar, listar, buscar, editar, desactivar y reactivar (PB-04 a PB-07) | Terminado |
+| Conductores: registrar, listar, buscar, editar, desactivar y reactivar (PB-08 a PB-10) | Terminado |
+| Conductor asignado al vehículo (PB-24) | Implementado; faltan sus casos en el plan de pruebas (SIM-04) |
+| Documentos con vencimiento, en su listado y en la ficha del vehículo y del conductor (PB-11 a PB-13) | Implementado, con pruebas de integración; faltan sus pruebas funcionales (SIM-04) |
+| Datos de contacto de la empresa, "Mi empresa" (PB-14) | Implementado; falta su caso funcional (SIM-04) |
+| Avisos por correo con Resend y Vercel Cron (PB-15 y PB-16) | Implementado, con pruebas de integración ([SIM-11](SIM-11_Alertas_por_Correo.md)); falta un envío real |
+| Turnos y resumen de la flota (PB-17 a PB-20) | Trabajo futuro: fuera de la entrega final |
+| Ingresos (PB-21 a PB-23) | Opcional: fuera de la entrega final |
 
 La aplicación está publicada en `https://micrologist-equipo09.vercel.app` (sección 8.1). Los requisitos están en [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), [JOA-05](JOA-05_Requisitos_No_Funcionales.md) y el [Product Backlog](JOA-08_Product_Backlog.md).
 
@@ -84,10 +84,10 @@ Reglas de diseño que siguen todas las pantallas:
 | Tailwind CSS | 4 | Estilos adaptables a computador y celular |
 | Zod | 4 | Validación de datos |
 | Prisma ORM | 7.10.1 | Esquema, migraciones y consultas. Usa el adaptador `@prisma/adapter-pg` con el driver `pg` |
-| PostgreSQL | 17 en Docker; la versión de Supabase la define el proyecto | Base de datos |
+| PostgreSQL | 17 en Docker y en la GitHub Action; la versión de Supabase la define el proyecto | Base de datos |
 | Supabase | Plan gratuito | Hospeda PostgreSQL y, desde SIM-02, el inicio de sesión |
 | Vercel | Plan Hobby | Despliegue, con la CLI de Vercel desde GitHub Actions (SIM-10) |
-| GitHub Actions | `.github/workflows/vercel.yml` | Lint, tipos y pruebas en cada PR, y publicación en Vercel |
+| GitHub Actions | `.github/workflows/vercel.yml` | Lint, tipos, pruebas y `npm audit` en cada PR, y publicación en Vercel |
 | Resend | API HTTP, plan gratuito | Envío de los avisos por correo (SIM-11) |
 | Docker | Docker Desktop | Entorno local opcional (JOS-05) |
 
@@ -155,7 +155,7 @@ Aplicación/
 ├── Dockerfile, compose.yaml,     Entorno Docker (JOS-05)
 │   iniciar.sh
 ├── prisma.config.ts              Configuración del CLI de Prisma (migraciones en «Base de datos»)
-├── vercel.json                   Programación diaria de los avisos (Vercel Cron)
+├── vercel.json                   Región de las funciones y programación diaria de los avisos (Vercel Cron)
 └── .env.example                  Variables de entorno, sin valores secretos
 ```
 
@@ -190,10 +190,12 @@ Se definen en `.env` (desarrollo), en `Aplicación/compose.yaml` (Docker) o en e
 | `RESEND_API_KEY` | Clave para enviar correos con Resend | `src/lib/correo.ts` | Solo para probar los avisos | Sí, para enviar avisos |
 | `CORREO_REMITENTE` | Remitente de los avisos; sin dominio propio, `MicroLogist <onboarding@resend.dev>` | `src/lib/correo.ts` | Solo para probar los avisos | Sí, para enviar avisos |
 | `CRON_SECRET` | Clave que Vercel Cron envía al llamar `/api/avisos`; sin ella, la ruta responde 401 | `src/app/api/avisos/route.ts` | Solo para probar los avisos | Sí, para enviar avisos |
+| `URL_PUBLICA` | Dirección pública de la aplicación, para el enlace "Ver documentos" de los correos. Vacía, se usa la dirección con la que llegó la llamada del cron | `urlDeDocumentos()` en `src/lib/avisos.ts` | No | Sí: `https://micrologist-equipo09.vercel.app` |
+| `ORIGENES_DESARROLLO` | Otras direcciones desde las que se abre `npm run dev`, por ejemplo la IP del computador para probar desde un celular en la misma red. Separadas por coma | `next.config.ts` | Opcional | No: solo afecta a `next dev` |
 
 Las dos variables de Supabase van juntas. Con las dos, se pide iniciar sesión, también en desarrollo. Sin ninguna, en desarrollo se trabaja con `EMPRESA_DESARROLLO_ID`. Con una sola, o sin ellas en producción, la aplicación no muestra datos ([SIM-02](SIM-02_Inicio_de_Sesion.md), sección 3).
 
-Cómo obtener las direcciones de la base de datos: [JOS-02](JOS-02_Configuracion_Base_de_Datos.md), sección 3. La dirección y la clave pública de Supabase Auth: [SIM-02](SIM-02_Inicio_de_Sesion.md), sección 5. Las tres de los avisos: [SIM-11](SIM-11_Alertas_por_Correo.md), sección 3.
+Cómo obtener las direcciones de la base de datos: [JOS-02](JOS-02_Configuracion_Base_de_Datos.md), sección 3. La dirección y la clave pública de Supabase Auth: [SIM-02](SIM-02_Inicio_de_Sesion.md), sección 5. Las de los avisos y `URL_PUBLICA`: [SIM-11](SIM-11_Alertas_por_Correo.md), sección 3.
 
 ---
 
@@ -209,7 +211,7 @@ Comandos principales:
 | Comando | Para qué |
 |---|---|
 | `npm run db:deploy` | Aplica las migraciones pendientes |
-| `npm run db:seed` | Carga los datos ficticios (se puede repetir) |
+| `npm run db:seed` | Carga los datos ficticios. Se puede repetir: solo crea lo que falta y no pisa lo que se editó en la aplicación |
 | `npm run db:comprobar` | Comprueba crear y consultar vehículos, sin dejar datos |
 | `npm run db:migrate -- --name descripcion` | Crea una migración nueva después de cambiar el esquema |
 | `npm run db:studio` | Abre Prisma Studio para ver las tablas |
@@ -228,13 +230,13 @@ Reglas al cambiar el modelo:
 
 | Comando | Qué revisa |
 |---|---|
-| `npm test` | Pruebas automáticas con el runner de Node (`node --test`). Hoy son 120 en `tests/`: vehículos, conductores, Mi empresa, documentos y sus filtros, avisos, envío de correo, inicio de sesión, RUT, fechas y encabezados de seguridad. |
-| `npm run test:integracion` | Pruebas con la base de datos real y con la aplicación levantada (38 en `tests/integracion/`). Usan el `.env` ([SIM-04](SIM-04_Plan_de_Pruebas.md), sección 6.6). |
+| `npm test` | Pruebas automáticas con el runner de Node (`node --test`). Hoy son 121 en `tests/`: vehículos, conductores, Mi empresa, documentos y sus filtros, avisos, envío de correo, inicio de sesión, RUT, fechas y encabezados de seguridad. |
+| `npm run test:integracion` | Pruebas con la base de datos y con la aplicación levantada (50 en `tests/integracion/`: base de datos, avisos y aplicación). Usan el `.env`; las que necesitan la aplicación levantada o Supabase se saltan solas si faltan sus datos ([SIM-04](SIM-04_Plan_de_Pruebas.md), sección 6.6). |
 | `npm run lint` | Reglas de ESLint de Next.js |
 | `npm run build` | Compila la aplicación; también revisa los tipos de TypeScript |
 | `npm run db:comprobar` | Funcionamiento de la base de datos y de la separación entre empresas |
 
-La Definition of Done exige que `build` y `lint` pasen antes de unir un PR ([SIM-05](SIM-05_Definition_of_Done.md), sección 3.1). Desde el PR #62, la GitHub Action lo revisa sola en cada PR: lint, tipos, `npm test` y el build. Las pruebas de integración se siguen ejecutando en local, porque necesitan una base de datos. El plan de pruebas completo está en [SIM-04](SIM-04_Plan_de_Pruebas.md).
+La Definition of Done exige que `build` y `lint` pasen antes de unir un PR ([SIM-05](SIM-05_Definition_of_Done.md), sección 3.1). La GitHub Action lo revisa sola en cada PR y en cada push a `main`: lint, tipos, `npm test`, `npm audit --omit=dev --audit-level=high` y el build (PR #62). Desde el PR #71 también ejecuta las pruebas de integración contra una base PostgreSQL 17 vacía, creada solo para esa ejecución: aplica las migraciones, carga el seed y nunca toca las bases de Supabase. Si algo falla, no publica. El plan de pruebas completo está en [SIM-04](SIM-04_Plan_de_Pruebas.md).
 
 ---
 
@@ -246,9 +248,10 @@ Publicada en `https://micrologist-equipo09.vercel.app` desde el 05-11-2026, en e
 
 1. El proyecto de Vercel **no se conecta con GitHub**: Vercel nombra las funciones con la ruta desde la raíz del repositorio, que tiene espacios (`Fase 2/…`), y el build falla. La aplicación la construye y publica la GitHub Action `.github/workflows/vercel.yml`, con la CLI de Vercel y desde la carpeta `Aplicación`: una vista previa en cada PR y producción en cada push a `main` ([SIM-10](SIM-10_Despliegue_Vercel.md), secciones 4.3 y 4.5). El esquema de Prisma está dentro de `Aplicación` para que el build no necesite nada de fuera. `npm install` ejecuta `prisma generate` automáticamente.
 2. Para publicar, la Action necesita los secretos `VERCEL_TOKEN`, `VERCEL_ORG_ID` y `VERCEL_PROJECT_ID` en GitHub (**Settings > Secrets and variables > Actions**). Sin ellos igual construye y revisa, pero no publica. Para volver a publicar sin un PR: **Actions > Pruebas y despliegue en Vercel > Run workflow**.
-3. Las variables de la sección 5.1 están en el panel de Vercel, en Production y en Preview. Si se cambia una, hay que volver a publicar para que se aplique.
+3. Las variables de la sección 5.1 están en el panel de Vercel, en Production y en Preview (`URL_PUBLICA`, solo en Production). Si se cambia una, hay que volver a publicar para que se aplique.
 4. La Action no aplica migraciones. Si un PR trae una migración nueva, se aplica en producción **antes** de unirlo: `npm run db:deploy` con la `DIRECT_URL` de producción ([SIM-10](SIM-10_Despliegue_Vercel.md), sección 4.2).
-5. Las funciones de Vercel van en una región cercana a la de la base de datos, para reducir la latencia (el proyecto de producción de Supabase está en East US, Ohio, así que corresponde Cleveland, `cle1`; [SIM-10](SIM-10_Despliegue_Vercel.md), sección 4.3).
+5. Las funciones de Vercel van en una región cercana a la de la base de datos, para reducir la latencia (el proyecto de producción de Supabase está en East US, Ohio, así que corresponde Cleveland, `cle1`; [SIM-10](SIM-10_Despliegue_Vercel.md), sección 4.3). La región está fijada en `vercel.json`.
+6. El proyecto de Vercel tiene que usar Node.js 24.x (**Project Settings > General > Node.js Version**), igual que `engines` en `package.json`.
 
 En producción, la aplicación necesita las dos variables de Supabase del proyecto de producción: sin ellas no muestra datos, a propósito ([SIM-02](SIM-02_Inicio_de_Sesion.md), sección 3). En `micrologist-prod` se repitió la configuración de Supabase Auth de SIM-02 (sección 5): registro público desactivado, contraseña de 8 caracteres o más, y las dos cuentas de prueba con su perfil en `usuario`. Una cuenta nueva solo puede entrar si tiene su perfil en esa misma base.
 
@@ -260,7 +263,7 @@ En producción, la aplicación necesita las dos variables de Supabase del proyec
 | Proyecto de producción | `micrologist-prod`, aparte del de desarrollo (acordado el 27-10-2026), plan gratuito, región East US (Ohio). Con las mismas migraciones que desarrollo ([SIM-10](SIM-10_Despliegue_Vercel.md), sección 4.2). |
 | Acceso del equipo | Los tres comparten el proyecto de desarrollo (acordado el 27-10-2026; [JOS-02](JOS-02_Configuracion_Base_de_Datos.md), sección 3). |
 | Respaldos | Según el plan de Supabase **[POR CONFIRMAR]** (RNF-DIS-03). |
-| Supabase Auth | Configurado en el proyecto de desarrollo el 19-10-2026 (SIM-02) y de la misma forma en el de producción (SIM-10): inicio con correo y contraseña, registro público desactivado, contraseña de 8 caracteres o más, y una cuenta de prueba para la Empresa A y otra para la B, cada una con su perfil en `usuario`. El `id` de la tabla `usuario` es el de Supabase Auth. |
+| Supabase Auth | Configurado en el proyecto de desarrollo el 19-10-2026 ([SIM-02](SIM-02_Inicio_de_Sesion.md)) y de la misma forma en el de producción ([SIM-10](SIM-10_Despliegue_Vercel.md)): inicio con correo y contraseña, registro público desactivado, contraseña de 8 caracteres o más, y una cuenta de prueba para la Empresa A y otra para la B, cada una con su perfil en `usuario`. El `id` de la tabla `usuario` es el de Supabase Auth. |
 
 Si una contraseña de la base de datos se filtra o hay que cambiarla: Supabase → **Project Settings → Database → Reset database password**, y luego actualizar `DATABASE_URL` y `DIRECT_URL` en cada `.env` y en Vercel. La contraseña va sin corchetes dentro de la URL.
 
@@ -269,15 +272,15 @@ Si una contraseña de la base de datos se filtra o hay que cambiarla: Supabase �
 Implementados en [SIM-11](SIM-11_Alertas_por_Correo.md) (PB-15 y PB-16):
 
 - **Cuándo:** Vercel Cron llama `GET /api/avisos` todos los días a las 11:00 UTC (`vercel.json`), con la clave `CRON_SECRET`. Sin ella, la ruta responde 401 y no hace nada.
-- **Qué hace:** con la fecha de hoy en hora de Chile, busca los documentos que vencen dentro de 30 días y arma **un correo por empresa**, que envía con Resend a su correo de contacto (Mi empresa).
-- **Registro:** cada aviso queda en la tabla `aviso_enviado`, como `enviado` o `fallido` ([JOS-04](JOS-04_Modelo_de_Datos.md), sección 3.7). Un aviso fallido se reintenta al día siguiente.
+- **Qué hace:** con la fecha de hoy en hora de Chile, busca los documentos que vencen dentro de 30 días y arma **un correo por empresa**, que envía con Resend a su correo de contacto (Mi empresa). El enlace "Ver documentos" del correo usa `URL_PUBLICA`.
+- **Registro:** cada aviso queda en la tabla `aviso_enviado`, como `enviado` o `fallido` ([JOS-04](JOS-04_Modelo_de_Datos.md), sección 3.7). Si el envío falla, se intenta una vez más de inmediato; si vuelve a fallar, queda `fallido` y se reintenta al día siguiente ([JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md), criterio 10).
 - **Pendiente:** crear la cuenta de Resend, cargar sus variables en Vercel (sección 5.1) y probar un envío real.
 
 ### 8.4 Operación diaria
 
 - **Registros de errores:** en desarrollo, en la terminal de `npm run dev`; en producción, en los logs de Vercel. Las acciones registran el error con `console.error` y al usuario le muestran un mensaje sin detalles.
 - **Monitoreo de disponibilidad:** **[POR CONFIRMAR]** (RNF-DIS-01).
-- **Dependencias:** revisar `npm audit --omit=dev` antes de cada entrega (RNF-SEG-10).
+- **Dependencias:** la GitHub Action ejecuta `npm audit --omit=dev --audit-level=high` en cada PR y falla si aparece una vulnerabilidad alta o crítica en las dependencias de producción (RNF-SEG-10).
 
 ---
 
@@ -305,8 +308,8 @@ Implementados en [SIM-11](SIM-11_Alertas_por_Correo.md) (PB-15 y PB-16):
 
 | Mejora | Motivo |
 |---|---|
-| `engines.node` a `>=24` y `@types/node` a `^24` en `package.json` | Hoy dice `>=20.9.0`, pero el equipo usa Node 24 (también la GitHub Action) y `npm test` necesita una versión que tenga `--experimental-strip-types` |
-| Ejecutar las pruebas de integración en la GitHub Action, con una base de datos de prueba | Hoy solo se ejecutan en local, porque necesitan una base de datos |
+| Pasar `actions/checkout` y `actions/setup-node` de `v4` a una versión que use Node 24 | GitHub avisa en cada ejecución de la Action que las `v4` usan Node 20, que está obsoleto. Hoy funcionan porque GitHub las fuerza a Node 24 |
+| Resolver las 16 vulnerabilidades moderadas de `minimatch` cuando ESLint publique una versión corregida | Solo afectan a herramientas de desarrollo (sección 9). No se usa `npm audit fix --force` |
 
 ---
 
@@ -315,7 +318,8 @@ Implementados en [SIM-11](SIM-11_Alertas_por_Correo.md) (PB-15 y PB-16):
 | Síntoma | Causa y solución |
 |---|---|
 | La página se ve vacía con la dirección "Network" | Next.js bloquea esa dirección en desarrollo. Usar `http://localhost:3000`. |
-| `P1001: Can't reach database server` | Revisar la conexión a internet y las direcciones del `.env`. |
+| `P1001: Can't reach database server` | Revisar la conexión a internet y las direcciones del `.env`. A veces es un corte momentáneo: recargar la página. |
+| `Port 3000 is in use` o "Another next dev server is already running" | Ya hay un `npm run dev` corriendo en otra terminal. Usar ese, o detenerlo con Ctrl+C (o con el `taskkill` que muestra el mensaje) y volver a iniciarlo. |
 | `password authentication failed` | La contraseña del `.env` no coincide. Revisar que no quedaron los corchetes de `[YOUR-PASSWORD]`. |
 | `Cannot find module '@/generated/prisma/client'`, o TypeScript no reconoce una tabla nueva | Falta generar el cliente: `npx prisma generate` (o `npm install`). Pasa después de bajar una migración nueva. |
 | Después de actualizar Next.js, `npm run build` dice `Cannot find module '@tailwindcss/postcss'` | Quedó la caché de la versión anterior. Borrar la carpeta `.next` y compilar de nuevo. |
@@ -335,7 +339,8 @@ Implementados en [SIM-11](SIM-11_Alertas_por_Correo.md) (PB-15 y PB-16):
 |---|---|---|
 | 0.1 | 16-10-2026 | Primera versión: arquitectura, estructura, instalación, variables, base de datos, pruebas, despliegue previsto y seguridad. Módulo de vehículos con base de datos; inicio de sesión pendiente. |
 | 0.1.1 | 02-11-2026 | JOS-07: Next.js 16.4.4 y dependencias de producción sin vulnerabilidades (cierra ERR-01). Dos problemas frecuentes nuevos y uno ampliado. |
-| 0.2 | 09-11-2026 | Inicio de sesión con Supabase Auth (SIM-02) en las secciones 1, 2.1, 4, 5.1, 8 y 9. Estado de los módulos, estructura del código y pruebas al día: conductores, conductor asignado, documentos, Mi empresa y avisos por correo (SIM-11). Despliegue publicado con la GitHub Action (SIM-10), variables de Production y Preview, y tres problemas frecuentes nuevos. |
+| 0.1.2 | 10-11-2026 | `engines.node` pasa a `>=24.0.0` y `@types/node` a `^24`, como el README, CI y Docker (sale de las mejoras pendientes de la sección 10). Con Node 20, `npm test` ni siquiera arranca: `--experimental-strip-types` existe desde Node 22.6 y Prisma 7 pide `^22.12` o `>=24`. La sección 1 se pone al día con el estado de cada módulo según JOA-08. |
+| 0.2 | 10-11-2026 | Inicio de sesión con Supabase Auth (SIM-02) en las secciones 2.1, 4, 5.1, 8 y 9. Estructura del código y pruebas al día: conductores, conductor asignado, documentos, Mi empresa y avisos por correo (SIM-11). Despliegue publicado con la GitHub Action (SIM-10), con las pruebas de integración en una base PostgreSQL de prueba y `npm audit` en cada PR; variables de Production y Preview, `URL_PUBLICA` y `ORIGENES_DESARROLLO`; región `cle1` en `vercel.json`; seed que no pisa datos editados; reintento inmediato de los avisos. Mejoras pendientes nuevas y cuatro problemas frecuentes nuevos. |
 
 En cada entrega se actualizan las secciones 1, 5.1, 8 y 9, y se agrega una fila a esta tabla.
 

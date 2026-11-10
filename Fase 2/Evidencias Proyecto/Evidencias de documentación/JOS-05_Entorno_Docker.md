@@ -24,7 +24,7 @@ Desde el 18-10-2026, el sistema está en `Fase 2/Evidencias Proyecto/Evidencias 
 Al arrancar, `app` espera a que la base de datos esté lista y ejecuta `Aplicación/iniciar.sh`:
 
 1. `prisma migrate deploy`: crea o actualiza las tablas con las migraciones de `Base de datos/migrations/` (JOS-02).
-2. `npm run db:seed`: carga las dos empresas ficticias y sus vehículos. No duplica datos si ya están.
+2. `npm run db:seed`: carga las dos empresas ficticias con sus vehículos y conductores. Si ya están, no los duplica ni los cambia: lo que se editó en la aplicación se mantiene al volver a levantar Docker.
 3. `npm run dev`: inicia la aplicación.
 
 Archivos:
