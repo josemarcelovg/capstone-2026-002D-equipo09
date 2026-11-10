@@ -12,6 +12,7 @@ import {
   IconoSalir,
 } from "./iconos";
 import { cerrarSesion } from "./login/acciones";
+import { Logo } from "./logo";
 
 /**
  * Menú principal: lateral en computador y desplegable en celular, con la empresa de la sesión
@@ -58,11 +59,8 @@ export async function MenuSesion() {
 
 function Marca() {
   return (
-    <Link href="/" className="flex items-center gap-2.5 text-lg font-bold text-stone-900">
-      <span className="flex size-9 items-center justify-center rounded-xl bg-orange-600 text-white shadow-sm">
-        <IconoBus className="size-5" />
-      </span>
-      MicroLogist
+    <Link href="/" className="rounded-lg px-1">
+      <Logo />
     </Link>
   );
 }
