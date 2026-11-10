@@ -170,7 +170,7 @@ Cuando se agregue cada módulo del MVP (conductores, documentos, turnos e ingres
 | CP-SEG-08 | Revisar el modelo de datos y probar el inicio de sesión con un correo inexistente y con una contraseña incorrecta. | No hay columna de contraseña; el mensaje es idéntico en los dos casos. | RNF-SEG-05, JOA-01 7.2 | ✅ SIM-03 y revisión del esquema (21-10-2026) |
 | CP-SEG-09 | Reglas de contraseña y sesión vencida. | Contraseña de 8 caracteres o más; una sesión vencida redirige al inicio de sesión sin mostrar datos. | RNF-SEG-06 | 🟡 Largo mínimo configurado en Supabase (SIM-02); falta acordar la duración de la sesión y probar una sesión vencida |
 | CP-SEG-10 | Buscar contraseñas, claves y archivos `.env` en el repositorio y en su historial. | 0 secretos. | RNF-SEG-07 | ✅ Revisión del 21-10-2026: 0 archivos `.env` y ningún patrón de clave en el historial |
-| CP-SEG-11 | Entrar a la versión desplegada con `http://`. | Redirige a `https://` y todas las páginas usan HTTPS. | RNF-SEG-08 | ⏳ Pendiente (no hay despliegue) |
+| CP-SEG-11 | Entrar a la versión desplegada con `http://`. | Redirige a `https://` y todas las páginas usan HTTPS. | RNF-SEG-08 | ✅ 09-11-2026: en `https://micrologist-equipo09.vercel.app`, `http://` redirige con 308 a `https://` y las respuestas llevan HSTS ([SIM-10](SIM-10_Despliegue_Vercel.md), sección 5) |
 | CP-SEG-12 | Forzar errores (por ejemplo, con la base de datos desconectada en un entorno de prueba). | Ningún mensaje incluye trazas, consultas ni nombres de tablas. | RNF-SEG-09 | 🟡 Inicio de sesión con el servicio caído y pantalla de vehículos sin base de datos, sin detalles técnicos (SIM-02); falta repetirlo con sesión iniciada |
 | CP-SEG-13 | Ejecutar `npm audit --omit=dev`. | Sin vulnerabilidades altas ni críticas. | RNF-SEG-10 | ✅ 02-11-2026: 0 vulnerabilidades con `next` 16.4.4 (JOS-07). Antes, ❌ el 21-10-2026: 3 altas (`next` 16.3.6, `sharp` y `source-map-js`). Ver ERR-01 en la sección 9 |
 | CP-SEG-14 | Revisar los encabezados HTTP de las respuestas. | Todas llevan los encabezados de seguridad de `src/lib/seguridad.ts` (CSP con `frame-ancestors`, `base-uri`, `form-action` y `object-src`; `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` y HSTS) y ninguna envía `X-Powered-By`. | Buenas prácticas de OWASP; complementa RNF-SEG-08 | ✅ 27-10-2026: `tests/seguridad.test.ts` y CP-INT-16 |
@@ -253,6 +253,8 @@ Si falta el `.env` o la aplicación no está corriendo, los casos que lo necesit
 **Ejecución del 02-11-2026 (SIM-08):** 23 de 23 aprobadas (los 22 casos y la comprobación final de que no quedaron datos). Entorno: rama `sim-08-pruebas-conductores` desde `main` (`9978c9f`), proyecto `micrologist-dev` con la migración `conductores` aplicada y la aplicación con `npm run dev`.
 
 **Ejecución del 04-11-2026 (solo `aplicacion.test.ts`, SIM-11):** 9 de 9 aprobadas, con CP-INT-23 agregado. Entorno: rama `sim-11-alertas-correo`, mismo proyecto de Supabase y la aplicación con `npm run dev`. Las pruebas del proceso de avisos con la base de datos se agregan cuando las migraciones de documentos y avisos estén aplicadas ([SIM-11](SIM-11_Alertas_por_Correo.md), sección 5).
+
+**Ejecución del 09-11-2026 (solo `aplicacion.test.ts`, contra producción):** 9 de 9 aprobadas, con `URL_APLICACION=https://micrologist-equipo09.vercel.app` ([SIM-10](SIM-10_Despliegue_Vercel.md), sección 5). CP-INT-13, CP-INT-15 y CP-INT-22 usaron la clave pública de desarrollo; falta repetirlos con la de producción.
 
 ---
 
