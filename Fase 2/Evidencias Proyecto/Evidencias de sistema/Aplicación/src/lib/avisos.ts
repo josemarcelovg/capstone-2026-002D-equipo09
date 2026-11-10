@@ -191,3 +191,24 @@ export function esLlamadaAutorizada(encabezado: string | null, secreto: string |
   const correcto = Buffer.from(`Bearer ${esperado}`);
   return recibido.length === correcto.length && timingSafeEqual(recibido, correcto);
 }
+
+/**
+ * El enlace "Ver documentos" del correo. Usa la dirección pública de la aplicación
+ * (`URL_PUBLICA`, por ejemplo `https://micrologist-equipo09.vercel.app`) para que el enlace no
+ * dependa de cómo llegó la solicitud del cron. Si no está o no es una dirección http(s) válida,
+ * usa la de la solicitud, como antes.
+ */
+export function urlDeDocumentos(urlPublica: string | undefined, urlSolicitud: string) {
+  const base = urlPublica?.trim();
+  if (base) {
+    try {
+      const url = new URL(base);
+      if (url.protocol === "https:" || url.protocol === "http:") {
+        return new URL("/documentos", url).toString();
+      }
+    } catch {
+      // No es una dirección válida: se usa la de la solicitud.
+    }
+  }
+  return new URL("/documentos", urlSolicitud).toString();
+}

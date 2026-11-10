@@ -89,7 +89,7 @@ El proyecto `micrologist-equipo09` ya existe, en la cuenta de Vercel de José. *
    - **Root Directory:** vacío. La Action ya construye desde `Aplicación` (y lo deja vacío al construir, aunque aquí diga otra cosa).
    - **Framework Preset:** Next.js. Comando de build: `npm run build`; de instalación: el de Vercel (`npm install`, que ejecuta `prisma generate`). El esquema de Prisma está en `Aplicación/prisma/`, así que el build no necesita nada de fuera de esa carpeta.
    - **Node.js Version:** 24.x, la misma que usa el equipo.
-3. **Function Region** (en **Project Settings > Functions**): Cleveland, USA (East), `cle1`, la más cercana a la base de datos de producción (East US, Ohio). Con otra región la aplicación funciona igual, pero cada consulta a la base tarda más.
+3. **Function Region** (en **Project Settings > Functions**): Cleveland, USA (East), `cle1`, la más cercana a la base de datos de producción (East US, Ohio). Con otra región la aplicación funciona igual, pero cada consulta a la base tarda más. La región también queda declarada en `Aplicación/vercel.json` (`"regions": ["cle1"]`), que tiene prioridad sobre la del panel en cada despliegue.
 
 ### 4.4 Variables de entorno
 
@@ -105,7 +105,7 @@ Para el entorno **Preview**, el de las vistas previas de los PR, se cargan las m
 | `DIRECT_URL` | La de producción (puerto 5432) | No: solo se usa en la terminal del paso 4.2 |
 | `EMPRESA_DESARROLLO_ID` | — | No: en producción nunca se usa (SIM-02) |
 
-Las variables de las alertas por correo (`RESEND_API_KEY`, `CRON_SECRET` y el remitente) se agregan con SIM-11.
+Las variables de las alertas por correo (`RESEND_API_KEY`, `CRON_SECRET`, el remitente y `URL_PUBLICA`) se agregan con SIM-11.
 
 ### 4.5 Despliegue con GitHub Actions
 

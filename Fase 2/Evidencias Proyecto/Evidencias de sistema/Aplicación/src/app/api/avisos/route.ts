@@ -1,4 +1,4 @@
-import { esLlamadaAutorizada } from "@/lib/avisos";
+import { esLlamadaAutorizada, urlDeDocumentos } from "@/lib/avisos";
 import { procesarAvisos } from "@/lib/avisos-datos";
 import { enviadorResend } from "@/lib/correo";
 import { prisma } from "@/lib/prisma";
@@ -17,7 +17,7 @@ export async function GET(request: Request) {
     const resultado = await procesarAvisos({
       db: prisma,
       enviar: enviadorResend(),
-      urlDocumentos: new URL("/documentos", request.url).toString(),
+      urlDocumentos: urlDeDocumentos(process.env.URL_PUBLICA, request.url),
     });
     return Response.json(resultado);
   } catch (error) {

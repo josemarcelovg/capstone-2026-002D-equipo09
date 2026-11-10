@@ -6,6 +6,7 @@ import {
   asuntoDelCorreo,
   avisosPendientes,
   esLlamadaAutorizada,
+  urlDeDocumentos,
   plazoQueCorresponde,
   type AvisoRegistrado,
   type DocumentoParaAviso,
@@ -255,5 +256,25 @@ test("sin CRON_SECRET configurado la ruta nunca se autoriza", () => {
   for (const secreto of [undefined, "", "   "]) {
     assert.equal(esLlamadaAutorizada("Bearer ", secreto), false);
     assert.equal(esLlamadaAutorizada("Bearer undefined", secreto), false);
+  }
+});
+
+test("el enlace del correo usa URL_PUBLICA y, sin ella, la dirección de la solicitud", () => {
+  const solicitud = "https://micrologist-equipo09-abc123.vercel.app/api/avisos";
+  assert.equal(
+    urlDeDocumentos("https://micrologist-equipo09.vercel.app", solicitud),
+    "https://micrologist-equipo09.vercel.app/documentos",
+  );
+  // Con barra final, espacios o una ruta, el enlace sigue siendo /documentos.
+  assert.equal(
+    urlDeDocumentos("  https://micrologist-equipo09.vercel.app/otra/ruta/  ", solicitud),
+    "https://micrologist-equipo09.vercel.app/documentos",
+  );
+  for (const invalida of [undefined, "", "   ", "no es una url", "javascript:alert(1)", "ftp://ejemplo.cl"]) {
+    assert.equal(
+      urlDeDocumentos(invalida, solicitud),
+      "https://micrologist-equipo09-abc123.vercel.app/documentos",
+      String(invalida),
+    );
   }
 });
