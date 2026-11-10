@@ -1,4 +1,4 @@
-import { Prisma } from "@/generated/prisma/client";
+import type { Prisma } from "../generated/prisma/client.ts";
 import {
   agruparPorEmpresa,
   armarCorreo,
@@ -6,15 +6,15 @@ import {
   PLAZOS_AVISO,
   type AvisoPendiente,
   type DocumentoParaAviso,
-} from "@/lib/avisos";
-import type { EnviarCorreo } from "@/lib/correo";
-import { fechaDesdeBase, fechaParaBase, hoyEnChile, sumarDias } from "@/lib/fechas";
-import { prisma } from "@/lib/prisma";
-import { formatearPatente } from "@/lib/vehiculos";
+} from "./avisos.ts";
+import type { EnviarCorreo } from "./correo.ts";
+import { fechaDesdeBase, fechaParaBase, hoyEnChile, sumarDias } from "./fechas.ts";
+import { formatearPatente } from "./vehiculos.ts";
 
 // Proceso diario de avisos por correo (JOA-13, sección 3). Lo ejecuta la ruta /api/avisos, que
 // llama Vercel Cron. Recibe la base de datos y la función de envío para poder probarlo dentro de
-// una transacción que se deshace y sin mandar correos reales.
+// una transacción que se deshace y sin mandar correos reales (tests/integracion/avisos.test.ts).
+// Por eso importa con rutas relativas y no usa src/lib/prisma.ts: la ruta le pasa el cliente.
 //
 // No filtra por empresa: recorre los documentos de todas, pero arma un correo por empresa con
 // solo sus documentos y lo manda a su correo de contacto (criterio 7 de JOA-13).
@@ -47,15 +47,15 @@ export type ResultadoAvisos = {
  * avisos (criterio 9 de JOA-13).
  */
 export async function procesarAvisos({
+  db,
   enviar,
   urlDocumentos,
   ahora = new Date(),
-  db = prisma,
 }: {
+  db: BaseDeDatos;
   enviar: EnviarCorreo;
   urlDocumentos: string;
   ahora?: Date;
-  db?: BaseDeDatos;
 }): Promise<ResultadoAvisos> {
   const hoy = hoyEnChile(ahora);
   const resultado: ResultadoAvisos = { hoy, correos: 0, enviados: 0, fallidos: 0 };
@@ -197,7 +197,8 @@ async function reservar(
       });
       return creado.id;
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") return null;
+      // P2002: la restricción única ya tiene ese aviso, así que otra ejecución lo tomó.
+      if ((error as { code?: unknown } | null)?.code === "P2002") return null;
       throw error;
     }
   }
