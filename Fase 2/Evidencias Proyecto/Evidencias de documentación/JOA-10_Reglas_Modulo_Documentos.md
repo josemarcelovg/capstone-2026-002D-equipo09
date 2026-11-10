@@ -7,6 +7,7 @@
 | **Revisión** | José Vargas (modelo de datos) y Simón Jofré (pruebas y fechas) |
 | **Estado** | Propuesta para revisión del equipo |
 | **Fecha** | 27-10-2026 |
+| **Actualización** | 10-11-2026: base legal de los tipos de documento (sección 3.5) |
 
 Este documento fija las reglas de los ítems **PB-11**, **PB-12** y **PB-13** del [Product Backlog](JOA-08_Product_Backlog.md), como pide su sección 8 antes de desarrollar cada módulo. Cierra los **[POR CONFIRMAR]** de esos ítems y de la tabla `documento` del [modelo de datos](JOS-04_Modelo_de_Datos.md) (secciones 3.5 y 6). Sigue el mismo formato que [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md) y [JOA-09](JOA-09_Reglas_Modulo_Conductores.md).
 
@@ -106,6 +107,37 @@ El estado se lee en el texto y no solo en el color (RNF-USA-06).
 - Una sola función calcula el estado y los días que faltan, con un único valor de 30 días para "por vencer". Los avisos la reutilizan en vez de repetir el cálculo.
 - La misma función de "hoy en hora de Chile" (SIM-09) sirve para las pantallas y para el proceso diario de avisos.
 - Los documentos de dueños inactivos quedan excluidos con el mismo filtro que usa el listado general.
+
+---
+### 3.5 Base legal de los tipos
+
+Los cuatro tipos con nombre propio son los documentos que la ley chilena exige a **todo** vehículo de transporte de pasajeros y a **todo** su conductor, y que vencen. Son los que impiden que un vehículo salga a recorrer o que un conductor maneje si están vencidos.
+
+| Documento | A quién se exige | Cada cuánto se renueva | En MicroLogist |
+|---|---|---|---|
+| Permiso de circulación | Todo vehículo motorizado | Cada año | `permiso_circulacion` |
+| SOAP (Seguro Obligatorio de Accidentes Personales) | Todo vehículo motorizado; sin él no se obtiene el permiso de circulación | Cada año | `soap` |
+| Revisión técnica | Todo vehículo; cada 6 meses si es de transporte de personas con más de 9 asientos, contando el del conductor | Según el vehículo | `revision_tecnica`, con la fecha que indica el certificado |
+| Licencia de conducir profesional | Conductores que transportan pasajeros. La clase depende del vehículo: A1 (taxis), A2 (10 a 17 pasajeros), A3 (sin límite de asientos, incluido el transporte de escolares) | Según la licencia | `licencia_conducir`, con la clase en la descripción (por ejemplo, "Clase A3") |
+
+Otros documentos se exigen **según el tipo de servicio** de cada empresa, o no tienen un vencimiento fijo. Se registran con el tipo `otro` y su descripción:
+
+| Documento | Cuándo se exige | Cómo se registra |
+|---|---|---|
+| Inscripción del servicio en el registro de transporte del Ministerio de Transportes (de pasajeros, o RENASTRE para escolares) | Según el servicio que se presta | `otro`, por ejemplo "Inscripción RENASTRE" |
+| Certificado de antecedentes para fines especiales y certificado del registro de inhabilidades para trabajar con menores | Conductores de transporte escolar, al inscribirse en RENASTRE | `otro` del conductor, con la fecha en que hay que renovarlo |
+| Certificado de características o de inspección visual de una planta de revisión técnica | Al inscribir el vehículo en un servicio de transporte | `otro` del vehículo, si la empresa quiere controlarlo |
+
+El padrón (inscripción del vehículo en el Registro de Vehículos Motorizados) también es obligatorio, pero no vence, así que no se registra: este módulo controla vencimientos.
+
+**Lo que este módulo no hace:** no certifica que una empresa cumpla la ley. Avisa cuándo vence cada documento que la empresa registró. Comprobar que la clase de licencia del conductor corresponda a la capacidad del vehículo asignado (PB-24) sería una funcionalidad nueva, que queda como trabajo futuro (JOA-08, sección 7).
+
+**Fuentes** (consultadas el 10-11-2026; conviene confirmarlas con la Subsecretaría de Transportes antes de presentarlas como norma):
+
+- ChileAtiende, [Permiso de circulación](https://www.chileatiende.gob.cl/fichas/9611-permiso-de-circulacion).
+- ChileAtiende, [Licencia de conducir profesional (clase A)](https://www.chileatiende.gob.cl/fichas/24034-licencia-de-conducir-profesional-clase-a).
+- ChileAtiende, [Inscripción de servicios en RENASTRE](https://www.chileatiende.gob.cl/fichas/3940) y [conductores en RENASTRE](https://chileatiende.gob.cl/fichas/86138-incorporacion-eliminacion-o-modificacion-de-conductor-en-el-registro-nacional-de-servicios-de-transporte-remunerado-de-escolares-renastre).
+- PracticaTest, [Reglamentos de transporte (clase A5)](https://practicatest.cl/manual-de-conducir/clase-A5/reglamentos-de-transporte/142), para la frecuencia de la revisión técnica.
 
 ---
 
