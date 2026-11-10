@@ -11,7 +11,8 @@ import { defineConfig } from "prisma/config";
 // archivos de fuera de esta carpeta (en Vercel, la ruta hasta aquí tiene espacios y
 // no se pueden incluir archivos de fuera del Root Directory; SIM-10). Las migraciones
 // siguen en la carpeta «Base de datos», al lado de esta («Evidencias de sistema»):
-// solo se usan al aplicarlas desde un computador o desde Docker.
+// solo se usan al aplicarlas desde un computador, desde Docker o en la base de prueba de la
+// GitHub Action (.github/workflows/vercel.yml).
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
