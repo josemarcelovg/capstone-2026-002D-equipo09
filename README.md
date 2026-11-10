@@ -135,6 +135,7 @@ El detalle está en el diagrama de componentes y en los diagramas de secuencia d
 | `npm run lint` | Revisa el código con ESLint |
 | `npm test` | Ejecuta las pruebas automáticas unitarias |
 | `npm run test:integracion` | Ejecuta las pruebas de integración con la base de datos y Supabase. Usa el `.env` y necesita `npm run dev` corriendo en otra terminal ([SIM-04](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-04_Plan_de_Pruebas.md>), sección 6.6) |
+| `npm run test:rendimiento` | Ejecuta las pruebas de rendimiento con la base de datos: el listado, la búsqueda y los filtros con 100 vehículos, y el proceso diario de avisos. Usa el `.env` ([SIM-04](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-04_Plan_de_Pruebas.md>), sección 6.5) |
 
 Con `npm run dev`, abrir http://localhost:3000 en el navegador.
 
@@ -169,7 +170,7 @@ Dentro de `Evidencias de sistema`:
 | `Aplicación/src/app/` | Páginas y rutas de la aplicación |
 | `Aplicación/src/lib/` | Reglas de validación y acceso a datos |
 | `Aplicación/public/` | Imágenes y archivos estáticos |
-| `Aplicación/tests/` | Pruebas automáticas: unitarias en la carpeta y de integración en `tests/integracion/` |
+| `Aplicación/tests/` | Pruebas automáticas: unitarias en la carpeta, de integración en `tests/integracion/` y de rendimiento en `tests/rendimiento/` |
 | `Aplicación/prisma/` | Modelo de datos (`schema.prisma`), datos de prueba (`seed.ts`) y comprobación de la conexión (`comprobar.ts`) |
 | `Aplicación/Capturas/` | Capturas de pantalla de la aplicación |
 | `Aplicación/` (raíz) | `Dockerfile`, `compose.yaml`, `.env.example` y configuración del proyecto |

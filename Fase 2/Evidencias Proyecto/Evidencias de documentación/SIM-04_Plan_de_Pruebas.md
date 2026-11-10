@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (requisitos y backlog) y José Vargas (rendimiento y datos) |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración), el 27-10-2026 (encabezados de seguridad), el 28-10-2026 (decisiones de la reunión del 27-10), el 29-10-2026 (casos de conductores), el 02-11-2026 (resultados de SIM-08, entrega final en la semana 15, y CP-SEG-13 y ERR-01 con JOS-07), el 04-11-2026 (avisos por correo), el 09-11-2026 (versión publicada) y el 10-11-2026 (avisos con la base de datos) |
+| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración), el 27-10-2026 (encabezados de seguridad), el 28-10-2026 (decisiones de la reunión del 27-10), el 29-10-2026 (casos de conductores), el 02-11-2026 (resultados de SIM-08, entrega final en la semana 15, y CP-SEG-13 y ERR-01 con JOS-07), el 04-11-2026 (avisos por correo), el 09-11-2026 (versión publicada) y el 10-11-2026 (avisos con la base de datos y pruebas de rendimiento) |
 
 Este plan define cómo se prueba MicroLogist: qué tipos de prueba hay, con qué técnicas se ejecutan, en qué entorno y con qué datos, cuándo se hacen y cómo se registran los resultados y los errores. Cada caso de prueba tiene un identificador que no cambia, y cada requisito de [JOA-05](JOA-05_Requisitos_No_Funcionales.md) queda cubierto por al menos un caso (sección 10). Los casos de la primera entrega ya tienen un estado, gracias a la ejecución de [SIM-03](SIM-03_Pruebas_Primera_Entrega.md). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -38,7 +38,7 @@ La revisión de las evidencias de Fase 1 y 2 (corte del 20-10-2026) pidió adem�
 | **Seguridad** | Acceso solo con sesión, separación entre empresas, validación en el servidor y manejo de secretos. | RNF-SEG-01 a RNF-SEG-10 | `CP-SEG` |
 | **Compatibilidad** | Que funciona en celular, tablet, computador y en los navegadores acordados. | RNF-COM-01 a RNF-COM-05 | `CP-COM` |
 | **Usabilidad** | Que se aprende sin ayuda, que los usuarios lo encuentran útil y que es accesible. | RNF-USA-01, RNF-USA-02 y RNF-USA-06 | `CP-USA` |
-| **Rendimiento y disponibilidad** | Tiempos de carga y respuesta, volumen de datos, disponibilidad, respaldo y facilidad para levantar el proyecto. | RNF-REN-01 a RNF-REN-04, RNF-DIS-01, RNF-DIS-03 y RNF-DIS-05 | `CP-REN` |
+| **Rendimiento y disponibilidad** | Tiempos de carga y respuesta, volumen de datos, disponibilidad, respaldo y facilidad para levantar el proyecto. La parte de la base de datos tiene pruebas automáticas en el código (sección 6.5). | RNF-REN-01 a RNF-REN-04, RNF-DIS-01, RNF-DIS-03 y RNF-DIS-05 | `CP-REN` |
 | **Integración** | Que las partes funcionan juntas: la validación de la aplicación con la base de datos real (Prisma y PostgreSQL), y la aplicación levantada con Supabase Auth y la API de Supabase. | RNF-SEG-01, RNF-SEG-02, RNF-SEG-05, RNF-SEG-06 y RNF-DIS-02 (complementa los casos `CP-FUN` y `CP-SEG`) | `CP-INT` |
 
 Los identificadores `CP-xxx-nn` no se reutilizan ni se renumeran, igual que los `PB-xx` y los `RNF-xxx-nn`.
@@ -199,12 +199,24 @@ Cuando se agregue cada módulo del MVP (conductores, documentos, turnos e ingres
 
 Los umbrales de rendimiento se miden sobre la versión desplegada, no en el computador de desarrollo (JOA-05, sección 3).
 
+**Pruebas automáticas** (`tests/rendimiento/rendimiento.test.ts`, con `npm run test:rendimiento` desde `Aplicación`). Miden la parte de la base de datos de CP-REN-03 y CP-REN-04 con una empresa de 100 vehículos (80 activos, 10 en mantención y 10 inactivos) y sus 300 documentos, con vencimientos entre hace 15 días y 45 días más. Igual que las de integración, crean sus datos dentro de una transacción que se deshace, así que no dejan datos ni mandan correos. Cada consulta se repite 5 veces después de una de calentamiento, y se toma la mediana. Las consultas son las mismas de `listarVehiculos()` y `listarDocumentos()`. El tiempo de carga en el navegador sigue siendo CP-REN-01, con Lighthouse. También corren en cada PR, en la GitHub Action, contra la base PostgreSQL de prueba.
+
+Los umbrales son para la versión publicada, donde la función de Vercel y la base de datos están en la misma región (SIM-10). Desde el computador de desarrollo, en cambio, cada consulta SQL viaja de Chile a la base de `micrologist-dev` en Oregón (us-west-2) y vuelve: unos 240 ms por viaje, medidos con un `SELECT 1`. Por eso la prueba cuenta cuántas consultas SQL hace Prisma en cada listado y compara con el límite el tiempo **sin la latencia de red** (el medido menos un viaje por consulta). Muestra las dos cifras. En la GitHub Action la base está en la misma máquina y la latencia es casi cero.
+
+| Medición del 10-11-2026 (2 ejecuciones) | Medido desde el computador | Consultas SQL | Sin la latencia de red | Límite |
+|---|---|---|---|---|
+| Vehículos: listado, búsqueda por patente, filtro «En mantención» e «Incluir inactivos» | 235 a 671 ms | 1 | 0 a 431 ms | 1 s (RNF-REN-03) |
+| Documentos: listado, filtro «Por vencer», filtro por tipo e «Incluir inactivos» | 715 a 1.298 ms | 3 | 0 a 578 ms | 1 s (RNF-REN-03) |
+| Proceso diario de avisos: 137 avisos de la empresa de prueba en 1 correo | 33,5 y 36,0 s | 143 | — | 5 min (RNF-REN-04) |
+
+Los documentos hacen 3 consultas porque traen también el vehículo o el conductor de cada uno. Las diferencias entre las dos ejecuciones son variaciones de la red, no de la base. El proceso de avisos se compara con su tiempo total, sin descontar nada: aun con unos 240 ms por consulta queda muy bajo los 5 minutos.
+
 | ID | Qué se comprueba | Resultado esperado | Origen | Estado |
 |---|---|---|---|---|
 | CP-REN-01 | Carga del inicio de sesión, el listado y el formulario en un celular simulado con 4G (Lighthouse, 3 mediciones). | Contenido principal en 2,5 s o menos **[POR CONFIRMAR]**. | RNF-REN-01 | ⏳ Pendiente (despliegue) |
 | CP-REN-02 | Tiempo de guardar al registrar y al editar (pestaña "Red", 5 repeticiones). | 2 s o menos **[POR CONFIRMAR]**. | RNF-REN-02 | ⏳ Pendiente (despliegue) |
-| CP-REN-03 | Listado, búsqueda y filtros con 100 vehículos en una empresa **[POR CONFIRMAR]**. | Cumple CP-REN-01; búsqueda y filtros en 1 s o menos. | RNF-REN-03 | ⏳ Pendiente (requiere cargar los datos) |
-| CP-REN-04 | Duración del proceso diario de avisos. | Menos de 5 minutos **[POR CONFIRMAR]**. | RNF-REN-04 | 📝 MVP |
+| CP-REN-03 | Listado, búsqueda y filtros con 100 vehículos en una empresa **[POR CONFIRMAR]**. | Cumple CP-REN-01; búsqueda y filtros en 1 s o menos. | RNF-REN-03 | 🟡 Consultas de la base aprobadas el 10-11-2026 con `npm run test:rendimiento` (0 a 578 ms sin la latencia de red). Falta medir la pantalla con 100 vehículos en la versión publicada (CP-REN-01) |
+| CP-REN-04 | Duración del proceso diario de avisos. | Menos de 5 minutos **[POR CONFIRMAR]**. | RNF-REN-04 | 🟡 Aprobado en desarrollo el 10-11-2026: 33,5 s con 300 documentos y 137 avisos (`npm run test:rendimiento`). Falta revisar la duración en producción, en el registro de la función de Vercel, con el primer envío real (SIM-11) |
 | CP-REN-05 | Disponibilidad de la versión desplegada durante un mes. | 99 % o más **[POR CONFIRMAR]**. | RNF-DIS-01 | ⏳ Pendiente (MVP) |
 | CP-REN-06 | Respaldar la base de datos y restaurarla en un proyecto de prueba. | Se restaura completa. | RNF-DIS-03 | ⏳ Pendiente (MVP) |
 | CP-REN-07 | Otro integrante clona el repositorio y levanta la aplicación siguiendo el README, en un computador distinto. | Lo logra en menos de 15 minutos **[POR CONFIRMAR]**. | RNF-DIS-05 | ⏳ Pendiente (también lo pide la sección 6.3 de JOA-03) |
@@ -362,7 +374,7 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 
 - **Confirmar con el equipo** los umbrales **[POR CONFIRMAR]** que quedan en JOA-05 (sección 8). El quinto tipo de prueba (sección 2) se acordó el 27-10-2026.
 - **Proponer agregar `npm run test:integracion`** a la sección 3.1 de la Definition of Done (SIM-05), junto a `npm test`.
-- **Pruebas de rendimiento automáticas:** quedan para cuando exista el despliegue, porque los umbrales se miden sobre la versión desplegada (CP-REN-01 a CP-REN-03).
+- **Pruebas de rendimiento en la versión publicada:** las consultas de la base y el proceso de avisos ya tienen pruebas automáticas (sección 6.5). Faltan Lighthouse (CP-REN-01 y la pantalla de CP-REN-03) y el tiempo de guardar (CP-REN-02) en `https://micrologist-equipo09.vercel.app`.
 - **Política de contenido con nonce:** la CSP de CP-SEG-14 todavía no restringe los scripts, para no interferir con Next.js. Restringirlos requiere generar un nonce en el proxy en cada solicitud.
 - **Ejecutar los 13 casos pendientes de la primera entrega** antes de darla por terminada (sección 9). ERR-01 se cerró el 02-11-2026 (JOS-07).
 - **Agregar los ID de la sección 10** a la sección 7 de JOA-05 (a cargo de Joaquín).
@@ -383,4 +395,5 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 - [x] Encabezados de seguridad: CP-SEG-14 y CP-INT-16, aprobados el 27-10-2026 (secciones 6.2 y 6.6).
 - [x] Casos de conductores: CP-FUN-20 a 22 y CP-INT-17 a 22, aprobados el 02-11-2026 en SIM-08 (secciones 6.1 y 6.6).
 - [x] Avisos por correo: CP-INT-23 a 28 aprobados, los de la base de datos el 10-11-2026 en SIM-11 (sección 6.6). CP-FUN-27 y 28 esperan un envío real.
+- [x] Pruebas de rendimiento en el código: la parte de la base de CP-REN-03 y CP-REN-04, aprobadas el 10-11-2026 (sección 6.5).
 - [ ] Revisión de Joaquín y José en el PR.
