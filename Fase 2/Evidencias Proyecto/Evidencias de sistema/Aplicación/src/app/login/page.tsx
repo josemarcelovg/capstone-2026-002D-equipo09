@@ -36,16 +36,16 @@ export default async function PaginaLogin() {
         <div aria-hidden="true" className="absolute inset-y-0 left-0 w-1.5 bg-orange-600" />
 
         <div className="relative">
-          <Logo claro />
-          <p className="mt-8 text-xs font-semibold uppercase tracking-[0.2em] text-orange-300 md:mt-12">
+          <Logo claro grande />
+          <p className="mt-8 text-xs font-semibold uppercase tracking-[0.2em] text-orange-300 md:mt-14 md:text-sm">
             Gestión de flotas de transporte
           </p>
-          <p className="mt-3 text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+          <p className="mt-3 text-3xl font-bold leading-tight tracking-tight md:text-[2.75rem]">
             Tu flota,
             <br />
             siempre en orden.
           </p>
-          <p className="mt-4 hidden max-w-sm text-sm leading-relaxed text-stone-200 md:block">
+          <p className="mt-5 hidden max-w-md text-base leading-relaxed text-stone-200 md:block">
             Centraliza tus vehículos, organiza a tus conductores y mantén sus documentos al día.
           </p>
         </div>
