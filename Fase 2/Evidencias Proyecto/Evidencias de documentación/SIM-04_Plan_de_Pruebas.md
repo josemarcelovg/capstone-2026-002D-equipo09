@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (requisitos y backlog) y José Vargas (rendimiento y datos) |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración), el 27-10-2026 (encabezados de seguridad), el 28-10-2026 (decisiones de la reunión del 27-10), el 29-10-2026 (casos de conductores), el 02-11-2026 (resultados de SIM-08, entrega final en la semana 15, y CP-SEG-13 y ERR-01 con JOS-07) y el 04-11-2026 (avisos por correo) |
+| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración), el 27-10-2026 (encabezados de seguridad), el 28-10-2026 (decisiones de la reunión del 27-10), el 29-10-2026 (casos de conductores), el 02-11-2026 (resultados de SIM-08, entrega final en la semana 15, y CP-SEG-13 y ERR-01 con JOS-07), el 04-11-2026 (avisos por correo), el 09-11-2026 (versión publicada) y el 10-11-2026 (avisos con la base de datos) |
 
 Este plan define cómo se prueba MicroLogist: qué tipos de prueba hay, con qué técnicas se ejecutan, en qué entorno y con qué datos, cuándo se hacen y cómo se registran los resultados y los errores. Cada caso de prueba tiene un identificador que no cambia, y cada requisito de [JOA-05](JOA-05_Requisitos_No_Funcionales.md) queda cubierto por al menos un caso (sección 10). Los casos de la primera entrega ya tienen un estado, gracias a la ejecución de [SIM-03](SIM-03_Pruebas_Primera_Entrega.md). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -139,8 +139,8 @@ Los identificadores `CP-xxx-nn` no se reutilizan ni se renumeran, igual que los 
 | CP-FUN-24 | Ver los documentos y su estado (vigente, por vencer, vencido). | PB-12 | 📝 |
 | CP-FUN-25 | Renovar o corregir un documento. | PB-13 | 📝 |
 | CP-FUN-26 | Ver y editar los datos de contacto de la empresa. | PB-14 | 📝 |
-| CP-FUN-27 | Aviso por correo, con fechas controladas: un documento que vence en 30, 7 o 1 días, o hoy, aparece en el correo del día con los días que faltan; uno a 31 días o vencido, no; uno a 5 días recibe solo el de 7. Un correo por empresa en su `email_contacto`, sin documentos de otra empresa ni de dueños inactivos. | PB-15, JOA-13 criterios 1 a 7 | ⏳ Pendiente: reglas aprobadas en `tests/avisos.test.ts` ([SIM-11](SIM-11_Alertas_por_Correo.md)); falta un envío real |
-| CP-FUN-28 | Registro y duplicados: cada aviso queda en `aviso_enviado`; una segunda ejecución el mismo día no repite nada; un envío fallido se reintenta al día siguiente; un documento renovado vuelve a recibir sus avisos. | PB-16, JOA-13 criterios 8 a 11 | ⏳ Pendiente: reglas aprobadas (SIM-11); faltan las pruebas con la base de datos |
+| CP-FUN-27 | Aviso por correo, con fechas controladas: un documento que vence en 30, 7 o 1 días, o hoy, aparece en el correo del día con los días que faltan; uno a 31 días o vencido, no; uno a 5 días recibe solo el de 7. Un correo por empresa en su `email_contacto`, sin documentos de otra empresa ni de dueños inactivos. | PB-15, JOA-13 criterios 1 a 7 | 🟡 Reglas aprobadas en `tests/avisos.test.ts` y con la base de datos en CP-INT-24 (10-11-2026, [SIM-11](SIM-11_Alertas_por_Correo.md)); falta un envío real |
+| CP-FUN-28 | Registro y duplicados: cada aviso queda en `aviso_enviado`; una segunda ejecución el mismo día no repite nada; un envío fallido se reintenta al día siguiente; un documento renovado vuelve a recibir sus avisos. | PB-16, JOA-13 criterios 8 a 11 | 🟡 Reglas aprobadas (SIM-11) y con la base de datos en CP-INT-24 a CP-INT-28 (10-11-2026); falta comprobarlo con un envío real |
 | CP-FUN-29 | Asignar un turno. | PB-17 | 📝 |
 | CP-FUN-30 | Ver los turnos por fecha. | PB-18 | 📝 |
 | CP-FUN-31 | Editar o anular un turno. | PB-19 | 📝 |
@@ -211,10 +211,11 @@ Los umbrales de rendimiento se miden sobre la versión desplegada, no en el comp
 
 ### 6.6 Integración (`CP-INT`)
 
-Son pruebas automáticas que comprueban que las partes del sistema funcionan juntas, sin pasar por la pantalla. Se ejecutan con `npm run test:integracion` desde `Aplicación` y están en dos archivos:
+Son pruebas automáticas que comprueban que las partes del sistema funcionan juntas, sin pasar por la pantalla. Se ejecutan con `npm run test:integracion` desde `Aplicación` y están en tres archivos:
 
 - **`tests/integracion/base-de-datos.test.ts`** (CP-INT-01 a CP-INT-10 y CP-INT-17 a CP-INT-20): los esquemas de validación de la aplicación (`src/lib/vehiculos.ts` y `src/lib/conductores.ts`) y el cliente Prisma generado, contra la base de `DATABASE_URL`, igual que la aplicación. Cada caso crea sus propias empresas, vehículos y conductores dentro de una transacción que se deshace al final, así que no deja datos ni depende del seed.
 - **`tests/integracion/aplicacion.test.ts`** (CP-INT-11 a CP-INT-16 y CP-INT-21 a CP-INT-23): la aplicación levantada con `npm run dev` (por defecto en `http://localhost:3000`; otra dirección va en `URL_APLICACION`), con su proxy y Supabase Auth, y la API de Supabase con la clave pública. Solo leen: no inician sesión con las cuentas de prueba ni crean datos.
+- **`tests/integracion/avisos.test.ts`** (CP-INT-24 a CP-INT-28): el proceso diario de avisos (`src/lib/avisos-datos.ts`) contra la base de `DATABASE_URL`. Cada caso crea sus empresas, vehículos, conductores y documentos dentro de una transacción que se deshace, y reemplaza el envío por una función que solo guarda los correos: no deja datos ni manda correos reales.
 
 Si falta el `.env` o la aplicación no está corriendo, los casos que lo necesitan se saltan con un aviso que dice qué falta, en vez de fallar.
 
@@ -243,6 +244,11 @@ Si falta el `.env` o la aplicación no está corriendo, los casos que lo necesit
 | CP-INT-21 | Abrir sin sesión `/conductores` (también con búsqueda e «Incluir inactivos»), `/conductores/nuevo`, la ficha de un conductor del seed y la de un id que no existe. | Todas responden 307 hacia `/login`, sin datos. | JOA-09 criterio 13, RNF-SEG-01 | ✅ 29-10-2026 |
 | CP-INT-22 | Leer `conductor` directo desde la API de Supabase con la clave pública. | No devuelve ninguna fila. | RNF-SEG-02 | ✅ 29-10-2026. Revisado otra vez el 02-11-2026: la API responde 200 sin filas |
 | CP-INT-23 | Llamar `/api/avisos` sin la clave de `CRON_SECRET`, con una inventada y con una vacía. | Responde 401 y no redirige al inicio de sesión: el proxy la deja pasar y la ruta se protege con la clave. | JOA-13 criterio 12, RNF-SEG-01 | ✅ 04-11-2026 |
+| CP-INT-24 | Ejecutar el proceso de avisos con documentos de dos empresas: un SOAP a 7 días y una licencia que vence hoy, de dueños activos, y otros a 31 días, vencido y de un vehículo inactivo. | Un solo correo por empresa a su `email_contacto`, con el SOAP y la licencia y sin los demás. Cada aviso queda en `aviso_enviado` como `enviado`, con su plazo y su destinatario. | PB-15, PB-16, JOA-13 criterios 1, 2, 4, 6, 7 y 8 | ✅ 10-11-2026 |
+| CP-INT-25 | Ejecutar el proceso dos veces el mismo día. | La segunda ejecución no manda correos ni crea registros. | PB-16, JOA-13 criterio 9 | ✅ 10-11-2026 |
+| CP-INT-26 | Con un documento a 10 días, ejecutar con un envío que falla, otra vez el mismo día y al día siguiente. | El aviso de 30 días queda `fallido`; el mismo día no se reintenta; al día siguiente se envía («Vence en 9 días») y queda `enviado`. | PB-16, JOA-13 criterio 10, RNF-DIS-04 | ✅ 10-11-2026 |
+| CP-INT-27 | Renovar un documento que ya recibió su aviso de 7 días (la nueva fecha vence en 30) y ejecutar otra vez. | Llega un correo nuevo y queda un registro por cada fecha de vencimiento. | PB-13, PB-16, JOA-13 criterio 11 | ✅ 10-11-2026 |
+| CP-INT-28 | Registrar directo en `aviso_enviado` el mismo aviso dos veces, y uno con un plazo de 5 días. | La base rechaza el duplicado (P2002, por la restricción única) y el plazo que no existe (regla CHECK: solo 30, 7, 1 y 0). | JOA-13 sección 3.3, JOS-04 sección 3.7 | ✅ 10-11-2026 |
 
 **Ejecución del 22-10-2026:** 16 de 16 aprobadas (los 15 casos y la comprobación final de que no quedaron datos). Entorno: rama `sim-04-pruebas-integracion` desde `main` (`cb62a6d`), Node.js 24.20, proyecto `micrologist-dev` de Supabase y la aplicación con `npm run dev` en el puerto 3000. Antes y después de la ejecución, una consulta de solo lectura confirmó que la base seguía con las mismas 2 empresas y los mismos 11 vehículos.
 
@@ -255,6 +261,8 @@ Si falta el `.env` o la aplicación no está corriendo, los casos que lo necesit
 **Ejecución del 04-11-2026 (solo `aplicacion.test.ts`, SIM-11):** 9 de 9 aprobadas, con CP-INT-23 agregado. Entorno: rama `sim-11-alertas-correo`, mismo proyecto de Supabase y la aplicación con `npm run dev`. Las pruebas del proceso de avisos con la base de datos se agregan cuando las migraciones de documentos y avisos estén aplicadas ([SIM-11](SIM-11_Alertas_por_Correo.md), sección 5).
 
 **Ejecución del 09-11-2026 (solo `aplicacion.test.ts`, contra producción):** 9 de 9 aprobadas, con `URL_APLICACION=https://micrologist-equipo09.vercel.app` ([SIM-10](SIM-10_Despliegue_Vercel.md), sección 5). CP-INT-13, CP-INT-15 y CP-INT-22 usaron la clave pública de desarrollo; falta repetirlos con la de producción.
+
+**Ejecución del 10-11-2026 (SIM-11):** 37 de 37 aprobadas, con CP-INT-24 a CP-INT-28 agregados (los 5 casos y la comprobación final de que no quedaron datos). Entorno: rama `sim-11-pruebas-integracion`, Node.js 24.20 y proyecto `micrologist-dev`, con las cinco migraciones aplicadas según una consulta de solo lectura hecha antes. La aplicación no estaba levantada, así que se saltaron los casos de `aplicacion.test.ts` que la necesitan; CP-INT-15 y CP-INT-22 sí se ejecutaron. En la misma rama, `npm test` aprobó 120 de 120, y `npx tsc --noEmit`, `npm run lint` y `npm run build` terminaron sin errores.
 
 ---
 
@@ -324,7 +332,7 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 | RNF-REN-02 | CP-REN-02 | | RNF-DIS-01 | CP-REN-05 |
 | RNF-REN-03 | CP-REN-03 | | RNF-DIS-02 | CP-FUN-02, CP-FUN-07, CP-FUN-13, CP-INT-01 |
 | RNF-REN-04 | CP-REN-04 | | RNF-DIS-03 | CP-REN-06 |
-| | | | RNF-DIS-04 | CP-FUN-14 |
+| | | | RNF-DIS-04 | CP-FUN-14, CP-INT-26 |
 | | | | RNF-DIS-05 | CP-REN-07 |
 
 ---
@@ -366,4 +374,5 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 - [x] Tipo de prueba de integración con 15 casos automáticos en el código, ejecutados el 22-10-2026 (secciones 2 y 6.6).
 - [x] Encabezados de seguridad: CP-SEG-14 y CP-INT-16, aprobados el 27-10-2026 (secciones 6.2 y 6.6).
 - [x] Casos de conductores: CP-FUN-20 a 22 y CP-INT-17 a 22, aprobados el 02-11-2026 en SIM-08 (secciones 6.1 y 6.6).
+- [x] Avisos por correo: CP-INT-23 a 28 aprobados, los de la base de datos el 10-11-2026 en SIM-11 (sección 6.6). CP-FUN-27 y 28 esperan un envío real.
 - [ ] Revisión de Joaquín y José en el PR.
