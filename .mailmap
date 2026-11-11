@@ -1,8 +1,0 @@
-# Nombre real y correo institucional de cada integrante, para que git reúna sus commits
-# aunque se hayan hecho con otro nombre o desde GitHub (por ejemplo, al unir un PR con squash).
-# Lo usan `git shortlog` y `git log --use-mailmap`. Formato: nombre real <correo> nombre usado <correo usado>.
-
-Simón Vicente Jofré Sepúlveda <si.jofre@duocuc.cl> simon <si.jofre@duocuc.cl>
-Simón Vicente Jofré Sepúlveda <si.jofre@duocuc.cl> XxsimonxX12 <133899721+XxsimonxX12@users.noreply.github.com>
-Joaquin Ignacio Orellana Canales <joaq.orellanac@duocuc.cl> Joaquin Ignacio Orellana Canales <164227643+joaquinIOR@users.noreply.github.com>
-Joaquin Ignacio Orellana Canales <joaq.orellanac@duocuc.cl> Joaquin Orellana <joaq.orellanac@duocuc.cl>
