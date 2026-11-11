@@ -7,7 +7,8 @@ import { formatearRut } from "@/lib/rut";
 import { Encabezado, MensajeExito } from "../../encabezado";
 import { BOTON_PRINCIPAL, BOTON_SECUNDARIO, CONTROL, TARJETA } from "../../estilos";
 import { IconoBuscar, IconoConductor, IconoFlecha, IconoMas } from "../../iconos";
-import { InsigniaEstado } from "../insignia-estado";
+import { BARRA_ESTADO } from "../../insignia";
+import { InsigniaEstado, tonoConductor } from "../insignia-estado";
 
 export const metadata: Metadata = { title: "Conductores" };
 
@@ -147,7 +148,7 @@ export default async function PaginaConductores({ searchParams }: PageProps<"/co
                   <li key={conductor.id}>
                     <Link
                       href={`/conductores/${conductor.id}`}
-                      className={`${TARJETA} block p-4 transition-colors hover:border-orange-300 active:bg-orange-50`}
+                      className={`${TARJETA} ${BARRA_ESTADO[tonoConductor(conductor.activo)]} block p-4 transition-colors hover:border-orange-300 active:bg-orange-50`}
                     >
                       <div className="flex items-center justify-between gap-2">
                         <span className="flex min-w-0 items-center gap-3">
@@ -180,7 +181,7 @@ export default async function PaginaConductores({ searchParams }: PageProps<"/co
                   <tbody className="divide-y divide-stone-100 text-stone-800">
                     {conductores.map((conductor) => (
                       <tr key={conductor.id} className="transition-colors hover:bg-orange-50/60">
-                        <td className="px-4 py-3 font-semibold text-stone-900">
+                        <td className={`px-4 py-3 font-semibold text-stone-900 ${BARRA_ESTADO[tonoConductor(conductor.activo)]}`}>
                           <span className="flex items-center gap-3">
                             <Avatar nombre={conductor.nombre} />
                             {conductor.nombre}

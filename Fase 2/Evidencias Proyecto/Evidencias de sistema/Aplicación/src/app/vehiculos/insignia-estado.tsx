@@ -1,7 +1,7 @@
 import { ETIQUETA_ESTADO, type Estado } from "@/lib/vehiculos";
 import { Insignia, type Tono } from "../insignia";
 
-const TONOS: Record<Estado, Tono> = {
+export const TONOS: Record<Estado, Tono> = {
   activo: "verde",
   en_mantencion: "amarillo",
   inactivo: "gris",

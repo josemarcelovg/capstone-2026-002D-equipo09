@@ -9,6 +9,14 @@ const COLORES: Record<Tono, { fondo: string; punto: string }> = {
   gris: { fondo: "bg-stone-100 text-stone-700 ring-stone-500/20", punto: "bg-stone-400" },
 };
 
+/** Barra de color a la izquierda de una fila o tarjeta, según su estado (acompaña a la insignia). */
+export const BARRA_ESTADO: Record<Tono, string> = {
+  verde: "border-l-4 border-l-emerald-500",
+  amarillo: "border-l-4 border-l-amber-500",
+  rojo: "border-l-4 border-l-red-500",
+  gris: "border-l-4 border-l-stone-400",
+};
+
 /**
  * Insignia de estado con un punto de color. El estado siempre se lee en el texto, no solo en
  * el color (RNF-USA-06).

@@ -15,7 +15,8 @@ import { formatearFecha, hoyEnChile } from "@/lib/fechas";
 import { Encabezado, MensajeExito } from "../../encabezado";
 import { BOTON_PRINCIPAL, BOTON_SECUNDARIO, CONTROL, TARJETA } from "../../estilos";
 import { IconoDocumento, IconoFlecha, IconoMas } from "../../iconos";
-import { IconoEstadoDocumento, InsigniaVencimiento } from "../insignia-estado";
+import { BARRA_ESTADO } from "../../insignia";
+import { IconoEstadoDocumento, InsigniaVencimiento, tonoDocumento } from "../insignia-estado";
 
 export const metadata: Metadata = { title: "Documentos" };
 
@@ -160,7 +161,10 @@ export default async function PaginaDocumentos({ searchParams }: PageProps<"/doc
               {/* Celular y tablet: una tarjeta por documento */}
               <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:hidden">
                 {documentos.map((documento) => (
-                  <li key={documento.id} className={`${TARJETA} p-4`}>
+                  <li
+                    key={documento.id}
+                    className={`${TARJETA} ${BARRA_ESTADO[tonoDocumento(documento.fechaVencimiento, hoy)]} p-4`}
+                  >
                     <div className="flex items-center gap-3">
                       <IconoEstadoDocumento fechaVencimiento={documento.fechaVencimiento} hoy={hoy} />
                       <Link
@@ -198,7 +202,9 @@ export default async function PaginaDocumentos({ searchParams }: PageProps<"/doc
                   <tbody className="divide-y divide-stone-100 text-stone-800">
                     {documentos.map((documento) => (
                       <tr key={documento.id} className="transition-colors hover:bg-orange-50/60">
-                        <td className="px-4 py-3 font-semibold break-words text-stone-900">
+                        <td
+                          className={`px-4 py-3 font-semibold break-words text-stone-900 ${BARRA_ESTADO[tonoDocumento(documento.fechaVencimiento, hoy)]}`}
+                        >
                           <span className="flex items-center gap-3">
                             <IconoEstadoDocumento fechaVencimiento={documento.fechaVencimiento} hoy={hoy} />
                             {nombreDelDocumento(documento)}
