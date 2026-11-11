@@ -154,21 +154,52 @@ const opcional = z
   .nullish()
   .transform((valor) => valor || null);
 
+/** Los campos que deciden a quién pertenece el documento. */
+const CAMPOS_DEL_DUENO = {
+  tipo: z.enum(TIPOS_DOCUMENTO, { error: MENSAJES.tipo }),
+  vehiculoId: opcional,
+  conductorId: opcional,
+  descripcion: z
+    .string({ error: MENSAJES.descripcion })
+    .trim()
+    .nullish()
+    .transform((valor) => valor || null)
+    .pipe(z.string().min(2, MENSAJES.descripcion).max(100, MENSAJES.descripcion).nullable()),
+};
+
+type DatosDelDueno = z.infer<z.ZodObject<typeof CAMPOS_DEL_DUENO>>;
+
+/** Exactamente un dueño, que admita el tipo, y la descripción cuando el tipo es "otro". */
+function reglasDelDueno(datos: DatosDelDueno, contexto: z.RefinementCtx) {
+  const error = (campo: string, message: string) =>
+    contexto.addIssue({ code: "custom", path: [campo], message });
+  const duenos = DUENOS_POR_TIPO[datos.tipo];
+
+  // Siempre hay exactamente un dueño, y tiene que ser uno que admite el tipo.
+  if (datos.vehiculoId && datos.conductorId) {
+    error("dueno", MENSAJES.sinDueno);
+  } else if (datos.conductorId && !duenos.includes("conductor")) {
+    error("dueno", MENSAJES.noEsDeConductor);
+  } else if (datos.vehiculoId && !duenos.includes("vehiculo")) {
+    error("dueno", MENSAJES.noEsDeVehiculo);
+  } else if (!datos.vehiculoId && !datos.conductorId) {
+    if (datos.tipo === "otro") error("dueno", MENSAJES.sinDueno);
+    else if (datos.tipo === "licencia_conducir") error("conductorId", MENSAJES.conductor);
+    else error("vehiculoId", MENSAJES.vehiculo);
+  }
+
+  if (datos.tipo === "otro" && !datos.descripcion) error("descripcion", MENSAJES.descripcion);
+}
+
+const esquemaDelDueno = z.object(CAMPOS_DEL_DUENO).superRefine(reglasDelDueno);
+
 export function esquemaDocumento(hoy: string) {
   const { minima, maxima } = rangoDeFechas(hoy);
   const fueraDeRango = `La fecha debe estar entre ${formatearFecha(minima)} y ${formatearFecha(maxima)}.`;
 
   return z
     .object({
-      tipo: z.enum(TIPOS_DOCUMENTO, { error: MENSAJES.tipo }),
-      vehiculoId: opcional,
-      conductorId: opcional,
-      descripcion: z
-        .string({ error: MENSAJES.descripcion })
-        .trim()
-        .nullish()
-        .transform((valor) => valor || null)
-        .pipe(z.string().min(2, MENSAJES.descripcion).max(100, MENSAJES.descripcion).nullable()),
+      ...CAMPOS_DEL_DUENO,
       fechaVencimiento: z
         .string({ error: MENSAJES.fecha })
         .transform((valor, contexto) => {
@@ -187,26 +218,7 @@ export function esquemaDocumento(hoy: string) {
         .nullish()
         .transform((valor) => valor || null),
     })
-    .superRefine((datos, contexto) => {
-      const error = (campo: string, message: string) =>
-        contexto.addIssue({ code: "custom", path: [campo], message });
-      const duenos = DUENOS_POR_TIPO[datos.tipo];
-
-      // Siempre hay exactamente un dueño, y tiene que ser uno que admite el tipo.
-      if (datos.vehiculoId && datos.conductorId) {
-        error("dueno", MENSAJES.sinDueno);
-      } else if (datos.conductorId && !duenos.includes("conductor")) {
-        error("dueno", MENSAJES.noEsDeConductor);
-      } else if (datos.vehiculoId && !duenos.includes("vehiculo")) {
-        error("dueno", MENSAJES.noEsDeVehiculo);
-      } else if (!datos.vehiculoId && !datos.conductorId) {
-        if (datos.tipo === "otro") error("dueno", MENSAJES.sinDueno);
-        else if (datos.tipo === "licencia_conducir") error("conductorId", MENSAJES.conductor);
-        else error("vehiculoId", MENSAJES.vehiculo);
-      }
-
-      if (datos.tipo === "otro" && !datos.descripcion) error("descripcion", MENSAJES.descripcion);
-    });
+    .superRefine(reglasDelDueno);
 }
 
 export type DatosDocumento = z.infer<ReturnType<typeof esquemaDocumento>>;
@@ -221,10 +233,18 @@ export function validarDocumento(
   if (resultado.success) return { ok: true, datos: resultado.data };
 
   const errores: ErroresDocumento = {};
-  for (const problema of resultado.error.issues) {
-    const campo = problema.path[0] as keyof ErroresDocumento;
-    errores[campo] ??= problema.message;
-  }
+  const anotar = (problemas: z.core.$ZodIssue[]) => {
+    for (const problema of problemas) {
+      const campo = problema.path[0] as keyof ErroresDocumento;
+      errores[campo] ??= problema.message;
+    }
+  };
+  anotar(resultado.error.issues);
+
+  // Zod no ejecuta las reglas del dueño si otro campo ya falló (por ejemplo, la fecha), así que se
+  // revisan aparte para mostrar todos los errores a la vez (JOA-10, sección 4; SIM-12, OBS-01).
+  const dueno = esquemaDelDueno.safeParse(datos);
+  if (!dueno.success) anotar(dueno.error.issues);
   return { ok: false, errores };
 }
 

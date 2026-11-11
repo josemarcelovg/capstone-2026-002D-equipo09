@@ -156,6 +156,27 @@ test("rechaza la fecha fuera de rango y acepta una pasada dentro del rango (crit
   assert.ok(validarDocumento({ ...soap, fechaVencimiento: "30-11-2026" }, HOY).ok);
 });
 
+test("muestra a la vez el error del dueño y el de otro campo (SIM-12, OBS-01)", () => {
+  const fecha = "Ingresa la fecha de vencimiento (DD-MM-AAAA).";
+  assert.deepEqual(errores({ tipo: "soap", vehiculoId: "", fechaVencimiento: "" }), {
+    vehiculoId: "Selecciona el vehículo al que pertenece el documento.",
+    fechaVencimiento: fecha,
+  });
+  assert.deepEqual(errores({ tipo: "otro", fechaVencimiento: "31-02-2027" }), {
+    dueno: "Indica si el documento es de un vehículo o de un conductor.",
+    descripcion: "Describe el documento (entre 2 y 100 caracteres).",
+    fechaVencimiento: fecha,
+  });
+  assert.deepEqual(
+    errores({ tipo: "licencia_conducir", vehiculoId: VEHICULO, fechaVencimiento: "01-12-2062", observaciones: "x".repeat(501) }),
+    {
+      dueno: "Ese tipo de documento no corresponde a un vehículo.",
+      fechaVencimiento: "La fecha debe estar entre 01-12-2021 y 01-12-2036.",
+      observaciones: "Las observaciones pueden tener hasta 500 caracteres.",
+    },
+  );
+});
+
 test("rechaza un tipo que no existe y observaciones demasiado largas", () => {
   assert.equal(errores({ ...soap, tipo: "pasaporte" }).tipo, "Selecciona el tipo de documento.");
   assert.equal(errores({ ...soap, tipo: "" }).tipo, "Selecciona el tipo de documento.");
