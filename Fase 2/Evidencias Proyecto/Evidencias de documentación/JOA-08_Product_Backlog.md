@@ -7,7 +7,7 @@
 | **Revisión** | José Vargas y Simón Jofré |
 | **Estado** | Propuesta para revisión del equipo |
 | **Fecha** | 12-10-2026 (actualizado el 28-10-2026) |
-| **Actualización** | 08-11-2026 (avisos en curso; criterios de PB-08 a PB-16 con las decisiones de JOA-09, JOA-10 y JOA-13) |
+| **Actualización** | 11-11-2026 (PB-11 a PB-14 y PB-24 terminados, según SIM-12) |
 
 Este documento reúne todo lo que MicroLogist debe hacer, ordenado por prioridad. Parte de la [Product Vision](JOA-04_Product_Vision.md) y de las reglas de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md). De aquí salen los ítems de cada Sprint Backlog (SIM-06) y los casos del plan de pruebas (SIM-04). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -35,7 +35,7 @@ Este backlog contiene funcionalidades del producto. Las tareas de documentación
 
 ## 2. Backlog priorizado
 
-Estado al 08-11-2026.
+Estado al 11-11-2026.
 
 | Prioridad | ID | Ítem | Módulo | Etapa | Estado |
 |---|---|---|---|---|---|
@@ -49,11 +49,11 @@ Estado al 08-11-2026.
 | 8 | PB-08 | Registrar conductor | Conductores | MVP completo | Terminado |
 | 9 | PB-09 | Listar, buscar y editar conductores | Conductores | MVP completo | Terminado |
 | 10 | PB-10 | Desactivar y reactivar conductor | Conductores | MVP completo | Terminado |
-| 11 | PB-11 | Registrar documento con vencimiento | Documentos | MVP completo | En curso |
-| 12 | PB-12 | Ver documentos y su estado | Documentos | MVP completo | En curso |
-| 13 | PB-13 | Renovar o corregir documento | Documentos | MVP completo | En curso |
-| 14 | PB-24 | Conductor asignado al vehículo | Vehículos | MVP completo | En curso |
-| 15 | PB-14 | Datos de contacto de la empresa | Empresa | MVP completo | En curso |
+| 11 | PB-11 | Registrar documento con vencimiento | Documentos | MVP completo | Terminado |
+| 12 | PB-12 | Ver documentos y su estado | Documentos | MVP completo | Terminado |
+| 13 | PB-13 | Renovar o corregir documento | Documentos | MVP completo | Terminado |
+| 14 | PB-24 | Conductor asignado al vehículo | Vehículos | MVP completo | Terminado |
+| 15 | PB-14 | Datos de contacto de la empresa | Empresa | MVP completo | Terminado |
 | 16 | PB-15 | Aviso por correo antes del vencimiento | Avisos | MVP completo | En curso |
 | 17 | PB-16 | Avisos sin duplicados y con registro de envíos | Avisos | MVP completo | En curso |
 | 18 | PB-17 | Asignar turno | Turnos | Trabajo futuro | Pendiente |
@@ -68,11 +68,11 @@ Estado al 08-11-2026.
 
 - **Primera entrega (PB-01 a PB-07): terminada.** El inicio y cierre de sesión con Supabase Auth (SIM-02, PR #21) se integró con el módulo de vehículos, y las pruebas de SIM-03 aprobaron los 14 criterios de JOA-01 con dos empresas ficticias (PR #22). El detalle por criterio está en [JOA-03](JOA-03_Validacion_Primera_Entrega.md), que cerró la entrega con la demo ensayada (PR #36).
 - **Conductores (PB-08 a PB-10): terminado.** Están la tabla con su migración (JOS-09, PR #41), la validación y el acceso a datos (JOS-10, PR #42) y las pantallas (JOA-11 y JOA-12, PR #43). Las pruebas con las dos empresas aprobaron 14 de 14 (SIM-08, PR #47).
-- **Datos de contacto de la empresa (PB-14): en curso.** La pantalla "Mi empresa" ya está (JOA-15, PR #44), con pruebas unitarias. Su correo de contacto es el destinatario de los avisos (JOA-13). Falta detallar y ejecutar su caso CP-FUN-26 (SIM-04).
-- **Documentos (PB-11 a PB-13): en curso.** Están la validación y el cálculo del estado según [JOA-10](JOA-10_Reglas_Modulo_Documentos.md) (PR #48), la tabla con su migración (PR #53) y el acceso a datos con las pantallas, incluida la sección en la ficha del vehículo y del conductor (PR #56). Faltan sus pruebas con Supabase (CP-FUN-23 a CP-FUN-25).
-- **Conductor asignado (PB-24): en curso.** El vehículo tiene un conductor asignado opcional (solo activos de la empresa) y su ficha muestra al conductor con sus documentos. Tiene dos pruebas de integración con la base de datos (PR #57). Faltan sus casos en el plan de pruebas (SIM-04).
-- **Avisos por correo (PB-15 y PB-16): en curso.** Están el proceso diario que llama Vercel Cron, el envío con Resend y el registro en `aviso_enviado`, con su migración, según las reglas de [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md) (SIM-11, PR #55). Sus reglas tienen pruebas unitarias. Faltan la cuenta de Resend con un envío real (CP-FUN-27) y las pruebas con la base de datos (CP-FUN-28).
-- **Despliegue (SIM-10):** a pedido de la profesora (05-11-2026), una GitHub Action ejecuta las pruebas y publica en Vercel en cada push a `main` (PR #62). Falta cargar sus secretos en GitHub para que publique.
+- **Documentos (PB-11 a PB-13): terminado.** Están la validación y el cálculo del estado según [JOA-10](JOA-10_Reglas_Modulo_Documentos.md) (PR #48), la tabla con su migración (PR #53), las pantallas con la sección en la ficha del vehículo y del conductor (PR #56) y sus pruebas de integración (PR #64). Las pruebas funcionales con las dos empresas aprobaron CP-FUN-23 a CP-FUN-25 ([SIM-12](SIM-12_Pruebas_Documentos_Empresa_y_Conductor.md), PR #81).
+- **Datos de contacto de la empresa (PB-14): terminado.** La pantalla "Mi empresa" (JOA-15, PR #44) aprobó CP-FUN-26 (SIM-12). Su correo de contacto es el destinatario de los avisos (JOA-13).
+- **Conductor asignado (PB-24): terminado.** El vehículo tiene un conductor asignado opcional (solo activos de la empresa) y su ficha muestra al conductor con sus documentos (PR #57). Aprobó CP-FUN-33, con sus criterios 1 a 5 (SIM-12).
+- **Avisos por correo (PB-15 y PB-16): en curso.** Están el proceso diario que llama Vercel Cron, el envío con Resend y el registro en `aviso_enviado`, según las reglas de [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md) (SIM-11, PR #55), con un reintento inmediato si el envío falla (PR #74). Sus reglas tienen pruebas unitarias y con la base de datos (CP-INT-24 a CP-INT-34, PR #68, #70 y #74). Falta la cuenta de Resend con un envío real (CP-FUN-27 y CP-FUN-28).
+- **Despliegue (SIM-10):** a pedido de la profesora (05-11-2026), una GitHub Action ejecuta las pruebas, también las de integración con PostgreSQL (PR #71), y publica en Vercel en cada push a `main` (PR #62).
 - **Siguen:** lo que entra en la entrega final, en el apartado siguiente.
 
 ### Alcance de la entrega final (semana 15)
@@ -423,7 +423,6 @@ Lo pidió la profesora en la revisión del 28-10-2026 (SIM-06, sección 6). Es d
 - **Estimación:** se estima con tallas XS a XL al planificar cada iteración (acordado el 27-10-2026). La talla de cada tarea queda en el campo *Size* del tablero.
 - **Sprints:** los sprints duran 2 semanas, igual que las iteraciones del tablero (acordado el 27-10-2026). La asignación de ítems a cada sprint se registra en el Sprint Backlog (SIM-06).
 - **Reglas de cada módulo:** conductores, documentos, turnos e ingresos necesitan un documento de reglas como JOA-01 antes de desarrollarse. Ahí se resuelven los **[POR CONFIRMAR]** de sus ítems. Conductores (PB-08 a PB-10): resueltos en [JOA-09](JOA-09_Reglas_Modulo_Conductores.md). Documentos (PB-11 a PB-13): resueltos en [JOA-10](JOA-10_Reglas_Modulo_Documentos.md). Avisos (PB-14 a PB-16): resueltos en [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md). Turnos (PB-17 a PB-19): resueltos en [JOA-14](JOA-14_Reglas_Modulo_Turnos.md).
-- **PB-24:** falta agregar sus casos al plan de pruebas (SIM-04). Su criterio 4 se confirmó el 04-11-2026.
 
 ---
 
@@ -446,6 +445,7 @@ Lo pidió la profesora en la revisión del 28-10-2026 (SIM-06, sección 6). Es d
 | 03-11-2026 | El equipo aprueba el alcance de la entrega final (PR #50): se quita su [POR CONFIRMAR], turnos y PB-20 pasan a la etapa "Trabajo futuro" y los ítems fuera de la entrega se anotan en la sección 7. |
 | 04-11-2026 | PB-11 a PB-13 pasan a En curso (pantallas unidas en el PR #56; faltan sus pruebas). PB-24 pasa a En curso: se confirma su criterio 4 (varios vehículos por conductor y sin conductor al desactivarlo) y se agrega el criterio 5 (vehículos en la ficha del conductor). |
 | 08-11-2026 | PB-15 y PB-16 pasan a En curso (SIM-11, PR #55). Los criterios de los ítems de la entrega final (PB-08 a PB-16) se escriben con las decisiones de JOA-09, JOA-10 y JOA-13 y se les quita el [POR CONFIRMAR], sin cambiar su numeración; PB-16 suma el criterio 4 (documento renovado). Se agregan al avance los avisos y el despliegue con GitHub Actions (PR #62). |
+| 11-11-2026 | PB-11 a PB-14 y PB-24 pasan a Terminado: sus casos CP-FUN-23 a CP-FUN-26 y CP-FUN-33 se aprobaron en SIM-12 (PR #81). PB-15 y PB-16 siguen En curso hasta el envío real con Resend. Se quita de la sección 8 el pendiente de PB-24. |
 
 ---
 
