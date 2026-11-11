@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { EnlaceVolver } from "./enlace-volver";
 import { IconoBuscar } from "./iconos";
 
 // Título de la pestaña en todas las páginas 404, también cuando la ficha de un vehículo
@@ -14,12 +14,8 @@ export default function NoEncontrado() {
       </span>
       <h1 className="mt-4 text-2xl font-bold tracking-tight text-stone-900">No encontrado</h1>
       <p className="mt-2 text-stone-700">No encontramos lo que buscas.</p>
-      <Link
-        href="/vehiculos"
-        className="mt-4 inline-block font-medium text-orange-800 hover:underline"
-      >
-        Volver al listado de vehículos
-      </Link>
+      {/* Vuelve al listado de la sección donde se estaba (SIM-08 y SIM-12, OBS-03). */}
+      <EnlaceVolver className="mt-4 inline-block font-medium text-orange-800 hover:underline" />
     </div>
   );
 }
