@@ -5,8 +5,8 @@
 | **Tarea** | [SIM-12] Probar documentos, datos de la empresa y conductor asignado con dos empresas ficticias |
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | José Vargas y Joaquín Orellana |
-| **Estado** | Ejecutado: 23 de 23 criterios aprobados, con 3 observaciones menores |
-| **Fecha** | 10-11-2026 |
+| **Estado** | Ejecutado: 23 de 23 criterios aprobados. Las 2 observaciones menores se corrigieron el 11-11-2026 |
+| **Fecha** | 10-11-2026 · actualizado el 11-11-2026 (observaciones corregidas) |
 
 Este documento prueba el módulo de documentos (PB-11 a PB-13) con los 15 criterios de aceptación de [JOA-10](JOA-10_Reglas_Modulo_Documentos.md) (sección 6), los datos de contacto de la empresa (PB-14) y el conductor asignado al vehículo (PB-24), con los criterios de [JOA-08](JOA-08_Product_Backlog.md). Usa las dos empresas ficticias y el mismo formato que [SIM-08](SIM-08_Pruebas_Conductores.md). Corresponde a los casos CP-FUN-23 a CP-FUN-26 y CP-FUN-33 del [plan de pruebas](SIM-04_Plan_de_Pruebas.md), y a CP-SEG-03 y CP-SEG-04 repetidos para documentos.
 
@@ -29,7 +29,7 @@ Con esto, PB-11 a PB-14 y PB-24 tienen sus casos de SIM-04 aprobados, que era lo
 | `npm test` | ✅ 121 de 121 |
 | `npm run test:integracion` | ✅ 50 de 50, con la aplicación levantada |
 
-No se encontraron errores. Quedan 3 observaciones menores de mensajes en pantalla (sección 7).
+No se encontraron errores. Las 2 observaciones menores de mensajes en pantalla se corrigieron el 11-11-2026, y una tercera se retiró porque no era un error (sección 7).
 
 ---
 
@@ -56,7 +56,7 @@ Las pruebas crearon sus propios datos en la Empresa A, todos ficticios: patentes
 
 Los vencimientos se eligieron para cubrir cada estado: ayer (09-11-2026), hoy, mañana, en 5, 10 y 30 días, en 31 días (11-12-2026) y en 60 días (09-01-2027).
 
-**Cómo se ingresaron:** desde el navegador, llenando cada formulario y enviándolo una vez por carga de página. En la prueba de fechas del criterio 4, cuatro envíos seguidos hechos por script sin recargar terminaron guardando el SOAP de SIMD-12 con la fecha 09-01-2027, de un intento anterior. Era uno de los documentos planificados, así que se mantuvo. Se atribuye a enviar el formulario sin esperar la respuesta anterior: no se repitió en los envíos siguientes, hechos de a uno.
+**Cómo se ingresaron:** desde el navegador, llenando cada formulario y enviándolo una vez por carga de página. En la prueba de fechas del criterio 4 se enviaron cuatro fechas seguidas sin recargar, y la última, `2027-01-09`, guardó el SOAP de SIMD-12. Es correcto, porque la aplicación acepta ese formato (sección 7). Era uno de los documentos planificados, así que se mantuvo. Los envíos siguientes se hicieron de a uno, esperando cada respuesta.
 
 ---
 
@@ -151,13 +151,14 @@ Al guardar "Mi empresa", el nombre de la Empresa A quedó sin el espacio que ten
 
 ## 7. Errores y observaciones
 
-No se encontraron errores. Tres observaciones menores, que no bloquean ningún criterio:
+No se encontraron errores. Quedaron dos observaciones menores, que no bloqueaban ningún criterio y se corrigieron el 11-11-2026:
 
-| ID | Dónde | Observación | Sugerencia |
+| ID | Dónde | Observación | Corrección |
 |---|---|---|---|
-| OBS-01 | Registro de documentos | Con un tipo de vehículo, sin vehículo y sin fecha, solo aparece el error de la fecha. El del vehículo aparece recién al corregirla. JOA-10 (sección 4) pide el error junto a cada campo. | Validar el dueño aunque falte la fecha, para mostrar los dos errores a la vez. |
-| OBS-02 | Registro de documentos | Una fecha con otro formato, como `2027-01-09`, muestra "La fecha debe estar entre 10-11-2021 y 10-11-2036." en vez de "Ingresa la fecha de vencimiento (DD-MM-AAAA)." | Revisar el formato antes que el rango. |
-| OBS-03 | Página "No encontrado" | Al abrir un documento de otra empresa, la página ofrece "Volver al listado de vehículos". Es la misma observación OBS-01 de SIM-08, ahora también en documentos. | Un enlace general a "Inicio", o uno al listado de la sección. |
+| OBS-01 | Registro de documentos | Con un tipo de vehículo, sin vehículo y sin fecha, solo aparecía el error de la fecha. El del vehículo aparecía recién al corregirla. JOA-10 (sección 4) pide el error junto a cada campo. | ✅ Las reglas del dueño estaban en un `superRefine` de Zod, que no se ejecuta si otro campo ya falló. Ahora `validarDocumento` las revisa aparte y muestra todos los errores a la vez. Lo prueba `tests/documentos.test.ts` («muestra a la vez el error del dueño y el de otro campo»). |
+| OBS-03 | Página "No encontrado" | Al abrir un documento de otra empresa, la página ofrecía "Volver al listado de vehículos". Es la misma observación OBS-01 de SIM-08, ahora también en documentos. | ✅ El enlace lleva al listado de la sección donde se estaba: documentos, conductores o vehículos. Lo decide `listadoParaVolver()` en `src/lib/navegacion.ts`, probada en `tests/navegacion.test.ts`. No se revisó en pantalla, porque la sesión de prueba ya había vencido. |
+
+**OBS-02 se retiró.** Se había anotado que la fecha `2027-01-09` mostraba el mensaje del rango en vez del de formato. No era así: la aplicación acepta ese formato a propósito, porque es el que entrega un campo de tipo fecha (`leerFecha` en `src/lib/fechas.ts` y la prueba «acepta la fecha del campo de tipo fecha»). Ese envío se guardó bien: es el SOAP de SIMD-12 que vence el 09-01-2027. Su respuesta llegó después de que se leyó la pantalla, que todavía mostraba el mensaje del intento anterior (sección 2).
 
 ---
 
@@ -167,5 +168,6 @@ No se encontraron errores. Tres observaciones menores, que no bloquean ningún c
 - [x] Pruebas automáticas completas: 121 unitarias y 50 de integración (sección 3).
 - [x] Casos manuales ejecutados con las dos empresas: 15 de 15 criterios de JOA-10, 3 de 3 de PB-14 y 5 de 5 de PB-24 (sección 4).
 - [x] Resultados confirmados en la base con consultas de solo lectura (sección 5).
+- [x] Observaciones OBS-01 y OBS-03 corregidas, con sus pruebas: 125 unitarias y 43 de integración el 11-11-2026 (sección 7).
 - [ ] Tarjeta [SIM-12] en el tablero.
 - [ ] Revisión de José y Joaquín en el PR.
