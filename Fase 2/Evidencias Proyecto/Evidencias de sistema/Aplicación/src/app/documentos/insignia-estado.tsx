@@ -13,6 +13,10 @@ const TONOS: Record<EstadoDocumento, Tono> = {
   vigente: "verde",
 };
 
+/** Tono del estado del documento, para colorear su fila o tarjeta. */
+export const tonoDocumento = (fechaVencimiento: string, hoy: string): Tono =>
+  TONOS[calcularEstado(fechaVencimiento, hoy).estado];
+
 const ICONOS: Record<EstadoDocumento, { Icono: typeof IconoAlerta; color: string }> = {
   vencido: { Icono: IconoAlerta, color: "bg-red-100 text-red-700" },
   por_vencer: { Icono: IconoReloj, color: "bg-amber-100 text-amber-800" },

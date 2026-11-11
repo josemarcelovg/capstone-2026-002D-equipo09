@@ -6,7 +6,8 @@ import { listarVehiculos } from "@/lib/vehiculos-datos";
 import { Encabezado, MensajeExito } from "../../encabezado";
 import { BOTON_PRINCIPAL, BOTON_SECUNDARIO, CONTROL, ETIQUETA_PATENTE, TARJETA } from "../../estilos";
 import { IconoBuscar, IconoBus, IconoFlecha, IconoMas } from "../../iconos";
-import { InsigniaEstado } from "../insignia-estado";
+import { BARRA_ESTADO } from "../../insignia";
+import { InsigniaEstado, TONOS } from "../insignia-estado";
 
 export const metadata: Metadata = { title: "Vehículos" };
 
@@ -129,7 +130,7 @@ export default async function PaginaVehiculos({ searchParams }: PageProps<"/vehi
                   <li key={vehiculo.id}>
                     <Link
                       href={`/vehiculos/${vehiculo.id}`}
-                      className={`${TARJETA} block p-4 transition-colors hover:border-orange-300 active:bg-orange-50`}
+                      className={`${TARJETA} ${BARRA_ESTADO[TONOS[vehiculo.estado]]} block p-4 transition-colors hover:border-orange-300 active:bg-orange-50`}
                     >
                       <div className="flex items-center justify-between gap-2">
                         <span className={`${ETIQUETA_PATENTE} font-mono text-base`}>
@@ -168,7 +169,7 @@ export default async function PaginaVehiculos({ searchParams }: PageProps<"/vehi
                   <tbody className="divide-y divide-stone-100 text-stone-800">
                     {vehiculos.map((vehiculo) => (
                       <tr key={vehiculo.id} className="transition-colors hover:bg-orange-50/60">
-                        <td className="px-4 py-3 font-mono">
+                        <td className={`px-4 py-3 font-mono ${BARRA_ESTADO[TONOS[vehiculo.estado]]}`}>
                           <span className={ETIQUETA_PATENTE}>{formatearPatente(vehiculo.patente)}</span>
                         </td>
                         <td className="px-4 py-3">{ETIQUETA_TIPO[vehiculo.tipo]}</td>

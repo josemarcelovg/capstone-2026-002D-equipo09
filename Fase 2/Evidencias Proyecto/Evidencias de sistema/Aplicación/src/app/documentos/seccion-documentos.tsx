@@ -9,7 +9,8 @@ import { documentosDe } from "@/lib/documentos-datos";
 import { formatearFecha, hoyEnChile } from "@/lib/fechas";
 import { BOTON_PRINCIPAL, TARJETA } from "../estilos";
 import { IconoMas } from "../iconos";
-import { IconoEstadoDocumento, InsigniaVencimiento } from "./insignia-estado";
+import { BARRA_ESTADO } from "../insignia";
+import { IconoEstadoDocumento, InsigniaVencimiento, tonoDocumento } from "./insignia-estado";
 
 const MENSAJES = new Map([
   ["documento-creado", "Documento registrado correctamente."],
@@ -74,7 +75,7 @@ export function ListaDocumentos({ documentos, hoy }: { documentos: Documento[]; 
       {documentos.map((documento) => (
         <li
           key={documento.id}
-          className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+          className={`flex flex-col gap-2 py-3 pl-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 ${BARRA_ESTADO[tonoDocumento(documento.fechaVencimiento, hoy)]}`}
         >
           <div className="flex min-w-0 items-center gap-3">
             <IconoEstadoDocumento fechaVencimiento={documento.fechaVencimiento} hoy={hoy} />
