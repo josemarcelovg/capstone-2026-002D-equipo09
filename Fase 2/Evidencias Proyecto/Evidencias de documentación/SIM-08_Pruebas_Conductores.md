@@ -149,7 +149,7 @@ No se encontraron errores. Dos observaciones menores, que no bloquean ningún cr
 
 | ID | Dónde | Observación | Sugerencia |
 |---|---|---|---|
-| OBS-01 | Página "No encontrado" | Al abrir un conductor de otra empresa, la página ofrece "Volver al listado de vehículos". Es la página general de la aplicación. | Un enlace a `/conductores` desde las páginas de conductores, o uno general a "Inicio". |
+| OBS-01 | Página "No encontrado" | Al abrir un conductor de otra empresa, la página ofrece "Volver al listado de vehículos". Es la página general de la aplicación. | Un enlace a `/conductores` desde las páginas de conductores, o uno general a "Inicio". ✅ Corregida el 11-11-2026: desde un conductor, la página lleva al listado de conductores ([SIM-12](SIM-12_Pruebas_Documentos_Empresa_y_Conductor.md), OBS-03). |
 | OBS-02 | Listado de conductores | Si la empresa solo tiene conductores inactivos, el listado sin búsqueda dice "No hay conductores que coincidan con la búsqueda.", aunque no se buscó nada. JOA-09 no define este caso. | Un mensaje como "No tienes conductores activos. Marca «Incluir inactivos» para verlos". |
 
 ---
