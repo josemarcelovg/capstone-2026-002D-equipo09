@@ -188,14 +188,16 @@ Los tres participan en análisis, diseño, desarrollo, pruebas y documentación.
 
 ## Metodología de trabajo
 
-Para el desarrollo del proyecto se utilizará una metodología ágil e incremental, tomando como referencia algunos principios de Scrum. La idea es trabajar por etapas cortas, avanzando poco a poco y revisando constantemente lo que se va desarrollando. Primero se validará el problema y se definirán los requisitos principales. Después se evaluarán las tecnologías y la infraestructura que se utilizarán, se diseñará la solución y se comenzará con el desarrollo de un producto mínimo viable. Finalmente, se realizarán pruebas, correcciones, documentación y la presentación final del proyecto.
+Usamos Scrum, adaptado a un equipo de tres personas y a un plazo fijo, con sprints de 2 semanas: planificación al inicio, reunión semanal de seguimiento y, al cierre, revisión de lo terminado y retrospectiva. El proyecto avanza por etapas (validación del problema, requisitos, evaluación técnica, diseño, construcción por módulos, y al final pruebas, documentación y presentación), y antes de programar cada módulo el Product Owner escribe sus reglas y criterios de aceptación. La justificación completa, con los sprints realizados y las mejoras de las retrospectivas, está en la sección 5 de la [Guía 1.5](<Fase 1/Evidencias Grupales/1.5_GuiaEstudiante_Fase 1_Definicion Proyecto APT (Español).docx>).
 
 ### Por qué elegimos Scrum
 
 - **Los requisitos no están cerrados desde el inicio.** Varias reglas de los módulos (plazos de los avisos, campos de conductores y documentos, jornadas de los turnos) se irán definiendo y validando durante el proyecto. Un método por etapas permite ajustarlas sin rehacer todo, cosa que una metodología en cascada no facilita.
 - **Hay que entregar valor por partes.** El producto se construye en etapas que ya se pueden usar y mostrar: primero inicio de sesión y vehículos, luego conductores, documentos, avisos y turnos, y al final el módulo opcional de ingresos.
-- **El plazo es fijo y el equipo es pequeño.** Son 18 semanas con hitos ya definidos (idea validada en la semana 3, tecnologías en la 6, MVP integrado en la 14 y entrega final en la 18). Priorizar un backlog permite decidir qué entra si el tiempo no alcanza.
+- **El plazo es fijo y puede cambiar.** En la revisión del 28-10-2026 la entrega final pasó de la semana 18 a la 15 y se pidió vincular el conductor al vehículo. Como el backlog está priorizado, solo hubo que reordenarlo: se agregó el conductor asignado (PB-24) y los turnos quedaron como trabajo futuro.
 - **Los roles calzan con el equipo.** Un Product Owner que prioriza, un Scrum Master que organiza el trabajo y un Developer, con los tres participando en todas las etapas.
+
+**Por qué no otra metodología:** cascada exige cerrar los requisitos antes de diseñar y programar, y aquí se definieron durante el proyecto; Kanban trabaja en flujo continuo, sin iteraciones con fecha, y necesitábamos entregas fijas y revisiones cada 2 semanas. De Kanban sí tomamos el tablero de tareas.
 
 ### Cómo la aplicamos
 
