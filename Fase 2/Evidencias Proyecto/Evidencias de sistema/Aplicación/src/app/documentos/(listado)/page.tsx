@@ -12,7 +12,10 @@ import {
 } from "@/lib/documentos";
 import { hayDocumentos, listarDocumentos } from "@/lib/documentos-datos";
 import { formatearFecha, hoyEnChile } from "@/lib/fechas";
-import { InsigniaVencimiento } from "../insignia-estado";
+import { Encabezado, MensajeExito } from "../../encabezado";
+import { BOTON_PRINCIPAL, BOTON_SECUNDARIO, CONTROL, TARJETA } from "../../estilos";
+import { IconoDocumento, IconoFlecha, IconoMas } from "../../iconos";
+import { IconoEstadoDocumento, InsigniaVencimiento } from "../insignia-estado";
 
 export const metadata: Metadata = { title: "Documentos" };
 
@@ -26,11 +29,6 @@ const FILTRO_ESTADO: Record<EstadoDocumento, string> = {
   por_vencer: "Por vencer",
   vigente: "Vigentes",
 };
-
-const BOTON_PRINCIPAL =
-  "rounded-md bg-blue-700 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800";
-const CONTROL =
-  "mt-1 block w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-900 focus:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700/30";
 
 const primero = (valor: string | string[] | undefined) =>
   (Array.isArray(valor) ? valor[0] : valor) ?? "";
@@ -47,12 +45,12 @@ function Dueno({ documento }: { documento: Documento }) {
     <>
       <Link
         href={fichaDelDueno(dueno)}
-        className={`font-medium text-blue-800 hover:underline ${dueno.tipo === "vehiculo" ? "font-mono" : ""}`}
+        className={`font-medium text-orange-800 hover:underline ${dueno.tipo === "vehiculo" ? "font-mono" : ""}`}
         aria-label={`${dueno.tipo === "vehiculo" ? "Vehículo" : "Conductor"} ${dueno.nombre}`}
       >
         {dueno.nombre}
       </Link>
-      {!dueno.activo && <span className="text-zinc-600"> (inactivo)</span>}
+      {!dueno.activo && <span className="text-stone-600"> (inactivo)</span>}
     </>
   );
 }
@@ -70,23 +68,26 @@ export default async function PaginaDocumentos({ searchParams }: PageProps<"/doc
 
   return (
     <>
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-semibold text-zinc-900">Documentos</h1>
+      <Encabezado
+        titulo="Documentos"
+        descripcion="Controla los vencimientos de los documentos de tus vehículos y conductores."
+      >
         <Link href="/documentos/nuevo" className={BOTON_PRINCIPAL}>
+          <IconoMas className="size-4" />
           Registrar documento
         </Link>
-      </div>
+      </Encabezado>
 
-      {mensaje && (
-        <p role="status" className="mt-4 rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
-          {mensaje}
-        </p>
-      )}
+      {mensaje && <MensajeExito>{mensaje}</MensajeExito>}
 
       {sinRegistros ? (
-        <div className="mt-6 rounded-lg border border-dashed border-zinc-300 bg-white px-4 py-12 text-center">
-          <p className="text-zinc-700">Aún no tienes documentos registrados</p>
-          <Link href="/documentos/nuevo" className={`mt-4 inline-block ${BOTON_PRINCIPAL}`}>
+        <div className="mt-6 rounded-xl border-2 border-dashed border-stone-300 bg-white px-4 py-12 text-center">
+          <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-orange-100 text-orange-800">
+            <IconoDocumento className="size-6" />
+          </span>
+          <p className="mt-3 font-medium text-stone-800">Aún no tienes documentos registrados</p>
+          <Link href="/documentos/nuevo" className={`mt-4 ${BOTON_PRINCIPAL}`}>
+            <IconoMas className="size-4" />
             Registrar documento
           </Link>
         </div>
@@ -94,10 +95,10 @@ export default async function PaginaDocumentos({ searchParams }: PageProps<"/doc
         <>
           <Form
             action="/documentos"
-            className="mt-6 grid gap-3 rounded-lg border border-zinc-200 bg-white p-4 sm:grid-cols-[1fr_1fr_auto_auto] sm:items-end"
+            className={`${TARJETA} mt-6 grid gap-3 p-4 sm:grid-cols-[1fr_1fr_auto_auto] sm:items-end`}
           >
             <div>
-              <label htmlFor="estado" className="text-sm font-medium text-zinc-800">
+              <label htmlFor="estado" className="text-sm font-medium text-stone-800">
                 Estado
               </label>
               <select id="estado" name="estado" defaultValue={estado ?? ""} className={CONTROL}>
@@ -110,7 +111,7 @@ export default async function PaginaDocumentos({ searchParams }: PageProps<"/doc
               </select>
             </div>
             <div>
-              <label htmlFor="tipo" className="text-sm font-medium text-zinc-800">
+              <label htmlFor="tipo" className="text-sm font-medium text-stone-800">
                 Tipo
               </label>
               <select id="tipo" name="tipo" defaultValue={tipo ?? ""} className={CONTROL}>
@@ -122,27 +123,27 @@ export default async function PaginaDocumentos({ searchParams }: PageProps<"/doc
                 ))}
               </select>
             </div>
-            <label className="flex items-center gap-2 py-2.5 text-sm text-zinc-800">
+            <label className="flex items-center gap-2 py-2.5 text-sm text-stone-800">
               <input
                 type="checkbox"
                 name="inactivos"
                 value="1"
                 defaultChecked={incluirInactivos}
-                className="size-4 accent-blue-700"
+                className="size-4 accent-orange-700"
               />
               Incluir inactivos
             </label>
             <div className="flex gap-2">
               <button
                 type="submit"
-                className="flex-1 rounded-md border border-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-800 hover:bg-zinc-100"
+                className={`${BOTON_SECUNDARIO} flex-1`}
               >
                 Filtrar
               </button>
               {(estado || tipo || incluirInactivos) && (
                 <Link
                   href="/documentos"
-                  className="rounded-md px-3 py-2.5 text-sm font-medium text-blue-800 hover:underline"
+                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-orange-800 hover:underline"
                 >
                   Limpiar
                 </Link>
@@ -151,25 +152,28 @@ export default async function PaginaDocumentos({ searchParams }: PageProps<"/doc
           </Form>
 
           {documentos.length === 0 ? (
-            <p className="mt-6 rounded-lg border border-zinc-200 bg-white px-4 py-8 text-center text-zinc-700">
+            <p className={`${TARJETA} mt-6 px-4 py-8 text-center text-stone-700`}>
               No hay documentos que coincidan con los filtros.
             </p>
           ) : (
             <>
-              {/* Celular: una tarjeta por documento */}
-              <ul className="mt-4 grid gap-3 sm:hidden">
+              {/* Celular y tablet: una tarjeta por documento */}
+              <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:hidden">
                 {documentos.map((documento) => (
-                  <li key={documento.id} className="rounded-lg border border-zinc-200 bg-white p-4">
-                    <Link
-                      href={`/documentos/${documento.id}`}
-                      className="block font-semibold break-words text-zinc-900 hover:underline"
-                    >
-                      {nombreDelDocumento(documento)}
-                    </Link>
-                    <p className="mt-1 text-sm text-zinc-700">
+                  <li key={documento.id} className={`${TARJETA} p-4`}>
+                    <div className="flex items-center gap-3">
+                      <IconoEstadoDocumento fechaVencimiento={documento.fechaVencimiento} hoy={hoy} />
+                      <Link
+                        href={`/documentos/${documento.id}`}
+                        className="min-w-0 font-semibold break-words text-stone-900 hover:underline"
+                      >
+                        {nombreDelDocumento(documento)}
+                      </Link>
+                    </div>
+                    <p className="mt-1 text-sm text-stone-700">
                       De <Dueno documento={documento} />
                     </p>
-                    <p className="text-sm text-zinc-600">Vence el {formatearFecha(documento.fechaVencimiento)}</p>
+                    <p className="text-sm text-stone-600">Vence el {formatearFecha(documento.fechaVencimiento)}</p>
                     <div className="mt-2">
                       <InsigniaVencimiento fechaVencimiento={documento.fechaVencimiento} hoy={hoy} />
                     </div>
@@ -177,10 +181,10 @@ export default async function PaginaDocumentos({ searchParams }: PageProps<"/doc
                 ))}
               </ul>
 
-              {/* Computador: tabla */}
-              <div className="mt-4 hidden overflow-hidden rounded-lg border border-zinc-200 bg-white sm:block">
+              {/* Computador: tabla (con el menú lateral, la tabla necesita una pantalla ancha) */}
+              <div className={`${TARJETA} mt-4 hidden overflow-hidden lg:block`}>
                 <table className="w-full text-left text-sm">
-                  <thead className="border-b border-zinc-200 bg-zinc-50 text-zinc-600">
+                  <thead className="border-b border-stone-200 bg-stone-50 text-xs uppercase tracking-wider text-stone-600">
                     <tr>
                       <th scope="col" className="px-4 py-3 font-medium">Documento</th>
                       <th scope="col" className="px-4 py-3 font-medium">Pertenece a</th>
@@ -191,11 +195,14 @@ export default async function PaginaDocumentos({ searchParams }: PageProps<"/doc
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-100 text-zinc-800">
+                  <tbody className="divide-y divide-stone-100 text-stone-800">
                     {documentos.map((documento) => (
-                      <tr key={documento.id}>
-                        <td className="px-4 py-3 font-semibold break-words text-zinc-900">
-                          {nombreDelDocumento(documento)}
+                      <tr key={documento.id} className="transition-colors hover:bg-orange-50/60">
+                        <td className="px-4 py-3 font-semibold break-words text-stone-900">
+                          <span className="flex items-center gap-3">
+                            <IconoEstadoDocumento fechaVencimiento={documento.fechaVencimiento} hoy={hoy} />
+                            {nombreDelDocumento(documento)}
+                          </span>
                         </td>
                         <td className="px-4 py-3">
                           <Dueno documento={documento} />
@@ -207,10 +214,11 @@ export default async function PaginaDocumentos({ searchParams }: PageProps<"/doc
                         <td className="px-4 py-3 text-right">
                           <Link
                             href={`/documentos/${documento.id}`}
-                            className="font-medium whitespace-nowrap text-blue-800 hover:underline"
+                            className="inline-flex items-center gap-1 font-medium whitespace-nowrap text-orange-800 hover:underline"
                             aria-label={`Ver / editar ${nombreDelDocumento(documento)} de ${documento.dueno.nombre}`}
                           >
                             Ver / editar
+                            <IconoFlecha className="size-4" />
                           </Link>
                         </td>
                       </tr>

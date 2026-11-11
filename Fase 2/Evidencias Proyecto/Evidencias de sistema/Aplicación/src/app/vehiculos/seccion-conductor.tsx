@@ -18,30 +18,30 @@ export async function SeccionConductor({ conductorId }: { conductorId: string | 
   return (
     <section
       aria-labelledby="titulo-conductor"
-      className="mt-6 rounded-lg border border-zinc-200 bg-white p-4 sm:p-6"
+      className="mt-6 rounded-xl border border-stone-200 bg-white shadow-sm p-4 sm:p-6"
     >
-      <h2 id="titulo-conductor" className="text-lg font-semibold text-zinc-900">
+      <h2 id="titulo-conductor" className="border-l-4 border-orange-600 pl-3 text-lg font-semibold text-stone-900">
         Conductor asignado
       </h2>
 
       {conductor ? (
         <>
-          <p className="mt-2 text-zinc-800">
+          <p className="mt-2 text-stone-800">
             <Link
               href={`/conductores/${conductor.id}`}
-              className="font-medium break-words text-blue-800 hover:underline"
+              className="font-medium break-words text-orange-800 hover:underline"
             >
               {conductor.nombre}
             </Link>
           </p>
-          <p className="text-sm text-zinc-600">
+          <p className="text-sm text-stone-600">
             <span className="font-mono">{formatearRut(conductor.rut)}</span> ·{" "}
             {formatearTelefono(conductor.telefono)}
           </p>
 
-          <h3 className="mt-4 text-sm font-semibold text-zinc-800">Sus documentos</h3>
+          <h3 className="mt-4 text-sm font-semibold text-stone-800">Sus documentos</h3>
           {documentos.length === 0 ? (
-            <p className="mt-2 text-sm text-zinc-700">
+            <p className="mt-2 text-sm text-stone-700">
               Aún no tiene documentos registrados. Se agregan desde su ficha.
             </p>
           ) : (
@@ -49,7 +49,7 @@ export async function SeccionConductor({ conductorId }: { conductorId: string | 
           )}
         </>
       ) : (
-        <p className="mt-2 text-sm text-zinc-700">
+        <p className="mt-2 text-sm text-stone-700">
           Este vehículo no tiene conductor asignado. Puedes elegirlo arriba, en «Conductor asignado».
         </p>
       )}

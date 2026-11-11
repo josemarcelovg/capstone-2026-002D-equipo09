@@ -39,7 +39,7 @@ export function BotonActivacion({
         type="button"
         onClick={cambiar}
         disabled={cambiando}
-        className={`w-full rounded-md border px-4 py-2.5 text-sm font-medium disabled:opacity-60 sm:w-auto ${
+        className={`w-full rounded-lg border px-4 py-2.5 text-sm font-medium disabled:opacity-60 sm:w-auto ${
           inactivo
             ? "border-emerald-700 text-emerald-800 hover:bg-emerald-50"
             : "border-red-700 text-red-800 hover:bg-red-50"

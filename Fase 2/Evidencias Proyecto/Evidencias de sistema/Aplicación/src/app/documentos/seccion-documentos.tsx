@@ -7,7 +7,9 @@ import {
 } from "@/lib/documentos";
 import { documentosDe } from "@/lib/documentos-datos";
 import { formatearFecha, hoyEnChile } from "@/lib/fechas";
-import { InsigniaVencimiento } from "./insignia-estado";
+import { BOTON_PRINCIPAL, TARJETA } from "../estilos";
+import { IconoMas } from "../iconos";
+import { IconoEstadoDocumento, InsigniaVencimiento } from "./insignia-estado";
 
 const MENSAJES = new Map([
   ["documento-creado", "Documento registrado correctamente."],
@@ -31,24 +33,25 @@ export async function SeccionDocumentos({ dueno }: { dueno: DuenoDocumento }) {
   return (
     <section
       aria-labelledby="titulo-documentos"
-      className="mt-6 rounded-lg border border-zinc-200 bg-white p-4 sm:p-6"
+      className={`${TARJETA} mt-6 p-4 sm:p-6`}
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h2 id="titulo-documentos" className="text-lg font-semibold text-zinc-900">
+        <h2 id="titulo-documentos" className="border-l-4 border-orange-600 pl-3 text-lg font-semibold text-stone-900">
           Documentos
         </h2>
         {dueno.activo && (
           <Link
             href={`/documentos/nuevo?${dueno.tipo}=${dueno.id}`}
-            className="rounded-md bg-blue-700 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800"
+            className={BOTON_PRINCIPAL}
           >
+            <IconoMas className="size-4" />
             Agregar documento
           </Link>
         )}
       </div>
 
       {documentos.length === 0 ? (
-        <p className="mt-3 text-sm text-zinc-700">
+        <p className="mt-3 text-sm text-stone-700">
           {dueno.tipo === "vehiculo" ? "Este vehículo" : "Este conductor"} aún no tiene documentos
           registrados.
         </p>
@@ -56,7 +59,7 @@ export async function SeccionDocumentos({ dueno }: { dueno: DuenoDocumento }) {
         <ListaDocumentos documentos={documentos} hoy={hoy} />
       )}
 
-      {!dueno.activo && <p className="mt-3 text-sm text-zinc-600">{mensajeDuenoInactivo(dueno.tipo)}</p>}
+      {!dueno.activo && <p className="mt-3 text-sm text-stone-600">{mensajeDuenoInactivo(dueno.tipo)}</p>}
     </section>
   );
 }
@@ -67,21 +70,24 @@ export async function SeccionDocumentos({ dueno }: { dueno: DuenoDocumento }) {
  */
 export function ListaDocumentos({ documentos, hoy }: { documentos: Documento[]; hoy: string }) {
   return (
-    <ul className="mt-3 divide-y divide-zinc-100">
+    <ul className="mt-3 divide-y divide-stone-100">
       {documentos.map((documento) => (
         <li
           key={documento.id}
           className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
         >
-          <div className="min-w-0">
-            <p className="font-medium break-words text-zinc-900">{nombreDelDocumento(documento)}</p>
-            <p className="text-sm text-zinc-600">Vence el {formatearFecha(documento.fechaVencimiento)}</p>
+          <div className="flex min-w-0 items-center gap-3">
+            <IconoEstadoDocumento fechaVencimiento={documento.fechaVencimiento} hoy={hoy} />
+            <div className="min-w-0">
+              <p className="font-medium break-words text-stone-900">{nombreDelDocumento(documento)}</p>
+              <p className="text-sm text-stone-600">Vence el {formatearFecha(documento.fechaVencimiento)}</p>
+            </div>
           </div>
           <div className="flex items-center justify-between gap-4 sm:justify-end">
             <InsigniaVencimiento fechaVencimiento={documento.fechaVencimiento} hoy={hoy} />
             <Link
               href={`/documentos/${documento.id}?volver=ficha`}
-              className="text-sm font-medium text-blue-800 hover:underline"
+              className="text-sm font-medium text-orange-800 hover:underline"
               aria-label={`Editar ${nombreDelDocumento(documento)}`}
             >
               Editar
