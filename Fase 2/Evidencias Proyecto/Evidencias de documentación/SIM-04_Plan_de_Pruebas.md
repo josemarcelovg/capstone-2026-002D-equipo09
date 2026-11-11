@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (requisitos y backlog) y José Vargas (rendimiento y datos) |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración), el 27-10-2026 (encabezados de seguridad), el 28-10-2026 (decisiones de la reunión del 27-10), el 29-10-2026 (casos de conductores), el 02-11-2026 (resultados de SIM-08, entrega final en la semana 15, y CP-SEG-13 y ERR-01 con JOS-07), el 04-11-2026 (avisos por correo), el 09-11-2026 (versión publicada) y el 10-11-2026 (avisos con la base de datos, pruebas de rendimiento y resultados de SIM-12) |
+| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración), el 27-10-2026 (encabezados de seguridad), el 28-10-2026 (decisiones de la reunión del 27-10), el 29-10-2026 (casos de conductores), el 02-11-2026 (resultados de SIM-08, entrega final en la semana 15, y CP-SEG-13 y ERR-01 con JOS-07), el 04-11-2026 (avisos por correo), el 09-11-2026 (versión publicada) y el 10-11-2026 (avisos con la base de datos, pruebas de rendimiento y resultados de SIM-12) y el 11-11-2026 (estado de todos los casos, sección 9) |
 
 Este plan define cómo se prueba MicroLogist: qué tipos de prueba hay, con qué técnicas se ejecutan, en qué entorno y con qué datos, cuándo se hacen y cómo se registran los resultados y los errores. Cada caso de prueba tiene un identificador que no cambia, y cada requisito de [JOA-05](JOA-05_Requisitos_No_Funcionales.md) queda cubierto por al menos un caso (sección 10). Los casos de la primera entrega ya tienen un estado, gracias a la ejecución de [SIM-03](SIM-03_Pruebas_Primera_Entrega.md). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -308,20 +308,30 @@ Si falta el `.env` o la aplicación no está corriendo, los casos que lo necesit
 
 ---
 
-## 9. Estado al 27-10-2026
+## 9. Estado al 11-11-2026
 
-**Casos de la primera entrega** (53):
+Conteo de las tablas de la sección 6: **94 casos**.
 
 | Estado | Cantidad | Casos |
 |---|---|---|
-| ✅ Aprobado | 35 | CP-FUN-01 a 05, 07, 09 y 10; CP-SEG-01 a 08, 10, 13 y 14; CP-INT-01 a 16 |
-| 🟡 Parcial | 5 | CP-FUN-13, CP-SEG-09, CP-SEG-12, CP-COM-01 y CP-COM-04 |
+| ✅ Aprobado | 62 | CP-FUN-01 a 05, 07, 09, 10, 20 a 26 y 33; CP-SEG-01 a 08, 10, 11, 13 y 14; CP-INT-01 a 34 |
+| 🟡 Parcial | 9 | CP-FUN-13, 27 y 28; CP-SEG-09 y 12; CP-COM-01 y 04; CP-REN-03 y 04 |
 | ❌ No aprobado | 0 | — |
-| ⏳ Pendiente | 13 | CP-FUN-06, 08, 11 y 12; CP-SEG-11; CP-COM-02 y 03; CP-USA-01 y 03; CP-REN-01, 02, 03 y 07 |
+| ⏳ Pendiente | 15 | CP-FUN-06, 08, 11, 12 y 14; CP-COM-02 y 03; CP-USA-01 a 03; CP-REN-01, 02 y 05 a 07 |
+| 📝 Por detallar | 8 | CP-FUN-29 a 32 y 40 a 42; CP-COM-05 |
 
-CP-SEG-13 pasó a aprobado el 02-11-2026, con JOS-07. Los demás estados son del 27-10-2026.
+El 27-10-2026 había 35 aprobados de 53 casos de la primera entrega. Desde entonces se aprobaron los de conductores (SIM-08), la versión publicada sin sesión (SIM-10), los avisos con la base de datos (SIM-11), los de documentos, la empresa y el conductor asignado (SIM-12), y la parte de la base de las pruebas de rendimiento (sección 6.5).
 
-**Casos del MVP y opcionales** (22): 18 por detallar y 4 pendientes. Se completan cuando existan las reglas de cada módulo.
+**Qué falta para cada uno de los casos que no están aprobados:**
+
+| Qué se necesita | Casos |
+|---|---|
+| Iniciar sesión en la aplicación local; los puede ejecutar cualquier integrante | CP-FUN-06, 08, 11 y 12; CP-COM-02 y 03; la parte del teclado de CP-USA-03 |
+| La versión publicada, con sesión | CP-FUN-13 (volver a desplegar), CP-REN-01 y 02 (Lighthouse y tiempo de guardar), la pantalla de CP-REN-03, la duración en producción de CP-REN-04 y la auditoría de accesibilidad de Lighthouse de CP-USA-03 (SIM-10) |
+| La cuenta de Resend y un envío real | CP-FUN-27, CP-FUN-28 y CP-COM-05 (SIM-11) |
+| Personas que no conozcan la aplicación | CP-USA-01 y 02 (sección 6.4) |
+| Otros recursos o decisiones | CP-COM-01 (un teléfono real), CP-COM-04 (otros navegadores), CP-SEG-09 (duración de la sesión), CP-SEG-12 y CP-FUN-14 (simular la falla de un servicio con sesión iniciada), CP-REN-05 (un mes publicado), CP-REN-06 (respaldo y restauración) y CP-REN-07 (otro integrante levanta el proyecto) |
+| Nada en la entrega final: son trabajo futuro u opcionales (JOA-08, sección 2) | CP-FUN-29 a 32 (turnos y resumen de la flota) y CP-FUN-40 a 42 (ingresos) |
 
 **Errores registrados:**
 
@@ -391,7 +401,7 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 - [x] Casos con identificador para la primera entrega, el MVP y el módulo opcional (sección 6).
 - [x] Cada requisito de JOA-05 cubierto por al menos un caso (sección 10).
 - [x] Cuándo se ejecuta cada grupo de casos y cómo se registran los resultados y los errores (secciones 7 y 8).
-- [x] Estado actual con los resultados de SIM-03 y las revisiones del 21-10-2026 (sección 9).
+- [x] Estado de los 94 casos al 11-11-2026, con lo que falta para cada uno (sección 9).
 - [x] Tipo de prueba de integración con 15 casos automáticos en el código, ejecutados el 22-10-2026 (secciones 2 y 6.6).
 - [x] Encabezados de seguridad: CP-SEG-14 y CP-INT-16, aprobados el 27-10-2026 (secciones 6.2 y 6.6).
 - [x] Casos de conductores: CP-FUN-20 a 22 y CP-INT-17 a 22, aprobados el 02-11-2026 en SIM-08 (secciones 6.1 y 6.6).
