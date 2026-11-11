@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (requisitos y backlog) y José Vargas (rendimiento y datos) |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración), el 27-10-2026 (encabezados de seguridad), el 28-10-2026 (decisiones de la reunión del 27-10), el 29-10-2026 (casos de conductores), el 02-11-2026 (resultados de SIM-08, entrega final en la semana 15, y CP-SEG-13 y ERR-01 con JOS-07), el 04-11-2026 (avisos por correo), el 09-11-2026 (versión publicada) y el 10-11-2026 (avisos con la base de datos, pruebas de rendimiento y resultados de SIM-12) y el 11-11-2026 (estado de todos los casos, sección 9) |
+| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración), el 27-10-2026 (encabezados de seguridad), el 28-10-2026 (decisiones de la reunión del 27-10), el 29-10-2026 (casos de conductores), el 02-11-2026 (resultados de SIM-08, entrega final en la semana 15, y CP-SEG-13 y ERR-01 con JOS-07), el 04-11-2026 (avisos por correo), el 09-11-2026 (versión publicada) y el 10-11-2026 (avisos con la base de datos, pruebas de rendimiento y resultados de SIM-12) y el 11-11-2026 (estado de todos los casos, sección 9, y casos pendientes de la primera entrega en SIM-13) |
 
 Este plan define cómo se prueba MicroLogist: qué tipos de prueba hay, con qué técnicas se ejecutan, en qué entorno y con qué datos, cuándo se hacen y cómo se registran los resultados y los errores. Cada caso de prueba tiene un identificador que no cambia, y cada requisito de [JOA-05](JOA-05_Requisitos_No_Funcionales.md) queda cubierto por al menos un caso (sección 10). Los casos de la primera entrega ya tienen un estado, gracias a la ejecución de [SIM-03](SIM-03_Pruebas_Primera_Entrega.md). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -118,13 +118,13 @@ Los identificadores `CP-xxx-nn` no se reutilizan ni se renumeran, igual que los 
 | CP-FUN-03 | Registrar una patente que ya existe en la empresa. | Mensaje de duplicado; no se crea nada. | JOA-01 7.6, PB-04 | ✅ SIM-03 |
 | CP-FUN-04 | Escribir la patente con minúsculas, espacios o guion. | Se guarda normalizada (`fghj-34` → `FGHJ34`). | JOA-01 7.7, PB-04 | ✅ SIM-03 |
 | CP-FUN-05 | Enviar campos obligatorios vacíos y datos fuera de formato. | Cada campo muestra su error en español, con los mensajes de JOA-01; no se guarda nada. | JOA-01 7.8, RNF-USA-03 | ✅ SIM-03 |
-| CP-FUN-06 | Listado: columnas, orden por patente, búsqueda por patente, filtro por estado y mensaje cuando no hay vehículos. | Lo que pide PB-05 y la sección 4 de JOA-01. | PB-05 | ⏳ Pendiente |
+| CP-FUN-06 | Listado: columnas, orden por patente, búsqueda por patente, filtro por estado y mensaje cuando no hay vehículos. | Lo que pide PB-05 y la sección 4 de JOA-01. | PB-05 | ✅ [SIM-13](SIM-13_Casos_Pendientes_Primera_Entrega.md) (11-11-2026); el mensaje sin vehículos, en el código, porque las dos empresas de prueba tienen vehículos |
 | CP-FUN-07 | Ver el detalle de un vehículo y editarlo. | Los cambios se guardan y siguen al recargar; vuelve al listado con mensaje. | JOA-01 7.9, PB-06, RNF-DIS-02 | ✅ SIM-03 |
-| CP-FUN-08 | Cambiar la patente al editar. | Se vuelven a validar el formato y que no esté duplicada. | PB-06 (criterio 3) | ⏳ Pendiente |
+| CP-FUN-08 | Cambiar la patente al editar. | Se vuelven a validar el formato y que no esté duplicada. | PB-06 (criterio 3) | ✅ SIM-13 |
 | CP-FUN-09 | Desactivar y reactivar un vehículo. | Pide confirmación; sale del listado normal; aparece con "Incluir inactivos"; se puede reactivar. | JOA-01 7.10, PB-07, RNF-USA-04 | ✅ SIM-03 |
 | CP-FUN-10 | Cerrar sesión. | Vuelve a la pantalla de inicio de sesión. | PB-02 (criterio 1) | ✅ SIM-03 |
-| CP-FUN-11 | Errores en un formulario con datos ya escritos. | Los mensajes están en español, junto a su campo, y no se borra lo que el usuario escribió. | RNF-USA-03, RNF-USA-04 | ⏳ Pendiente |
-| CP-FUN-12 | Guardar con una conexión lenta (simulada en el navegador). | Se ve un estado de carga y termina con un mensaje de confirmación o de error. | RNF-USA-05 | ⏳ Pendiente |
+| CP-FUN-11 | Errores en un formulario con datos ya escritos. | Los mensajes están en español, junto a su campo, y no se borra lo que el usuario escribió. | RNF-USA-03, RNF-USA-04 | ✅ SIM-13 |
+| CP-FUN-12 | Guardar con una conexión lenta (simulada en el navegador). | Se ve un estado de carga y termina con un mensaje de confirmación o de error. | RNF-USA-05 | ✅ SIM-13. Con la conexión caída en vez de lenta se encontró ERR-02 (sección 9) |
 | CP-FUN-13 | Persistencia al recargar, al cerrar sesión y al volver a desplegar. | 0 registros perdidos. | RNF-DIS-02 | 🟡 Recargar y cerrar sesión aprobados en SIM-03; falta volver a desplegar |
 
 **MVP completo** (📝 se detallan con el documento de reglas de cada módulo)
@@ -181,8 +181,8 @@ Cuando se agregue cada módulo del MVP (conductores, documentos, turnos e ingres
 | ID | Qué se comprueba | Resultado esperado | Origen | Estado |
 |---|---|---|---|---|
 | CP-COM-01 | Flujos principales en un celular de 360 px. | Se completan sin desplazamiento horizontal. | RNF-COM-01, JOA-01 7.14 | 🟡 Aprobado con las herramientas del navegador (SIM-03); falta un teléfono real |
-| CP-COM-02 | Flujos principales a 768 px **[POR CONFIRMAR]**. | Se completan sin desplazamiento horizontal. | RNF-COM-02 | ⏳ Pendiente |
-| CP-COM-03 | Flujos principales desde 1280 px **[POR CONFIRMAR]**. | Se completan. | RNF-COM-03 | ⏳ Pendiente |
+| CP-COM-02 | Flujos principales a 768 px **[POR CONFIRMAR]**. | Se completan sin desplazamiento horizontal. | RNF-COM-02 | ✅ SIM-13, con una observación menor: los filtros de vehículos y documentos quedan apretados |
+| CP-COM-03 | Flujos principales desde 1280 px **[POR CONFIRMAR]**. | Se completan. | RNF-COM-03 | ✅ SIM-13 |
 | CP-COM-04 | Flujo principal en cada navegador acordado, anotando la versión. | Funciona en todos. | RNF-COM-04 | 🟡 Chromium aprobado (SIM-03); faltan Edge, Firefox, Safari, Chrome para Android y Safari para iPhone **[POR CONFIRMAR]** |
 | CP-COM-05 | Correo de aviso en Gmail y Outlook, en computador y celular. | Se ve completo y legible. | RNF-COM-05 | 📝 MVP |
 
@@ -192,7 +192,7 @@ Cuando se agregue cada módulo del MVP (conductores, documentos, turnos e ingres
 |---|---|---|---|---|
 | CP-USA-01 | Un usuario nuevo registra un vehículo, sin ayuda y con cronómetro. | Lo logra en menos de 2 minutos **[POR CONFIRMAR]**. | RNF-USA-01 | ⏳ Pendiente |
 | CP-USA-02 | Pregunta al final de la prueba con usuarios: "¿lo usaría?". | Al menos 3 de 4 dicen que sí **[POR CONFIRMAR]**. | RNF-USA-02 | ⏳ Pendiente (MVP) |
-| CP-USA-03 | Recorrer cada pantalla solo con el teclado, revisar etiquetas y contraste, y pasar la auditoría de accesibilidad de Lighthouse. | Todo se usa con el teclado, el foco siempre se ve, cada campo tiene etiqueta y Lighthouse da 90 o más **[POR CONFIRMAR]**. | RNF-USA-06 | ⏳ Pendiente |
+| CP-USA-03 | Recorrer cada pantalla solo con el teclado, revisar etiquetas y contraste, y pasar la auditoría de accesibilidad de Lighthouse. | Todo se usa con el teclado, el foco siempre se ve, cada campo tiene etiqueta y Lighthouse da 90 o más **[POR CONFIRMAR]**. | RNF-USA-06 | 🟡 Teclado, foco, etiquetas y contraste aprobados en SIM-13; falta Lighthouse en la versión publicada |
 
 **Cómo se hace la prueba con usuarios:** 4 personas que no conozcan la aplicación, idealmente del rubro del transporte **[POR CONFIRMAR]**. A cada una se le entrega la misma tarea escrita, se cronometra y no se le dan indicaciones; al terminar se le hace la pregunta de CP-USA-02. En el registro se las nombra como "Usuario 1" a "Usuario 4", sin datos personales.
 
@@ -314,23 +314,22 @@ Conteo de las tablas de la sección 6: **94 casos**.
 
 | Estado | Cantidad | Casos |
 |---|---|---|
-| ✅ Aprobado | 62 | CP-FUN-01 a 05, 07, 09, 10, 20 a 26 y 33; CP-SEG-01 a 08, 10, 11, 13 y 14; CP-INT-01 a 34 |
-| 🟡 Parcial | 9 | CP-FUN-13, 27 y 28; CP-SEG-09 y 12; CP-COM-01 y 04; CP-REN-03 y 04 |
+| ✅ Aprobado | 68 | CP-FUN-01 a 12, 20 a 26 y 33; CP-SEG-01 a 08, 10, 11, 13 y 14; CP-COM-02 y 03; CP-INT-01 a 34 |
+| 🟡 Parcial | 10 | CP-FUN-13, 27 y 28; CP-SEG-09 y 12; CP-COM-01 y 04; CP-USA-03; CP-REN-03 y 04 |
 | ❌ No aprobado | 0 | — |
-| ⏳ Pendiente | 15 | CP-FUN-06, 08, 11, 12 y 14; CP-COM-02 y 03; CP-USA-01 a 03; CP-REN-01, 02 y 05 a 07 |
+| ⏳ Pendiente | 8 | CP-FUN-14; CP-USA-01 y 02; CP-REN-01, 02 y 05 a 07 |
 | 📝 Por detallar | 8 | CP-FUN-29 a 32 y 40 a 42; CP-COM-05 |
 
-El 27-10-2026 había 35 aprobados de 53 casos de la primera entrega. Desde entonces se aprobaron los de conductores (SIM-08), la versión publicada sin sesión (SIM-10), los avisos con la base de datos (SIM-11), los de documentos, la empresa y el conductor asignado (SIM-12), y la parte de la base de las pruebas de rendimiento (sección 6.5).
+El 27-10-2026 había 35 aprobados de 53 casos de la primera entrega. Desde entonces se aprobaron los de conductores (SIM-08), la versión publicada sin sesión (SIM-10), los avisos con la base de datos (SIM-11), los de documentos, la empresa y el conductor asignado (SIM-12), y la parte de la base de las pruebas de rendimiento (sección 6.5). El mismo 11-11-2026 se ejecutaron en local los casos de la primera entrega que necesitaban una sesión iniciada ([SIM-13](SIM-13_Casos_Pendientes_Primera_Entrega.md)).
 
 **Qué falta para cada uno de los casos que no están aprobados:**
 
 | Qué se necesita | Casos |
 |---|---|
-| Iniciar sesión en la aplicación local; los puede ejecutar cualquier integrante | CP-FUN-06, 08, 11 y 12; CP-COM-02 y 03; la parte del teclado de CP-USA-03 |
 | La versión publicada, con sesión | CP-FUN-13 (volver a desplegar), CP-REN-01 y 02 (Lighthouse y tiempo de guardar), la pantalla de CP-REN-03, la duración en producción de CP-REN-04 y la auditoría de accesibilidad de Lighthouse de CP-USA-03 (SIM-10) |
 | La cuenta de Resend y un envío real | CP-FUN-27, CP-FUN-28 y CP-COM-05 (SIM-11) |
 | Personas que no conozcan la aplicación | CP-USA-01 y 02 (sección 6.4) |
-| Otros recursos o decisiones | CP-COM-01 (un teléfono real), CP-COM-04 (otros navegadores), CP-SEG-09 (duración de la sesión), CP-SEG-12 y CP-FUN-14 (simular la falla de un servicio con sesión iniciada), CP-REN-05 (un mes publicado), CP-REN-06 (respaldo y restauración) y CP-REN-07 (otro integrante levanta el proyecto) |
+| Otros recursos o decisiones | CP-COM-01 (un teléfono real), CP-COM-04 (otros navegadores), CP-SEG-09 (duración de la sesión), CP-SEG-12 y CP-FUN-14 (simular la falla de un servicio con sesión iniciada; para CP-FUN-14, corregir antes ERR-02), CP-REN-05 (un mes publicado), CP-REN-06 (respaldo y restauración) y CP-REN-07 (otro integrante levanta el proyecto) |
 | Nada en la entrega final: son trabajo futuro u opcionales (JOA-08, sección 2) | CP-FUN-29 a 32 (turnos y resumen de la flota) y CP-FUN-40 a 42 (ingresos) |
 
 **Errores registrados:**
@@ -338,8 +337,9 @@ El 27-10-2026 había 35 aprobados de 53 casos de la primera entrega. Desde enton
 | ID | Caso | Descripción | Cómo reproducirlo | Severidad | Responsable | Estado |
 |---|---|---|---|---|---|---|
 | ERR-01 | CP-SEG-13 | El 21-10-2026, `npm audit --omit=dev` informaba 3 vulnerabilidades altas: `next` 16.3.6, `sharp` y `source-map-js` (las dos últimas llegan a través de Next.js). Revisado de nuevo el 02-11-2026, con `next` 16.3.6 hay 2 avisos críticos y 5 altos. Los críticos son de ejecución remota de código sin iniciar sesión ([GHSA-2464-fhr4-w9xw](https://github.com/advisories/GHSA-2464-fhr4-w9xw) y [GHSA-673q-mjm6-r5xr](https://github.com/advisories/GHSA-673q-mjm6-r5xr)) y afectan a Next.js hasta la 16.4.0. Los altos son 2 de `next`, más `sharp`, `source-map-js` y `zod`. | Ejecutar `npm audit --omit=dev` desde `Aplicación`. | Bloqueante (antes Mayor): ejecutar código en el servidor permitiría ver o modificar datos de cualquier empresa (sección 5) | José (JOS-07). Umbral acordado el 27-10-2026: sin vulnerabilidades altas ni críticas (RNF-SEG-10) | Cerrado el 02-11-2026 (JOS-07): Next.js y `eslint-config-next` a 16.4.4 y `npm audit fix` sin `--force`; `npm audit --omit=dev` informa 0 vulnerabilidades. |
+| ERR-02 | CP-FUN-12 (con la conexión caída en vez de lenta) | Si la solicitud de guardar falla, el formulario completo se reemplaza por la pantalla "No pudimos cargar los vehículos": el mensaje habla de cargar y no de guardar, y se pierde lo escrito (RNF-USA-04). Los datos ya guardados no cambian. Pasa en los formularios de vehículos, conductores, documentos y "Mi empresa", y en los botones de desactivar y reactivar. | Abrir la ficha de un vehículo, cambiar un campo, cortar la conexión y apretar "Guardar cambios" ([SIM-13](SIM-13_Casos_Pendientes_Primera_Entrega.md), sección 4). | Mayor: una funcionalidad falla, pero se puede seguir recargando y escribiendo de nuevo; no expone datos | Simón | Abierto (11-11-2026) |
 
-Las dos observaciones menores de presentación de SIM-03 (sección 6) no eran errores; quedan registradas allí y se corrigieron el 27-10-2026.
+Las dos observaciones menores de presentación de SIM-03 (sección 6) no eran errores; quedan registradas allí y se corrigieron el 27-10-2026. La observación menor de SIM-13 (los filtros apretados a 768 px) tampoco es un error y queda registrada allí.
 
 ---
 
@@ -387,7 +387,7 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 - **Proponer agregar `npm run test:integracion`** a la sección 3.1 de la Definition of Done (SIM-05), junto a `npm test`.
 - **Pruebas de rendimiento en la versión publicada:** las consultas de la base y el proceso de avisos ya tienen pruebas automáticas (sección 6.5). Faltan Lighthouse (CP-REN-01 y la pantalla de CP-REN-03) y el tiempo de guardar (CP-REN-02) en `https://micrologist-equipo09.vercel.app`.
 - **Política de contenido con nonce:** la CSP de CP-SEG-14 todavía no restringe los scripts, para no interferir con Next.js. Restringirlos requiere generar un nonce en el proxy en cada solicitud.
-- **Ejecutar los 13 casos pendientes de la primera entrega** antes de darla por terminada (sección 9). ERR-01 se cerró el 02-11-2026 (JOS-07).
+- **Corregir ERR-02 y la observación menor de SIM-13**, y volver a probarlas con los mismos pasos (sección 8). Los casos de la primera entrega que se podían probar en local ya están (SIM-13, 11-11-2026); los que quedan necesitan la versión publicada, usuarios u otros recursos (sección 9). ERR-01 se cerró el 02-11-2026 (JOS-07).
 - **Agregar los ID de la sección 10** a la sección 7 de JOA-05 (a cargo de Joaquín).
 - **Detallar los casos de turnos** si entran en una entrega (JOA-14, trabajo futuro). Los de conductores, documentos, empresa, conductor asignado y avisos ya están (CP-FUN-20 a 28 y CP-FUN-33, CP-INT-17 a 34).
 - **Fecha exacta** de la entrega de la semana 15 **[POR CONFIRMAR]** con la profesora.
@@ -408,4 +408,5 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 - [x] Avisos por correo: CP-INT-23 a 28 aprobados, los de la base de datos el 10-11-2026 en SIM-11 (sección 6.6). CP-FUN-27 y 28 esperan un envío real.
 - [x] Pruebas de rendimiento en el código: la parte de la base de CP-REN-03 y CP-REN-04, aprobadas el 10-11-2026 (sección 6.5).
 - [x] Casos de documentos, datos de la empresa y conductor asignado: CP-FUN-23 a CP-FUN-26 y CP-FUN-33, aprobados el 10-11-2026 en SIM-12 (sección 6.1).
+- [x] Casos pendientes de la primera entrega que se podían probar en local: CP-FUN-06, 08, 11 y 12 y CP-COM-02 y 03 aprobados, y CP-USA-03 parcial, el 11-11-2026 en SIM-13; ERR-02 registrado (secciones 6 y 9).
 - [ ] Revisión de Joaquín y José en el PR.
