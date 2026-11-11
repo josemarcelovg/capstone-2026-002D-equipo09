@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (Product Owner) y José Vargas |
 | **Estado** | En curso: se actualiza al inicio y al cierre de cada iteración |
-| **Fecha** | 21-10-2026 (actualizado el 10-11-2026) |
+| **Fecha** | 21-10-2026 (actualizado el 11-11-2026) |
 
 Este documento registra qué tareas entraron en cada iteración (Sprint Backlog), cómo terminaron y qué aprendió el equipo en cada retrospectiva. Los datos salen del tablero del Project del equipo ("@josemarcelovg's Micrologist"), del historial de pull requests de GitHub y de los documentos [JOA-03](JOA-03_Validacion_Primera_Entrega.md) y [JOA-08](JOA-08_Product_Backlog.md). Los ítems del backlog se citan con su identificador `PB-xx`.
 
@@ -18,7 +18,7 @@ Las retrospectivas no se inventan: cada una trae los datos medibles de la iterac
 
 **Iteraciones del tablero** (campo *Iteration* del Project):
 
-| Iteración | Fechas | Duración | Estado al 10-11-2026 |
+| Iteración | Fechas | Duración | Estado al 11-11-2026 |
 |---|---|---|---|
 | 1 | 21-09 al 04-10 | 2 semanas | Completada |
 | 2 | 05-10 al 18-10 | 2 semanas | Completada |
@@ -44,6 +44,9 @@ Los sprints duran 2 semanas, igual que estas iteraciones (acordado en la retrosp
 | 1 | 4 | 4 | 4 (#1 a #4) | 3 |
 | 2 | 8 | 8 | 16 (#5 a #20) | 6 |
 | 3 (al 21-10) | 6, más 2 sin iteración | 3 | 3 (#21 a #23) | 3 |
+| 4 (al 11-11) | 8, más 2 en curso sin iteración | 6 | 40 (#45 a #85, salvo el #59) | 37 |
+
+En la Iteración 4, unas 21 tareas con su PR unido no tienen tarjeta en el tablero: JOA-16 a JOA-33, JOS-12, JOS-13 y SIM-12 (sección 4.4).
 
 ---
 
@@ -165,6 +168,29 @@ Cada retrospectiva responde tres preguntas: **qué funcionó**, **qué no funcio
 |---|---|---|
 | Se cerró la primera entrega (14 de 14 criterios, demo ensayada) y todos los PR pasaron por revisión. | El tablero se atrasó: había tarjetas terminadas que seguían en *Todo*. ERR-01 sigue abierto y bloquea el inicio de conductores. | Quien aprieta *Merge* mueve la tarjeta a *Done* en ese mismo momento. Cerrar ERR-01 (JOS-07) el 02-11. |
 
+### 4.4 Iteración 4
+
+**Datos** (al 11-11-2026; se completan al cierre, el 15-11):
+
+- **Objetivo de la iteración:** ERR-01 cerrado (PR #51, el 02-11) y módulo de conductores terminado y probado (SIM-08, 14 de 14 criterios). La aplicación está publicada en Vercel y pasa las comprobaciones sin sesión; faltan las que necesitan iniciar sesión (SIM-10).
+- **Alcance de la entrega final**, aprobado el 03-11: documentos, datos de la empresa y conductor asignado quedaron terminados en JOA-08 (PB-11 a PB-14 y PB-24, PR #85), con sus casos aprobados en SIM-12. Los avisos por correo están implementados y probados con la base de datos, pero falta un envío real con Resend (SIM-11).
+- **40 PR unidos a `main`** (#45 a #85, salvo el #59), todos con *Merge commit*. **37 con *Approve***; los otros 3 (#68, #69 y #78) se unieron sin aprobación. En la Iteración 3, los 16 PR tuvieron *Approve*.
+- **82 commits** sin contar los merges: Joaquín 34, Simón 33 y José 15. En la Iteración 3 fueron 51: Simón 29, Joaquín 20 y José 2.
+- **Tablero:** 8 tarjetas con la Iteración 4: 6 en *Done*, SIM-10 en *In progress* y SIM-06 en *Todo*, aunque está en curso. SIM-11 y JOA-15 siguen en *In progress* sin iteración, aunque PB-14 (JOA-15) ya está terminado. Unas 21 tareas con su PR unido no tienen tarjeta: JOA-16 a JOA-33, JOS-12, JOS-13 y SIM-12.
+- **Pruebas:** en SIM-04, 62 de 94 casos aprobados y ninguno no aprobado; el 27-10 eran 35 de 53. Además hay pruebas de rendimiento en el código (PR #80), y la GitHub Action corre las de integración con PostgreSQL en cada PR (PR #71).
+- **Revisión de la profesora de Fase 1 y 2:** sus dos recomendaciones se resolvieron (PR #66). Las dos observaciones de SIM-12 se corrigieron en el PR #86.
+
+**Temas propuestos a partir de los datos:**
+
+- **El tablero no refleja el trabajo.** La acción 5 movió a *Done* las tarjetas que existían, pero la mayoría de las tareas nuevas no tienen tarjeta. Por ejemplo, crear la tarjeta antes de abrir el PR y vincular el PR a la tarjeta (*Development*), para que pase a *Done* al unirlo.
+- **Tres PR sin *Approve*.** La acción 1 pedía activar en `main` la regla que exige una aprobación. Revisar si está activa, o si quien une puede saltársela.
+- **Muchos PR el mismo día:** el 10-11 se unieron 20 (#66 a #85). Conversar si la revisión alcanza a ser real con ese ritmo.
+- **Lo que depende de cuentas o accesos externos se atrasa:** la cuenta de Resend, iniciar sesión en la versión publicada y los secretos de Vercel. Asignarles responsable y fecha al planificar.
+
+| Qué funcionó | Qué no funcionó | Qué vamos a cambiar |
+|---|---|---|
+| **[POR COMPLETAR EN LA RETROSPECTIVA]** | **[POR COMPLETAR EN LA RETROSPECTIVA]** | **[POR COMPLETAR EN LA RETROSPECTIVA]** |
+
 ---
 
 ## 5. Acciones de mejora
@@ -271,6 +297,25 @@ Otras mejoras de Joaquín unidas el 10-11:
 - SIM-04: detallar y ejecutar los casos de documentos y de la empresa (CP-FUN-23 a CP-FUN-26) y los de PB-24, para que PB-11 a PB-14 y PB-24 pasen a *Terminado* en JOA-08 (JOA-19, sección 7.2).
 - La retrospectiva de la Iteración 4 con el equipo.
 
+### Avance al 11-11-2026
+
+| Tarea | Responsable | Estado |
+|---|---|---|
+| SIM-04: casos de documentos, empresa y conductor asignado | Simón | ✅ CP-FUN-23 a CP-FUN-26 y CP-FUN-33 aprobados en [SIM-12](SIM-12_Pruebas_Documentos_Empresa_y_Conductor.md) (PR #81): 23 de 23 criterios. Con eso, Joaquín pasó PB-11 a PB-14 y PB-24 a *Terminado* en JOA-08 (PR #85). Las observaciones menores se corrigieron en el PR #86, en revisión. |
+| SIM-04: pruebas de rendimiento | Simón | ✅ PR #80: `npm run test:rendimiento`, con CP-REN-03 (la parte de la base) y CP-REN-04, también en la GitHub Action. Atiende lo que pidió la revisión de Fase 1 y 2 sobre los tipos de prueba. |
+| [SIM-10] Desplegar en Vercel | Simón | En curso: faltan las comprobaciones con sesión y Lighthouse. |
+| [SIM-11] Avisos por correo | Simón | En curso: falta la cuenta de Resend y un envío real. |
+| [JOS-13] Diseño en naranja, con menú lateral, nuevo inicio de sesión y barra de color según el estado | José | ✅ PR #82 y #84. |
+| [JOS-06] Manual técnico al día | José | ✅ PR #79. |
+| [JOA-32] Base legal de los tipos de documento en JOA-10 | Joaquín | ✅ PR #83. |
+
+**Pendiente para el cierre del 15-11:**
+
+- SIM-10: las comprobaciones con sesión y Lighthouse.
+- SIM-11: la cuenta de Resend y un envío real.
+- Crear en el tablero las tarjetas de las tareas que no la tienen (sección 4.4) y pasar SIM-06 a *In progress* y JOA-15 a *Done*.
+- La retrospectiva de la Iteración 4 con el equipo (sección 4.4).
+
 ---
 
 ## 7. Cómo se mantiene
@@ -288,6 +333,7 @@ Otras mejoras de Joaquín unidas el 10-11:
 | 02-11-2026 | Cierre de la Iteración 3, avance de la Iteración 4 y entrega final en la semana 15. |
 | 09-11-2026 | Avance de la Iteración 4 al 09-11 y alcance aprobado de la entrega final. |
 | 10-11-2026 | Avance de la Iteración 4 al 10-11: PR #66 a #75 y datos para la retrospectiva. |
+| 11-11-2026 | Avance de la Iteración 4 al 11-11 (PR #79 a #86), fila de la Iteración 4 en el resumen, y datos y temas para su retrospectiva (sección 4.4). |
 
 ---
 
@@ -301,6 +347,7 @@ Otras mejoras de Joaquín unidas el 10-11:
 - [x] Retrospectiva de la Iteración 3 al cierre, hecha el 27-10.
 - [x] Planificación de la Iteración 4 (sección 6).
 - [x] Avance de la Iteración 4 al 02-11-2026 (sección 6).
-- [x] Avance de la Iteración 4 al 09-11 y al 10-11-2026 (sección 6).
+- [x] Avance de la Iteración 4 al 09-11, al 10-11 y al 11-11-2026 (sección 6).
+- [x] Datos medibles y temas propuestos para la retrospectiva de la Iteración 4 (sección 4.4).
 - [ ] Retrospectiva de la Iteración 4 al cierre, el 15-11.
 - [ ] Revisión de Joaquín y José en el PR.
