@@ -56,9 +56,10 @@ export default async function PaginaVehiculos({ searchParams }: PageProps<"/vehi
         </div>
       ) : (
         <>
+          {/* En dos filas hasta 1024 px: con el menú lateral, en una sola fila los campos quedan muy angostos. */}
           <Form
             action="/vehiculos"
-            className={`${TARJETA} mt-6 grid gap-3 p-4 sm:grid-cols-[1fr_1fr_auto_auto] sm:items-end`}
+            className={`${TARJETA} mt-6 grid gap-3 p-4 sm:grid-cols-2 sm:items-end lg:grid-cols-[1fr_1fr_auto_auto]`}
           >
             <div>
               <label htmlFor="patente" className="text-sm font-medium text-stone-800">
