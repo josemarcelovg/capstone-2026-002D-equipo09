@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { unstable_rethrow } from "next/navigation";
 import { useState, useTransition, type FormEvent, type ReactNode } from "react";
 import {
   DUENOS_POR_TIPO,
@@ -16,6 +17,7 @@ import {
   type TipoDueno,
 } from "@/lib/documentos";
 import { formatearFecha, hoyEnChile } from "@/lib/fechas";
+import { llamarAlServidor, SIN_CONEXION } from "@/lib/guardado";
 import { guardarDocumento, type ErroresGuardado } from "./acciones";
 import { BOTON_PRINCIPAL, BOTON_SECUNDARIO, CONTROL } from "../estilos";
 
@@ -120,7 +122,11 @@ export function DocumentoForm({
     if (!resultado.ok) return mostrar(resultado.errores);
 
     iniciarGuardado(async () => {
-      const delServidor = await guardarDocumento(documento?.id ?? null, origen, datos);
+      const delServidor = await llamarAlServidor(
+        () => guardarDocumento(documento?.id ?? null, origen, datos),
+        { general: SIN_CONEXION },
+        unstable_rethrow,
+      );
       if (delServidor) mostrar(delServidor);
     });
   }

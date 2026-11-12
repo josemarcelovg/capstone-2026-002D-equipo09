@@ -1,5 +1,6 @@
 "use client";
 
+import { unstable_rethrow } from "next/navigation";
 import { useState, useTransition, type FormEvent, type ReactNode } from "react";
 import { formatearTelefono } from "@/lib/conductores";
 import {
@@ -8,6 +9,7 @@ import {
   type DatosEmpresa,
   type ErroresEmpresa,
 } from "@/lib/empresa";
+import { llamarAlServidor, SIN_CONEXION } from "@/lib/guardado";
 import { formatearRut } from "@/lib/rut";
 import { guardarEmpresa } from "./acciones";
 import { BOTON_PRINCIPAL, CONTROL as CONTROL_BASE } from "../estilos";
@@ -82,7 +84,11 @@ export function EmpresaForm({ empresa }: { empresa: DatosEmpresa }) {
     }
 
     iniciarGuardado(async () => {
-      const delServidor = await guardarEmpresa(datos);
+      const delServidor = await llamarAlServidor(
+        () => guardarEmpresa(datos),
+        { general: SIN_CONEXION },
+        unstable_rethrow,
+      );
       if (delServidor) mostrar(delServidor);
     });
   }
