@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | José Vargas y Joaquín Orellana |
 | **Estado** | Implementado y probado, también con la base de datos de desarrollo; falta configurar Resend y probar un envío real |
-| **Fecha** | 04-11-2026 · actualizado el 10-11-2026 (pruebas con la base de datos) |
+| **Fecha** | 04-11-2026 · actualizado el 10-11-2026 (pruebas con la base de datos) y el 12-11-2026 (checklist) |
 
 Este documento explica cómo se implementaron los avisos por correo (PB-15 y PB-16) según las reglas de [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md), en la versión mínima que entra en la entrega final de la semana 15 ([JOA-08](JOA-08_Product_Backlog.md), sección 2). Usa la tabla `documento` (PR #53), el cálculo del estado de [JOA-10](JOA-10_Reglas_Modulo_Documentos.md) y la fecha de hoy en Chile (SIM-09).
 
@@ -120,8 +120,8 @@ Rama `sim-11-alertas-correo`, desde el PR #53 (tabla `documento`), el 04-11-2026
 - [x] Ruta protegida con `CRON_SECRET`, Vercel Cron y variables en `.env.example`.
 - [ ] Cuenta de Resend y variables en Vercel.
 - [x] Migraciones aplicadas en desarrollo (revisado el 10-11-2026).
-- [ ] Migraciones aplicadas en producción.
+- [x] Migraciones aplicadas en producción: las cinco, con `avisos`, el 08-11-2026 ([SIM-10](SIM-10_Despliegue_Vercel.md), sección 7).
 - [x] Pruebas de integración del proceso con la base de datos: CP-INT-24 a CP-INT-28 (sección 5).
 - [ ] CP-FUN-27 y CP-FUN-28 con un envío real.
-- [ ] Variables y operación en JOS-06 (secciones 5.1 y 8.3).
+- [x] Variables y operación en [JOS-06](JOS-06_Manual_Tecnico.md) (secciones 5.1 y 8.3).
 - [ ] Revisión de José y Joaquín en el PR.
