@@ -94,9 +94,10 @@ export default async function PaginaDocumentos({ searchParams }: PageProps<"/doc
         </div>
       ) : (
         <>
+          {/* En dos filas hasta 1024 px: con el menú lateral, en una sola fila los campos quedan muy angostos. */}
           <Form
             action="/documentos"
-            className={`${TARJETA} mt-6 grid gap-3 p-4 sm:grid-cols-[1fr_1fr_auto_auto] sm:items-end`}
+            className={`${TARJETA} mt-6 grid gap-3 p-4 sm:grid-cols-2 sm:items-end lg:grid-cols-[1fr_1fr_auto_auto]`}
           >
             <div>
               <label htmlFor="estado" className="text-sm font-medium text-stone-800">

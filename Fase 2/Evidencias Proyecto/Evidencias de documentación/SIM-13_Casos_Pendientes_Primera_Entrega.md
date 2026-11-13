@@ -5,8 +5,8 @@
 | **Tarea** | [SIM-13] Ejecutar los casos de SIM-04 que seguían pendientes desde la primera entrega |
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | José Vargas y Joaquín Orellana |
-| **Estado** | Ejecutado: 6 casos aprobados y 1 parcial (falta Lighthouse). Un error (ERR-02) y una observación menor, por corregir |
-| **Fecha** | 11-11-2026 |
+| **Estado** | Ejecutado: 6 casos aprobados y 1 parcial (falta Lighthouse). El error ERR-02 y la observación menor se corrigieron el mismo día |
+| **Fecha** | 11-11-2026 · actualizado el mismo día (ERR-02 y observación 1 corregidos) |
 
 Este documento registra la ejecución de los casos del [plan de pruebas](SIM-04_Plan_de_Pruebas.md) que seguían pendientes desde la primera entrega y que se podían probar en local con una sesión iniciada: CP-FUN-06, 08, 11 y 12, CP-COM-02 y 03, y la parte de CP-USA-03 que no necesita Lighthouse (teclado, foco, etiquetas y contraste). La sección 9 de SIM-04 los tenía en "Iniciar sesión en la aplicación local". Usa el formato de [SIM-03](SIM-03_Pruebas_Primera_Entrega.md) y de [SIM-12](SIM-12_Pruebas_Documentos_Empresa_y_Conductor.md).
 
@@ -27,7 +27,7 @@ También deja registrada la revisión en pantalla de la corrección de OBS-03 de
 | CP-USA-03 | Teclado, foco, etiquetas y contraste | 🟡 Aprobado sin Lighthouse; la auditoría queda para la versión publicada (SIM-10) |
 | OBS-03 de SIM-12 | Enlace de la página "No encontrado" | ✅ Revisada en pantalla |
 
-**Se encontró un error, ERR-02** (sección 4): al simular la conexión caída mientras se guarda, el formulario se reemplaza por la pantalla "No pudimos cargar los vehículos" y se pierde lo escrito. Está fuera de lo que pide CP-FUN-12 (una conexión lenta, que sí funciona bien). Severidad mayor, sin datos expuestos: no impide terminar la etapa (SIM-04, sección 5), pero se debe corregir. También hay una observación menor de presentación a 768 px.
+**Se encontró un error, ERR-02** (sección 4): al simular la conexión caída mientras se guarda, el formulario se reemplaza por la pantalla "No pudimos cargar los vehículos" y se pierde lo escrito. Está fuera de lo que pide CP-FUN-12 (una conexión lenta, que sí funciona bien). Severidad mayor, sin datos expuestos: no impide terminar la etapa (SIM-04, sección 5), pero se debe corregir. También hay una observación menor de presentación a 768 px. **Los dos se corrigieron y se volvieron a probar el 11-11-2026** (sección 4).
 
 ---
 
@@ -99,13 +99,15 @@ Las 10 pantallas revisadas son el listado, el registro y la ficha de vehículos,
 | **Alcance** | El mismo patrón está en los formularios de vehículos, conductores, documentos y "Mi empresa" (`await guardar…(…)` sin manejar el error de red), y en los botones de desactivar y reactivar. |
 | **Severidad** | Mayor (SIM-04, sección 5): una funcionalidad falla, pero se puede seguir recargando y escribiendo de nuevo. No expone datos de otra empresa. |
 | **Propuesta** | En cada formulario, si la solicitud falla, mostrar "No pudimos guardar. Revisa tu conexión e intenta nuevamente." como error general, conservando lo escrito. |
-| **Responsable y estado** | Simón. Abierto |
+| **Corrección** | `llamarAlServidor()` (`src/lib/guardado.ts`) llama a la acción del servidor y, si la solicitud falla, devuelve el aviso en vez de lanzar el error. Deja pasar las redirecciones de Next.js con `unstable_rethrow`, así que guardar con conexión sigue volviendo al listado. La usan los cuatro formularios y los dos botones. La prueban 4 casos de `tests/guardado.test.ts`. |
+| **Cómo se volvió a probar** | Con los mismos pasos, haciendo fallar las solicitudes desde la consola: en la ficha de SIMT-03 (con el color cambiado), en la de un conductor (con el nombre cambiado), en la edición de un documento (con observaciones escritas) y en "Mi empresa" (con un teléfono escrito) aparece "No pudimos guardar. Revisa tu conexión e intenta nuevamente." arriba del formulario y lo escrito sigue ahí. "Reactivar vehículo" en XY-4321 y "Reactivar conductor" muestran el mismo aviso debajo del botón, y los dos siguen inactivos. Con la conexión repuesta, guardar SIMT-03 vuelve al listado con "Los cambios del vehículo se guardaron.". `npm test` (129 de 129), `npm run lint` y `tsc --noEmit` sin errores. |
+| **Responsable y estado** | Simón. ✅ Cerrado el 11-11-2026 |
 
 **Observaciones menores** (presentación; no bloquean):
 
 | # | Observación | Cómo verla | Propuesta | Estado |
 |---|---|---|---|---|
-| 1 | A 768 px, con el menú lateral de 256 px, los filtros de vehículos y de documentos se ponen en una sola fila: el buscador de patente y las listas quedan de 77 a 81 px. No se ve completo el ejemplo "BBCD12", y "Todos" se corta en "Todo". Se pueden usar, y el buscador de conductores (166 px) se lee bien. | Abrir `/vehiculos` o `/documentos` a 768 px. | Dejar los filtros en dos filas hasta los 1024 px, el mismo ancho en que el listado cambia a tabla. | Abierta |
+| 1 | A 768 px, con el menú lateral de 256 px, los filtros de vehículos y de documentos se ponen en una sola fila: el buscador de patente y las listas quedan de 77 a 81 px. No se ve completo el ejemplo "BBCD12", y "Todos" se corta en "Todo". Se pueden usar, y el buscador de conductores (166 px) se lee bien. | Abrir `/vehiculos` o `/documentos` a 768 px. | Dejar los filtros en dos filas hasta los 1024 px, el mismo ancho en que el listado cambia a tabla. | ✅ Corregida el 11-11-2026: los filtros de vehículos y documentos van en dos filas hasta los 1024 px (`sm:grid-cols-2 lg:grid-cols-[1fr_1fr_auto_auto]`). A 768 px los campos miden 194 px y se ven completos "BBCD12" y "Todos"; a 1024 px vuelven a una fila (205 a 209 px). Sin desplazamiento horizontal |
 
 ---
 
@@ -129,7 +131,7 @@ Consulta de solo lectura al terminar (hora de Chile):
 | PB-05 · Listado de vehículos | CP-FUN-06 |
 | PB-06 · Editar un vehículo (criterio 3, patente) | CP-FUN-08 |
 | RNF-USA-03 · Mensajes claros en español | CP-FUN-08 y CP-FUN-11 |
-| RNF-USA-04 · No se borra lo escrito | CP-FUN-11. ERR-02 lo incumple cuando falla la conexión |
+| RNF-USA-04 · No se borra lo escrito | CP-FUN-11. ERR-02 lo incumplía cuando fallaba la conexión; ya está corregido |
 | RNF-USA-05 · Estado de carga y mensaje final | CP-FUN-12 |
 | RNF-USA-06 · Accesibilidad básica | CP-USA-03, sin Lighthouse |
 | RNF-COM-02 · Tablet (768 px) | CP-COM-02 |
@@ -142,7 +144,7 @@ Consulta de solo lectura al terminar (hora de Chile):
 - **Lighthouse** (accesibilidad de CP-USA-03, y CP-REN-01) se ejecutará en la versión publicada, con sesión (SIM-10).
 - **La pantalla de inicio de sesión** no se recorrió con el teclado, porque había una sesión iniciada. Se revisará con la auditoría de Lighthouse.
 - **El mensaje sin vehículos** de CP-FUN-06 se revisó en el código. Para verlo en pantalla haría falta una empresa de prueba sin vehículos.
-- **Corregir ERR-02 y la observación 1**, y volver a probarlos con los mismos pasos (SIM-04, sección 8).
+- **ERR-02 y la observación 1 ya están corregidos** y se volvieron a probar en local (sección 4). Falta verlos en la versión publicada, cuando se una el PR.
 - **Tarjeta [SIM-13]** en el tablero del Project, para enlazar este documento.
 
 ---
@@ -155,5 +157,5 @@ Consulta de solo lectura al terminar (hora de Chile):
 - [x] ERR-02 y la observación 1 registrados, con cómo reproducirlos y una propuesta (sección 4).
 - [x] Corrección de OBS-03 de SIM-12 revisada en pantalla (sección 3.4).
 - [x] Evidencia sin datos personales reales: empresa y cuenta ficticias, sin contraseñas (sección 2).
-- [ ] Corregir ERR-02 y la observación 1.
+- [x] ERR-02 y la observación 1 corregidos y vueltos a probar el 11-11-2026, con `tests/guardado.test.ts` (sección 4).
 - [ ] Revisión de José y Joaquín en el PR.

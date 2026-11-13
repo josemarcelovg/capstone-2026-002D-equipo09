@@ -1,6 +1,8 @@
 "use client";
 
+import { unstable_rethrow } from "next/navigation";
 import { useState, useTransition } from "react";
+import { llamarAlServidor, SIN_CONEXION } from "@/lib/guardado";
 import { cambiarActivacion } from "./acciones";
 
 /**
@@ -30,7 +32,9 @@ export function BotonActivacion({
           : "";
     const pregunta = `¿Desactivar a ${nombre}? Dejará de aparecer en el listado${vehiculos}`;
     if (!inactivo && !window.confirm(pregunta)) return;
-    iniciarCambio(async () => setError(await cambiarActivacion(id, inactivo)));
+    iniciarCambio(async () =>
+      setError(await llamarAlServidor(() => cambiarActivacion(id, inactivo), SIN_CONEXION, unstable_rethrow)),
+    );
   }
 
   return (

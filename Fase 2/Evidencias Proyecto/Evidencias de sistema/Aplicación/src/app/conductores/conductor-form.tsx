@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { unstable_rethrow } from "next/navigation";
 import { useState, useTransition, type FormEvent, type ReactNode } from "react";
+import { llamarAlServidor, SIN_CONEXION } from "@/lib/guardado";
 import {
   formatearTelefono,
   validarConductor,
@@ -80,7 +82,11 @@ export function ConductorForm({ conductor }: { conductor?: Conductor }) {
     if (!resultado.ok) return mostrar(resultado.errores);
 
     iniciarGuardado(async () => {
-      const delServidor = await guardarConductor(conductor?.id ?? null, datos);
+      const delServidor = await llamarAlServidor(
+        () => guardarConductor(conductor?.id ?? null, datos),
+        { general: SIN_CONEXION },
+        unstable_rethrow,
+      );
       if (delServidor) mostrar(delServidor);
     });
   }

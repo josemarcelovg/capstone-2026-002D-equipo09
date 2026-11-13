@@ -124,7 +124,7 @@ Los identificadores `CP-xxx-nn` no se reutilizan ni se renumeran, igual que los 
 | CP-FUN-09 | Desactivar y reactivar un vehículo. | Pide confirmación; sale del listado normal; aparece con "Incluir inactivos"; se puede reactivar. | JOA-01 7.10, PB-07, RNF-USA-04 | ✅ SIM-03 |
 | CP-FUN-10 | Cerrar sesión. | Vuelve a la pantalla de inicio de sesión. | PB-02 (criterio 1) | ✅ SIM-03 |
 | CP-FUN-11 | Errores en un formulario con datos ya escritos. | Los mensajes están en español, junto a su campo, y no se borra lo que el usuario escribió. | RNF-USA-03, RNF-USA-04 | ✅ SIM-13 |
-| CP-FUN-12 | Guardar con una conexión lenta (simulada en el navegador). | Se ve un estado de carga y termina con un mensaje de confirmación o de error. | RNF-USA-05 | ✅ SIM-13. Con la conexión caída en vez de lenta se encontró ERR-02 (sección 9) |
+| CP-FUN-12 | Guardar con una conexión lenta (simulada en el navegador). | Se ve un estado de carga y termina con un mensaje de confirmación o de error. | RNF-USA-05 | ✅ SIM-13. Con la conexión caída en vez de lenta se encontró ERR-02, corregido el mismo día (sección 9) |
 | CP-FUN-13 | Persistencia al recargar, al cerrar sesión y al volver a desplegar. | 0 registros perdidos. | RNF-DIS-02 | 🟡 Recargar y cerrar sesión aprobados en SIM-03; falta volver a desplegar |
 
 **MVP completo** (📝 se detallan con el documento de reglas de cada módulo)
@@ -181,7 +181,7 @@ Cuando se agregue cada módulo del MVP (conductores, documentos, turnos e ingres
 | ID | Qué se comprueba | Resultado esperado | Origen | Estado |
 |---|---|---|---|---|
 | CP-COM-01 | Flujos principales en un celular de 360 px. | Se completan sin desplazamiento horizontal. | RNF-COM-01, JOA-01 7.14 | 🟡 Aprobado con las herramientas del navegador (SIM-03); falta un teléfono real |
-| CP-COM-02 | Flujos principales a 768 px **[POR CONFIRMAR]**. | Se completan sin desplazamiento horizontal. | RNF-COM-02 | ✅ SIM-13, con una observación menor: los filtros de vehículos y documentos quedan apretados |
+| CP-COM-02 | Flujos principales a 768 px **[POR CONFIRMAR]**. | Se completan sin desplazamiento horizontal. | RNF-COM-02 | ✅ SIM-13. La observación menor de los filtros apretados se corrigió el mismo día |
 | CP-COM-03 | Flujos principales desde 1280 px **[POR CONFIRMAR]**. | Se completan. | RNF-COM-03 | ✅ SIM-13 |
 | CP-COM-04 | Flujo principal en cada navegador acordado, anotando la versión. | Funciona en todos. | RNF-COM-04 | 🟡 Chromium aprobado (SIM-03); faltan Edge, Firefox, Safari, Chrome para Android y Safari para iPhone **[POR CONFIRMAR]** |
 | CP-COM-05 | Correo de aviso en Gmail y Outlook, en computador y celular. | Se ve completo y legible. | RNF-COM-05 | 📝 MVP |
@@ -329,7 +329,7 @@ El 27-10-2026 había 35 aprobados de 53 casos de la primera entrega. Desde enton
 | La versión publicada, con sesión | CP-FUN-13 (volver a desplegar), CP-REN-01 y 02 (Lighthouse y tiempo de guardar), la pantalla de CP-REN-03, la duración en producción de CP-REN-04 y la auditoría de accesibilidad de Lighthouse de CP-USA-03 (SIM-10) |
 | La cuenta de Resend y un envío real | CP-FUN-27, CP-FUN-28 y CP-COM-05 (SIM-11) |
 | Personas que no conozcan la aplicación | CP-USA-01 y 02 (sección 6.4) |
-| Otros recursos o decisiones | CP-COM-01 (un teléfono real), CP-COM-04 (otros navegadores), CP-SEG-09 (duración de la sesión), CP-SEG-12 y CP-FUN-14 (simular la falla de un servicio con sesión iniciada; para CP-FUN-14, corregir antes ERR-02), CP-REN-05 (un mes publicado), CP-REN-06 (respaldo y restauración) y CP-REN-07 (otro integrante levanta el proyecto) |
+| Otros recursos o decisiones | CP-COM-01 (un teléfono real), CP-COM-04 (otros navegadores), CP-SEG-09 (duración de la sesión), CP-SEG-12 y CP-FUN-14 (simular la falla de un servicio con sesión iniciada), CP-REN-05 (un mes publicado), CP-REN-06 (respaldo y restauración) y CP-REN-07 (otro integrante levanta el proyecto) |
 | Nada en la entrega final: son trabajo futuro u opcionales (JOA-08, sección 2) | CP-FUN-29 a 32 (turnos y resumen de la flota) y CP-FUN-40 a 42 (ingresos) |
 
 **Errores registrados:**
@@ -337,9 +337,9 @@ El 27-10-2026 había 35 aprobados de 53 casos de la primera entrega. Desde enton
 | ID | Caso | Descripción | Cómo reproducirlo | Severidad | Responsable | Estado |
 |---|---|---|---|---|---|---|
 | ERR-01 | CP-SEG-13 | El 21-10-2026, `npm audit --omit=dev` informaba 3 vulnerabilidades altas: `next` 16.3.6, `sharp` y `source-map-js` (las dos últimas llegan a través de Next.js). Revisado de nuevo el 02-11-2026, con `next` 16.3.6 hay 2 avisos críticos y 5 altos. Los críticos son de ejecución remota de código sin iniciar sesión ([GHSA-2464-fhr4-w9xw](https://github.com/advisories/GHSA-2464-fhr4-w9xw) y [GHSA-673q-mjm6-r5xr](https://github.com/advisories/GHSA-673q-mjm6-r5xr)) y afectan a Next.js hasta la 16.4.0. Los altos son 2 de `next`, más `sharp`, `source-map-js` y `zod`. | Ejecutar `npm audit --omit=dev` desde `Aplicación`. | Bloqueante (antes Mayor): ejecutar código en el servidor permitiría ver o modificar datos de cualquier empresa (sección 5) | José (JOS-07). Umbral acordado el 27-10-2026: sin vulnerabilidades altas ni críticas (RNF-SEG-10) | Cerrado el 02-11-2026 (JOS-07): Next.js y `eslint-config-next` a 16.4.4 y `npm audit fix` sin `--force`; `npm audit --omit=dev` informa 0 vulnerabilidades. |
-| ERR-02 | CP-FUN-12 (con la conexión caída en vez de lenta) | Si la solicitud de guardar falla, el formulario completo se reemplaza por la pantalla "No pudimos cargar los vehículos": el mensaje habla de cargar y no de guardar, y se pierde lo escrito (RNF-USA-04). Los datos ya guardados no cambian. Pasa en los formularios de vehículos, conductores, documentos y "Mi empresa", y en los botones de desactivar y reactivar. | Abrir la ficha de un vehículo, cambiar un campo, cortar la conexión y apretar "Guardar cambios" ([SIM-13](SIM-13_Casos_Pendientes_Primera_Entrega.md), sección 4). | Mayor: una funcionalidad falla, pero se puede seguir recargando y escribiendo de nuevo; no expone datos | Simón | Abierto (11-11-2026) |
+| ERR-02 | CP-FUN-12 (con la conexión caída en vez de lenta) | Si la solicitud de guardar falla, el formulario completo se reemplaza por la pantalla "No pudimos cargar los vehículos": el mensaje habla de cargar y no de guardar, y se pierde lo escrito (RNF-USA-04). Los datos ya guardados no cambian. Pasa en los formularios de vehículos, conductores, documentos y "Mi empresa", y en los botones de desactivar y reactivar. | Abrir la ficha de un vehículo, cambiar un campo, cortar la conexión y apretar "Guardar cambios" ([SIM-13](SIM-13_Casos_Pendientes_Primera_Entrega.md), sección 4). | Mayor: una funcionalidad falla, pero se puede seguir recargando y escribiendo de nuevo; no expone datos | Simón | Cerrado el 11-11-2026: `llamarAlServidor()` (`src/lib/guardado.ts`) muestra "No pudimos guardar. Revisa tu conexión e intenta nuevamente." y conserva lo escrito. Probado en los cuatro formularios y los dos botones, y con `tests/guardado.test.ts` (SIM-13, sección 4). |
 
-Las dos observaciones menores de presentación de SIM-03 (sección 6) no eran errores; quedan registradas allí y se corrigieron el 27-10-2026. La observación menor de SIM-13 (los filtros apretados a 768 px) tampoco es un error y queda registrada allí.
+Las dos observaciones menores de presentación de SIM-03 (sección 6) no eran errores; quedan registradas allí y se corrigieron el 27-10-2026. La observación menor de SIM-13 (los filtros apretados a 768 px) tampoco es un error; queda registrada allí y se corrigió el 11-11-2026.
 
 ---
 
@@ -387,7 +387,7 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 - **Proponer agregar `npm run test:integracion`** a la sección 3.1 de la Definition of Done (SIM-05), junto a `npm test`.
 - **Pruebas de rendimiento en la versión publicada:** las consultas de la base y el proceso de avisos ya tienen pruebas automáticas (sección 6.5). Faltan Lighthouse (CP-REN-01 y la pantalla de CP-REN-03) y el tiempo de guardar (CP-REN-02) en `https://micrologist-equipo09.vercel.app`.
 - **Política de contenido con nonce:** la CSP de CP-SEG-14 todavía no restringe los scripts, para no interferir con Next.js. Restringirlos requiere generar un nonce en el proxy en cada solicitud.
-- **Corregir ERR-02 y la observación menor de SIM-13**, y volver a probarlas con los mismos pasos (sección 8). Los casos de la primera entrega que se podían probar en local ya están (SIM-13, 11-11-2026); los que quedan necesitan la versión publicada, usuarios u otros recursos (sección 9). ERR-01 se cerró el 02-11-2026 (JOS-07).
+- **Casos de la primera entrega:** los que se podían probar en local ya están (SIM-13, 11-11-2026), y ERR-02 y la observación de SIM-13 se corrigieron el mismo día. Los que quedan necesitan la versión publicada, usuarios u otros recursos (sección 9). ERR-01 se cerró el 02-11-2026 (JOS-07).
 - **Agregar los ID de la sección 10** a la sección 7 de JOA-05 (a cargo de Joaquín).
 - **Detallar los casos de turnos** si entran en una entrega (JOA-14, trabajo futuro). Los de conductores, documentos, empresa, conductor asignado y avisos ya están (CP-FUN-20 a 28 y CP-FUN-33, CP-INT-17 a 34).
 - **Fecha exacta** de la entrega de la semana 15 **[POR CONFIRMAR]** con la profesora.
@@ -408,5 +408,5 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 - [x] Avisos por correo: CP-INT-23 a 28 aprobados, los de la base de datos el 10-11-2026 en SIM-11 (sección 6.6). CP-FUN-27 y 28 esperan un envío real.
 - [x] Pruebas de rendimiento en el código: la parte de la base de CP-REN-03 y CP-REN-04, aprobadas el 10-11-2026 (sección 6.5).
 - [x] Casos de documentos, datos de la empresa y conductor asignado: CP-FUN-23 a CP-FUN-26 y CP-FUN-33, aprobados el 10-11-2026 en SIM-12 (sección 6.1).
-- [x] Casos pendientes de la primera entrega que se podían probar en local: CP-FUN-06, 08, 11 y 12 y CP-COM-02 y 03 aprobados, y CP-USA-03 parcial, el 11-11-2026 en SIM-13; ERR-02 registrado (secciones 6 y 9).
+- [x] Casos pendientes de la primera entrega que se podían probar en local: CP-FUN-06, 08, 11 y 12 y CP-COM-02 y 03 aprobados, y CP-USA-03 parcial, el 11-11-2026 en SIM-13; ERR-02 registrado y cerrado el mismo día (secciones 6 y 9).
 - [ ] Revisión de Joaquín y José en el PR.
