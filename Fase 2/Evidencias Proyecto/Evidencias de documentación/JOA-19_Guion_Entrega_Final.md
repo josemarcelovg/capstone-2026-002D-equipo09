@@ -296,7 +296,7 @@ Falta el ensayo con el equipo en Vercel (sección 7.2).
 
 ## 9. Guion de la presentación ante la comisión
 
-La presentación práctica del martes 17-11-2026 es ante una comisión de docentes de la asignatura y de la Dirección de Carrera. Según las orientaciones del Proyecto APT:
+La presentación práctica del martes 17-11-2026 es ante una comisión de docentes de la asignatura y de la Dirección de Carrera. **Es una práctica previa a la defensa de título:** la comisión entrega retroalimentación y el proyecto sigue. Por eso se presenta el alcance ajustado tal como está hoy y se cierra con lo que estará listo para la defensa de título (bloque 6). Según las orientaciones del Proyecto APT:
 
 - Dura **máximo 20 minutos, incluidas las preguntas**. Por eso la exposición dura **13 minutos** y quedan unos 7 para la comisión.
 - Hay que **describir lo más relevante y fundamentar las decisiones** tomadas durante el proceso. El centro de la presentación son las decisiones (bloque 3), no la lista de funciones.
@@ -313,10 +313,10 @@ Por eso no es un *pitch*: es la defensa del proyecto, con la demo como evidencia
 | 3 | Decisiones y su fundamento | 2:30 – 5:00 | Joaquín (producto) y José (técnicas) | Diapositiva con la tabla de la sección 9.3 |
 | 4 | Demo: el producto funcionando | 5:00 – 10:00 | Joaquín conduce | La aplicación en Vercel (sección 9.4) |
 | 5 | Metodología y calidad | 10:00 – 11:30 | Simón | Diapositiva con las iteraciones y las pruebas |
-| 6 | Retroalimentación, conclusiones y trabajo futuro | 11:30 – 13:00 | Joaquín | Diapositiva de cierre |
-| — | Preguntas de la comisión | 13:00 – 20:00 | Quien corresponda (sección 9.6) | — |
+| 6 | Lo que tenemos y lo que viene para la defensa de título | 11:30 – 13:00 | Joaquín | Diapositiva "Hoy / Para la defensa de título" |
+| — | Preguntas y retroalimentación de la comisión | 13:00 – 20:00 | Quien corresponda (sección 9.6) | — |
 
-Son unas 6 diapositivas, con más imágenes que texto. La demo no lleva diapositivas.
+La presentación tiene 12 diapositivas, con más imágenes que texto. La demo solo lleva una diapositiva de transición.
 
 ### 9.2 Qué decir en cada bloque
 
@@ -325,7 +325,7 @@ Son ideas guía, no un texto para leer de memoria. Cada uno las dice con sus pal
 **1. El problema (Joaquín, 1:30).** Mostrar el correo en el teléfono:
 - "Esto le llegó a una empresa de transporte: su licencia de conducir vence en 3 días. Así funciona MicroLogist."
 - "En una empresa chica de transporte, la revisión técnica está en una carpeta, el SOAP en el correo y los conductores en una planilla que lleva una sola persona. Nadie avisa cuando algo vence."
-- "Un documento vencido significa multas (circular sin SOAP es una infracción grave, de 1 a 1,5 UTM) o un vehículo detenido, que no puede salir a recorrer" ([JOA-04](JOA-04_Product_Vision.md), [JOA-07](JOA-07_Innovacion.md)).
+- "Circular con el SOAP, la revisión técnica o el permiso de circulación vencidos tiene una multa de 1 a 1,5 UTM cada uno, y el vehículo puede terminar en el corral: es un servicio que no se presta" ([JOA-04](JOA-04_Product_Vision.md), [JOA-07](JOA-07_Innovacion.md)).
 
 **2. Objetivo y alcance (Joaquín, 1:00).**
 - "MicroLogist permite registrar vehículos, conductores y documentos, ver de un vistazo qué está vencido o por vencer, y avisa por correo antes de que venza."
@@ -341,7 +341,7 @@ Son ideas guía, no un texto para leer de memoria. Cada uno las dice con sus pal
 - "Cada cambio entró por un PR revisado por otro integrante: más de 90 PR. Cada PR pasa automáticamente lint, tipos, 130 pruebas unitarias, pruebas de integración con PostgreSQL, `npm audit` y pruebas de rendimiento, y se publica solo en Vercel" ([SIM-10](SIM-10_Despliegue_Vercel.md)).
 - "El plan de pruebas tiene 94 casos: 70 aprobados y ninguno rechazado. Los parciales y pendientes tienen el motivo escrito, por ejemplo, Outlook no se probó" ([SIM-04](SIM-04_Plan_de_Pruebas.md), sección 9).
 
-**6. Retroalimentación, conclusiones y trabajo futuro (Joaquín, 1:30).**
+**6. Lo que tenemos y lo que viene para la defensa de título (Joaquín, 1:30).**
 - **Qué ajustamos por las retroalimentaciones anteriores:**
   - la profesora pidió, el 28-10, vincular el conductor al vehículo y ver los documentos en la ficha, y se agregó PB-24;
   - el 05-11 pidió publicar con GitHub Actions, y así se publica (SIM-10);
@@ -350,9 +350,13 @@ Son ideas guía, no un texto para leer de memoria. Cada uno las dice con sus pal
   - sin dominio propio, el correo puede llegar a spam y solo se envía a correos verificados;
   - Outlook no se probó;
   - no hay prueba con usuarios reales todavía (CP-USA-01 y 02).
-- **Trabajo futuro:** turnos (reglas en [JOA-14](JOA-14_Reglas_Modulo_Turnos.md)), resumen de la flota, dominio propio para los correos y la prueba con usuarios.
-- **Cierre:** "El MVP resuelve el problema principal: que un documento no venza sin que nadie se entere."
-- **Para la retroalimentación:** terminar con una pregunta concreta a la comisión, por ejemplo: "¿Qué priorizarían para seguir: turnos o el resumen de la flota?".
+- **Hoy tenemos:** el alcance ajustado completo y publicado. "El MVP resuelve el problema principal: que un documento no venza sin que nadie se entere."
+- **Para la defensa de título** (propuesta del Product Owner, a confirmar con el equipo):
+  - **Turnos** (PB-17 a PB-19): sus reglas y criterios ya están escritos en [JOA-14](JOA-14_Reglas_Modulo_Turnos.md). Con esto se cumple lo que el objetivo de Fase 1 decía sobre turnos.
+  - **Prueba con usuarios** (CP-USA-01 y 02): cierra el "validar" del objetivo y los indicadores 1 y 5 de [JOA-04](JOA-04_Product_Vision.md) (sección 6.2).
+  - **La retroalimentación de esta presentación,** incorporada.
+  - **Por evaluar, según el tiempo:** el resumen de la flota (PB-20); los ingresos (PB-21 a PB-23), que eran opcionales y todavía no tienen reglas; y el correo en Outlook (CP-COM-05).
+- **Para la retroalimentación:** terminar con una pregunta concreta a la comisión: "Para la defensa de título, ¿qué priorizarían después de turnos: el resumen de la flota o los ingresos?".
 
 ### 9.3 Decisiones y su fundamento
 
@@ -401,5 +405,6 @@ Quedan fuera, salvo que pregunten: validaciones del formulario (12 y 14), renova
 | ¿Cómo probaron el sistema? | Simón | Plan de pruebas con 94 casos (70 aprobados), pruebas automáticas en cada PR y pruebas con dos empresas de prueba. |
 | ¿Por qué Scrum y no otra metodología? | Simón | El plazo era fijo y cambió: cuando la entrega pasó a la semana 15, con el backlog priorizado bastó reordenarlo. Cascada exige cerrar los requisitos al inicio, y Kanban no tiene iteraciones con fecha; de Kanban sí se tomó el tablero (README, JOS-15). |
 | ¿Cuánto cuesta mantenerlo? | José | Hoy nada: todo está en planes gratis. Con más uso, el primer costo sería el dominio propio para los correos. |
-| ¿Lo probaron con usuarios reales? | Joaquín | Todavía no: es lo primero del trabajo futuro (CP-USA-01 y 02). |
+| ¿Lo probaron con usuarios reales? | Joaquín | Todavía no: es parte de lo que traeremos a la defensa de título (CP-USA-01 y 02). |
+| ¿Por qué no está turnos, si estaba en el objetivo? | Joaquín | Porque la entrega se adelantó a la semana 15 y priorizamos el control de vencimientos, que es el problema principal (PR #50). Las reglas de turnos ya están escritas y es lo primero para la defensa de título. |
 | ¿Qué harían distinto? | Cada uno | Una idea por persona, de su retrospectiva (SIM-06, sección 4). |
