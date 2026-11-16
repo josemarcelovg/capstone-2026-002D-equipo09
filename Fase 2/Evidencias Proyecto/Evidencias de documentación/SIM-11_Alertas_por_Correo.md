@@ -5,8 +5,8 @@
 | **Tarea** | [SIM-11] Implementar las alertas de vencimiento por correo |
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | José Vargas y Joaquín Orellana |
-| **Estado** | Implementado y probado, también con la base de datos de desarrollo; falta configurar Resend y probar un envío real |
-| **Fecha** | 04-11-2026 · actualizado el 10-11-2026 (pruebas con la base de datos), el 12-11-2026 (checklist) y el 15-11-2026 (diseño del correo) |
+| **Estado** | Implementado y probado, también con un envío real en producción (15-11-2026) |
+| **Fecha** | 04-11-2026 · actualizado el 10-11-2026 (pruebas con la base de datos), el 12-11-2026 (checklist) y el 15-11-2026 (diseño del correo y envío real) |
 
 Este documento explica cómo se implementaron los avisos por correo (PB-15 y PB-16) según las reglas de [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md), en la versión mínima que entra en la entrega final de la semana 15 ([JOA-08](JOA-08_Product_Backlog.md), sección 2). Usa la tabla `documento` (PR #53), el cálculo del estado de [JOA-10](JOA-10_Reglas_Modulo_Documentos.md) y la fecha de hoy en Chile (SIM-09).
 
@@ -98,9 +98,13 @@ Rama `sim-11-alertas-correo`, desde el PR #53 (tabla `documento`), el 04-11-2026
 | `npm run test:integracion` | ✅ 37 de 37: los 5 casos nuevos, la comprobación de que no quedaron datos y las demás pruebas con la base. |
 | `npm test`, `npx tsc --noEmit`, `npm run lint` y `npm run build` | ✅ 120 de 120 y sin errores; el build incluye `/api/avisos`. |
 
-**Pendiente:**
+**Envío real en producción (15-11-2026).** Con la cuenta de Resend y sus variables en Vercel, el proceso se ejecutó a mano en `https://micrologist-equipo09.vercel.app` con documentos de prueba de la empresa "Transportes Cordillera", cuyo correo de contacto es el de la cuenta de Resend. El resultado se confirmó con una consulta de solo lectura a `aviso_enviado`.
 
-- **CP-FUN-27 y CP-FUN-28** ([SIM-04](SIM-04_Plan_de_Pruebas.md)) con un envío real, cuando exista la cuenta de Resend.
+| Prueba | Resultado |
+|---|---|
+| CP-FUN-27 · el correo del día | ✅ A las 22:05 (hora de Chile) llegó un correo con la licencia de conducir de Pedro Soto, que vence el 18-11-2026: con 3 días por delante le corresponde el aviso de 7 días, y el correo dice "Vence en 3 días", con la etiqueta amarilla y el botón «Ver documentos» ([captura](<../Evidencias de sistema/Aplicación/Capturas/10-correo-aviso-gmail.png>)). Un correo por empresa, a su `email_contacto`. |
+| CP-FUN-28 · registro y duplicados | ✅ Cada aviso quedó en `aviso_enviado` con su plazo, su destinatario y su estado. La ejecución de las 22:05 envió solo la licencia: el SOAP que vence el 17-11-2026, enviado a las 21:31, no se repitió. Un aviso de "vence hoy" que quedó `fallido` a las 21:12 no se reintentó ese mismo día. El reintento al día siguiente y el documento renovado se aprobaron con la base de datos (CP-INT-26 y CP-INT-27). |
+| Bandeja de entrada | El primer correo llegó a la carpeta de spam de Gmail. Después de marcarlo como "No es spam", los siguientes llegan a la bandeja principal (sección 6). |
 
 ---
 
@@ -108,6 +112,7 @@ Rama `sim-11-alertas-correo`, desde el PR #53 (tabla `documento`), el 04-11-2026
 
 - **Hora:** en el plan Hobby de Vercel, el proceso corre en algún momento entre las 11:00 y las 11:59 UTC, así que el correo llega entre las 07:00 y las 08:59 de Chile.
 - **Destinatarios:** sin dominio propio, Resend solo envía a los correos verificados en la cuenta (sección 3).
+- **Spam:** el remitente de prueba (`onboarding@resend.dev`) no es de un dominio propio, así que Gmail puede dejar el primer correo en spam. Basta marcarlo como "No es spam" una vez. Con un dominio propio verificado en Resend dejaría de pasar.
 - **Enlace del correo:** apunta a `/documentos`, la lista de documentos, que se construye en el módulo de documentos.
 - **Historial:** los envíos quedan en `aviso_enviado`, sin pantalla (JOA-13, sección 1).
 
@@ -118,10 +123,10 @@ Rama `sim-11-alertas-correo`, desde el PR #53 (tabla `documento`), el 04-11-2026
 - [x] Tabla `aviso_enviado` con su migración, la regla de los plazos y RLS.
 - [x] Reglas de los plazos, duplicados, reintentos y correo, con sus pruebas (sección 5).
 - [x] Ruta protegida con `CRON_SECRET`, Vercel Cron y variables en `.env.example`.
-- [ ] Cuenta de Resend y variables en Vercel.
+- [x] Cuenta de Resend y variables en Vercel (15-11-2026).
 - [x] Migraciones aplicadas en desarrollo (revisado el 10-11-2026).
 - [x] Migraciones aplicadas en producción: las cinco, con `avisos`, el 08-11-2026 ([SIM-10](SIM-10_Despliegue_Vercel.md), sección 7).
 - [x] Pruebas de integración del proceso con la base de datos: CP-INT-24 a CP-INT-28 (sección 5).
-- [ ] CP-FUN-27 y CP-FUN-28 con un envío real.
+- [x] CP-FUN-27 y CP-FUN-28 con un envío real (15-11-2026, sección 5).
 - [x] Variables y operación en [JOS-06](JOS-06_Manual_Tecnico.md) (secciones 5.1 y 8.3).
 - [ ] Revisión de José y Joaquín en el PR.

@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (requisitos y backlog) y José Vargas (rendimiento y datos) |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración), el 27-10-2026 (encabezados de seguridad), el 28-10-2026 (decisiones de la reunión del 27-10), el 29-10-2026 (casos de conductores), el 02-11-2026 (resultados de SIM-08, entrega final en la semana 15, y CP-SEG-13 y ERR-01 con JOS-07), el 04-11-2026 (avisos por correo), el 09-11-2026 (versión publicada) y el 10-11-2026 (avisos con la base de datos, pruebas de rendimiento y resultados de SIM-12) y el 11-11-2026 (estado de todos los casos, sección 9, y casos pendientes de la primera entrega en SIM-13) |
+| **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración), el 27-10-2026 (encabezados de seguridad), el 28-10-2026 (decisiones de la reunión del 27-10), el 29-10-2026 (casos de conductores), el 02-11-2026 (resultados de SIM-08, entrega final en la semana 15, y CP-SEG-13 y ERR-01 con JOS-07), el 04-11-2026 (avisos por correo), el 09-11-2026 (versión publicada) y el 10-11-2026 (avisos con la base de datos, pruebas de rendimiento y resultados de SIM-12), el 11-11-2026 (estado de todos los casos, sección 9, y casos pendientes de la primera entrega en SIM-13) y el 15-11-2026 (CP-FUN-27 y 28 con un envío real) |
 
 Este plan define cómo se prueba MicroLogist: qué tipos de prueba hay, con qué técnicas se ejecutan, en qué entorno y con qué datos, cuándo se hacen y cómo se registran los resultados y los errores. Cada caso de prueba tiene un identificador que no cambia, y cada requisito de [JOA-05](JOA-05_Requisitos_No_Funcionales.md) queda cubierto por al menos un caso (sección 10). Los casos de la primera entrega ya tienen un estado, gracias a la ejecución de [SIM-03](SIM-03_Pruebas_Primera_Entrega.md). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -139,8 +139,8 @@ Los identificadores `CP-xxx-nn` no se reutilizan ni se renumeran, igual que los 
 | CP-FUN-24 | Estado y listados: "Vigente", "Por vencer" con los días que faltan, "Vence hoy" y "Vencido"; orden por vencimiento y filtros por estado y tipo; documentos de dueños inactivos solo con "Incluir inactivos"; sección "Documentos" de la ficha del vehículo y del conductor con "Agregar documento"; mensaje cuando no hay documentos. | PB-12, JOA-10 criterios 5 a 10 | ✅ SIM-12 (el criterio 6, con `tests/fechas.test.ts` y `tests/documentos.test.ts`) |
 | CP-FUN-25 | Renovar un documento vencido con una fecha futura y cambiar su dueño a otro vehículo; cambiarlo de un vehículo a un conductor no se permite. | PB-13, JOA-10 criterios 11 y 12 | ✅ SIM-12 |
 | CP-FUN-26 | Ver y editar en "Mi empresa" el nombre, el correo de contacto y el teléfono; el correo es obligatorio y se valida su formato. | PB-14, criterios 1 y 2 (el 3 lo cubren CP-INT-24 y CP-FUN-27) | ✅ SIM-12 |
-| CP-FUN-27 | Aviso por correo, con fechas controladas: un documento que vence en 30, 7 o 1 días, o hoy, aparece en el correo del día con los días que faltan; uno a 31 días o vencido, no; uno a 5 días recibe solo el de 7. Un correo por empresa en su `email_contacto`, sin documentos de otra empresa ni de dueños inactivos. | PB-15, JOA-13 criterios 1 a 7 | 🟡 Reglas aprobadas en `tests/avisos.test.ts` y con la base de datos en CP-INT-24 (10-11-2026, [SIM-11](SIM-11_Alertas_por_Correo.md)); falta un envío real |
-| CP-FUN-28 | Registro y duplicados: cada aviso queda en `aviso_enviado`; una segunda ejecución el mismo día no repite nada; un envío fallido se reintenta al día siguiente; un documento renovado vuelve a recibir sus avisos. | PB-16, JOA-13 criterios 8 a 11 | 🟡 Reglas aprobadas (SIM-11) y con la base de datos en CP-INT-24 a CP-INT-28 (10-11-2026); falta comprobarlo con un envío real |
+| CP-FUN-27 | Aviso por correo, con fechas controladas: un documento que vence en 30, 7 o 1 días, o hoy, aparece en el correo del día con los días que faltan; uno a 31 días o vencido, no; uno a 5 días recibe solo el de 7. Un correo por empresa en su `email_contacto`, sin documentos de otra empresa ni de dueños inactivos. | PB-15, JOA-13 criterios 1 a 7 | ✅ 15-11-2026: envío real en producción, una licencia a 3 días llegó con el aviso de 7 y "Vence en 3 días" ([SIM-11](SIM-11_Alertas_por_Correo.md), sección 5); las demás reglas, en `tests/avisos.test.ts` y con la base de datos en CP-INT-24 (10-11-2026) |
+| CP-FUN-28 | Registro y duplicados: cada aviso queda en `aviso_enviado`; una segunda ejecución el mismo día no repite nada; un envío fallido se reintenta al día siguiente; un documento renovado vuelve a recibir sus avisos. | PB-16, JOA-13 criterios 8 a 11 | ✅ 15-11-2026: con envíos reales, cada aviso quedó en `aviso_enviado` y una segunda ejecución no repitió el ya enviado (SIM-11, sección 5); el reintento al día siguiente y el documento renovado, con la base de datos en CP-INT-24 a CP-INT-28 (10-11-2026) |
 | CP-FUN-29 | Asignar un turno. | PB-17 | 📝 |
 | CP-FUN-30 | Ver los turnos por fecha. | PB-18 | 📝 |
 | CP-FUN-31 | Editar o anular un turno. | PB-19 | 📝 |
@@ -308,26 +308,26 @@ Si falta el `.env` o la aplicación no está corriendo, los casos que lo necesit
 
 ---
 
-## 9. Estado al 11-11-2026
+## 9. Estado al 15-11-2026
 
 Conteo de las tablas de la sección 6: **94 casos**.
 
 | Estado | Cantidad | Casos |
 |---|---|---|
-| ✅ Aprobado | 68 | CP-FUN-01 a 12, 20 a 26 y 33; CP-SEG-01 a 08, 10, 11, 13 y 14; CP-COM-02 y 03; CP-INT-01 a 34 |
-| 🟡 Parcial | 10 | CP-FUN-13, 27 y 28; CP-SEG-09 y 12; CP-COM-01 y 04; CP-USA-03; CP-REN-03 y 04 |
+| ✅ Aprobado | 70 | CP-FUN-01 a 12, 20 a 28 y 33; CP-SEG-01 a 08, 10, 11, 13 y 14; CP-COM-02 y 03; CP-INT-01 a 34 |
+| 🟡 Parcial | 8 | CP-FUN-13; CP-SEG-09 y 12; CP-COM-01 y 04; CP-USA-03; CP-REN-03 y 04 |
 | ❌ No aprobado | 0 | — |
 | ⏳ Pendiente | 8 | CP-FUN-14; CP-USA-01 y 02; CP-REN-01, 02 y 05 a 07 |
 | 📝 Por detallar | 8 | CP-FUN-29 a 32 y 40 a 42; CP-COM-05 |
 
-El 27-10-2026 había 35 aprobados de 53 casos de la primera entrega. Desde entonces se aprobaron los de conductores (SIM-08), la versión publicada sin sesión (SIM-10), los avisos con la base de datos (SIM-11), los de documentos, la empresa y el conductor asignado (SIM-12), y la parte de la base de las pruebas de rendimiento (sección 6.5). El mismo 11-11-2026 se ejecutaron en local los casos de la primera entrega que necesitaban una sesión iniciada ([SIM-13](SIM-13_Casos_Pendientes_Primera_Entrega.md)).
+El 27-10-2026 había 35 aprobados de 53 casos de la primera entrega. Desde entonces se aprobaron los de conductores (SIM-08), la versión publicada sin sesión (SIM-10), los avisos con la base de datos (SIM-11), los de documentos, la empresa y el conductor asignado (SIM-12), y la parte de la base de las pruebas de rendimiento (sección 6.5). El mismo 11-11-2026 se ejecutaron en local los casos de la primera entrega que necesitaban una sesión iniciada ([SIM-13](SIM-13_Casos_Pendientes_Primera_Entrega.md)). El 15-11-2026 se aprobaron CP-FUN-27 y 28 con un envío real en producción (SIM-11).
 
 **Qué falta para cada uno de los casos que no están aprobados:**
 
 | Qué se necesita | Casos |
 |---|---|
 | La versión publicada, con sesión | CP-FUN-13 (volver a desplegar), CP-REN-01 y 02 (Lighthouse y tiempo de guardar), la pantalla de CP-REN-03, la duración en producción de CP-REN-04 y la auditoría de accesibilidad de Lighthouse de CP-USA-03 (SIM-10) |
-| La cuenta de Resend y un envío real | CP-FUN-27, CP-FUN-28 y CP-COM-05 (SIM-11) |
+| Detallar el caso y abrir el correo en Outlook y en un celular (Gmail en computador ya se vio en SIM-11) | CP-COM-05 |
 | Personas que no conozcan la aplicación | CP-USA-01 y 02 (sección 6.4) |
 | Otros recursos o decisiones | CP-COM-01 (un teléfono real), CP-COM-04 (otros navegadores), CP-SEG-09 (duración de la sesión), CP-SEG-12 y CP-FUN-14 (simular la falla de un servicio con sesión iniciada), CP-REN-05 (un mes publicado), CP-REN-06 (respaldo y restauración) y CP-REN-07 (otro integrante levanta el proyecto) |
 | Nada en la entrega final: son trabajo futuro u opcionales (JOA-08, sección 2) | CP-FUN-29 a 32 (turnos y resumen de la flota) y CP-FUN-40 a 42 (ingresos) |
@@ -405,7 +405,7 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 - [x] Tipo de prueba de integración con 15 casos automáticos en el código, ejecutados el 22-10-2026 (secciones 2 y 6.6).
 - [x] Encabezados de seguridad: CP-SEG-14 y CP-INT-16, aprobados el 27-10-2026 (secciones 6.2 y 6.6).
 - [x] Casos de conductores: CP-FUN-20 a 22 y CP-INT-17 a 22, aprobados el 02-11-2026 en SIM-08 (secciones 6.1 y 6.6).
-- [x] Avisos por correo: CP-INT-23 a 28 aprobados, los de la base de datos el 10-11-2026 en SIM-11 (sección 6.6). CP-FUN-27 y 28 esperan un envío real.
+- [x] Avisos por correo: CP-INT-23 a 28 aprobados, los de la base de datos el 10-11-2026 en SIM-11 (sección 6.6). CP-FUN-27 y 28, con un envío real el 15-11-2026.
 - [x] Pruebas de rendimiento en el código: la parte de la base de CP-REN-03 y CP-REN-04, aprobadas el 10-11-2026 (sección 6.5).
 - [x] Casos de documentos, datos de la empresa y conductor asignado: CP-FUN-23 a CP-FUN-26 y CP-FUN-33, aprobados el 10-11-2026 en SIM-12 (sección 6.1).
 - [x] Casos pendientes de la primera entrega que se podían probar en local: CP-FUN-06, 08, 11 y 12 y CP-COM-02 y 03 aprobados, y CP-USA-03 parcial, el 11-11-2026 en SIM-13; ERR-02 registrado y cerrado el mismo día (secciones 6 y 9).
