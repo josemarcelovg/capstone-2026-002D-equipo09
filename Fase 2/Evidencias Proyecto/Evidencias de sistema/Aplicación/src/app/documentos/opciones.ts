@@ -5,11 +5,7 @@ import { formatearPatente } from "@/lib/vehiculos";
 import { listarVehiculos } from "@/lib/vehiculos-datos";
 import type { OpcionDueno } from "./documento-form";
 
-/**
- * Los vehículos y conductores que se pueden elegir como dueño: solo los activos de la empresa
- * (JOA-10, sección 4), y solo de `tipo` si se indica. Si `actual` está inactivo (al editar un
- * documento de un dueño inactivo), se agrega igual para que el formulario lo muestre elegido.
- */
+// Vehículos y conductores activos de la empresa, para elegir en el formulario.
 export async function opcionesDeDueno(
   tipo?: TipoDueno,
   actual?: DuenoDocumento,

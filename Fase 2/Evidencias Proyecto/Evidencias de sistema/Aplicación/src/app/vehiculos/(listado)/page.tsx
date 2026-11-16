@@ -56,7 +56,7 @@ export default async function PaginaVehiculos({ searchParams }: PageProps<"/vehi
         </div>
       ) : (
         <>
-          {/* En dos filas hasta 1024 px: con el menú lateral, en una sola fila los campos quedan muy angostos. */}
+          {/* Filtros en dos filas en pantallas medianas */}
           <Form
             action="/vehiculos"
             className={`${TARJETA} mt-6 grid gap-3 p-4 sm:grid-cols-2 sm:items-end lg:grid-cols-[1fr_1fr_auto_auto]`}
@@ -125,7 +125,7 @@ export default async function PaginaVehiculos({ searchParams }: PageProps<"/vehi
             </p>
           ) : (
             <>
-              {/* Celular: una tarjeta por vehículo */}
+              {/* Celular y tablet: tarjetas */}
               <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:hidden">
                 {vehiculos.map((vehiculo) => (
                   <li key={vehiculo.id}>
@@ -151,7 +151,7 @@ export default async function PaginaVehiculos({ searchParams }: PageProps<"/vehi
                 ))}
               </ul>
 
-              {/* Computador: tabla (con el menú lateral, la tabla necesita una pantalla ancha) */}
+              {/* Computador: tabla */}
               <div className={`${TARJETA} mt-4 hidden overflow-hidden lg:block`}>
                 <table className="w-full text-left text-sm">
                   <thead className="border-b border-stone-200 bg-stone-50 text-xs uppercase tracking-wider text-stone-600">

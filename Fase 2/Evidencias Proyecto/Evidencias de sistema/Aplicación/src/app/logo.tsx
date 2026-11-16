@@ -1,7 +1,4 @@
-/**
- * Logo de MicroLogist: un volante con el centro naranja y el nombre. El volante es decorativo
- * (aria-hidden); el nombre se lee como texto. `claro` es para fondos oscuros.
- */
+// Logo de MicroLogist. "claro" es para usarlo sobre fondos oscuros.
 export function Logo({ grande = false, claro = false }: { grande?: boolean; claro?: boolean }) {
   return (
     <span

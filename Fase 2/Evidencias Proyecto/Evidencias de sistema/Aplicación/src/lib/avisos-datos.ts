@@ -11,13 +11,8 @@ import type { EnviarCorreo, MensajeCorreo } from "./correo.ts";
 import { fechaDesdeBase, fechaParaBase, hoyEnChile, sumarDias } from "./fechas.ts";
 import { formatearPatente } from "./vehiculos.ts";
 
-// Proceso diario de avisos por correo (JOA-13, sección 3). Lo ejecuta la ruta /api/avisos, que
-// llama Vercel Cron. Recibe la base de datos y la función de envío para poder probarlo dentro de
-// una transacción que se deshace y sin mandar correos reales (tests/integracion/avisos.test.ts).
-// Por eso importa con rutas relativas y no usa src/lib/prisma.ts: la ruta le pasa el cliente.
-//
-// No filtra por empresa: recorre los documentos de todas, pero arma un correo por empresa con
-// solo sus documentos y lo manda a su correo de contacto (criterio 7 de JOA-13).
+// Proceso diario de avisos: busca los documentos por vencer, manda un correo por empresa
+// y anota cada aviso para no repetirlo. Recibe la base y la función de envío para poder probarlo.
 
 type BaseDeDatos = Pick<Prisma.TransactionClient, "documento" | "avisoEnviado">;
 
@@ -31,21 +26,15 @@ type Registro = {
 };
 
 export type ResultadoAvisos = {
-  /** La fecha de hoy en Chile que usó el proceso. */
   hoy: string;
-  /** Correos que se intentaron enviar: como máximo uno por empresa. */
+  // Como máximo uno por empresa
   correos: number;
-  /** Avisos que quedaron enviados. */
   enviados: number;
-  /** Avisos que quedaron fallidos y se reintentan al día siguiente. */
+  // Se reintentan al día siguiente
   fallidos: number;
 };
 
-/**
- * Busca los documentos con aviso hoy, registra cada aviso, envía un correo por empresa y marca
- * cada aviso como enviado o fallido. Se puede ejecutar varias veces el mismo día sin repetir
- * avisos (criterio 9 de JOA-13).
- */
+// Se puede ejecutar varias veces el mismo día sin mandar avisos repetidos.
 export async function procesarAvisos({
   db,
   enviar,
@@ -60,7 +49,7 @@ export async function procesarAvisos({
   const hoy = hoyEnChile(ahora);
   const resultado: ResultadoAvisos = { hoy, correos: 0, enviados: 0, fallidos: 0 };
 
-  // Solo los que vencen de hoy a 30 días: los demás no tienen aviso (JOA-13, sección 3.1).
+  // Solo los que vencen en los próximos 30 días.
   const documentos = await db.documento.findMany({
     where: {
       fechaVencimiento: {
@@ -102,7 +91,7 @@ export async function procesarAvisos({
     dueno: documento.vehiculo
       ? formatearPatente(documento.vehiculo.patente)
       : (documento.conductor?.nombre ?? ""),
-    // Un vehículo en mantención sigue recibiendo avisos; uno inactivo, no (JOA-13, sección 2).
+    // Un vehículo en mantención sigue recibiendo avisos; uno inactivo, no.
     duenoActivo: documento.vehiculo
       ? documento.vehiculo.estado !== "inactivo"
       : Boolean(documento.conductor?.activo),
@@ -126,7 +115,7 @@ export async function procesarAvisos({
     if (!empresa) continue;
     const destinatario = empresa.emailContacto.trim().toLowerCase();
 
-    // Primero se registra cada aviso; después se envía el correo (JOA-13, sección 3.3).
+    // Primero se anota cada aviso y después se manda el correo.
     const reservados: { aviso: AvisoPendiente; id: string }[] = [];
     for (const aviso of avisos) {
       const id = await reservar(db, aviso, destinatario, ahora, hoy, registrados);
@@ -145,8 +134,7 @@ export async function procesarAvisos({
     try {
       await enviarConReintento(enviar, { para: destinatario, ...correo });
     } catch (error) {
-      // Falló también el reintento: quedan como fallidos y se reintentan al día siguiente
-      // (JOA-13, sección 2).
+      // Si falla también el reintento, quedan como fallidos para mañana.
       console.error(`No se pudo enviar el correo de avisos de la empresa ${empresaId}.`, error);
       resultado.fallidos += ids.length;
       continue;
@@ -161,27 +149,19 @@ export async function procesarAvisos({
   return resultado;
 }
 
-/**
- * Envía el correo y, si falla, lo intenta una vez más de inmediato (JOA-13, sección 2). Sin este
- * reintento, un aviso de "vence hoy" que falla se perdería: al día siguiente el documento ya
- * venció y no le corresponde ningún plazo. Si el segundo intento también falla, lanza su error.
- */
+// Si el envío falla, lo intenta una vez más de inmediato, para no perder el aviso de "vence hoy".
 async function enviarConReintento(enviar: EnviarCorreo, mensaje: MensajeCorreo) {
   try {
     await enviar(mensaje);
   } catch (error) {
-    // Sin el correo del destinatario en el registro, igual que el error de más arriba.
+    // No se registra el correo del destinatario.
     console.warn("Falló el envío del correo de avisos; se intenta una vez más.", error);
     await enviar(mensaje);
   }
 }
 
-/**
- * Registra el aviso como fallido antes de enviarlo, para que dos ejecuciones no lo manden dos
- * veces (JOA-13, sección 3.3): la restricción única deja pasar solo a una. Devuelve el id del
- * registro, o `null` si otra ejecución ya lo tomó. Un aviso fallido se reintenta solo si su
- * último intento fue un día anterior.
- */
+// Anota el aviso antes de enviarlo, para que dos ejecuciones al mismo tiempo no lo manden dos veces.
+// Devuelve null si otra ejecución ya lo tomó.
 async function reservar(
   db: BaseDeDatos,
   { documento, plazo }: AvisoPendiente,
@@ -213,14 +193,13 @@ async function reservar(
       });
       return creado.id;
     } catch (error) {
-      // P2002: la restricción única ya tiene ese aviso, así que otra ejecución lo tomó.
+      // Otra ejecución ya anotó este aviso.
       if ((error as { code?: unknown } | null)?.code === "P2002") return null;
       throw error;
     }
   }
 
-  // Si ya se intentó hoy, se reintenta mañana. La condición sobre `enviadoEn` hace que, si dos
-  // ejecuciones reintentan a la vez, solo una lo tome.
+  // Un aviso fallido se reintenta recién al día siguiente.
   if (anterior.estado === "enviado" || hoyEnChile(anterior.enviadoEn) >= hoy) return null;
   const { count } = await db.avisoEnviado.updateMany({
     where: { id: anterior.id, estado: "fallido", enviadoEn: anterior.enviadoEn },

@@ -53,7 +53,7 @@ function Campo({
   );
 }
 
-/** Datos de contacto de la empresa de la sesión (PB-14). */
+// Formulario con los datos de contacto de la empresa.
 export function EmpresaForm({ empresa }: { empresa: DatosEmpresa }) {
   const [errores, setErrores] = useState<ErroresEmpresa>({});
   const [guardando, iniciarGuardado] = useTransition();
@@ -70,11 +70,11 @@ export function EmpresaForm({ empresa }: { empresa: DatosEmpresa }) {
       if (primero instanceof HTMLElement) primero.focus();
     };
 
-    // Primero en el navegador para ayudar al usuario; el servidor valida de nuevo.
+    // Se valida primero en el navegador; el servidor vuelve a validar.
     const resultado = validarEmpresa(Object.fromEntries(datos), empresa.rut);
     if (!resultado.ok) return mostrar(resultado.errores);
 
-    // Ese correo recibe las alertas: un error al escribirlo hace que dejen de llegar.
+    // Si cambia el correo se pide confirmación, porque ahí llegan los avisos.
     const correo = resultado.datos.emailContacto;
     if (
       cambiaElCorreo(empresa.emailContacto, correo) &&

@@ -1,14 +1,13 @@
 import { z } from "zod";
 
-// Reglas del inicio de sesión (SIM-02), sin dependencias de Next.js ni de Supabase
-// para poder probarlas directamente (tests/acceso.test.ts).
+// Reglas del inicio de sesión. No dependen de Next.js para poder probarlas directo.
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-/** Única pantalla que se puede abrir sin sesión. */
+// Única pantalla que se puede abrir sin sesión.
 export const RUTA_LOGIN = "/login";
 
-/** Proceso diario de avisos por correo (JOA-13). Vercel Cron no tiene sesión: la protege CRON_SECRET. */
+// La llama Vercel Cron, que no tiene sesión: se protege con CRON_SECRET.
 export const RUTA_AVISOS = "/api/avisos";
 
 const esquemaCredenciales = z.object({
@@ -24,7 +23,7 @@ const esquemaCredenciales = z.object({
 export type Credenciales = z.infer<typeof esquemaCredenciales>;
 export type ErroresAcceso = Partial<Record<keyof Credenciales | "general", string>>;
 
-/** Valida el formulario de inicio de sesión y devuelve un error por campo. */
+// Valida el formulario de inicio de sesión y devuelve un mensaje por campo.
 export function validarCredenciales(
   datos: unknown,
 ): { ok: true; datos: Credenciales } | { ok: false; errores: ErroresAcceso } {
@@ -39,10 +38,7 @@ export function validarCredenciales(
   return { ok: false, errores };
 }
 
-/**
- * Mensaje para el usuario según el error de Supabase Auth. Nunca indica si el correo
- * existe (JOA-01, criterio 7.2; RNF-SEG-05) ni muestra detalles técnicos (RNF-SEG-09).
- */
+// Mensaje de error del inicio de sesión. Nunca dice si el correo existe o no.
 export function mensajeDeErrorDeAcceso(error: { status?: number; code?: string; message?: string }) {
   if (error.status === 429 || error.code === "over_request_rate_limit") {
     return "Demasiados intentos. Espera unos minutos e intenta nuevamente.";
@@ -56,12 +52,8 @@ export type ModoDeAcceso =
   | { modo: "desarrollo"; empresaId: string }
   | { modo: "sin-configurar"; motivo: string };
 
-/**
- * Decide cómo se obtiene la empresa de la sesión:
- * - Con la dirección y la clave de Supabase: inicio de sesión con Supabase Auth.
- * - Sin ellas y solo en desarrollo: la empresa de EMPRESA_DESARROLLO_ID (Docker, JOS-05).
- * - En cualquier otro caso la aplicación no muestra datos.
- */
+// Decide cómo se sabe la empresa del usuario: con Supabase Auth, con EMPRESA_DESARROLLO_ID
+// (solo en desarrollo) o, si falta configuración, no se muestran datos.
 export function modoDeAcceso(entorno: {
   url?: string;
   clave?: string;
@@ -88,7 +80,6 @@ export function modoDeAcceso(entorno: {
   return { modo: "desarrollo", empresaId };
 }
 
-/** Modo de acceso según las variables de entorno del servidor (ver .env.example). */
 export function accesoDelEntorno() {
   return modoDeAcceso({
     url: process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -98,11 +89,7 @@ export function accesoDelEntorno() {
   });
 }
 
-/**
- * El proxy manda al login a quien no tiene sesión. Las acciones del servidor quedan fuera:
- * cada una comprueba la sesión por su cuenta y redirige ella misma. La ruta de los avisos
- * también, porque comprueba CRON_SECRET (src/app/api/avisos/route.ts).
- */
+// Decide si el proxy manda al login. Las acciones y la ruta de avisos revisan el acceso por su cuenta.
 export function debeRedirigirAlLogin(solicitud: {
   ruta: string;
   conSesion: boolean;

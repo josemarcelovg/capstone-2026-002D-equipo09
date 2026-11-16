@@ -1,21 +1,14 @@
-// Envío de correos con Resend (JOA-13, sección 2), usando su API HTTP con fetch: no necesita
-// otra dependencia. La clave va en RESEND_API_KEY y el remitente en CORREO_REMITENTE.
+// Envío de correos con la API de Resend.
 
 export type MensajeCorreo = { para: string; asunto: string; texto: string; html: string };
 export type EnviarCorreo = (mensaje: MensajeCorreo) => Promise<void>;
 
 const API_RESEND = "https://api.resend.com/emails";
 
-/**
- * Remitente de prueba de Resend. Sin dominio propio, el plan gratis solo envía desde aquí y a los
- * correos verificados en la cuenta (JOA-13, sección 5).
- */
+// Remitente de prueba de Resend, mientras no haya un dominio propio.
 export const REMITENTE_DE_PRUEBA = "MicroLogist <onboarding@resend.dev>";
 
-/**
- * Devuelve la función que envía un correo. Lanza un error si falta la clave o si Resend no lo
- * acepta: el proceso de avisos lo registra como fallido y lo reintenta al día siguiente.
- */
+// Devuelve la función que manda el correo. Si falla, el aviso queda como fallido.
 export function enviadorResend(
   entorno: { clave?: string; remitente?: string } = {
     clave: process.env.RESEND_API_KEY,
@@ -39,7 +32,7 @@ export function enviadorResend(
       }),
       signal: AbortSignal.timeout(15_000),
     });
-    // Solo el código: el cuerpo de la respuesta puede traer datos del destinatario.
+    // No se muestra la respuesta completa porque puede traer datos del destinatario.
     if (!respuesta.ok) throw new Error(`Resend no aceptó el correo (HTTP ${respuesta.status}).`);
   };
 }

@@ -2,8 +2,6 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { cambiaElCorreo, validarEmpresa } from "../src/lib/empresa.ts";
 
-// Datos de contacto de la empresa (PB-14). Solo datos ficticios.
-
 const valido = {
   nombre: "Transportes Cordillera (ficticia)",
   emailContacto: "contacto@cordillera.example",

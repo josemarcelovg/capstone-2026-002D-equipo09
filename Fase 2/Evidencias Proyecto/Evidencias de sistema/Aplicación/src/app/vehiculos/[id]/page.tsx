@@ -11,11 +11,10 @@ import { InsigniaEstado } from "../insignia-estado";
 import { SeccionConductor } from "../seccion-conductor";
 import { VehiculoForm } from "../vehiculo-form";
 
-// El título y la página buscan el mismo vehículo con una sola consulta por solicitud.
+// El título y la página usan la misma consulta.
 const buscarVehiculo = cache(obtenerVehiculo);
 
-// Con un título fijo, el navegador volvía a "Detalle del vehículo" al terminar de cargar la
-// página "No encontrado" (observación 1 de SIM-03).
+// Si el vehículo no existe, la pestaña también dice "No encontrado".
 export async function generateMetadata({ params }: PageProps<"/vehiculos/[id]">): Promise<Metadata> {
   const { id } = await params;
   return { title: (await buscarVehiculo(id)) ? "Detalle del vehículo" : "No encontrado" };

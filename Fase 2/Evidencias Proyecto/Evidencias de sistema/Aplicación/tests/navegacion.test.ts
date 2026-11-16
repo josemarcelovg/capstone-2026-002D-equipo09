@@ -2,9 +2,6 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { listadoParaVolver } from "../src/lib/navegacion.ts";
 
-// La página "No encontrado" ofrece volver al listado de la sección donde se estaba
-// (SIM-08 y SIM-12, observaciones de la página "No encontrado").
-
 const ID = "a1000000-0000-4000-8000-000000000001";
 
 test("desde un documento, un conductor o un vehículo vuelve a su propio listado", () => {

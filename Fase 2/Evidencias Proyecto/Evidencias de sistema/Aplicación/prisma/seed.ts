@@ -2,13 +2,9 @@ import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient, type Prisma } from "../src/generated/prisma/client.ts";
 
-// Datos ficticios para desarrollo y para las pruebas de SIM-03 (JOA-01, secciones 6 y 7).
-// Dos empresas inventadas; ninguna persona ni empresa real.
-// Los id son fijos para que el seed se pueda ejecutar varias veces sin duplicar datos.
-// Solo crea lo que falta: si una empresa, vehículo o conductor ya existe, no lo toca. Así no
-// deshace lo que se editó en la aplicación (por ejemplo, el correo de contacto que se cambia
-// para la demo, JOA-19) cada vez que se ejecuta o que arranca Docker (JOS-05).
-// Los usuarios no se crean aquí: su id debe ser el de Supabase Auth (ver SIM-02).
+// Datos de prueba: dos empresas inventadas con sus vehículos y conductores.
+// Se puede ejecutar varias veces: solo crea lo que falta y no cambia lo que ya existe.
+// Los usuarios no se crean aquí porque su id viene de Supabase Auth.
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DIRECT_URL }),
@@ -86,7 +82,7 @@ const vehiculos: VehiculoSeed[] = [
     estado: "inactivo",
     observaciones: "Vendida.",
   },
-  // Empresa B: repite BBCD12 a propósito (otra empresa sí puede tenerla).
+  // Empresa B: repite la patente BBCD12 a propósito, porque otra empresa sí puede tenerla.
   {
     id: "b1000000-0000-4000-8000-000000000001",
     empresaId: EMPRESA_B,
@@ -124,8 +120,7 @@ type ConductorSeed = Omit<Prisma.ConductorUncheckedCreateInput, "createdAt" | "u
   id: string;
 };
 
-// RUT de dígitos repetidos (válidos y claramente ficticios) y teléfonos +56 9 0000 00XX
-// (JOA-09, sección 5): ninguno es de una persona real.
+// RUT y teléfonos inventados.
 const conductores: ConductorSeed[] = [
   // Empresa A
   {
@@ -153,7 +148,7 @@ const conductores: ConductorSeed[] = [
     telefono: "+56900000003",
     activo: false,
   },
-  // Empresa B: repite el RUT 11111111-1 a propósito (otra empresa sí puede tenerlo).
+  // Empresa B: repite el RUT 11111111-1 a propósito.
   {
     id: "b2000000-0000-4000-8000-000000000001",
     empresaId: EMPRESA_B,

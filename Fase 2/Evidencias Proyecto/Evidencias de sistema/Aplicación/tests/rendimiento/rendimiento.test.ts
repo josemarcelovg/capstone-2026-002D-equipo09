@@ -9,20 +9,9 @@ import { filtroDocumentos, ORDEN_DOCUMENTOS } from "../../src/lib/documentos-fil
 import { fechaParaBase, hoyEnChile, sumarDias } from "../../src/lib/fechas.ts";
 import { normalizarPatente } from "../../src/lib/vehiculos.ts";
 
-// Pruebas de rendimiento con la base de datos (SIM-04, CP-REN-03 y CP-REN-04; RNF-REN-03 y
-// RNF-REN-04 de JOA-05). Usan el cliente Prisma generado y la base de DATABASE_URL, igual que la
-// aplicación, con una empresa de 100 vehículos y 300 documentos.
-//
-// No dejan datos ni mandan correos: cada prueba crea sus datos dentro de una transacción que se
-// deshace al final, y el envío de los avisos lo reemplaza una función que solo cuenta los correos.
-//
-// Miden la parte de la base de datos: el tiempo que tarda la consulta de cada pantalla y el
-// proceso diario completo. El tiempo de carga en el navegador (CP-REN-01) se mide con Lighthouse.
-//
-// Los umbrales son para la versión publicada, donde la función de Vercel y la base están en la
-// misma región (JOA-05, sección 3; SIM-10). Desde el computador de desarrollo, cada consulta SQL
-// cruza hasta la base y vuelve (unos 235 ms de Chile a Oregón), así que el listado se compara
-// descontando esa latencia: la que mide un `SELECT 1`, por cada consulta SQL que hace Prisma.
+// Pruebas de rendimiento con una empresa de 100 vehículos y 300 documentos, dentro de una
+// transacción que se deshace al final. Miden el tiempo de las consultas y del proceso de avisos.
+// Desde el computador se descuenta la latencia a la base (unos 235 ms hasta Oregón).
 
 const sinBase = process.env.DATABASE_URL ? false : "Falta DATABASE_URL en el .env (ver .env.example).";
 
@@ -31,7 +20,7 @@ const prisma = new PrismaClient({
   log: [{ emit: "event", level: "query" }],
 });
 
-/** Cuántas consultas SQL lleva enviadas Prisma; sirve para contar las de cada listado. */
+// Cuenta las consultas SQL que hace Prisma.
 let consultasSql = 0;
 prisma.$on("query", () => {
   consultasSql++;
@@ -45,11 +34,11 @@ const NOMBRE_DE_PRUEBA = "(prueba de rendimiento)";
 const VEHICULOS = 100;
 const TIPOS_DE_VEHICULO = ["soap", "revision_tecnica", "permiso_circulacion"] as const;
 
-/** RNF-REN-03: búsqueda y filtros en 1 segundo o menos. */
+// Búsqueda y filtros en 1 segundo o menos.
 const LIMITE_LISTADO_MS = 1_000;
-/** RNF-REN-04: el proceso diario de avisos termina en menos de 5 minutos. */
+// El proceso de avisos termina en menos de 5 minutos.
 const LIMITE_AVISOS_MS = 5 * 60 * 1_000;
-/** Cada consulta se repite y se toma la mediana, como las 3 mediciones de JOA-05. */
+// Se repite cada consulta y se toma la mediana.
 const REPETICIONES = 5;
 
 const AHORA = new Date();
@@ -57,7 +46,7 @@ const HOY = hoyEnChile(AHORA);
 
 class Deshacer extends Error {}
 
-/** Ejecuta la prueba dentro de una transacción y la deshace siempre, aunque todo salga bien. */
+// Corre la prueba en una transacción y la deshace al final.
 async function sinGuardar(prueba: (tx: Tx) => Promise<void>, timeout: number) {
   try {
     await prisma.$transaction(
@@ -72,11 +61,7 @@ async function sinGuardar(prueba: (tx: Tx) => Promise<void>, timeout: number) {
   }
 }
 
-/**
- * Una empresa con 100 vehículos (80 activos, 10 en mantención y 10 inactivos) y sus 3
- * documentos de vehículo cada uno, con vencimientos repartidos entre hace 15 días y 45 días más:
- * hay vencidos, por vencer y vigentes. Patentes `RN0001` a `RN0100`.
- */
+// Empresa de prueba con 100 vehículos y 3 documentos cada uno (vencidos, por vencer y vigentes).
 async function crearFlota(tx: Tx) {
   const empresa = await tx.empresa.create({
     data: { nombre: `Empresa ${NOMBRE_DE_PRUEBA}`, emailContacto: `rendimiento-${randomUUID()}@micrologist.example` },
@@ -108,10 +93,7 @@ async function crearFlota(tx: Tx) {
   return empresa.id;
 }
 
-/**
- * Mediana en milisegundos de `REPETICIONES` ejecuciones, después de una de calentamiento, y
- * cuántas consultas SQL hace cada ejecución.
- */
+// Mediana de varias ejecuciones y cuántas consultas SQL hace cada una.
 async function medir(consulta: () => Promise<unknown>) {
   const antes = consultasSql;
   await consulta();
@@ -131,7 +113,7 @@ describe("Rendimiento con la base de datos", { skip: sinBase }, () => {
     await sinGuardar(async (tx) => {
       const empresaId = await crearFlota(tx);
 
-      // Misma consulta que listarVehiculos() en src/lib/vehiculos-datos.ts.
+      // Misma consulta que listarVehiculos().
       const listarVehiculos = (patente = "", estado?: "en_mantencion", incluirInactivos = false) =>
         tx.vehiculo.findMany({
           where: {
@@ -156,7 +138,7 @@ describe("Rendimiento con la base de datos", { skip: sinBase }, () => {
           orderBy: { patente: "asc" },
         });
 
-      // Misma consulta que listarDocumentos() en src/lib/documentos-datos.ts.
+      // Misma consulta que listarDocumentos().
       const listarDocumentos = (filtro: Parameters<typeof filtroDocumentos>[2] = {}) =>
         tx.documento.findMany({
           where: filtroDocumentos(empresaId, HOY, filtro),
@@ -172,13 +154,13 @@ describe("Rendimiento con la base de datos", { skip: sinBase }, () => {
           orderBy: ORDEN_DOCUMENTOS,
         });
 
-      // Las consultas devuelven lo esperado: si no, la medición no sirve.
+      // Se revisa que las consultas devuelvan lo esperado; si no, la medición no sirve.
       assert.equal((await listarVehiculos()).length, 90);
       assert.equal((await listarVehiculos("", undefined, true)).length, 100);
       assert.equal((await listarDocumentos()).length, 270);
       assert.equal((await listarDocumentos({ incluirInactivos: true })).length, 300);
 
-      // Latencia de red de un viaje de ida y vuelta a la base, sin trabajo de la base.
+      // Latencia de ida y vuelta a la base, sin trabajo de la base.
       const { ms: latencia } = await medir(() => tx.$queryRaw`SELECT 1`);
       t.diagnostic(`Latencia de un SELECT 1: ${latencia} ms`);
 
@@ -223,7 +205,6 @@ describe("Rendimiento con la base de datos", { skip: sinBase }, () => {
       const ms = Math.round(performance.now() - inicio);
       const consultas = consultasSql - antes;
 
-      // Los avisos de la empresa de prueba: sus documentos de dueños activos que vencen de hoy a 30 días.
       const avisos = await tx.avisoEnviado.count({ where: { empresaId, estado: "enviado" } });
       const esperados = await tx.documento.count({
         where: {

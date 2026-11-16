@@ -2,8 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { llamarAlServidor, SIN_CONEXION } from "../src/lib/guardado.ts";
 
-// ERR-02 (SIM-13): si la solicitud de guardar falla, el formulario muestra un aviso y conserva
-// lo escrito, en vez de cambiar a la pantalla de error.
+// Si falla la conexión al guardar, el formulario muestra un aviso y no se pierde lo escrito.
 
 const nada = () => {};
 

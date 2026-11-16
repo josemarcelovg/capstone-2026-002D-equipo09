@@ -7,8 +7,6 @@ import {
   validarCredenciales,
 } from "../src/lib/acceso.ts";
 
-// Casos tomados de JOA-01 (secciones 2.4 y 7), JOA-05 (RNF-SEG-01 a RNF-SEG-05) y SIM-02.
-
 const EMPRESA_A = "a0000000-0000-4000-8000-000000000001";
 const URL_SUPABASE = "https://proyecto.supabase.co";
 const CLAVE_SUPABASE = "clave-publica";
@@ -18,7 +16,7 @@ test("acepta credenciales válidas y normaliza el correo", () => {
   const resultado = validarCredenciales({ correo: "  Admin.A@Ejemplo.CL ", contrasena: " clave segura " });
   assert.ok(resultado.ok);
   assert.equal(resultado.datos.correo, "admin.a@ejemplo.cl");
-  // La contraseña se envía tal cual: los espacios pueden ser parte de ella.
+  // La contraseña no se recorta: los espacios pueden ser parte de ella.
   assert.equal(resultado.datos.contrasena, " clave segura ");
 });
 
@@ -83,7 +81,7 @@ test("en producción nunca usa la empresa de desarrollo", () => {
 });
 
 test("en desarrollo sin claves de Supabase usa la empresa de desarrollo", () => {
-  // Así queda el .env copiado de .env.example y el entorno de Docker (JOS-05).
+  // Así queda el .env copiado de .env.example y el de Docker.
   const acceso = modoDeAcceso({ url: "", clave: "", empresaDesarrollo: EMPRESA_A, produccion: false });
   assert.deepEqual(acceso, { modo: "desarrollo", empresaId: EMPRESA_A });
 });

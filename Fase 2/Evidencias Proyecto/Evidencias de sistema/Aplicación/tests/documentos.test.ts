@@ -14,7 +14,7 @@ import {
   validarDocumento,
 } from "../src/lib/documentos.ts";
 
-// Casos tomados de JOA-10, secciones 2 a 5. Como en sus ejemplos, hoy es 01-12-2026 en Chile.
+// En estas pruebas hoy es 01-12-2026 en Chile.
 
 const HOY = "2026-12-01";
 const VEHICULO = "a1000000-0000-4000-8000-000000000001";

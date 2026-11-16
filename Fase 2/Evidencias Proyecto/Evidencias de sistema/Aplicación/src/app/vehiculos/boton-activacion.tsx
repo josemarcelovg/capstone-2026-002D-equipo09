@@ -5,7 +5,7 @@ import { useState, useTransition } from "react";
 import { llamarAlServidor, SIN_CONEXION } from "@/lib/guardado";
 import { cambiarActivacion } from "./acciones";
 
-/** Desactiva (pidiendo confirmación) o reactiva un vehículo. */
+// Botón para desactivar (con confirmación) o reactivar un vehículo.
 export function BotonActivacion({
   id,
   patente,

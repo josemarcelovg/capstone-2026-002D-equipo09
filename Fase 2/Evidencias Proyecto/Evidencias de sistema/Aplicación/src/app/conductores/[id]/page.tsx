@@ -10,11 +10,10 @@ import { ConductorForm } from "../conductor-form";
 import { InsigniaEstado } from "../insignia-estado";
 import { VehiculosAsignados } from "../vehiculos-asignados";
 
-// El título y la página buscan el mismo conductor con una sola consulta por solicitud.
+// El título y la página usan la misma consulta.
 const buscarConductor = cache(obtenerConductor);
 
-// Título calculado para que un conductor inexistente o de otra empresa diga "No encontrado"
-// también en la pestaña (igual que vehículos, observación 1 de SIM-03).
+// Si el conductor no existe, la pestaña también dice "No encontrado".
 export async function generateMetadata({ params }: PageProps<"/conductores/[id]">): Promise<Metadata> {
   const { id } = await params;
   return { title: (await buscarConductor(id)) ? "Detalle del conductor" : "No encontrado" };

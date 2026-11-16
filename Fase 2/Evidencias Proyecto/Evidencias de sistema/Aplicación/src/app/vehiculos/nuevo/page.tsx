@@ -6,7 +6,7 @@ import { VehiculoForm } from "../vehiculo-form";
 export const metadata: Metadata = { title: "Registrar vehículo" };
 
 export default async function PaginaNuevoVehiculo() {
-  // Los conductores activos de la empresa, para elegir el conductor asignado (PB-24).
+  // Conductores activos para elegir el conductor asignado.
   const { conductores } = await opcionesDeDueno("conductor");
 
   return (

@@ -3,8 +3,7 @@
 import { useEffect } from "react";
 import { IconoAlerta } from "../iconos";
 
-// Se muestra si falla la carga de una pantalla de conductores (por ejemplo, sin conexión
-// a la base de datos). No muestra detalles técnicos (RNF-SEG-09).
+// Pantalla de error de conductores, sin mostrar detalles técnicos.
 export default function ErrorConductores({
   error,
   retry,

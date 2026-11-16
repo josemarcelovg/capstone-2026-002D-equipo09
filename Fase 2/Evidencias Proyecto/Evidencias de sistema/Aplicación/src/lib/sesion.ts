@@ -5,15 +5,8 @@ import { accesoDelEntorno, RUTA_LOGIN } from "@/lib/acceso";
 import { prisma } from "@/lib/prisma";
 import { crearClienteSupabase } from "@/lib/supabase";
 
-// Usuario y empresa de la sesión (SIM-02). El empresa_id nunca viene del formulario:
-// el servidor lo toma de aquí (JOA-01, sección 2.4).
-//
-// Con Supabase Auth configurado, la sesión se valida contra Supabase en cada solicitud
-// (getUser) y la empresa sale del perfil en la tabla `usuario`, que tiene el mismo id
-// que el usuario de Supabase Auth (JOS-02, sección 7).
-//
-// Sin Supabase y solo en desarrollo (por ejemplo, en Docker), se usa la empresa de
-// EMPRESA_DESARROLLO_ID. En producción sin Supabase no se muestran datos.
+// Usuario y empresa de quien inició sesión. La empresa siempre sale de aquí y nunca del
+// formulario, para que nadie pueda ver ni guardar datos de otra empresa.
 
 export type UsuarioDeLaSesion = {
   nombre: string;
@@ -22,12 +15,8 @@ export type UsuarioDeLaSesion = {
   modo: "supabase" | "desarrollo";
 };
 
-/**
- * `null` si no hay sesión o si la cuenta no tiene perfil en `usuario`.
- * Se consulta una sola vez por solicitud aunque la llamen el encabezado y la página.
- */
+// Devuelve null si no hay sesión o si la cuenta no tiene perfil. Se consulta una vez por solicitud.
 export const usuarioDeLaSesion = cache(async (): Promise<UsuarioDeLaSesion | null> => {
-  // La sesión es de cada solicitud: nada de esto se puede generar durante el build.
   await connection();
   const acceso = accesoDelEntorno();
   if (acceso.modo === "sin-configurar") {
@@ -65,7 +54,7 @@ export const usuarioDeLaSesion = cache(async (): Promise<UsuarioDeLaSesion | nul
   };
 });
 
-/** Empresa del usuario que inició sesión. Sin sesión, redirige al inicio de sesión. */
+// La empresa del usuario. Si no hay sesión, lo manda al login.
 export async function empresaDeLaSesion(): Promise<string> {
   const usuario = await usuarioDeLaSesion();
   if (!usuario) redirect(RUTA_LOGIN);

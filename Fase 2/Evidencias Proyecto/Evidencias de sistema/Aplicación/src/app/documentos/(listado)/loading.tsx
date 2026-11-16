@@ -1,5 +1,4 @@
-// Está dentro del grupo (listado) para que solo envuelva el listado: si envolviera también
-// la edición, un documento inexistente o de otra empresa respondería 200 en vez de 404.
+// Pantalla de carga solo del listado, para que un documento que no existe responda 404.
 export default function Cargando() {
   return (
     <p role="status" className="flex items-center justify-center gap-3 py-12 text-stone-600">

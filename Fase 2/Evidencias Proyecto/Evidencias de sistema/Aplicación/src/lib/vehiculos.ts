@@ -1,7 +1,6 @@
 import { z } from "zod";
 
-// Campos, formatos y mensajes del vehículo según JOA-01 (secciones 3 y 4).
-// El formulario y el servidor validan con este mismo esquema.
+// Reglas del vehículo: tipos, estados, formato de la patente y validación del formulario.
 
 export const TIPOS = ["bus", "minibus", "van", "furgon", "automovil", "otro"] as const;
 export const ESTADOS = ["activo", "en_mantencion", "inactivo"] as const;
@@ -28,15 +27,14 @@ const ANIO_MINIMO = 1980;
 const PATENTE = /^([A-Z]{4}\d{2}|[A-Z]{2}\d{4})$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-/** Si el conductor no es de la lista (otra empresa, inactivo o inventado). PB-24, criterio 2. */
 export const MENSAJE_CONDUCTOR_NO_VALIDO = "Selecciona un conductor activo de la lista.";
 
-/** `bb-cd 12` → `BBCD12`. Así se valida y se guarda. */
+// Deja la patente en un solo formato (BBCD12) para validarla y guardarla.
 export function normalizarPatente(valor: string) {
   return valor.toUpperCase().replace(/[\s.-]/g, "");
 }
 
-/** `BBCD12` → `BBCD-12`. Solo para mostrar. */
+// Para mostrar la patente con guion: BBCD-12.
 export function formatearPatente(patente: string) {
   return patente.replace(/^([A-Z]{4}|[A-Z]{2})(\d+)$/, "$1-$2");
 }
@@ -82,7 +80,7 @@ export function esquemaVehiculo(anioActual = new Date().getFullYear()) {
     color: textoOpcional(30, "El color puede tener hasta 30 caracteres."),
     estado: z.enum(ESTADOS, { error: "Selecciona un estado válido." }).default("activo"),
     observaciones: textoOpcional(500, "Las observaciones pueden tener hasta 500 caracteres."),
-    // Vacío es "sin conductor asignado". Que sea activo y de la empresa lo comprueba el acceso a datos.
+    // Vacío significa sin conductor asignado.
     conductorId: z
       .string({ error: MENSAJE_CONDUCTOR_NO_VALIDO })
       .trim()
@@ -96,7 +94,7 @@ export type DatosVehiculo = z.infer<ReturnType<typeof esquemaVehiculo>>;
 export type Vehiculo = DatosVehiculo & { id: string };
 export type ErroresVehiculo = Partial<Record<keyof DatosVehiculo | "general", string>>;
 
-/** Valida los datos de un formulario y devuelve un error por campo. */
+// Valida el formulario y devuelve un mensaje de error por campo.
 export function validarVehiculo(
   datos: unknown,
   anioActual?: number,

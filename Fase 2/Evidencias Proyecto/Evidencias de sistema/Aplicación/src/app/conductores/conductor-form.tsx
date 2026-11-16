@@ -53,7 +53,7 @@ function Campo({
   );
 }
 
-// Lo que se muestra en el formulario al editar: RUT con puntos y teléfono con espacios.
+// Al editar, el RUT se muestra con puntos y el teléfono con espacios.
 const VALOR_INICIAL: Record<keyof DatosConductor, (conductor: Conductor) => string> = {
   nombre: (conductor) => conductor.nombre,
   rut: (conductor) => formatearRut(conductor.rut),
@@ -61,7 +61,7 @@ const VALOR_INICIAL: Record<keyof DatosConductor, (conductor: Conductor) => stri
   email: (conductor) => conductor.email ?? "",
 };
 
-/** Formulario de registro (sin `conductor`) y de edición (con `conductor`). */
+// Formulario para registrar o editar un conductor.
 export function ConductorForm({ conductor }: { conductor?: Conductor }) {
   const [errores, setErrores] = useState<ErroresConductor>({});
   const [guardando, iniciarGuardado] = useTransition();
@@ -77,7 +77,7 @@ export function ConductorForm({ conductor }: { conductor?: Conductor }) {
       if (primero instanceof HTMLElement) primero.focus();
     };
 
-    // Primero en el navegador para ayudar al usuario; el servidor valida de nuevo.
+    // Se valida primero en el navegador; el servidor vuelve a validar.
     const resultado = validarConductor(Object.fromEntries(datos));
     if (!resultado.ok) return mostrar(resultado.errores);
 

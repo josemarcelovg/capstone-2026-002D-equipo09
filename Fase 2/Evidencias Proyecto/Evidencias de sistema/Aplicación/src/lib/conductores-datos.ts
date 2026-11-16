@@ -4,9 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { conductorDeLaEmpresa, filtroConductores } from "@/lib/conductores-filtros";
 import { empresaDeLaSesion } from "@/lib/sesion";
 
-// Acceso a datos de conductores. Igual que en vehículos, toda consulta filtra por la
-// empresa de la sesión, también al buscar por id (JOA-09, sección 4): un conductor de
-// otra empresa se trata igual que uno que no existe.
+// Lectura y guardado de conductores. Todas las consultas filtran por la empresa de la sesión.
 
 const CAMPOS = {
   id: true,
@@ -17,12 +15,11 @@ const CAMPOS = {
   activo: true,
 } satisfies Prisma.ConductorSelect;
 
-// Un id con otro formato no existe; además, Postgres rechazaría la consulta.
+// Un id que no tiene formato UUID se trata como no encontrado.
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-/** La empresa ya tiene ese RUT (restricción única empresa_id + rut). */
 export class RutDuplicadoError extends Error {
-  /** `true` si el conductor que ya tiene ese RUT está inactivo. */
+  // true si el conductor que ya tiene ese RUT está desactivado
   constructor(readonly inactivo: boolean) {
     super("RUT duplicado");
   }
@@ -44,7 +41,6 @@ export type FiltroConductores = {
   incluirInactivos?: boolean;
 };
 
-/** Ordenados por nombre. La búsqueda y los inactivos se filtran en conductores-filtros.ts. */
 export async function listarConductores(filtro: FiltroConductores = {}): Promise<Conductor[]> {
   const empresaId = await empresaDeLaSesion();
   return prisma.conductor.findMany({
@@ -60,7 +56,7 @@ export async function obtenerConductor(id: string): Promise<Conductor | null> {
   return prisma.conductor.findFirst({ where: conductorDeLaEmpresa(id, empresaId), select: CAMPOS });
 }
 
-/** Lanza `RutDuplicadoError` si la empresa ya tiene ese RUT. Siempre parte activo. */
+// Un conductor nuevo siempre parte activo.
 export async function crearConductor(datos: DatosConductor): Promise<Conductor> {
   const empresaId = await empresaDeLaSesion();
   try {
@@ -74,11 +70,7 @@ export async function crearConductor(datos: DatosConductor): Promise<Conductor> 
   }
 }
 
-/**
- * Desactiva un conductor y, en la misma transacción, deja sin conductor asignado a sus
- * vehículos (PB-24, criterio 4). Devuelve `null` si el conductor no existe en la empresa de la
- * sesión, o cuántos vehículos quedaron sin conductor. Reactivarlo no los vuelve a asignar.
- */
+// Desactiva al conductor y deja sin conductor a sus vehículos, todo junto en una transacción.
 export async function desactivarConductor(id: string): Promise<{ vehiculosSinConductor: number } | null> {
   if (!UUID.test(id)) return null;
   const empresaId = await empresaDeLaSesion();
@@ -98,10 +90,7 @@ export async function desactivarConductor(id: string): Promise<{ vehiculosSinCon
   }
 }
 
-/**
- * Devuelve `null` si el conductor no existe en la empresa de la sesión.
- * Lanza `RutDuplicadoError` si el RUT nuevo ya está en la empresa.
- */
+// Devuelve null si el conductor no existe en la empresa.
 export async function actualizarConductor(
   id: string,
   cambios: Partial<DatosConductor> & { activo?: boolean },

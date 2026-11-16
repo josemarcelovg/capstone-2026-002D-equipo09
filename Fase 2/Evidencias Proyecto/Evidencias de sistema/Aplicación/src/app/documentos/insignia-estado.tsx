@@ -13,7 +13,7 @@ const TONOS: Record<EstadoDocumento, Tono> = {
   vigente: "verde",
 };
 
-/** Tono del estado del documento, para colorear su fila o tarjeta. */
+// Color de la fila o tarjeta según el estado del documento.
 export const tonoDocumento = (fechaVencimiento: string, hoy: string): Tono =>
   TONOS[calcularEstado(fechaVencimiento, hoy).estado];
 
@@ -23,7 +23,7 @@ const ICONOS: Record<EstadoDocumento, { Icono: typeof IconoAlerta; color: string
   vigente: { Icono: IconoVigente, color: "bg-emerald-100 text-emerald-700" },
 };
 
-/** Cuadro con el ícono del estado, al lado del nombre del documento. Solo decorativo. */
+// Ícono del estado al lado del nombre del documento.
 export function IconoEstadoDocumento({ fechaVencimiento, hoy }: { fechaVencimiento: string; hoy: string }) {
   const { Icono, color } = ICONOS[calcularEstado(fechaVencimiento, hoy).estado];
   return (
@@ -33,10 +33,7 @@ export function IconoEstadoDocumento({ fechaVencimiento, hoy }: { fechaVencimien
   );
 }
 
-/**
- * "Vencido · Venció hace 3 días", "Por vencer · Vence hoy" o "Vigente". El estado se lee en el
- * texto y no solo en el color (RNF-USA-06). La fecha de un documento vigente ya se muestra al lado.
- */
+// Estado del documento en texto, por ejemplo "Por vencer · Vence hoy".
 export function InsigniaVencimiento({ fechaVencimiento, hoy }: { fechaVencimiento: string; hoy: string }) {
   const { estado } = calcularEstado(fechaVencimiento, hoy);
   return (

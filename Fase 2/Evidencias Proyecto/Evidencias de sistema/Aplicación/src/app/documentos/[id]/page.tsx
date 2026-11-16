@@ -9,11 +9,10 @@ import { DocumentoForm } from "../documento-form";
 import { InsigniaVencimiento } from "../insignia-estado";
 import { opcionesDeDueno } from "../opciones";
 
-// El título y la página buscan el mismo documento con una sola consulta por solicitud.
+// El título y la página usan la misma consulta.
 const buscarDocumento = cache(obtenerDocumento);
 
-// Título calculado para que un documento inexistente o de otra empresa diga "No encontrado"
-// también en la pestaña (igual que vehículos, observación 1 de SIM-03).
+// Si el documento no existe, la pestaña también dice "No encontrado".
 export async function generateMetadata({ params }: PageProps<"/documentos/[id]">): Promise<Metadata> {
   const { id } = await params;
   return { title: (await buscarDocumento(id)) ? "Editar documento" : "No encontrado" };
@@ -22,7 +21,7 @@ export async function generateMetadata({ params }: PageProps<"/documentos/[id]">
 const primero = (valor: string | string[] | undefined) =>
   (Array.isArray(valor) ? valor[0] : valor) ?? "";
 
-/** Renovar (nueva fecha) o corregir un documento (PB-13). */
+// Pantalla para renovar o corregir un documento.
 export default async function PaginaDocumento({ params, searchParams }: PageProps<"/documentos/[id]">) {
   const { id } = await params;
   const documento = await buscarDocumento(id);

@@ -7,14 +7,8 @@ import { procesarAvisos } from "../../src/lib/avisos-datos.ts";
 import type { MensajeCorreo } from "../../src/lib/correo.ts";
 import { fechaDesdeBase, fechaParaBase, hoyEnChile, sumarDias } from "../../src/lib/fechas.ts";
 
-// Pruebas de integración del proceso de avisos por correo con la base de datos (SIM-04,
-// CP-INT-24 a CP-INT-34; criterios de JOA-13). Usan el cliente Prisma generado y la base de
-// DATABASE_URL, igual que la aplicación.
-//
-// No dejan datos ni mandan correos: cada prueba trabaja dentro de una transacción que se deshace
-// al final, y el envío lo reemplaza una función que solo guarda los correos. El proceso recorre los
-// documentos de todas las empresas de la base, así que cada prueba revisa solo los correos y los
-// registros de las empresas que creó.
+// Pruebas del proceso de avisos con la base de datos. Cada prueba trabaja en una transacción
+// que se deshace al final, y los correos no se mandan: solo se guardan para revisarlos.
 
 const sinBase = process.env.DATABASE_URL ? false : "Falta DATABASE_URL en el .env (ver .env.example).";
 
@@ -34,7 +28,7 @@ const MANANA = new Date(AHORA.getTime() + 24 * 60 * 60 * 1000);
 
 class Deshacer extends Error {}
 
-/** Ejecuta la prueba dentro de una transacción y la deshace siempre, aunque todo salga bien. */
+// Corre la prueba en una transacción y la deshace al final.
 async function sinGuardar(prueba: (tx: Tx) => Promise<void>) {
   try {
     await prisma.$transaction(
@@ -49,7 +43,7 @@ async function sinGuardar(prueba: (tx: Tx) => Promise<void>) {
   }
 }
 
-/** Una empresa nueva con un correo de contacto propio, para encontrar su correo entre los enviados. */
+// Empresa nueva con su propio correo, para encontrar sus avisos.
 async function crearEmpresa(tx: Tx, nombre: string) {
   const correo = `avisos-${randomUUID()}@micrologist.example`;
   const empresa = await tx.empresa.create({
@@ -78,7 +72,6 @@ async function crearConductor(tx: Tx, empresaId: string, activo = true) {
   });
 }
 
-/** Un documento que vence en `dias` días contados desde hoy en Chile. */
 async function crearDocumento(
   tx: Tx,
   empresaId: string,
@@ -92,7 +85,7 @@ async function crearDocumento(
   });
 }
 
-/** Reemplaza el envío: guarda cada correo, o falla si se pide. */
+// Reemplaza el envío: guarda cada correo o falla si se pide.
 function enviadorDePrueba(falla = false) {
   const enviados: MensajeCorreo[] = [];
   const enviar = async (mensaje: MensajeCorreo) => {
@@ -133,7 +126,7 @@ describe("Avisos por correo en la base de datos", { skip: sinBase }, () => {
       const { enviados, enviar } = enviadorDePrueba();
       await procesarAvisos({ db: tx, enviar, ahora: AHORA, urlDocumentos: URL_DOCUMENTOS });
 
-      // Criterios 1, 2, 4, 6 y 7: un solo correo para A, con el SOAP (7 días) y la licencia (hoy).
+      // Un solo correo para A, con el SOAP (7 días) y la licencia (hoy).
       const deA = correosPara(enviados, a.correo);
       assert.equal(deA.length, 1);
       assert.equal(deA[0].asunto, "MicroLogist: documentos que vencen hoy");
@@ -142,7 +135,7 @@ describe("Avisos por correo en la base de datos", { skip: sinBase }, () => {
       assert.doesNotMatch(deA[0].texto, /SIMI-24|SIMB-24|Revisión técnica|Permiso de circulación/);
       assert.equal(correosPara(enviados, b.correo).length, 1);
 
-      // Criterio 8: cada aviso queda registrado con su plazo, destinatario y estado.
+      // Cada aviso queda registrado con su plazo, destinatario y estado.
       assert.deepEqual(await registrosDe(tx, a.id), [
         { documentoId: licencia.id, fechaVencimiento: HOY, diasAnticipacion: 0, estado: "enviado", destinatario: a.correo },
         { documentoId: soap.id, fechaVencimiento: sumarDias(HOY, 7), diasAnticipacion: 7, estado: "enviado", destinatario: a.correo },
@@ -203,7 +196,7 @@ describe("Avisos por correo en la base de datos", { skip: sinBase }, () => {
       const documento = await crearDocumento(tx, a.id, 7, { vehiculoId: vehiculo.id });
       await procesarAvisos({ db: tx, enviar: enviadorDePrueba().enviar, ahora: AHORA, urlDocumentos: URL_DOCUMENTOS });
 
-      // Renovar es editar la fecha (PB-13): ahora vence en 30 días.
+      // Renovar es cambiar la fecha: ahora vence en 30 días.
       await tx.documento.update({
         where: { id: documento.id },
         data: { fechaVencimiento: fechaParaBase(sumarDias(HOY, 30)) },
@@ -242,20 +235,17 @@ describe("Avisos por correo en la base de datos", { skip: sinBase }, () => {
       }
     };
 
-    // La restricción única (documento, fecha de vencimiento, plazo).
     await assert.rejects(
       prisma.$transaction((tx) => registrar(tx, 7, 2), { maxWait: 10_000, timeout: 30_000 }),
       (error) => error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002",
     );
-    // La regla CHECK de los plazos: solo 30, 7, 1 y 0.
+    // Solo se aceptan los plazos 30, 7, 1 y 0.
     await assert.rejects(
       prisma.$transaction((tx) => registrar(tx, 5, 1), { maxWait: 10_000, timeout: 30_000 }),
       /aviso_enviado_dias_anticipacion_check|check constraint/i,
     );
   });
 
-  // CP-INT-29 a CP-INT-33: casos de JOA-13 que CP-INT-24 a CP-INT-28 no revisan por separado
-  // (criterios 1, 3, 4, 5, 6 y 7).
   const plazosYEstados = async (tx: Tx, empresaId: string) =>
     (await registrosDe(tx, empresaId)).map(({ diasAnticipacion, estado }) => [diasAnticipacion, estado]);
 
@@ -300,8 +290,7 @@ describe("Avisos por correo en la base de datos", { skip: sinBase }, () => {
       assert.match(deA[0].texto, /SOAP · SIMA-30 · .* · Vence en 5 días/);
       assert.deepEqual(await plazosYEstados(tx, a.id), [[7, "enviado"]]);
 
-      // Al día siguiente (faltan 4) sigue tocando el de 7, que ya se envió: no llega nada, y el de
-      // 30 nunca se manda atrasado.
+      // Al día siguiente sigue tocando el de 7, que ya se envió, así que no llega nada.
       const manana = enviadorDePrueba();
       await procesarAvisos({ db: tx, enviar: manana.enviar, ahora: MANANA, urlDocumentos: URL_DOCUMENTOS });
       assert.equal(correosPara(manana.enviados, a.correo).length, 0);
@@ -366,7 +355,7 @@ describe("Avisos por correo en la base de datos", { skip: sinBase }, () => {
     await sinGuardar(async (tx) => {
       const a = await crearEmpresa(tx, "Empresa A");
       const vehiculo = await crearVehiculo(tx, a.id, "SIMA33");
-      // Ninguno tiene aviso hoy: falta más de 30 días, ya venció, o su aviso de 7 ya se envió.
+      // Ninguno tiene aviso hoy: falta más de 30 días, ya venció o ya se envió su aviso.
       await crearDocumento(tx, a.id, 31, { vehiculoId: vehiculo.id }, "revision_tecnica");
       await crearDocumento(tx, a.id, -1, { vehiculoId: vehiculo.id }, "permiso_circulacion");
       const soap = await crearDocumento(tx, a.id, 7, { vehiculoId: vehiculo.id }, "soap");
@@ -399,7 +388,6 @@ describe("Avisos por correo en la base de datos", { skip: sinBase }, () => {
       const vehiculo = await crearVehiculo(tx, a.id, "SIMA34");
       await crearDocumento(tx, a.id, 0, { vehiculoId: vehiculo.id });
 
-      // Falla solo el primer intento para esta empresa.
       let intentos = 0;
       const enviados: MensajeCorreo[] = [];
       const enviar = async (mensaje: MensajeCorreo) => {

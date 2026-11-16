@@ -23,25 +23,19 @@ import { hoyEnChile } from "@/lib/fechas";
 
 const NO_ENCONTRADO = "No encontramos el documento. Vuelve al listado.";
 
-/** Los errores por campo y, si el documento ya existe, su id para ir a editarlo. */
 export type ErroresGuardado = ErroresDocumento & { repetidoId?: string };
 
-/**
- * Registra un documento (`id` nulo) o guarda los cambios de uno existente. Si todo sale bien
- * vuelve a donde se abrió el formulario (el listado o la ficha del dueño) con un mensaje; si no,
- * devuelve un error por campo.
- */
+// Registra un documento nuevo o guarda los cambios, y vuelve al listado o a la ficha.
 export async function guardarDocumento(
   id: string | null,
   origen: Origen,
   formulario: FormData,
 ): Promise<ErroresGuardado> {
-  // Las acciones del servidor se pueden llamar con cualquier dato, no solo desde el formulario.
+  // Revisa que los datos tengan la forma esperada, por si llaman la acción sin el formulario.
   if (!(formulario instanceof FormData) || (id !== null && typeof id !== "string")) {
     return { general: NO_ENCONTRADO };
   }
-  // El empresa_id que venga en el formulario se ignora: el esquema no lo lee y el acceso a
-  // datos usa el de la sesión (JOA-10, sección 5.2).
+  // La empresa se toma de la sesión, nunca del formulario.
   const resultado = validarDocumento(Object.fromEntries(formulario), hoyEnChile());
   if (!resultado.ok) return resultado.errores;
   const { datos } = resultado;
@@ -50,7 +44,7 @@ export async function guardarDocumento(
   try {
     dueno = id !== null ? await actualizarDocumento(id, datos) : await crearDocumento(datos);
   } catch (error) {
-    // Sin sesión, empresaDeLaSesion() redirige al login (SIM-02): esa redirección no es un error.
+    // Si no hay sesión, se deja pasar la redirección al login.
     unstable_rethrow(error);
     if (error instanceof DuenoNoEncontradoError) {
       return { general: "No encontramos el vehículo o conductor elegido. Recarga la página e intenta nuevamente." };

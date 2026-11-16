@@ -1,10 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-// Cliente de Supabase para páginas y acciones del servidor. Solo se usa para la
-// autenticación: los datos se leen y guardan con Prisma (src/lib/prisma.ts).
-// Se crea uno por solicitud, como pide @supabase/ssr. El proxy (src/proxy.ts) usa
-// su propio cliente porque ahí las cookies se leen de la solicitud.
+// Cliente de Supabase para el servidor. Solo se usa para el inicio de sesión; los datos van con Prisma.
 
 export async function crearClienteSupabase(url: string, clave: string) {
   const almacen = await cookies();
@@ -15,8 +12,7 @@ export async function crearClienteSupabase(url: string, clave: string) {
         try {
           for (const { name, value, options } of cookiesNuevas) almacen.set(name, value, options);
         } catch {
-          // Una página no puede escribir cookies (las acciones sí). En ese caso la
-          // sesión ya la renovó el proxy antes de llegar aquí.
+          // Las páginas no pueden escribir cookies; en ese caso el proxy ya renovó la sesión.
         }
       },
     },

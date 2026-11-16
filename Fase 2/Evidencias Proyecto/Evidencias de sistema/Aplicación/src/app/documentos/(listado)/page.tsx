@@ -34,12 +34,12 @@ const FILTRO_ESTADO: Record<EstadoDocumento, string> = {
 const primero = (valor: string | string[] | undefined) =>
   (Array.isArray(valor) ? valor[0] : valor) ?? "";
 
-/** El valor si es uno de la lista; si no (un enlace modificado a mano), ninguno. */
+// Si el valor de la dirección no es una opción válida, se ignora.
 function deLaLista<T extends string>(lista: readonly T[], valor: string): T | undefined {
   return lista.find((opcion) => opcion === valor);
 }
 
-/** Patente o nombre, con enlace a su ficha. */
+// Patente o nombre del dueño, con enlace a su ficha.
 function Dueno({ documento }: { documento: Documento }) {
   const { dueno } = documento;
   return (
@@ -94,7 +94,7 @@ export default async function PaginaDocumentos({ searchParams }: PageProps<"/doc
         </div>
       ) : (
         <>
-          {/* En dos filas hasta 1024 px: con el menú lateral, en una sola fila los campos quedan muy angostos. */}
+          {/* Filtros en dos filas en pantallas medianas */}
           <Form
             action="/documentos"
             className={`${TARJETA} mt-6 grid gap-3 p-4 sm:grid-cols-2 sm:items-end lg:grid-cols-[1fr_1fr_auto_auto]`}
@@ -159,7 +159,7 @@ export default async function PaginaDocumentos({ searchParams }: PageProps<"/doc
             </p>
           ) : (
             <>
-              {/* Celular y tablet: una tarjeta por documento */}
+              {/* Celular y tablet: tarjetas */}
               <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:hidden">
                 {documentos.map((documento) => (
                   <li
@@ -186,7 +186,7 @@ export default async function PaginaDocumentos({ searchParams }: PageProps<"/doc
                 ))}
               </ul>
 
-              {/* Computador: tabla (con el menú lateral, la tabla necesita una pantalla ancha) */}
+              {/* Computador: tabla */}
               <div className={`${TARJETA} mt-4 hidden overflow-hidden lg:block`}>
                 <table className="w-full text-left text-sm">
                   <thead className="border-b border-stone-200 bg-stone-50 text-xs uppercase tracking-wider text-stone-600">

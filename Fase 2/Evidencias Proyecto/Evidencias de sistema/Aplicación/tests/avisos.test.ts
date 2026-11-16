@@ -12,8 +12,7 @@ import {
   type DocumentoParaAviso,
 } from "../src/lib/avisos.ts";
 
-// Casos tomados de JOA-13 (secciones 3, 4 y 6). Hoy es 01-12-2026 en hora de Chile, como en su
-// ejemplo. Los nombres, patentes y empresas son ficticios.
+// En estas pruebas hoy es 01-12-2026 en Chile. Los datos son inventados.
 
 const HOY = "2026-12-01";
 const EMPRESA_A = "a0000000-0000-4000-8000-000000000001";
@@ -110,7 +109,7 @@ test("criterio 10: un aviso fallido se vuelve a incluir", () => {
 });
 
 test("si el plazo de un aviso fallido ya pasó, se manda el de hoy", () => {
-  // Falló el de 7 días; hoy falta 1 día, así que toca el de 1.
+  // Falló el de 7 días y hoy falta 1, así que toca el de 1.
   const doc = documento({ fechaVencimiento: "2026-12-02" });
   const pendientes = avisosPendientes([doc], [enviado(doc, 7, "fallido")], HOY);
   assert.deepEqual(
@@ -131,7 +130,6 @@ test("los avisos ya enviados de otros plazos no impiden el de hoy", () => {
 test("criterio 11: un documento renovado vuelve a recibir sus avisos", () => {
   const antes = documento({ fechaVencimiento: "2026-11-24" });
   const renovado = { ...antes, fechaVencimiento: "2026-12-31" };
-  // Con la fecha anterior ya se habían enviado los avisos de 30, 7, 1 y 0 días.
   const registrados = [30, 7, 1, 0].map((plazo) => enviado(antes, plazo));
   const pendientes = avisosPendientes([renovado], registrados, HOY);
   assert.deepEqual(
@@ -204,7 +202,7 @@ test("arma el correo del ejemplo de JOA-13 (sección 4)", () => {
   );
   assert.match(correo.html, new RegExp(`<a href="${URL_DOCUMENTOS}"[^>]*>Ver documentos</a>`));
   assert.match(correo.html, /Este aviso se envía al correo de contacto de tu empresa/);
-  // Sin imágenes ni estilos externos, para que se vea igual en Outlook y Gmail (RNF-COM-05).
+  // Sin imágenes ni estilos externos, para que se vea bien en Outlook y Gmail.
   assert.doesNotMatch(correo.html, /<img|<link|<style/);
 });
 
@@ -262,7 +260,7 @@ test("los datos escritos por los usuarios no se interpretan como HTML", () => {
   assert.match(correo.html, /Hola, Fletes &amp; Buses &lt;b&gt;:/);
   assert.match(correo.html, /&lt;script&gt;alert\(&quot;x&quot;\)&lt;\/script&gt;/);
   assert.doesNotMatch(correo.html, /<script>/);
-  // El texto simple no es HTML: queda tal cual.
+  // El texto simple no es HTML, así que queda igual.
   assert.match(correo.texto, /<script>alert\("x"\)<\/script>/);
 });
 
@@ -288,7 +286,6 @@ test("el enlace del correo usa URL_PUBLICA y, sin ella, la dirección de la soli
     urlDeDocumentos("https://micrologist-equipo09.vercel.app", solicitud),
     "https://micrologist-equipo09.vercel.app/documentos",
   );
-  // Con barra final, espacios o una ruta, el enlace sigue siendo /documentos.
   assert.equal(
     urlDeDocumentos("  https://micrologist-equipo09.vercel.app/otra/ruta/  ", solicitud),
     "https://micrologist-equipo09.vercel.app/documentos",
