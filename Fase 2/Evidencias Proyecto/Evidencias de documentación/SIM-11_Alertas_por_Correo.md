@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | José Vargas y Joaquín Orellana |
 | **Estado** | Implementado y probado, también con la base de datos de desarrollo; falta configurar Resend y probar un envío real |
-| **Fecha** | 04-11-2026 · actualizado el 10-11-2026 (pruebas con la base de datos) y el 12-11-2026 (checklist) |
+| **Fecha** | 04-11-2026 · actualizado el 10-11-2026 (pruebas con la base de datos), el 12-11-2026 (checklist) y el 15-11-2026 (diseño del correo) |
 
 Este documento explica cómo se implementaron los avisos por correo (PB-15 y PB-16) según las reglas de [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md), en la versión mínima que entra en la entrega final de la semana 15 ([JOA-08](JOA-08_Product_Backlog.md), sección 2). Usa la tabla `documento` (PR #53), el cálculo del estado de [JOA-10](JOA-10_Reglas_Modulo_Documentos.md) y la fecha de hoy en Chile (SIM-09).
 
@@ -32,7 +32,7 @@ Este documento explica cómo se implementaron los avisos por correo (PB-15 y PB-
 2. El proceso calcula **hoy en hora de Chile** y busca los documentos que vencen entre hoy y 30 días más.
 3. Para cada documento con dueño activo, elige el **plazo que corresponde** (30, 7, 1 o 0 días). Si ese aviso ya está registrado como `enviado`, lo salta.
 4. **Registra el aviso como `fallido` antes de enviar.** Si otra ejecución ya lo registró, la restricción única lo impide y lo salta. Un aviso fallido de un día anterior se vuelve a tomar; uno que falló hoy, se reintenta mañana.
-5. Arma **un correo por empresa** con todos sus avisos y lo envía a su `email_contacto`.
+5. Arma **un correo por empresa** con todos sus avisos y lo envía a su `email_contacto`. El correo tiene un texto simple y un HTML con los colores de la aplicación: un título con el resumen, cada documento con su fecha y una etiqueta de color según cuánto falta (rojo si vence hoy, amarillo si vence en 7 días o menos, naranja si falta más) y el botón «Ver documentos». El HTML usa tablas y estilos en cada etiqueta, sin imágenes, para que se vea igual en Outlook, Gmail y el celular (RNF-COM-05).
 6. Si Resend acepta el correo, marca sus avisos como `enviado`. Si no, lo intenta una vez más de inmediato; si vuelve a fallar, quedan `fallido` y se reintentan al día siguiente (JOA-13, criterio 10).
 7. Responde los totales: `{ hoy, correos, enviados, fallidos }`.
 

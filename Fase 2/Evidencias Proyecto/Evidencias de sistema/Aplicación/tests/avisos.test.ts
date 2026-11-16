@@ -187,9 +187,32 @@ test("arma el correo del ejemplo de JOA-13 (sección 4)", () => {
       "Este aviso se envía al correo de contacto de tu empresa. Puedes cambiarlo en los datos de tu empresa.",
     ].join("\n"),
   );
-  assert.match(correo.html, /<strong>Licencia de conducir<\/strong> · Pedro Soto · vence el 01-12-2026 · <strong>Vence hoy<\/strong>/);
-  assert.match(correo.html, new RegExp(`<a href="${URL_DOCUMENTOS}">Ver documentos</a>`));
-  assert.doesNotMatch(correo.html, /<img/);
+  // El HTML tiene lo mismo que el texto: cada documento con su dueño, su fecha y cuánto falta.
+  assert.match(correo.html, />Documentos que vencen hoy</);
+  assert.match(correo.html, /Hola, Transportes Cordillera:/);
+  assert.match(correo.html, /<strong>Licencia de conducir<\/strong> · Pedro Soto/);
+  assert.match(correo.html, /<strong>Permiso de circulación<\/strong> · BBCD-12/);
+  assert.match(correo.html, /<strong>Revisión técnica<\/strong> · FGHJ-34/);
+  assert.match(correo.html, /Vence el 01-12-2026/);
+  assert.match(correo.html, />Vence hoy</);
+  assert.match(correo.html, />Vence en 7 días</);
+  assert.match(correo.html, />Vence en 30 días</);
+  assert.ok(
+    correo.html.indexOf("Pedro Soto") < correo.html.indexOf("BBCD-12") &&
+      correo.html.indexOf("BBCD-12") < correo.html.indexOf("FGHJ-34"),
+    "los documentos van ordenados por fecha de vencimiento",
+  );
+  assert.match(correo.html, new RegExp(`<a href="${URL_DOCUMENTOS}"[^>]*>Ver documentos</a>`));
+  assert.match(correo.html, /Este aviso se envía al correo de contacto de tu empresa/);
+  // Sin imágenes ni estilos externos, para que se vea igual en Outlook y Gmail (RNF-COM-05).
+  assert.doesNotMatch(correo.html, /<img|<link|<style/);
+});
+
+test("el título del correo dice cuántos documentos hay, con mayúscula", () => {
+  const html = (fecha: string) =>
+    armarCorreo({ nombre: "Buses del Litoral" }, avisosPendientes([documento({ fechaVencimiento: fecha })], [], HOY), HOY, URL_DOCUMENTOS).html;
+  assert.match(html("2026-12-01"), />Un documento vence hoy</);
+  assert.match(html("2026-12-08"), />1 documento por vencer</);
 });
 
 test("el asunto dice cuántos documentos hay, en singular o plural", () => {

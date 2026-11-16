@@ -160,21 +160,79 @@ export function armarCorreo(
     NOTA_FINAL,
   ].join("\n");
 
-  const html = [
-    `<p>Hola, ${escaparHtml(nombreEmpresa)}:</p>`,
-    "<p>Estos documentos necesitan tu atención:</p>",
-    "<ul>",
-    ...lineas.map(
-      (l) =>
-        `<li><strong>${escaparHtml(l.documento)}</strong> · ${escaparHtml(l.dueno)} · ` +
-        `vence el ${l.vence} · ${l.falta === "Vence hoy" ? "<strong>Vence hoy</strong>" : l.falta}</li>`,
-    ),
-    "</ul>",
-    `<p><a href="${escaparHtml(urlDocumentos)}">Ver documentos</a></p>`,
-    `<p>${NOTA_FINAL}</p>`,
-  ].join("\n");
+  const asunto = asuntoDelCorreo(avisos);
+  // El título repite el asunto sin "MicroLogist: " y con mayúscula: "Un documento vence hoy".
+  const resumen = asunto.replace(/^MicroLogist: /, "");
+  const filas = avisos.map(({ dias }, i) => filaDelCorreo(lineas[i], colorDelPlazo(dias), i === 0));
+  const html = plantillaDelCorreo({
+    titulo: resumen.charAt(0).toUpperCase() + resumen.slice(1),
+    saludo: `Hola, ${escaparHtml(nombreEmpresa)}:`,
+    filas: filas.join("\n"),
+    urlDocumentos: escaparHtml(urlDocumentos),
+  });
 
-  return { asunto: asuntoDelCorreo(avisos), texto, html };
+  return { asunto, texto, html };
+}
+
+// El HTML usa tablas y estilos en cada etiqueta, sin imágenes ni hojas de estilo, porque es lo
+// que muestran igual Outlook, Gmail y los celulares (RNF-COM-05). Mismos colores que la app.
+
+/** Rojo si vence hoy, amarillo si vence en 7 días o menos, naranja si falta más. */
+function colorDelPlazo(dias: number) {
+  if (dias === 0) return { barra: "#ef4444", fondo: "#fee2e2", texto: "#991b1b" };
+  if (dias <= 7) return { barra: "#f59e0b", fondo: "#fef3c7", texto: "#92400e" };
+  return { barra: "#fb923c", fondo: "#ffedd5", texto: "#9a3412" };
+}
+
+function filaDelCorreo(
+  l: { documento: string; dueno: string; vence: string; falta: string },
+  color: { barra: string; fondo: string; texto: string },
+  primera: boolean,
+) {
+  const borde = primera ? "" : "border-top:1px solid #f0efee;";
+  return (
+    `<tr><td style="${borde}border-left:4px solid ${color.barra};padding:12px 14px;">` +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>' +
+    '<td style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#1c1917;">' +
+    `<strong>${escaparHtml(l.documento)}</strong> · ${escaparHtml(l.dueno)}` +
+    `<div style="font-size:12px;color:#78716c;margin-top:2px;">Vence el ${l.vence}</div></td>` +
+    '<td align="right" style="white-space:nowrap;padding-left:10px;">' +
+    `<span style="display:inline-block;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:bold;` +
+    `color:${color.texto};background:${color.fondo};border-radius:999px;padding:4px 10px;">${l.falta}</span>` +
+    "</td></tr></table></td></tr>"
+  );
+}
+
+function plantillaDelCorreo(partes: { titulo: string; saludo: string; filas: string; urlDocumentos: string }) {
+  const fuente = "font-family:Arial,Helvetica,sans-serif;";
+  return [
+    '<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">',
+    '<meta name="viewport" content="width=device-width, initial-scale=1"></head>',
+    '<body style="margin:0;padding:0;background:#f5f5f4;">',
+    // Texto que se ve en la vista previa de la bandeja de entrada.
+    `<div style="display:none;max-height:0;overflow:hidden;">${partes.titulo}: estos documentos necesitan tu atención.</div>`,
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f5f4;">',
+    '<tr><td align="center" style="padding:24px 12px;">',
+    '<table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" ' +
+      'style="width:100%;max-width:560px;background:#ffffff;border:1px solid #e7e5e4;border-radius:12px;">',
+    '<tr><td style="height:6px;background:#ea580c;border-radius:12px 12px 0 0;font-size:0;line-height:0;">&nbsp;</td></tr>',
+    `<tr><td style="padding:20px 28px 0;${fuente}font-size:18px;font-weight:bold;color:#1c1917;">` +
+      '<span style="color:#ea580c;">&#9679;</span> MicroLogist</td></tr>',
+    `<tr><td style="padding:14px 28px 0;${fuente}font-size:22px;font-weight:bold;color:#1c1917;">${partes.titulo}</td></tr>`,
+    `<tr><td style="padding:8px 28px 0;${fuente}font-size:14px;line-height:21px;color:#57534e;">` +
+      `${partes.saludo} estos documentos necesitan tu atención para que tu flota siga operando sin problemas.</td></tr>`,
+    '<tr><td style="padding:18px 28px 0;">',
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e7e5e4;border-radius:10px;">',
+    partes.filas,
+    "</table></td></tr>",
+    '<tr><td style="padding:22px 28px 26px;">',
+    `<a href="${partes.urlDocumentos}" style="display:inline-block;background:#c2410c;color:#ffffff;${fuente}` +
+      'font-size:14px;font-weight:bold;text-decoration:none;padding:12px 22px;border-radius:8px;">Ver documentos</a>',
+    "</td></tr>",
+    `<tr><td style="background:#fafaf9;border-top:1px solid #e7e5e4;border-radius:0 0 12px 12px;padding:14px 28px;` +
+      `${fuente}font-size:12px;line-height:18px;color:#78716c;">${NOTA_FINAL}</td></tr>`,
+    "</table></td></tr></table></body></html>",
+  ].join("\n");
 }
 
 // --- La ruta del proceso ----------------------------------------------------------------------
