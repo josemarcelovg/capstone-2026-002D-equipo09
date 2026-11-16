@@ -6,7 +6,7 @@
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Validación** | José Vargas y Simón Jofré |
 | **Estado** | Propuesta para validación del equipo |
-| **Fecha** | 24-09-2026 · actualizado el 16-11-2026 (objetivo ajustado, resultado de los indicadores y fecha de la entrega final) |
+| **Fecha** | 24-09-2026 · actualizado el 16-11-2026 (objetivo ajustado, resultado de los indicadores, fecha de la entrega final y lo que se entrega para la defensa de título) |
 
 Este documento explica qué queremos lograr con MicroLogist, para quién es y por qué vale la pena. Sirve de base para el Product Backlog (JOA-08), los requisitos no funcionales (JOA-05) y la sección de innovación (JOA-07). Las reglas detalladas del primer módulo están en [JOA-01_Reglas_Modulo_Vehiculos.md](JOA-01_Reglas_Modulo_Vehiculos.md).
 
@@ -88,7 +88,7 @@ El producto partió pensando en micros y colectivos, pero el problema administra
 | **Conductores** | Datos de los conductores y sus licencias. | MVP |
 | **Documentos** | Revisión técnica, SOAP, permiso de circulación, licencias y otros, con su fecha de vencimiento. | MVP |
 | **Avisos por correo** | Correo automático antes de que venza un documento. | MVP |
-| **Turnos** | Asignar vehículo y conductor por fecha y jornada. | MVP |
+| **Turnos** | Asignar vehículo y conductor por fecha y jornada. | MVP; se entrega para la defensa de título (sección 6.1) |
 | **Ingresos** | Registro de ingresos, activable según el tipo de empresa. | Opcional |
 
 ### 5.2 Lo que lo hace distinto
@@ -111,9 +111,10 @@ Desarrollar y validar una plataforma web simple que centralice la gestión de ve
 
 > Desarrollar una plataforma web simple que centralice los vehículos, los conductores y la documentación obligatoria de pequeñas y medianas empresas de transporte de pasajeros, y que avise por correo antes de que venza cada documento, con los datos de cada empresa separados y sin requerir GPS ni equipamiento adicional.
 
-- **Turnos, resumen de la flota e ingresos** pasan a trabajo futuro. Las reglas de turnos ya están escritas ([JOA-14](JOA-14_Reglas_Modulo_Turnos.md)).
+- **Turnos** queda para la defensa de título (confirmado por el equipo el 16-11-2026). Sus reglas ya están escritas ([JOA-14](JOA-14_Reglas_Modulo_Turnos.md)).
+- **El resumen de la flota y los ingresos** pasan a trabajo futuro y se evalúan para la defensa de título según el tiempo ([JOA-08](JOA-08_Product_Backlog.md), sección 2).
 - **El conductor asignado al vehículo** (PB-24) se agrega, a pedido de la profesora.
-- **La validación con usuarios** queda pendiente: el sistema se probó con dos empresas ficticias, pero todavía no con responsables de empresas reales (indicadores 1 y 5 de la sección 6.2).
+- **La validación con usuarios** queda pendiente: el sistema se probó con dos empresas ficticias, pero todavía no con responsables de empresas reales (indicadores 1 y 5 de la sección 6.2). Se hará para la defensa de título.
 
 ### 6.2 Indicadores propuestos
 
@@ -121,11 +122,11 @@ Las metas siguen **[POR CONFIRMAR]** con el equipo y se validarán con usuarios 
 
 | Indicador | Meta propuesta | Resultado al 16-11-2026 |
 |---|---|---|
-| Tiempo para registrar un vehículo | Menos de 2 minutos para un usuario nuevo. | ⏳ Sin medir: necesita a alguien que no conozca la aplicación (CP-USA-01, [SIM-04](SIM-04_Plan_de_Pruebas.md)). |
+| Tiempo para registrar un vehículo | Menos de 2 minutos para un usuario nuevo. | ⏳ Sin medir: necesita a alguien que no conozca la aplicación (CP-USA-01, [SIM-04](SIM-04_Plan_de_Pruebas.md)). Se mide para la defensa de título. |
 | Documentos que vencen sin aviso previo | Cero, en las pruebas del módulo de avisos. | ✅ Cero: CP-INT-24 a CP-INT-34 con la base de datos, y CP-FUN-27 y CP-FUN-28 con un envío real ([SIM-11](SIM-11_Alertas_por_Correo.md)). |
 | Separación de datos entre empresas | Ningún acceso cruzado en las pruebas (SIM-03). | ✅ Ninguno, con dos empresas y también con solicitudes alteradas ([SIM-03](SIM-03_Pruebas_Primera_Entrega.md) y [SIM-12](SIM-12_Pruebas_Documentos_Empresa_y_Conductor.md)). |
 | Uso en celular | Los flujos principales funcionan en una pantalla de 360 px de ancho. | ✅ Sin desplazamiento horizontal a 360 px (SIM-03 y SIM-12, criterio 15 de JOA-10). |
-| Opinión de usuarios en la validación | Al menos 3 de 4 usuarios de prueba dicen que lo usarían. | ⏳ Sin medir: falta la prueba con usuarios (CP-USA-02). |
+| Opinión de usuarios en la validación | Al menos 3 de 4 usuarios de prueba dicen que lo usarían. | ⏳ Sin medir: falta la prueba con usuarios (CP-USA-02). Se mide para la defensa de título. |
 
 ---
 
@@ -136,7 +137,8 @@ Las metas siguen **[POR CONFIRMAR]** con el equipo y se validarán con usuarios 
 | Etapa | Contenido |
 |---|---|
 | **Primera entrega** | Inicio de sesión y registro, listado y edición de vehículos, con datos separados por empresa. |
-| **MVP completo** | Conductores, documentos, avisos por correo y turnos. Para la entrega final se ajustó (03-11-2026, sección 6.1): conductores con su vehículo asignado, documentos y avisos por correo; turnos pasa a trabajo futuro. |
+| **MVP completo** | Conductores, documentos, avisos por correo y turnos. Para la entrega final se ajustó (03-11-2026, sección 6.1): conductores con su vehículo asignado, documentos y avisos por correo; turnos se entrega para la defensa de título. |
+| **Defensa de título** | Turnos y la prueba con usuarios (confirmado por el equipo el 16-11-2026; [JOA-08](JOA-08_Product_Backlog.md), sección 2). El resumen de la flota y los ingresos se evalúan según el tiempo. |
 | **Opcional** | Ingresos, según el avance y el tipo de empresa. |
 | **Evolución futura** | Varios usuarios por empresa con roles, reportes, analítica y otras mejoras. Fuera del plazo del capstone. |
 
