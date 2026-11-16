@@ -17,7 +17,7 @@ Este documento hace para la entrega final de la semana 15 lo mismo que [JOA-03](
 > Un responsable de una empresa de transporte entra a MicroLogist publicado en Vercel, ve sus vehículos y conductores, sabe quién maneja cada vehículo, controla los documentos con su vencimiento y recibe un aviso por correo antes de que venzan, sin que otra empresa vea sus datos.
 
 - **Duración:** 15 minutos de demostración y 5 de preguntas **[POR CONFIRMAR]**.
-- **Fecha:** semana 15 **[POR CONFIRMAR]** (SIM-06, sección 6). En este documento el día de la demo se llama **D**.
+- **Fecha:** martes 17-11-2026, temprano en la mañana (semana 15, SIM-06, sección 6). En este documento el día de la demo se llama **D**.
 - **Quién presenta:** Joaquín conduce el guion; José responde lo de datos y despliegue; Simón, lo de avisos y pruebas **[POR CONFIRMAR]**.
 - **Dónde:** en `https://micrologist-equipo09.vercel.app`, con el proyecto de Supabase de producción y sus cuentas de prueba ([SIM-10](SIM-10_Despliegue_Vercel.md)). **Plan B**, si el despliegue no está listo: en local con `npm run dev` y la base de desarrollo; todo el guion funciona igual, salvo que el aviso se ejecuta a mano (paso 20) en vez de llegar en la mañana.
 
@@ -51,9 +51,9 @@ Turnos (PB-17 a PB-19), resumen de la flota (PB-20) e ingresos (PB-21 a PB-23) q
 - [ ] `npm run build`, `npm run lint` y `npm test` terminan sin errores (Definition of Done, sección 3.1).
 - [ ] Que la última ejecución de la GitHub Action en `main` esté en verde y haya publicado en producción (SIM-10, sección 4.5).
 - [x] Cuenta de Resend y variables `RESEND_API_KEY`, `CORREO_REMITENTE`, `CRON_SECRET` y `URL_PUBLICA` en Vercel (SIM-11, sección 3). Probado con un envío real el 15-11-2026.
-- [ ] En **Mi empresa** de las dos empresas, dejar como correo de contacto el de la cuenta de Resend y aceptar la confirmación: sin dominio propio, el plan gratis solo envía a los correos verificados (SIM-11, sección 3). La Empresa A ya lo tiene; falta la Empresa B. Los dos correos llegan a la misma bandeja, cada uno con el nombre de su empresa.
-- [ ] Dejar los datos de producción como los espera el guion (sección 3.7).
-- [ ] En producción, en **D − 1 después de las 09:00**, registrar o editar los documentos de la sección 3.3 con las fechas calculadas desde D. Así el proceso de esa mañana ya pasó y el primero que los avisa es el de la mañana de D.
+- [x] Las dos empresas tienen como correo de contacto el de la cuenta de Resend: sin dominio propio, el plan gratis solo envía a los correos verificados (SIM-11, sección 3). Los dos correos llegan a la misma bandeja, cada uno con el nombre de su empresa (15-11-2026).
+- [x] Datos de producción como los espera el guion (sección 3.7, 15-11-2026).
+- [x] Documentos de la sección 3.3 cargados en producción con D = 17-11-2026 (15-11-2026).
 - [ ] En la mañana de D, revisar también la carpeta de spam: el remitente de prueba de Resend puede caer ahí (SIM-11, sección 6). Si pasa, marcarlo como "No es spam".
 - [ ] Ensayar el guion completo con el equipo al menos una vez, en desarrollo (sección 3.5).
 
@@ -70,23 +70,23 @@ Son los del seed (`Aplicación/prisma/seed.ts`): dos empresas ficticias, sin dat
 
 ### 3.3 Documentos para la demo
 
-El seed no trae documentos, porque su estado depende del día. Se registran desde la aplicación en D − 1 (sección 3.1). En producción, la licencia de Pedro Soto y la revisión técnica de FGHJ-34 salen de documentos que ya existen, editándolos (sección 3.7): como no existe eliminar, registrarlos de nuevo daría el mensaje de repetido. La columna "Ejemplo" usa D = 18-11-2026 **[POR CONFIRMAR]**.
+El seed no trae documentos, porque su estado depende del día. Se registran desde la aplicación en D − 1 (sección 3.1). En producción, la licencia de Pedro Soto y la revisión técnica de FGHJ-34 salen de documentos que ya existen, editándolos (sección 3.7): como no existe eliminar, registrarlos de nuevo daría el mensaje de repetido. La columna "Ejemplo" usa D = 17-11-2026, el día de la demo: son las fechas que quedaron cargadas en producción.
 
 | Empresa | Documento | Dueño | Vence | Ejemplo | En la demo |
 |---|---|---|---|---|---|
-| A | Revisión técnica | HJKL-78 | D − 10 | 08-11-2026 | Vencido; no genera aviso. Se renueva en el paso 15 |
-| A | Licencia de conducir, descripción "Clase A3" | Pedro Soto | D | 18-11-2026 | Vence hoy; aviso del día del vencimiento |
-| A | Permiso de circulación | BBCD-12 | D + 7 | 25-11-2026 | Por vencer; aviso de 7 días |
-| A | Revisión técnica | FGHJ-34 | D + 90 | 16-02-2027 | Vigente; no genera aviso |
-| A | Permiso de circulación | XY-4321 (inactivo) | D + 7 | 25-11-2026 | No aparece por defecto ni genera aviso |
-| B | SOAP | BBCD-12 de B | D + 7 | 25-11-2026 | Solo lo ve la Empresa B y llega en su propio correo |
+| A | Revisión técnica | HJKL-78 | D − 10 | 07-11-2026 | Vencido; no genera aviso. Se renueva en el paso 15 |
+| A | Licencia de conducir, descripción "Clase A3" | Pedro Soto | D | 17-11-2026 | Vence hoy; aviso del día del vencimiento |
+| A | Permiso de circulación | BBCD-12 | D + 7 | 24-11-2026 | Por vencer; aviso de 7 días |
+| A | Revisión técnica | FGHJ-34 | D + 90 | 15-02-2027 | Vigente; no genera aviso |
+| A | Permiso de circulación | XY-4321 (inactivo) | D + 7 | 24-11-2026 | No aparece por defecto ni genera aviso |
+| B | SOAP | BBCD-12 de B | D + 7 | 24-11-2026 | Solo lo ve la Empresa B y llega en su propio correo |
 
 El documento de XY-4321 se registra mientras el vehículo está activo: reactivarlo, agregar el documento y desactivarlo otra vez.
 
 ### 3.4 Valores para registrar en la demo
 
-- **SOAP de BBCD-12** de la Empresa A, con vencimiento **D + 30** (ejemplo: 18-12-2026). No está en la sección 3.3, así que se puede registrar; un segundo SOAP muestra el mensaje de repetido.
-- **Renovación** de la revisión técnica de HJKL-78 a **D + 1 año** (ejemplo: 18-11-2027).
+- **SOAP de BBCD-12** de la Empresa A, con vencimiento **D + 30** (17-12-2026). No está en la sección 3.3, así que se puede registrar; un segundo SOAP muestra el mensaje de repetido.
+- **Renovación** de la revisión técnica de HJKL-78 a **D + 1 año** (17-11-2027).
 
 ### 3.5 Ensayos y avisos
 
@@ -94,6 +94,8 @@ El documento de XY-4321 se registra mientras el vehículo está activo: reactiva
 - Para ensayar, cargar también en desarrollo los documentos de la sección 3.3, con las fechas calculadas desde el día del ensayo.
 - En producción, el proceso diario corre solo, entre las 07:00 y las 08:59 hora de Chile (SIM-11, sección 6). En la mañana de D llegan los correos del paso 19.
 - Un aviso ya enviado no se repite (JOA-13, criterio 9). Ejecutar el proceso a mano en D, antes de la demo, no rompe nada: el paso 20 igual muestra que solo llega el documento nuevo.
+- **La demo es temprano:** si empieza antes de las 09:00, el proceso de la mañana puede no haber corrido. Para no depender de eso, ejecutarlo a mano antes de empezar (Vercel > **Settings > Cron Jobs**) y revisar que lleguen los dos correos del paso 19.
+- **El lunes 16-11 también llegan correos:** como los documentos quedaron cargados el 15-11, el proceso del lunes avisa la licencia (plazo de 1 día) y los permisos y el SOAP de B (plazo de 30). Es lo esperado: el martes cada uno tiene otro plazo (0 y 7 días), así que igual llegan los correos del paso 19.
 
 ### 3.6 Cuentas de prueba
 
@@ -101,7 +103,7 @@ Una cuenta por empresa en Supabase Auth, con su perfil en `usuario` ([SIM-02](SI
 
 ### 3.7 Datos de producción después de la prueba del 15-11-2026
 
-La prueba del envío real (SIM-11, sección 5) dejó en la Empresa A datos que no están en el seed. No se pueden eliminar, así que antes de D − 1 se dejan así, desde la aplicación y con la cuenta de la Empresa A:
+La prueba del envío real (SIM-11, sección 5) dejó en la Empresa A datos que no están en el seed. No se pueden eliminar, así que se dejaron así. **Hecho el 15-11-2026**, junto con los documentos de la sección 3.3, en una sola transacción en la base de producción, con los mismos valores que habría guardado la aplicación, y comprobado después con una consulta de solo lectura:
 
 | Qué hay hoy | Qué hacer | Para qué |
 |---|---|---|
@@ -109,7 +111,8 @@ La prueba del envío real (SIM-11, sección 5) dejó en la Empresa A datos que n
 | BBDD23, un vehículo de prueba con Pedro Soto asignado, una revisión técnica vencida y un SOAP | Editarlo con "Sin conductor asignado" y después **Desactivar vehículo** | Sus documentos dejan de verse y de avisar, y la ficha de Pedro Soto muestra solo BBCD-12 (paso 7) |
 | BBCD-12 con María Muñoz asignada | Editarlo con "Sin conductor asignado" | El paso 4 parte sin conductor |
 | Una revisión técnica de BBCD-12, "Revisión técnica (aa)", que vence el 29-03-2032 | Editarla: pasarla a FGHJ-34, con vencimiento D + 90 y sin la descripción "aa" | Queda como la revisión técnica vigente de FGHJ-34 de la sección 3.3, y BBCD-12 solo con su permiso (paso 6) |
-| La licencia de Pedro Soto, que vence el 18-11-2026 | Si D no es el 18-11-2026, editar la fecha a D | Es la licencia de la sección 3.3 |
+| La licencia de Pedro Soto, que vencía el 18-11-2026 | Fecha cambiada a D (17-11-2026) y descripción "Clase A3" | Es la licencia de la sección 3.3 |
+| La Empresa B con otro correo de contacto | Correo de contacto cambiado al de la cuenta de Resend | Su correo del paso 19 |
 
 Después de esto, la Empresa A queda con los vehículos y conductores del seed (sección 3.2) más BBDD23 inactivo, que solo aparece con «Incluir inactivos».
 
@@ -268,7 +271,7 @@ Falta el ensayo con el equipo en Vercel (sección 7.2).
 - ~~Migraciones aplicadas en desarrollo y producción, y la GitHub Action publicando en Vercel (SIM-10, sección 4.5).~~ Listo.
 - ~~Cuenta de Resend y un envío real (SIM-11).~~ Listo el 15-11-2026.
 - ~~Pruebas de SIM-04: CP-FUN-23 a CP-FUN-28 y los casos de PB-24.~~ Listo (SIM-12 y SIM-11).
-- Datos de producción preparados (sección 3.7) y documentos de la sección 3.3 cargados en D − 1.
+- ~~Datos de producción preparados (sección 3.7) y documentos de la sección 3.3 cargados.~~ Listo el 15-11-2026.
 - Guion completo ensayado con el equipo, con inicio de sesión y en Vercel.
 - Confirmar la fecha y la duración de la demostración.
 
@@ -283,6 +286,6 @@ Falta el ensayo con el equipo en Vercel (sección 7.2).
 - [x] Reglas contrastadas con el código (sección 6.1).
 - [x] Primer ensayo en local, sin inicio de sesión ni correo (sección 6.4).
 - [x] Estado, guion y matriz al día con el diseño nuevo y el envío real (15-11-2026).
-- [ ] Datos de producción preparados para la demo (sección 3.7).
+- [x] Datos de producción preparados para la demo (sección 3.7, 15-11-2026).
 - [ ] Guion ensayado con el equipo, con inicio de sesión y en Vercel.
 - [ ] Revisión de José y Simón en el PR.

@@ -5,8 +5,8 @@
 | **Tarea** | [JOS-06] Redactar manual técnico |
 | **Responsable** | José Vargas (Developer). Aportan Simón Jofré y Joaquín Orellana. |
 | **Revisión** | Simón Jofré y Joaquín Orellana |
-| **Versión** | 0.2 |
-| **Fecha** | 16-10-2026 (actualizado el 10-11-2026) |
+| **Versión** | 0.2.1 |
+| **Fecha** | 16-10-2026 (actualizado el 15-11-2026) |
 
 Este manual explica **cómo está construido MicroLogist y cómo se instala, configura, despliega y mantiene**. Está pensado para quien desarrolla o administra el sistema: el equipo, la profesora o quien continúe el proyecto. No es el manual de usuario: no explica cómo usar las pantallas.
 
@@ -23,10 +23,10 @@ MicroLogist es una aplicación web para pequeñas y medianas empresas de transpo
 | Inicio y cierre de sesión, y separación de datos entre empresas (PB-01 a PB-03) | Terminado, con Supabase Auth ([SIM-02](SIM-02_Inicio_de_Sesion.md)) |
 | Vehículos: registrar, listar, buscar, editar, desactivar y reactivar (PB-04 a PB-07) | Terminado |
 | Conductores: registrar, listar, buscar, editar, desactivar y reactivar (PB-08 a PB-10) | Terminado |
-| Conductor asignado al vehículo (PB-24) | Implementado; faltan sus casos en el plan de pruebas (SIM-04) |
-| Documentos con vencimiento, en su listado y en la ficha del vehículo y del conductor (PB-11 a PB-13) | Implementado, con pruebas de integración; faltan sus pruebas funcionales (SIM-04) |
-| Datos de contacto de la empresa, "Mi empresa" (PB-14) | Implementado; falta su caso funcional (SIM-04) |
-| Avisos por correo con Resend y Vercel Cron (PB-15 y PB-16) | Implementado, con pruebas de integración ([SIM-11](SIM-11_Alertas_por_Correo.md)); falta un envío real |
+| Conductor asignado al vehículo (PB-24) | Terminado ([SIM-12](SIM-12_Pruebas_Documentos_Empresa_y_Conductor.md)) |
+| Documentos con vencimiento, en su listado y en la ficha del vehículo y del conductor (PB-11 a PB-13) | Terminado (SIM-12) |
+| Datos de contacto de la empresa, "Mi empresa" (PB-14) | Terminado (SIM-12) |
+| Avisos por correo con Resend y Vercel Cron (PB-15 y PB-16) | Terminado: probado con un envío real en producción el 15-11-2026 ([SIM-11](SIM-11_Alertas_por_Correo.md), sección 5) |
 | Turnos y resumen de la flota (PB-17 a PB-20) | Trabajo futuro: fuera de la entrega final |
 | Ingresos (PB-21 a PB-23) | Opcional: fuera de la entrega final |
 
@@ -274,7 +274,9 @@ Implementados en [SIM-11](SIM-11_Alertas_por_Correo.md) (PB-15 y PB-16):
 - **Cuándo:** Vercel Cron llama `GET /api/avisos` todos los días a las 11:00 UTC (`vercel.json`), con la clave `CRON_SECRET`. Sin ella, la ruta responde 401 y no hace nada.
 - **Qué hace:** con la fecha de hoy en hora de Chile, busca los documentos que vencen dentro de 30 días y arma **un correo por empresa**, que envía con Resend a su correo de contacto (Mi empresa). El enlace "Ver documentos" del correo usa `URL_PUBLICA`.
 - **Registro:** cada aviso queda en la tabla `aviso_enviado`, como `enviado` o `fallido` ([JOS-04](JOS-04_Modelo_de_Datos.md), sección 3.7). Si el envío falla, se intenta una vez más de inmediato; si vuelve a fallar, queda `fallido` y se reintenta al día siguiente ([JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md), criterio 10).
-- **Pendiente:** crear la cuenta de Resend, cargar sus variables en Vercel (sección 5.1) y probar un envío real.
+- **Configuración:** la cuenta de Resend y sus variables están en Vercel (sección 5.1). El envío real se probó el 15-11-2026 (SIM-11, sección 5).
+- **Destinatarios y spam:** sin dominio propio, Resend solo envía a los correos verificados en su cuenta, así que el correo de contacto de las empresas de prueba es el de esa cuenta. El remitente de prueba (`onboarding@resend.dev`) puede caer en spam la primera vez; basta marcarlo como "No es spam". Con un dominio propio verificado en Resend se resuelven las dos cosas.
+- **Ejecutarlo a mano:** Vercel → **Settings → Cron Jobs** → ejecutar. Un aviso ya enviado no se repite.
 
 ### 8.4 Operación diaria
 
@@ -341,6 +343,7 @@ Implementados en [SIM-11](SIM-11_Alertas_por_Correo.md) (PB-15 y PB-16):
 | 0.1.1 | 02-11-2026 | JOS-07: Next.js 16.4.4 y dependencias de producción sin vulnerabilidades (cierra ERR-01). Dos problemas frecuentes nuevos y uno ampliado. |
 | 0.1.2 | 10-11-2026 | `engines.node` pasa a `>=24.0.0` y `@types/node` a `^24`, como el README, CI y Docker (sale de las mejoras pendientes de la sección 10). Con Node 20, `npm test` ni siquiera arranca: `--experimental-strip-types` existe desde Node 22.6 y Prisma 7 pide `^22.12` o `>=24`. La sección 1 se pone al día con el estado de cada módulo según JOA-08. |
 | 0.2 | 10-11-2026 | Inicio de sesión con Supabase Auth (SIM-02) en las secciones 2.1, 4, 5.1, 8 y 9. Estructura del código y pruebas al día: conductores, conductor asignado, documentos, Mi empresa y avisos por correo (SIM-11). Despliegue publicado con la GitHub Action (SIM-10), con las pruebas de integración en una base PostgreSQL de prueba y `npm audit` en cada PR; variables de Production y Preview, `URL_PUBLICA` y `ORIGENES_DESARROLLO`; región `cle1` en `vercel.json`; seed que no pisa datos editados; reintento inmediato de los avisos. Mejoras pendientes nuevas y cuatro problemas frecuentes nuevos. |
+| 0.2.1 | 15-11-2026 | Sección 1: conductor asignado, documentos, Mi empresa y avisos por correo terminados (SIM-12 y SIM-11). Sección 8.3: Resend configurado y probado con un envío real, destinatarios y spam sin dominio propio, y cómo ejecutar el proceso a mano. |
 
 En cada entrega se actualizan las secciones 1, 5.1, 8 y 9, y se agrega una fila a esta tabla.
 
