@@ -39,7 +39,7 @@ Estado real al 15-11-2026, según la sección 2 de JOA-08. Todos los ítems del 
 | Despliegue en Vercel (SIM-10) | ✅ La GitHub Action prueba y publica en `https://micrologist-equipo09.vercel.app` en cada push a `main` (PR #62 y #71) | ✅ Cada PR pasa "Lint, tipos y pruebas" y "Despliegue en Vercel" | — |
 | Migraciones en Supabase | ✅ Las cinco, también `conductor_asignado` | ✅ Revisado en producción el 15-11-2026 | — |
 
-Turnos (PB-17 a PB-19), resumen de la flota (PB-20) e ingresos (PB-21 a PB-23) quedan fuera de esta entrega (JOA-08, sección 2).
+Turnos (PB-17 a PB-19), resumen de la flota (PB-20) e ingresos (PB-21 a PB-23) quedan fuera de esta entrega. Turnos se entrega para la defensa de título; el resumen de la flota y los ingresos se evalúan según el tiempo (JOA-08, sección 2, "Para la defensa de título").
 
 ---
 
@@ -193,7 +193,7 @@ Los criterios 3, 5, 8, 10, 11 y 12 de JOA-13 no se muestran en la demo: los cubr
 
 ### 4.9 Cierre (1 minuto)
 
-Contar lo que queda como trabajo futuro y los próximos pasos (sección 7.1).
+Contar lo que tenemos hoy y lo que traeremos a la defensa de título (secciones 7.1 y 9.2, bloque 6).
 
 ---
 
@@ -264,7 +264,7 @@ Falta el ensayo con el equipo en Vercel (sección 7.2).
 ### 7.1 Para contar en la demostración
 
 - El MVP de la entrega final está completo: vehículos, conductores con su vehículo asignado, documentos con su vencimiento, datos de la empresa y avisos por correo, con los datos separados por empresa.
-- **Trabajo futuro:** turnos (sus reglas ya están en [JOA-14](JOA-14_Reglas_Modulo_Turnos.md)), resumen de la flota e ingresos (JOA-08, sección 7).
+- **Para la defensa de título:** turnos (sus reglas ya están en [JOA-14](JOA-14_Reglas_Modulo_Turnos.md)) y la prueba con usuarios. El resumen de la flota, los ingresos y el correo en Outlook se evalúan según el tiempo (JOA-08, sección 2).
 
 ### 7.2 Antes de dar por terminada la entrega
 
@@ -309,7 +309,7 @@ Por eso no es un *pitch*: es la defensa del proyecto, con la demo como evidencia
 | # | Bloque | Minuto | Quién | Se muestra |
 |---|---|---|---|---|
 | 1 | El problema | 0:00 – 1:30 | Joaquín | Diapositiva con el problema y el correo en el teléfono |
-| 2 | Objetivo y alcance | 1:30 – 2:30 | Joaquín | Diapositiva: lo comprometido, lo entregado y lo que quedó como trabajo futuro |
+| 2 | Objetivo y alcance | 1:30 – 2:30 | Joaquín | Diapositiva: lo comprometido, lo entregado y lo que viene para la defensa de título |
 | 3 | Decisiones y su fundamento | 2:30 – 5:00 | Joaquín (producto) y José (técnicas) | Diapositiva con la tabla de la sección 9.3 |
 | 4 | Demo: el producto funcionando | 5:00 – 10:00 | Joaquín conduce | La aplicación en Vercel (sección 9.4) |
 | 5 | Metodología y calidad | 10:00 – 11:30 | Simón | Diapositiva con las iteraciones y las pruebas |
@@ -330,7 +330,7 @@ Son ideas guía, no un texto para leer de memoria. Cada uno las dice con sus pal
 **2. Objetivo y alcance (Joaquín, 1:00).**
 - "MicroLogist permite registrar vehículos, conductores y documentos, ver de un vistazo qué está vencido o por vencer, y avisa por correo antes de que venza."
 - "Lo que entregamos: vehículos, conductores con su vehículo asignado, documentos con su estado, los datos de la empresa y los avisos por correo, para varias empresas con sus datos separados. Está publicado en Vercel."
-- "Lo que quedó fuera, y por qué: la entrega final se adelantó a la semana 15, así que priorizamos lo que hace útil el control de vencimientos. Turnos, el resumen de la flota e ingresos quedaron como trabajo futuro, con sus reglas ya escritas" ([JOA-08](JOA-08_Product_Backlog.md), sección 2, PR #50).
+- "Lo que quedó fuera, y por qué: la entrega final se adelantó a la semana 15, así que priorizamos lo que hace útil el control de vencimientos. Turnos, que ya tiene sus reglas escritas, lo traeremos a la defensa de título; el resumen de la flota y los ingresos los evaluaremos según el tiempo" ([JOA-08](JOA-08_Product_Backlog.md), sección 2, PR #50).
 
 **3. Decisiones (2:30).** Es el bloque que más pesa. Joaquín presenta las de producto y José las técnicas, con la tabla de la sección 9.3. Basta con 4 o 5 bien explicadas; el resto queda para las preguntas.
 
@@ -352,7 +352,7 @@ Son ideas guía, no un texto para leer de memoria. Cada uno las dice con sus pal
   - no hay prueba con usuarios reales todavía (CP-USA-01 y 02).
 - **Hoy tenemos:** el alcance ajustado completo y publicado. "El MVP resuelve el problema principal: que un documento no venza sin que nadie se entere."
 - **Para la defensa de título** (confirmado por el equipo el 16-11-2026):
-  - **Turnos** (PB-17 a PB-19): sus reglas y criterios ya están escritos en [JOA-14](JOA-14_Reglas_Modulo_Turnos.md). Con esto se cumple lo que el objetivo de Fase 1 decía sobre turnos.
+  - **Turnos** (PB-17 a PB-19): sus reglas y criterios ya están escritos en [JOA-14](JOA-14_Reglas_Modulo_Turnos.md). Con esto se cumple lo que el objetivo de Fase 1 decía sobre turnos. En JOA-08 ya tiene la etapa "Defensa de título".
   - **Prueba con usuarios** (CP-USA-01 y 02): cierra el "validar" del objetivo y los indicadores 1 y 5 de [JOA-04](JOA-04_Product_Vision.md) (sección 6.2).
   - **La retroalimentación de esta presentación,** incorporada.
   - **Por evaluar, según el tiempo:** el resumen de la flota (PB-20); los ingresos (PB-21 a PB-23), que eran opcionales y todavía no tienen reglas; y el correo en Outlook (CP-COM-05).
