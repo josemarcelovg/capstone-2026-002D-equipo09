@@ -403,7 +403,7 @@ Quedan fuera, salvo que pregunten: validaciones del formulario (12 y 14), renova
 - [ ] Antes de entrar, comprobar que llegaron los dos correos de la mañana, revisando también spam; si no llegaron, ejecutar el proceso en Vercel (**Settings > Cron Jobs**) (sección 3.5).
 - [ ] Tener abiertos: las diapositivas, un navegador con la Empresa A, otro (o una ventana de incógnito) con la Empresa B, y el correo en el teléfono y en el computador.
 - [ ] Copiar antes la dirección del documento del paso 26, para no buscarla en vivo.
-- [ ] **Plan B:** un video de la demo de unos 5 minutos, grabado el lunes 16-11, y las capturas de `Aplicación/Capturas`.
+- [ ] **Plan B:** si la aplicación o la red fallan, mostrar las capturas de `Aplicación/Capturas` y seguir el guion con ellas.
 - [ ] Alguien lleva el tiempo y avisa a los 10 minutos.
 
 ### 9.6 Preguntas probables y quién responde
