@@ -6,7 +6,7 @@
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Revisión** | José Vargas (datos y despliegue) y Simón Jofré (pruebas y avisos) |
 | **Estado** | Propuesta: el alcance está terminado y probado; faltan preparar los datos de producción (sección 3.7) y ensayar el guion con el equipo |
-| **Fecha** | 04-11-2026 · actualizado el 15-11-2026 (estado del alcance, diseño nuevo, correo de avisos y datos de producción) |
+| **Fecha** | 04-11-2026 · actualizado el 16-11-2026 (apertura con el aviso del mismo día y demo a las 11:30) |
 
 Este documento hace para la entrega final de la semana 15 lo mismo que [JOA-03](JOA-03_Validacion_Primera_Entrega.md) hizo para la primera: comprobar que se cumple el alcance aprobado en la [sección 2 de JOA-08](JOA-08_Product_Backlog.md) (PR #50) y guiar la demostración para la profesora. Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -17,7 +17,7 @@ Este documento hace para la entrega final de la semana 15 lo mismo que [JOA-03](
 > Un responsable de una empresa de transporte entra a MicroLogist publicado en Vercel, ve sus vehículos y conductores, sabe quién maneja cada vehículo, controla los documentos con su vencimiento y recibe un aviso por correo antes de que venzan, sin que otra empresa vea sus datos.
 
 - **Duración:** 15 minutos de demostración y 5 de preguntas **[POR CONFIRMAR]**.
-- **Fecha:** martes 17-11-2026, temprano en la mañana (semana 15, SIM-06, sección 6). En este documento el día de la demo se llama **D**.
+- **Fecha:** martes 17-11-2026, a las 11:30 (semana 15, SIM-06, sección 6). En este documento el día de la demo se llama **D**.
 - **Quién presenta:** Joaquín conduce el guion; José responde lo de datos y despliegue; Simón, lo de avisos y pruebas **[POR CONFIRMAR]**.
 - **Dónde:** en `https://micrologist-equipo09.vercel.app`, con el proyecto de Supabase de producción y sus cuentas de prueba ([SIM-10](SIM-10_Despliegue_Vercel.md)). **Plan B**, si el despliegue no está listo: en local con `npm run dev` y la base de desarrollo; todo el guion funciona igual, salvo que el aviso se ejecuta a mano (paso 20) en vez de llegar en la mañana.
 
@@ -94,7 +94,8 @@ El documento de XY-4321 se registra mientras el vehículo está activo: reactiva
 - Para ensayar, cargar también en desarrollo los documentos de la sección 3.3, con las fechas calculadas desde el día del ensayo.
 - En producción, el proceso diario corre solo, entre las 07:00 y las 08:59 hora de Chile (SIM-11, sección 6). En la mañana de D llegan los correos del paso 19.
 - Un aviso ya enviado no se repite (JOA-13, criterio 9). Ejecutar el proceso a mano en D, antes de la demo, no rompe nada: el paso 20 igual muestra que solo llega el documento nuevo.
-- **La demo es temprano:** si empieza antes de las 09:00, el proceso de la mañana puede no haber corrido. Para no depender de eso, ejecutarlo a mano antes de empezar (Vercel > **Settings > Cron Jobs**) y revisar que lleguen los dos correos del paso 19.
+- **La demo es a las 11:30:** a esa hora el proceso de la mañana ya corrió. Antes de entrar, revisar que llegaron los dos correos del paso 19, también en spam. Si no llegaron, ejecutar el proceso a mano (Vercel > **Settings > Cron Jobs**).
+- **Los correos llegan al correo de contacto de las dos empresas ficticias**, que es la casilla de José. Quien los muestre (Joaquín en la apertura y Simón en el paso 19) debe tener esa casilla abierta en el teléfono y en el computador, o recibirlos reenviados antes de la demo.
 - **El lunes 16-11 también llegan correos:** como los documentos quedaron cargados el 15-11, el proceso del lunes avisa la licencia (plazo de 1 día) y los permisos y el SOAP de B (plazo de 30). Es lo esperado: el martes cada uno tiene otro plazo (0 y 7 días), así que igual llegan los correos del paso 19.
 
 ### 3.6 Cuentas de prueba
@@ -328,7 +329,8 @@ La presentación tiene 12 diapositivas, con más imágenes que texto. La demo so
 Son ideas guía, no un texto para leer de memoria. Cada uno las dice con sus palabras.
 
 **1. Apertura (Joaquín, 0:20).** Mostrar el correo en el teléfono:
-- "Esto le llegó a una empresa de transporte: su licencia de conducir vence en 3 días. Así funciona MicroLogist." Presentar al equipo y pasar a Simón.
+- "Esto le llegó hoy en la mañana a una empresa de transporte: la licencia de uno de sus conductores vence hoy. Así funciona MicroLogist." Presentar al equipo y pasar a Simón.
+- Usar el correo de la mañana de D (la licencia de Pedro Soto, «Vence hoy»), no el del 15-11: aquel decía «vence en 3 días» porque recuperó un plazo atrasado, y 3 días no es uno de los plazos (30, 7, 1 y el mismo día).
 
 **2. El problema (Simón, 1:10).**
 - "En una empresa chica de transporte, la revisión técnica está en una carpeta, el SOAP en el correo y los conductores en una planilla que lleva una sola persona. Nadie avisa cuando algo vence."
@@ -398,7 +400,7 @@ Quedan fuera, salvo que pregunten: validaciones del formulario (12 y 14), renova
 ### 9.5 Preparación del día
 
 - [ ] Llegar con 15 minutos de anticipación y probar la red del lugar.
-- [ ] Antes de empezar, ejecutar el proceso de avisos en Vercel (**Settings > Cron Jobs**) y comprobar que llegaron los dos correos, revisando también spam (sección 3.5).
+- [ ] Antes de entrar, comprobar que llegaron los dos correos de la mañana, revisando también spam; si no llegaron, ejecutar el proceso en Vercel (**Settings > Cron Jobs**) (sección 3.5).
 - [ ] Tener abiertos: las diapositivas, un navegador con la Empresa A, otro (o una ventana de incógnito) con la Empresa B, y el correo en el teléfono y en el computador.
 - [ ] Copiar antes la dirección del documento del paso 26, para no buscarla en vivo.
 - [ ] **Plan B:** un video de la demo de unos 5 minutos, grabado el lunes 16-11, y las capturas de `Aplicación/Capturas`.
