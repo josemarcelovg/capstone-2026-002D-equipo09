@@ -6,7 +6,7 @@
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Revisión** | José Vargas y Simón Jofré |
 | **Estado** | Propuesta para revisión del equipo |
-| **Fecha** | 12-10-2026 |
+| **Fecha** | 12-10-2026 · actualizado el 16-11-2026 (multas de la revisión técnica y el permiso de circulación, y respaldo del diagnóstico) |
 
 Este documento explica qué tiene de nuevo MicroLogist: qué problema existe hoy, cómo lo resuelven las empresas, qué alternativas hay en el mercado y qué aporta nuestro producto frente a ellas. Se apoya en la [Product Vision](JOA-04_Product_Vision.md) y en el alcance definido en [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md).
 
@@ -20,8 +20,8 @@ Una empresa pequeña de transporte de pasajeros tiene que controlar al mismo tie
 
 Cuando un vencimiento se pasa, la empresa lo paga caro:
 
-- **Multas.** Circular sin SOAP, por ejemplo, es una infracción grave, con una multa de 1 a 1,5 UTM (BioBioChile, 2024). El monto y la categoría para la revisión técnica y el permiso de circulación vencidos están **[POR CONFIRMAR]** con la Ley de Tránsito.
-- **Vehículos o conductores que no pueden operar**, lo que significa servicios que no se prestan.
+- **Multas.** Cada documento vencido tiene una multa de 1 a 1,5 UTM según la Ley de Tránsito: circular sin SOAP es una infracción grave (BioBioChile, 2024); con la revisión técnica vencida, la multa es la misma (Meganoticias, 23-04-2024), y circular sin el permiso de circulación vigente es una infracción grave del artículo 200 de la Ley de Tránsito (Meganoticias, 25-06-2024). Si se repite, la multa se duplica. Una flota de 10 vehículos con un mismo documento vencido arriesga hasta 15 UTM.
+- **Vehículos o conductores que no pueden operar.** Con la revisión técnica o el permiso de circulación vencidos, el vehículo puede ser retirado de circulación y llevado a un corral municipal (Meganoticias, 2024), lo que significa servicios que no se prestan.
 - **Tiempo perdido** en revisar papeles y preguntar a otras personas para saber qué está al día.
 
 El problema afecta a responsables y dueños de empresas de transporte urbano, escolar, de trabajadores, de estudiantes, de viajes particulares y de turismo.
@@ -42,7 +42,7 @@ Según la definición del proyecto (Fase 1) y la Product Vision, la información
 
 Ninguna de estas herramientas tiene costo ni requiere aprender algo nuevo, y por eso se usan. El problema es que el control depende de que una persona se acuerde de revisar, y crece en desorden con cada vehículo nuevo.
 
-Si el equipo ya cuenta con entrevistas o retroalimentación de responsables de empresas, falta citarlas aquí como respaldo **[POR CONFIRMAR]**.
+**Respaldo y límite.** Este diagnóstico sale de la definición del proyecto (Fase 1) y de fuentes públicas. El proyecto no tiene entrevistas registradas con responsables de empresas: validarlo con ellos es el primer paso del trabajo futuro, junto con la prueba con usuarios (CP-USA-01 y CP-USA-02, [SIM-04](SIM-04_Plan_de_Pruebas.md)).
 
 ---
 
@@ -160,6 +160,8 @@ El aporte se verificará con los indicadores de la sección 6.2 de la Product Vi
 Consultadas el 12-10-2026. Los precios y funciones de productos de terceros pueden cambiar, así que conviene revisarlos de nuevo antes del informe final.
 
 - BioBioChile (14-03-2024). [Cuáles son las infracciones de tránsito más cursadas en Chile y de cuánto son sus multas](https://www.biobiochile.cl/noticias/servicios/explicado/2024/03/14/cuales-son-las-infracciones-de-transito-mas-cursadas-en-chile-y-de-cuanto-son-sus-multas.shtml).
+- Meganoticias (23-04-2024). [Revisión técnica: multas por documento vencido](https://www.meganoticias.cl/dato-util/445816-revision-tecnica-multas-documento-vencido-evg-23-04-2024.html). Consultado el 16-11-2026.
+- Meganoticias (25-06-2024). [Multas por manejar sin permiso de circulación vencido](https://www.meganoticias.cl/nacional/451048-multas-por-manejar-sin-permiso-de-circulacion-vencido-de-cuanto-es-monto-evg-25-6-2024.html). Consultado el 16-11-2026.
 - Geotab (19-11-2024). [Telemática tracker para flotas: solución clave en Chile](https://www.geotab.com/es-latam/blog/telematica-tracker-para-flotas-en-chile/).
 - Radio Pauta (03-12-2024). [Black GPS: innovación en gestión de flotas para empresas que buscan eficiencia y seguridad](https://www.pauta.cl/economia/2024/12/03/black-gps-innovacion-en-gestion-de-flotas-para-empresas-que-buscan-eficiencia-y-seguridad.html).
 - cloudFleet. [Sitio principal](https://www.cloudfleet.com/) y [características del software](https://www.cloudfleet.com/features).

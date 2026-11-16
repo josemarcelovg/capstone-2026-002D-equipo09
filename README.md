@@ -8,7 +8,7 @@ El sistema está en `Fase 2/Evidencias Proyecto/Evidencias de sistema`, en dos c
 
 ## Descripción del proyecto
 
-MicroLogist es una plataforma web orientada a pequeñas y medianas empresas de transporte de pasajeros. Permite centralizar y gestionar información de vehículos, conductores, turnos y documentación obligatoria, incorporando alertas para facilitar el control de vencimientos.
+MicroLogist es una plataforma web orientada a pequeñas y medianas empresas de transporte de pasajeros. Permite centralizar la información de vehículos, conductores y documentación obligatoria, y avisa por correo antes de que venza cada documento. Los turnos, el resumen de la flota y los ingresos quedaron como trabajo futuro (JOA-08, sección 2).
 
 ### ¿A quién va dirigido?
 
@@ -18,23 +18,24 @@ Está dirigido principalmente a responsables y propietarios de pequeñas y media
 
 MicroLogist busca solucionar la dificultad de gestionar información operativa y documental que puede encontrarse dispersa en planillas, documentos físicos, calendarios o conversaciones de WhatsApp. Esto dificulta conocer el estado real de la flota y puede provocar olvidos en documentos importantes.
 
-La plataforma centraliza esta información en un solo lugar, facilitando el seguimiento de vehículos, conductores, turnos y vencimientos, ayudando a mejorar la organización y gestión del servicio.
+La plataforma centraliza esta información en un solo lugar, facilitando el seguimiento de vehículos, conductores y vencimientos, y ayudando a mejorar la organización y gestión del servicio.
 
 ## Tecnologías utilizadas
 
 | Tecnología | Uso |
 |---|---|
 | **Next.js** | Framework principal para desarrollar la aplicación web. |
-| **React** | Se utilizará para crear la interfaz de usuario. |
-| **TypeScript** | Se utilizará para desarrollar el código de la aplicación. |
-| **Tailwind CSS** | Se utilizará para diseñar la interfaz y adaptarla a distintos dispositivos. |
-| **PostgreSQL** | Base de datos donde se almacenará la información del sistema. |
-| **Prisma ORM** | Se utilizará para conectar la aplicación con la base de datos y realizar consultas. |
-| **Supabase** | Se utilizará para alojar la base de datos y gestionar servicios del sistema. |
-| **Supabase Auth** | Se utilizará para gestionar el inicio de sesión y la autenticación de usuarios. |
-| **Zod** | Se utilizará para validar los datos ingresados en el sistema. |
-| **Vercel** | Se utilizará para desplegar y alojar la aplicación web. |
-| **GitHub** | Se utilizará para almacenar el código y gestionar el trabajo del equipo. |
+| **React** | Interfaz de usuario. |
+| **TypeScript** | Lenguaje de la aplicación. |
+| **Tailwind CSS** | Estilos de la interfaz, adaptada a computador, tablet y celular. |
+| **PostgreSQL** | Base de datos donde se guarda la información del sistema. |
+| **Prisma ORM** | Conecta la aplicación con la base de datos y hace las consultas. |
+| **Supabase** | Aloja la base de datos PostgreSQL. |
+| **Supabase Auth** | Inicio de sesión de los usuarios. |
+| **Zod** | Valida los datos ingresados, en el formulario y en el servidor. |
+| **Resend** | Envía los correos de aviso de vencimiento. |
+| **Vercel** | Publica la aplicación y ejecuta el proceso diario de avisos (Vercel Cron). |
+| **GitHub** | Código, revisión de cada cambio en pull requests, tablero del equipo y GitHub Actions. |
 
 ## Arquitectura
 

@@ -104,6 +104,7 @@ Rama `sim-11-alertas-correo`, desde el PR #53 (tabla `documento`), el 04-11-2026
 |---|---|
 | CP-FUN-27 · el correo del día | ✅ A las 22:05 (hora de Chile) llegó un correo con la licencia de conducir de Pedro Soto, que vence el 18-11-2026: con 3 días por delante le corresponde el aviso de 7 días, y el correo dice "Vence en 3 días", con la etiqueta amarilla y el botón «Ver documentos» ([captura](<../Evidencias de sistema/Aplicación/Capturas/10-correo-aviso-gmail.png>)). Un correo por empresa, a su `email_contacto`. |
 | CP-FUN-28 · registro y duplicados | ✅ Cada aviso quedó en `aviso_enviado` con su plazo, su destinatario y su estado. La ejecución de las 22:05 envió solo la licencia: el SOAP que vence el 17-11-2026, enviado a las 21:31, no se repitió. Un aviso de "vence hoy" que quedó `fallido` a las 21:12 no se reintentó ese mismo día. El reintento al día siguiente y el documento renovado se aprobaron con la base de datos (CP-INT-26 y CP-INT-27). |
+| CP-COM-05 · el correo en el celular | 🟡 El mismo correo, abierto en la app de Gmail de un celular Android en modo oscuro: se ve completo y legible, con la franja naranja, la etiqueta y el botón, y sin desplazamiento horizontal ([captura](<../Evidencias de sistema/Aplicación/Capturas/11-correo-aviso-celular.jpg>)). Outlook no se probó. |
 | Bandeja de entrada | El primer correo llegó a la carpeta de spam de Gmail. Después de marcarlo como "No es spam", los siguientes llegan a la bandeja principal (sección 6). |
 
 ---
