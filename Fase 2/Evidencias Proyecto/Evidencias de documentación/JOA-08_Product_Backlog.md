@@ -74,7 +74,7 @@ Estado al 16-11-2026.
 - **Conductor asignado (PB-24): terminado.** El vehículo tiene un conductor asignado opcional (solo activos de la empresa) y su ficha muestra al conductor con sus documentos (PR #57). Aprobó CP-FUN-33, con sus criterios 1 a 5 (SIM-12).
 - **Avisos por correo (PB-15 y PB-16): terminado.** Están el proceso diario que llama Vercel Cron, el envío con Resend y el registro en `aviso_enviado`, según las reglas de [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md) (SIM-11, PR #55), con un reintento inmediato si el envío falla (PR #74) y el correo con el diseño de la aplicación (PR #94). Sus reglas tienen pruebas unitarias y con la base de datos (CP-INT-24 a CP-INT-34, PR #68, #70 y #74), y el 15-11-2026 aprobaron CP-FUN-27 y CP-FUN-28 con un envío real en producción (SIM-11, sección 5).
 - **Despliegue (SIM-10):** a pedido de la profesora (05-11-2026), una GitHub Action ejecuta las pruebas, también las de integración con PostgreSQL (PR #71), y publica en Vercel en cada push a `main` (PR #62).
-- **Entrega final (semana 15): terminada.** Todo el alcance aprobado en el PR #50 está terminado y publicado. La presentación práctica ante la comisión es el 17-11-2026 ([JOA-19](JOA-19_Guion_Entrega_Final.md)).
+- **Entrega final (semana 15): terminada.** Todo el alcance aprobado en el PR #50 está terminado y publicado. La presentación de la Evaluación Final de la Fase 2 ante la comisión es el 17-11-2026 ([JOA-19](JOA-19_Guion_Entrega_Final.md)).
 - **Siguen:** turnos y la prueba con usuarios, para la defensa de título (apartado "Para la defensa de título").
 
 ### Alcance de la entrega final (semana 15)
@@ -99,13 +99,13 @@ Los ítems que quedan fuera siguen en este backlog con sus criterios (sección 7
 
 ### Para la defensa de título
 
-La presentación del 17-11-2026 es una práctica previa a la defensa de título: la comisión entrega retroalimentación y el proyecto sigue. El 16-11-2026 el equipo confirmó lo que se entrega para la defensa de título:
+La presentación del 17-11-2026 es la Evaluación Final de la Fase 2; el proyecto sigue en la Fase 3, hasta la defensa de título. El 16-11-2026 el equipo confirmó lo que se entrega para la defensa de título:
 
 | Se entrega para la defensa de título | Ítems | Por qué |
 |---|---|---|
 | Turnos | PB-17 a PB-19 | Es lo que falta del objetivo de Fase 1 ([JOA-04](JOA-04_Product_Vision.md), sección 6.1). Sus reglas y criterios ya están escritos en [JOA-14](JOA-14_Reglas_Modulo_Turnos.md), que resuelve los **[POR CONFIRMAR]** de sus ítems. |
 | Prueba con usuarios | CP-USA-01 y CP-USA-02 ([SIM-04](SIM-04_Plan_de_Pruebas.md)) | Cierra el "validar" del objetivo y los dos indicadores sin medir de la Product Vision (sección 6.2). No es un ítem del backlog porque es una prueba. |
-| La retroalimentación de la presentación práctica | — | Se agrega aquí cuando la comisión la entregue. |
+| La retroalimentación de la Evaluación Final de la Fase 2 | — | Se agrega aquí cuando la comisión la entregue. |
 
 | Se evalúa según el tiempo | Ítems | Por qué |
 |---|---|---|
