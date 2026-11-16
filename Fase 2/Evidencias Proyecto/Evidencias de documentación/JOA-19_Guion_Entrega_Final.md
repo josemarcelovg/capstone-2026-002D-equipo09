@@ -287,5 +287,119 @@ Falta el ensayo con el equipo en Vercel (sección 7.2).
 - [x] Primer ensayo en local, sin inicio de sesión ni correo (sección 6.4).
 - [x] Estado, guion y matriz al día con el diseño nuevo y el envío real (15-11-2026).
 - [x] Datos de producción preparados para la demo (sección 3.7, 15-11-2026).
+- [x] Guion de la presentación ante la comisión, con tiempos y responsables (sección 9).
 - [ ] Guion ensayado con el equipo, con inicio de sesión y en Vercel.
+- [ ] Presentación cronometrada en menos de 13 minutos.
 - [ ] Revisión de José y Simón en el PR.
+
+---
+
+## 9. Guion de la presentación ante la comisión
+
+La presentación práctica del martes 17-11-2026 es ante una comisión de docentes de la asignatura y de la Dirección de Carrera. Según las orientaciones del Proyecto APT:
+
+- Dura **máximo 20 minutos, incluidas las preguntas**. Por eso la exposición dura **13 minutos** y quedan unos 7 para la comisión.
+- Hay que **describir lo más relevante y fundamentar las decisiones** tomadas durante el proceso. El centro de la presentación son las decisiones (bloque 3), no la lista de funciones.
+- La estructura sigue los campos de la guía del Informe Final, y cada afirmación va con su evidencia: la aplicación funcionando, el correo recibido y los documentos del repositorio.
+
+Por eso no es un *pitch*: es la defensa del proyecto, con la demo como evidencia. Del *pitch* se toma solo el inicio, un problema claro en un minuto.
+
+### 9.1 Estructura y tiempos
+
+| # | Bloque | Minuto | Quién | Se muestra |
+|---|---|---|---|---|
+| 1 | El problema | 0:00 – 1:30 | Joaquín | Diapositiva con el problema y el correo en el teléfono |
+| 2 | Objetivo y alcance | 1:30 – 2:30 | Joaquín | Diapositiva: lo comprometido, lo entregado y lo que quedó como trabajo futuro |
+| 3 | Decisiones y su fundamento | 2:30 – 5:00 | Joaquín (producto) y José (técnicas) | Diapositiva con la tabla de la sección 9.3 |
+| 4 | Demo: el producto funcionando | 5:00 – 10:00 | Joaquín conduce | La aplicación en Vercel (sección 9.4) |
+| 5 | Metodología y calidad | 10:00 – 11:30 | Simón | Diapositiva con las iteraciones y las pruebas |
+| 6 | Retroalimentación, conclusiones y trabajo futuro | 11:30 – 13:00 | Joaquín | Diapositiva de cierre |
+| — | Preguntas de la comisión | 13:00 – 20:00 | Quien corresponda (sección 9.6) | — |
+
+Son unas 6 diapositivas, con más imágenes que texto. La demo no lleva diapositivas.
+
+### 9.2 Qué decir en cada bloque
+
+Son ideas guía, no un texto para leer de memoria. Cada uno las dice con sus palabras.
+
+**1. El problema (Joaquín, 1:30).** Mostrar el correo en el teléfono:
+- "Esto le llegó a una empresa de transporte: su licencia de conducir vence en 3 días. Así funciona MicroLogist."
+- "En una empresa chica de transporte, la revisión técnica está en una carpeta, el SOAP en el correo y los conductores en una planilla que lleva una sola persona. Nadie avisa cuando algo vence."
+- "Un documento vencido significa multas (circular sin SOAP es una infracción grave, de 1 a 1,5 UTM) o un vehículo detenido, que no puede salir a recorrer" ([JOA-04](JOA-04_Product_Vision.md), [JOA-07](JOA-07_Innovacion.md)).
+
+**2. Objetivo y alcance (Joaquín, 1:00).**
+- "MicroLogist permite registrar vehículos, conductores y documentos, ver de un vistazo qué está vencido o por vencer, y avisa por correo antes de que venza."
+- "Lo que entregamos: vehículos, conductores con su vehículo asignado, documentos con su estado, los datos de la empresa y los avisos por correo, para varias empresas con sus datos separados. Está publicado en Vercel."
+- "Lo que quedó fuera, y por qué: la entrega final se adelantó a la semana 15, así que priorizamos lo que hace útil el control de vencimientos. Turnos, el resumen de la flota e ingresos quedaron como trabajo futuro, con sus reglas ya escritas" ([JOA-08](JOA-08_Product_Backlog.md), sección 2, PR #50).
+
+**3. Decisiones (2:30).** Es el bloque que más pesa. Joaquín presenta las de producto y José las técnicas, con la tabla de la sección 9.3. Basta con 4 o 5 bien explicadas; el resto queda para las preguntas.
+
+**4. Demo (Joaquín, 5:00).** Ver la sección 9.4. Mientras se muestra, decir qué decisión o criterio se está viendo: "esto es lo que pidió la profesora en la revisión del 28-10".
+
+**5. Metodología y calidad (Simón, 1:30).**
+- "Trabajamos con Scrum en 4 iteraciones de 2 semanas, con un tablero en GitHub Projects, Sprint Backlog y retrospectivas" ([SIM-06](SIM-06_Sprint_Backlog_y_Retrospectivas.md)).
+- "Cada cambio entró por un PR revisado por otro integrante: más de 90 PR. Cada PR pasa automáticamente lint, tipos, 130 pruebas unitarias, pruebas de integración con PostgreSQL, `npm audit` y pruebas de rendimiento, y se publica solo en Vercel" ([SIM-10](SIM-10_Despliegue_Vercel.md)).
+- "El plan de pruebas tiene 94 casos: 70 aprobados y ninguno rechazado. Los parciales y pendientes tienen el motivo escrito, por ejemplo, Outlook no se probó" ([SIM-04](SIM-04_Plan_de_Pruebas.md), sección 9).
+
+**6. Retroalimentación, conclusiones y trabajo futuro (Joaquín, 1:30).**
+- **Qué ajustamos por las retroalimentaciones anteriores:**
+  - la profesora pidió, el 28-10, vincular el conductor al vehículo y ver los documentos en la ficha, y se agregó PB-24;
+  - el 05-11 pidió publicar con GitHub Actions, y así se publica (SIM-10);
+  - la revisión de Fase 1 y 2 pidió más tipos de prueba y justificar la metodología, y se agregaron las pruebas de rendimiento (PR #80) y la justificación en la Guía 1.5 (JOS-15, PR #90).
+- **Límites, dichos con honestidad:**
+  - sin dominio propio, el correo puede llegar a spam y solo se envía a correos verificados;
+  - Outlook no se probó;
+  - no hay prueba con usuarios reales todavía (CP-USA-01 y 02).
+- **Trabajo futuro:** turnos (reglas en [JOA-14](JOA-14_Reglas_Modulo_Turnos.md)), resumen de la flota, dominio propio para los correos y la prueba con usuarios.
+- **Cierre:** "El MVP resuelve el problema principal: que un documento no venza sin que nadie se entere."
+- **Para la retroalimentación:** terminar con una pregunta concreta a la comisión, por ejemplo: "¿Qué priorizarían para seguir: turnos o el resumen de la flota?".
+
+### 9.3 Decisiones y su fundamento
+
+| Decisión | Fundamento | Quién la explica |
+|---|---|---|
+| Avisar **antes** del vencimiento: 30, 7 y 1 días antes, y el mismo día | El aviso sirve para renovar a tiempo; uno de algo ya vencido llega tarde. Si un plazo no se avisó, llega el siguiente con los días reales ([JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md)). | Joaquín |
+| Solo correo, sin WhatsApp ni SMS | Costo cero y sin aprobaciones de terceros; el correo de contacto de la empresa es el destinatario (JOA-13). | Joaquín |
+| Desactivar en vez de eliminar | Se conserva la información y se evita perder datos por error ([JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md)). | Joaquín |
+| Renovar un documento es editar su fecha | Un vehículo tiene un solo SOAP; si cada renovación creara uno nuevo, el anterior quedaría para siempre como "vencido" ([JOA-10](JOA-10_Reglas_Modulo_Documentos.md)). | Joaquín |
+| Alcance recortado (PR #50) | La entrega se adelantó a la semana 15; se priorizó el control de vencimientos y lo que pidió la profesora. | Joaquín |
+| Datos separados por empresa en cada consulta, más RLS en la base | Varias empresas usan el mismo sistema y ninguna puede ver lo de otra; se probó con dos empresas, también con solicitudes alteradas ([SIM-12](SIM-12_Pruebas_Documentos_Empresa_y_Conductor.md)). | José |
+| Next.js, Supabase y Vercel | Gratis para un MVP, con inicio de sesión y base PostgreSQL incluidos, y una sola aplicación para el computador y el celular ([JOS-06](JOS-06_Manual_Tecnico.md)). | José |
+| Publicar con GitHub Actions | Vercel rechazaba la ruta con espacios que pide el curso, y la profesora pidió publicar así. Además, nada llega a producción sin pasar las pruebas (SIM-10). | José |
+| Resend sin dominio propio | Plan gratis. El costo, que se dice abiertamente, es que el correo puede caer en spam la primera vez ([SIM-11](SIM-11_Alertas_por_Correo.md)). | José |
+
+### 9.4 Demo recortada (5 minutos)
+
+Los pasos son los de la sección 4. Los demás quedan por si la comisión los pide.
+
+| Tiempo | Pasos | Qué se muestra | Qué se dice |
+|---|---|---|---|
+| 0:30 | 1 y 2 | Sin sesión redirige al login; con la Empresa A, el listado de vehículos con el menú lateral | "Cada empresa entra con su cuenta." |
+| 1:30 | 4 a 7 | Asignar a Pedro Soto a BBCD-12; la ficha muestra al conductor con su licencia "Vence hoy"; la ficha de Pedro muestra su vehículo | "Esto lo pidió la profesora el 28-10: ver quién maneja cada vehículo y si sus documentos están al día." |
+| 1:30 | 8 y 13 | El listado de documentos ordenado por vencimiento, con sus estados; registrar el SOAP de la sección 3.4 | "El estado se calcula con la fecha de hoy en Chile; no hay que actualizarlo a mano." |
+| 0:45 | 19 | Los dos correos de la mañana, uno por empresa | "Un correo al día por empresa, con todo lo que necesita atención." |
+| 0:45 | 24 a 26 | Con la Empresa B, solo sus documentos; la dirección de un documento de A responde "No encontrado" | "Aunque se conozca la dirección, no se ven datos de otra empresa." |
+
+Quedan fuera, salvo que pregunten: validaciones del formulario (12 y 14), renovar (15), Mi empresa (16 a 18), ejecutar el proceso a mano (20), desactivar al conductor (21 a 23) y la vista de celular (27).
+
+### 9.5 Preparación del día
+
+- [ ] Llegar con 15 minutos de anticipación y probar la red del lugar.
+- [ ] Antes de empezar, ejecutar el proceso de avisos en Vercel (**Settings > Cron Jobs**) y comprobar que llegaron los dos correos, revisando también spam (sección 3.5).
+- [ ] Tener abiertos: las diapositivas, un navegador con la Empresa A, otro (o una ventana de incógnito) con la Empresa B, y el correo en el teléfono y en el computador.
+- [ ] Copiar antes la dirección del documento del paso 26, para no buscarla en vivo.
+- [ ] **Plan B:** un video de la demo de unos 5 minutos, grabado el lunes 16-11, y las capturas de `Aplicación/Capturas`.
+- [ ] Alguien lleva el tiempo y avisa a los 10 minutos.
+
+### 9.6 Preguntas probables y quién responde
+
+| Pregunta | Quién | Respuesta corta |
+|---|---|---|
+| ¿Por qué no avisan cuando el documento ya venció? | Joaquín | Porque el objetivo es renovar a tiempo; después del vencimiento, el documento queda en rojo en el listado (JOA-13). |
+| ¿Cómo se aseguran de que una empresa no vea los datos de otra? | José | Toda consulta filtra por la empresa de la sesión, la base tiene claves foráneas compuestas y RLS, y se probó con dos empresas y solicitudes alteradas. |
+| ¿Qué pasa si falla el envío del correo? | Simón | Se reintenta de inmediato; si vuelve a fallar, queda registrado y se reintenta al día siguiente. Nunca se manda dos veces el mismo aviso. |
+| ¿Cómo probaron el sistema? | Simón | Plan de pruebas con 94 casos (70 aprobados), pruebas automáticas en cada PR y pruebas con dos empresas de prueba. |
+| ¿Por qué Scrum y no otra metodología? | Simón | El plazo era fijo y cambió: cuando la entrega pasó a la semana 15, con el backlog priorizado bastó reordenarlo. Cascada exige cerrar los requisitos al inicio, y Kanban no tiene iteraciones con fecha; de Kanban sí se tomó el tablero (README, JOS-15). |
+| ¿Cuánto cuesta mantenerlo? | José | Hoy nada: todo está en planes gratis. Con más uso, el primer costo sería el dominio propio para los correos. |
+| ¿Lo probaron con usuarios reales? | Joaquín | Todavía no: es lo primero del trabajo futuro (CP-USA-01 y 02). |
+| ¿Qué harían distinto? | Cada uno | Una idea por persona, de su retrospectiva (SIM-06, sección 4). |
