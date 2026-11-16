@@ -13,13 +13,13 @@ export const metadata: Metadata = { title: "Iniciar sesión" };
 
 export default async function PaginaLogin() {
   await connection();
-  // En desarrollo sin Supabase no hay inicio de sesión: se trabaja con EMPRESA_DESARROLLO_ID.
+  // En desarrollo sin Supabase no hay login.
   if (accesoDelEntorno().modo === "desarrollo") redirect("/vehiculos");
   if (await usuarioDeLaSesion()) redirect("/vehiculos");
 
   return (
     <div className="grid overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-xl md:min-h-[620px] md:grid-cols-2">
-      {/* Izquierda en computador (arriba en celular): la foto de la flota con la marca encima. */}
+      {/* Foto de la flota con la marca */}
       <section className="relative flex min-h-48 flex-col justify-between overflow-hidden bg-stone-900 p-6 text-white md:p-10">
         <Image
           src={fotoFlota}
@@ -30,7 +30,7 @@ export default async function PaginaLogin() {
           sizes="(min-width: 768px) 50vw, 100vw"
           className="object-cover object-[62%_center]"
         />
-        {/* Capas de color sobre la foto, para que el texto se lea y combine con el naranja. */}
+        {/* Capas de color para que el texto se lea sobre la foto */}
         <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-b from-stone-950/90 from-15% via-stone-950/55 via-55% to-stone-950/95" />
         <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-tr from-orange-700/45 via-transparent to-transparent" />
         <div aria-hidden="true" className="absolute inset-y-0 left-0 w-1.5 bg-orange-600" />
@@ -51,7 +51,7 @@ export default async function PaginaLogin() {
         </div>
       </section>
 
-      {/* Derecha: el formulario. */}
+      {/* Formulario */}
       <section className="flex flex-col justify-center px-6 py-10 sm:px-12">
         <div className="mx-auto w-full max-w-sm">
           <h1 className="text-3xl font-bold tracking-tight text-stone-900">Iniciar sesión</h1>

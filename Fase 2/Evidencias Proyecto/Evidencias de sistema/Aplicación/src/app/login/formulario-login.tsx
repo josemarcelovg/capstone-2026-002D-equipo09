@@ -59,7 +59,6 @@ export function FormularioLogin() {
               aria-describedby={errores.contrasena ? "contrasena-error" : undefined}
               className={`${CONTROL} pr-11`}
             />
-            {/* Muestra u oculta la contraseña para revisar lo que se escribió. */}
             <button
               type="button"
               onClick={() => setVerContrasena((ver) => !ver)}

@@ -2,10 +2,8 @@ import { z } from "zod";
 import { digitosDeTelefono, normalizarNombre } from "./conductores.ts";
 import { esRutValido, normalizarRut, tieneFormatoDeRut } from "./rut.ts";
 
-// Datos de contacto de la empresa (PB-14), acordados el 28-10-2026:
-// nombre y correo de contacto obligatorios; teléfono y RUT opcionales.
-// El correo de contacto recibe las alertas de vencimiento (JOA-13).
-// El RUT, una vez ingresado, no se cambia desde la aplicación.
+// Datos de la empresa: nombre y correo obligatorios, teléfono y RUT opcionales.
+// El correo recibe los avisos de vencimiento. El RUT, una vez ingresado, no se cambia.
 
 const MENSAJES = {
   nombreVacio: "Ingresa el nombre de la empresa.",
@@ -16,7 +14,7 @@ const MENSAJES = {
   rutDigito: "El RUT no es válido. Revisa el dígito verificador.",
 };
 
-/** Un texto vacío o solo con espacios cuenta como "sin valor". */
+// Un texto vacío cuenta como sin valor.
 const vacioANulo = (valor: unknown) =>
   valor === undefined || (typeof valor === "string" && valor.trim() === "") ? null : valor;
 
@@ -57,11 +55,7 @@ export const esquemaEmpresa = z.object({
 export type DatosEmpresa = z.infer<typeof esquemaEmpresa>;
 export type ErroresEmpresa = Partial<Record<keyof DatosEmpresa | "general", string>>;
 
-/**
- * Valida el formulario. Si la empresa ya tiene RUT, se conserva el guardado tal cual (sin
- * volver a validarlo) y se ignora el que venga en el formulario: el RUT no se cambia desde
- * la aplicación. Así un RUT antiguo con otro formato no bloquea el resto de los datos.
- */
+// Valida el formulario. Si la empresa ya tiene RUT, se mantiene el guardado.
 export function validarEmpresa(
   datos: unknown,
   rutGuardado: string | null = null,
@@ -80,7 +74,7 @@ export function validarEmpresa(
   return { ok: false, errores };
 }
 
-/** El correo de contacto cambió (sin importar mayúsculas ni espacios). Se pide confirmación. */
+// Si cambió el correo, se pide confirmación antes de guardar.
 export function cambiaElCorreo(anterior: string, nuevo: string) {
   return anterior.trim().toLowerCase() !== nuevo.trim().toLowerCase();
 }

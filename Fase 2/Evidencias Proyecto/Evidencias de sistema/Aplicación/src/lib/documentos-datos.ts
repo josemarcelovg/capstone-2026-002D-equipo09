@@ -20,13 +20,7 @@ import { prisma } from "@/lib/prisma";
 import { empresaDeLaSesion } from "@/lib/sesion";
 import { formatearPatente } from "@/lib/vehiculos";
 
-// Acceso a datos de documentos (JOA-10). Igual que en vehículos y conductores, toda consulta
-// filtra por la empresa de la sesión, también al buscar por id: un documento, vehículo o
-// conductor de otra empresa se trata igual que uno que no existe.
-//
-// Lo que Zod no puede comprobar se comprueba aquí: que el dueño sea de la empresa y esté
-// activo, y que no tenga ya un documento del mismo tipo. La base de datos tiene las mismas
-// reglas (claves foráneas compuestas, CHECK e índices únicos parciales) por si algo se escapa.
+// Lectura y guardado de documentos. Todas las consultas filtran por la empresa de la sesión.
 
 const CAMPOS = {
   id: true,
@@ -40,35 +34,32 @@ const CAMPOS = {
 
 type Fila = Prisma.DocumentoGetPayload<{ select: typeof CAMPOS }>;
 
-// Un id con otro formato no existe; además, Postgres rechazaría la consulta.
+// Un id que no tiene formato UUID se trata como no encontrado.
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const codigoPrisma = (error: unknown) =>
   error instanceof Prisma.PrismaClientKnownRequestError ? error.code : null;
 
-/** El vehículo o conductor elegido no existe en la empresa de la sesión. */
 export class DuenoNoEncontradoError extends Error {}
 
-/** No se agregan documentos a un vehículo o conductor inactivo (JOA-10, sección 2). */
 export class DuenoInactivoError extends Error {
   constructor(readonly dueno: TipoDueno) {
     super("Dueño inactivo");
   }
 }
 
-/** El dueño ya tiene un documento de ese tipo: se edita para renovarlo (JOA-10, sección 3.3). */
+// El dueño ya tiene un documento de ese tipo: hay que editarlo para renovarlo.
 export class DocumentoRepetidoError extends Error {
   constructor(
     readonly tipo: TipoDocumento,
     readonly dueno: DuenoDocumento,
-    /** El documento que ya existe, para llevar al usuario a editarlo. */
     readonly existenteId: string,
   ) {
     super("Documento repetido");
   }
 }
 
-/** Al editar, el dueño cambia solo dentro del mismo tipo: de vehículo a vehículo o de conductor a conductor. */
+// Al editar, un documento no puede pasar de un vehículo a un conductor ni al revés.
 export class CambioDeDuenoError extends Error {
   constructor(readonly actual: TipoDueno) {
     super("Cambio de tipo de dueño");
@@ -87,13 +78,13 @@ function aDocumento({ vehiculo, conductor, fechaVencimiento, ...documento }: Fil
   } else if (conductor) {
     dueno = { tipo: "conductor", id: conductor.id, nombre: conductor.nombre, activo: conductor.activo };
   } else {
-    // La regla CHECK documento_un_dueno_check lo impide.
+    // No debería pasar: la base exige un dueño.
     throw new Error(`El documento ${documento.id} no tiene dueño.`);
   }
   return { ...documento, fechaVencimiento: fechaDesdeBase(fechaVencimiento), dueno };
 }
 
-/** Ordenados por vencimiento, del más vencido al más lejano (JOA-10, sección 4). */
+// Ordenados del más vencido al que vence más tarde.
 export async function listarDocumentos(filtro: FiltroDocumentos = {}): Promise<Documento[]> {
   const empresaId = await empresaDeLaSesion();
   const filas = await prisma.documento.findMany({
@@ -104,13 +95,13 @@ export async function listarDocumentos(filtro: FiltroDocumentos = {}): Promise<D
   return filas.map(aDocumento);
 }
 
-/** Si la empresa tiene algún documento, de cualquier dueño. Para el mensaje del listado vacío. */
+// Para saber qué mensaje mostrar cuando el listado está vacío.
 export async function hayDocumentos(): Promise<boolean> {
   const empresaId = await empresaDeLaSesion();
   return (await prisma.documento.findFirst({ where: { empresaId }, select: { id: true } })) !== null;
 }
 
-/** Los documentos de un vehículo o conductor, para su ficha. */
+// Documentos de un vehículo o conductor, para mostrarlos en su ficha.
 export async function documentosDe(dueno: Pick<DuenoDocumento, "tipo" | "id">): Promise<Documento[]> {
   if (!UUID.test(dueno.id)) return [];
   const empresaId = await empresaDeLaSesion();
@@ -132,7 +123,7 @@ export async function obtenerDocumento(id: string): Promise<Documento | null> {
   return fila && aDocumento(fila);
 }
 
-/** El dueño elegido en el formulario, solo si es de la empresa. */
+// Busca el vehículo o conductor elegido, solo dentro de la empresa.
 async function buscarDueno(empresaId: string, datos: DatosDocumento): Promise<DuenoDocumento | null> {
   if (datos.vehiculoId) {
     if (!UUID.test(datos.vehiculoId)) return null;
@@ -157,7 +148,7 @@ async function buscarDueno(empresaId: string, datos: DatosDocumento): Promise<Du
   return conductor && { tipo: "conductor", ...conductor };
 }
 
-/** El documento del mismo tipo que ya tiene el dueño, sin contar `excluirId` (el que se edita). */
+// Busca si el dueño ya tiene un documento de ese tipo, sin contar el que se está editando.
 async function buscarRepetido(
   empresaId: string,
   tipo: TipoDocumento,
@@ -187,10 +178,7 @@ function datosParaBase(datos: DatosDocumento) {
   };
 }
 
-/**
- * Registra un documento ya validado con `validarDocumento`. Lanza `DuenoNoEncontradoError`,
- * `DuenoInactivoError` o `DocumentoRepetidoError`. Devuelve su dueño, para volver a su ficha.
- */
+// Guarda un documento nuevo y devuelve su dueño, para volver a su ficha.
 export async function crearDocumento(datos: DatosDocumento): Promise<DuenoDocumento> {
   const empresaId = await empresaDeLaSesion();
   const dueno = await buscarDueno(empresaId, datos);
@@ -203,7 +191,7 @@ export async function crearDocumento(datos: DatosDocumento): Promise<DuenoDocume
   try {
     await prisma.documento.create({ data: { ...datosParaBase(datos), empresaId }, select: { id: true } });
   } catch (error) {
-    // Otro registro del mismo documento justo entre la comprobación y el guardado.
+    // Alguien guardó el mismo documento al mismo tiempo.
     if (codigoPrisma(error) === "P2002") {
       throw (await buscarRepetido(empresaId, datos.tipo, dueno, null)) ?? error;
     }
@@ -212,13 +200,7 @@ export async function crearDocumento(datos: DatosDocumento): Promise<DuenoDocume
   return dueno;
 }
 
-/**
- * Renueva (nueva fecha) o corrige un documento (JOA-10, sección 3.3). Devuelve `null` si no
- * existe en la empresa de la sesión, o su dueño, para volver a su ficha. Lanza
- * `CambioDeDuenoError` si pasa de un vehículo a un conductor o al revés, y los mismos errores
- * de `crearDocumento`. Un documento de un dueño inactivo se puede renovar, pero no pasar a otro
- * dueño inactivo.
- */
+// Renueva o corrige un documento. Devuelve null si no existe en la empresa.
 export async function actualizarDocumento(id: string, datos: DatosDocumento): Promise<DuenoDocumento | null> {
   if (!UUID.test(id)) return null;
   const empresaId = await empresaDeLaSesion();

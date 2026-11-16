@@ -22,7 +22,7 @@ const MENSAJES = new Map([
 const primero = (valor: string | string[] | undefined) =>
   (Array.isArray(valor) ? valor[0] : valor) ?? "";
 
-/** Iniciales del nombre para el círculo del listado (solo decorativo). */
+// Iniciales del nombre para el círculo del listado.
 function iniciales(nombre: string) {
   return nombre
     .split(/\s+/)
@@ -50,7 +50,6 @@ export default async function PaginaConductores({ searchParams }: PageProps<"/co
   const sinConductor = Number(primero(parametros.sinConductor));
   const mensaje = [
     MENSAJES.get(primero(parametros.mensaje)),
-    // Al desactivar, sus vehículos quedan sin conductor asignado (PB-24, criterio 4).
     primero(parametros.mensaje) === "desactivado" && Number.isInteger(sinConductor) && sinConductor > 0
       ? textoVehiculosSinConductor(sinConductor)
       : undefined,
@@ -142,7 +141,7 @@ export default async function PaginaConductores({ searchParams }: PageProps<"/co
             </p>
           ) : (
             <>
-              {/* Celular y tablet: una tarjeta por conductor */}
+              {/* Celular y tablet: tarjetas */}
               <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:hidden">
                 {conductores.map((conductor) => (
                   <li key={conductor.id}>
@@ -164,7 +163,7 @@ export default async function PaginaConductores({ searchParams }: PageProps<"/co
                 ))}
               </ul>
 
-              {/* Computador: tabla (con el menú lateral, la tabla necesita una pantalla ancha) */}
+              {/* Computador: tabla */}
               <div className={`${TARJETA} mt-4 hidden overflow-hidden lg:block`}>
                 <table className="w-full text-left text-sm">
                   <thead className="border-b border-stone-200 bg-stone-50 text-xs uppercase tracking-wider text-stone-600">

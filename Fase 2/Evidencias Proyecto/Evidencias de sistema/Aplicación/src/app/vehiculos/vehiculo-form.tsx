@@ -48,10 +48,7 @@ function Campo({
   );
 }
 
-/**
- * Formulario de registro (sin `vehiculo`) y de edición (con `vehiculo`). `conductores` son los
- * conductores activos de la empresa que se pueden asignar (PB-24, criterio 2).
- */
+// Formulario para registrar o editar un vehículo.
 export function VehiculoForm({
   vehiculo,
   conductores,
@@ -73,7 +70,7 @@ export function VehiculoForm({
       if (primero instanceof HTMLElement) primero.focus();
     };
 
-    // Primero en el navegador para ayudar al usuario; el servidor valida de nuevo.
+    // Se valida primero en el navegador; el servidor vuelve a validar.
     const resultado = validarVehiculo(Object.fromEntries(datos));
     if (!resultado.ok) return mostrar(resultado.errores);
 
@@ -161,7 +158,6 @@ export function VehiculoForm({
         </Campo>
 
         {vehiculo?.estado === "inactivo" ? (
-          // Un vehículo inactivo solo cambia de estado con el botón "Reactivar".
           <input type="hidden" name="estado" value="inactivo" />
         ) : (
           <Campo nombre="estado" etiqueta="Estado" error={errores.estado}>

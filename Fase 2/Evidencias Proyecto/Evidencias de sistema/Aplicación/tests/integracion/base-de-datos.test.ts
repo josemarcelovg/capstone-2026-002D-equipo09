@@ -16,13 +16,8 @@ import {
 import { fechaDesdeBase, fechaParaBase, sumarDias } from "../../src/lib/fechas.ts";
 import { formatearPatente, normalizarPatente, validarVehiculo } from "../../src/lib/vehiculos.ts";
 
-// Pruebas de integración de la aplicación con la base de datos (SIM-04, CP-INT-01 a CP-INT-10,
-// CP-INT-17 a CP-INT-20 para conductores, y las de PB-24 y de documentos).
-// Usan el cliente Prisma generado y la base de DATABASE_URL, igual que la aplicación.
-//
-// No dejan datos: cada prueba crea sus propias empresas y vehículos dentro de una transacción
-// que se deshace al final. Por eso no dependen del seed y se pueden ejecutar contra la base
-// de desarrollo de Supabase o contra la de Docker (JOS-05).
+// Pruebas con la base de datos real. Cada prueba crea sus datos en una transacción que se
+// deshace al final, así que no dependen del seed.
 
 const sinBase = process.env.DATABASE_URL ? false : "Falta DATABASE_URL en el .env (ver .env.example).";
 
@@ -38,7 +33,7 @@ const NOMBRE_DE_PRUEBA = "(prueba de integración)";
 
 class Deshacer extends Error {}
 
-/** Ejecuta la prueba dentro de una transacción y la deshace siempre, aunque todo salga bien. */
+// Corre la prueba en una transacción y la deshace al final.
 async function sinGuardar(prueba: (tx: Tx) => Promise<void>) {
   try {
     await prisma.$transaction(
@@ -53,7 +48,7 @@ async function sinGuardar(prueba: (tx: Tx) => Promise<void>) {
   }
 }
 
-/** Una transacción que debe fallar con el código de Prisma indicado; al fallar se deshace sola. */
+// Transacción que debe fallar con el código de Prisma indicado.
 async function debeFallar(codigo: string, prueba: (tx: Tx) => Promise<void>) {
   await assert.rejects(
     prisma.$transaction(prueba, { maxWait: 10_000, timeout: 30_000 }),
@@ -69,7 +64,7 @@ async function crearEmpresa(tx: Tx, nombre: string) {
   return empresa.id;
 }
 
-/** Valida con el mismo esquema del formulario y del servidor (src/lib/vehiculos.ts). */
+// Valida con el mismo esquema que usa la app.
 function validado(cambios: Record<string, unknown> = {}) {
   const resultado = validarVehiculo({
     patente: "FGHJ-34",
@@ -179,7 +174,7 @@ describe("Vehículos en la base de datos", { skip: sinBase }, () => {
       const empresa = await crearEmpresa(tx, "Empresa A");
       await crearVehiculo(tx, empresa, { patente: "BBCD12" });
       const otro = await crearVehiculo(tx, empresa, { patente: "FGHJ34" });
-      // Misma condición que actualizarVehiculo() en src/lib/vehiculos-datos.ts.
+      // Misma condición que actualizarVehiculo().
       await tx.vehiculo.update({
         where: { id: otro.id, empresaId: empresa },
         data: { patente: validado({ patente: "bbcd 12" }).patente },
@@ -196,7 +191,7 @@ describe("Vehículos en la base de datos", { skip: sinBase }, () => {
       await crearVehiculo(tx, empresaA, { patente: "FGHJ34", estado: "inactivo" });
       await crearVehiculo(tx, empresaB, { patente: "AB1234" });
 
-      // Misma consulta que listarVehiculos() en src/lib/vehiculos-datos.ts.
+      // Misma consulta que listarVehiculos().
       const listar = async (patente = "", estado?: "en_mantencion", incluirInactivos = false) => {
         const vehiculos = await tx.vehiculo.findMany({
           where: {
@@ -226,7 +221,7 @@ describe("Separación entre empresas en la base de datos", { skip: sinBase }, ()
       const empresaB = await crearEmpresa(tx, "Empresa B");
       const deB = await crearVehiculo(tx, empresaB, { patente: "AB1234", color: "Blanco" });
 
-      // Mismas condiciones que obtenerVehiculo() y actualizarVehiculo(): id y empresa de la sesión.
+      // Mismas condiciones que obtenerVehiculo() y actualizarVehiculo().
       const encontrado = await tx.vehiculo.findFirst({ where: { id: deB.id, empresaId: empresaA } });
       assert.equal(encontrado, null);
 
@@ -248,7 +243,7 @@ describe("Separación entre empresas en la base de datos", { skip: sinBase }, ()
   });
 });
 
-/** Valida con el mismo esquema del formulario y del servidor (src/lib/conductores.ts). */
+// Valida con el mismo esquema que usa la app.
 async function crearConductor(tx: Tx, empresaId: string, cambios: Record<string, unknown> = {}) {
   const resultado = validarConductor({
     nombre: "Conductor de prueba",
@@ -296,7 +291,7 @@ describe("Conductores en la base de datos", { skip: sinBase }, () => {
       const empresaB = await crearEmpresa(tx, "Empresa B");
       const deB = await crearConductor(tx, empresaB, { nombre: "Conductor de B" });
 
-      // El mismo filtro que usan obtenerConductor() y actualizarConductor().
+      // Mismo filtro que obtenerConductor() y actualizarConductor().
       const deBDesdeA = conductorDeLaEmpresa(deB.id, empresaA);
       assert.equal(await tx.conductor.findFirst({ where: deBDesdeA }), null);
       await assert.rejects(
@@ -321,7 +316,7 @@ describe("Conductores en la base de datos", { skip: sinBase }, () => {
       // Su RUT contiene "222-2" y "1000005": no debe aparecer al buscar desde A.
       await crearConductor(tx, empresaB, { nombre: "María de B", rut: "22.222.222-2" });
 
-      // El mismo filtro y orden que usa listarConductores().
+      // Mismo filtro y orden que listarConductores().
       const listar = async (buscar = "", incluirInactivos = false) =>
         (
           await tx.conductor.findMany({
@@ -345,7 +340,6 @@ describe("Conductores en la base de datos", { skip: sinBase }, () => {
   });
 });
 
-// PB-24. Sin número de caso todavía: se registran en SIM-04 junto con sus casos funcionales.
 describe("Conductor asignado al vehículo en la base de datos", { skip: sinBase }, () => {
   test("PB-24 · un conductor puede estar asignado a varios vehículos y el vehículo puede no tener", async () => {
     await sinGuardar(async (tx) => {
@@ -355,7 +349,7 @@ describe("Conductor asignado al vehículo en la base de datos", { skip: sinBase 
       await crearVehiculo(tx, empresa, { patente: "AB1234", conductorId: conductor.id });
       const sinConductor = await crearVehiculo(tx, empresa, { patente: "FGHJ34" });
 
-      // El mismo filtro y orden que usa vehiculosDelConductor().
+      // Mismo filtro y orden que vehiculosDelConductor().
       const asignados = await tx.vehiculo.findMany({
         where: { empresaId: empresa, conductorId: conductor.id },
         orderBy: { patente: "asc" },
@@ -378,26 +372,22 @@ describe("Conductor asignado al vehículo en la base de datos", { skip: sinBase 
   });
 });
 
-// PB-11 a PB-13, con los criterios de JOA-10 (sección 6). Sin número de caso todavía: se
-// registran en SIM-04 junto con CP-FUN-23 a CP-FUN-25.
-// Usan una fecha fija como "hoy", para que el estado de cada documento no dependa del día.
-// Que el dueño esté activo y que el tipo de dueño no cambie al editar lo comprueba la aplicación
-// (src/lib/documentos-datos.ts); aquí se prueba lo que además impide la base de datos.
+// Se usa una fecha fija como hoy para que el estado no dependa del día en que se corre.
 
 const HOY = "2026-11-18";
 
-/** Valida con el mismo esquema del formulario y del servidor (src/lib/documentos.ts). */
+// Valida con el mismo esquema que usa la app.
 async function crearDocumento(tx: Tx, empresaId: string, cambios: Record<string, unknown>) {
   const resultado = validarDocumento({ fechaVencimiento: sumarDias(HOY, 60), ...cambios }, HOY);
   assert.ok(resultado.ok, `Datos de prueba inválidos: ${JSON.stringify(resultado)}`);
-  // Igual que datosParaBase() en src/lib/documentos-datos.ts.
+  // Igual que datosParaBase().
   const { fechaVencimiento, ...datos } = resultado.datos;
   return tx.documento.create({
     data: { ...datos, fechaVencimiento: fechaParaBase(fechaVencimiento), empresaId },
   });
 }
 
-/** Una transacción que la base debe rechazar por la restricción indicada; al fallar se deshace sola. */
+// Transacción que la base debe rechazar por la restricción indicada.
 async function debeRechazarPor(restriccion: string, prueba: (tx: Tx) => Promise<unknown>) {
   await assert.rejects(
     prisma.$transaction(prueba, { maxWait: 10_000, timeout: 30_000 }),
@@ -574,7 +564,7 @@ describe("Documentos en la base de datos", { skip: sinBase }, () => {
       });
       await crearDocumento(tx, empresaB, { tipo: "soap", vehiculoId: deB.id, fechaVencimiento: HOY });
 
-      // El mismo filtro y orden que usa listarDocumentos().
+      // Mismo filtro y orden que listarDocumentos().
       const listar = async (filtro: FiltroDocumentos = {}) =>
         (
           await tx.documento.findMany({
@@ -614,7 +604,6 @@ describe("Documentos en la base de datos", { skip: sinBase }, () => {
       await crearDocumento(tx, empresa, de("conductor activo", { conductorId: conductorActivo.id }));
       await crearDocumento(tx, empresa, de("conductor inactivo", { conductorId: conductorInactivo.id }));
 
-      // Todos vencen el mismo día y son del mismo tipo: se comparan sin importar el orden.
       const listar = async (incluirInactivos: boolean) =>
         (await tx.documento.findMany({ where: filtroDocumentos(empresa, HOY, { incluirInactivos }) }))
           .map(({ observaciones }) => observaciones)
@@ -643,7 +632,7 @@ describe("Documentos en la base de datos", { skip: sinBase }, () => {
       await crearDocumento(tx, empresaA, { tipo: "soap", vehiculoId: otroVehiculo.id });
       await crearDocumento(tx, empresaA, { tipo: "licencia_conducir", conductorId: conductor.id });
 
-      // El mismo filtro y orden que usa documentosDe().
+      // Mismo filtro y orden que documentosDe().
       const ficha = async (empresa: string, dueno: { tipo: "vehiculo" | "conductor"; id: string }) =>
         (await tx.documento.findMany({ where: documentosDelDueno(empresa, dueno), orderBy: ORDEN_DOCUMENTOS })).map(
           ({ tipo }) => tipo,
@@ -670,7 +659,7 @@ describe("Documentos en la base de datos", { skip: sinBase }, () => {
         const guardado = await tx.documento.findUniqueOrThrow({ where: { id: documento.id } });
         return calcularEstado(fechaDesdeBase(guardado.fechaVencimiento), HOY).estado;
       };
-      // La misma condición que actualizarDocumento(): id y empresa de la sesión.
+      // Misma condición que actualizarDocumento().
       const renovar = (fecha: string) =>
         tx.documento.update({
           where: documentoDeLaEmpresa(documento.id, empresa),
@@ -737,7 +726,7 @@ describe("Documentos en la base de datos", { skip: sinBase }, () => {
         observaciones: "De la empresa B",
       });
 
-      // Las mismas condiciones que obtenerDocumento() y actualizarDocumento().
+      // Mismas condiciones que obtenerDocumento() y actualizarDocumento().
       const deBDesdeA = documentoDeLaEmpresa(documento.id, empresaA);
       assert.equal(await tx.documento.findFirst({ where: deBDesdeA }), null);
       await assert.rejects(

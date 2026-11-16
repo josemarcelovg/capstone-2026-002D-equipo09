@@ -1,35 +1,27 @@
 import { z } from "zod";
 import { esRutValido, normalizarRut, tieneFormatoDeRut } from "./rut.ts";
 
-// Campos, formatos y mensajes del conductor según JOA-09 (secciones 3 y 4).
-// El formulario y el servidor validan con este mismo esquema.
-// Importa rut.ts con ruta relativa para que las pruebas lo carguen sin Next.js.
+// Reglas del conductor: formato de nombre, RUT y teléfono, y validación del formulario.
 
-/** `  Juan   Pérez ` → `Juan Pérez`. */
+// Quita los espacios de más del nombre.
 export function normalizarNombre(valor: string) {
   return valor.trim().replace(/\s+/g, " ");
 }
 
-/**
- * `9 1234 5678`, `+56 9 1234 5678` o `(2) 2345 6789` → solo dígitos, sin el código de país.
- * No valida: un texto inválido sigue siendo inválido después de esto.
- */
+// Deja solo los dígitos del teléfono, sin el +56.
 export function digitosDeTelefono(valor: string) {
   const digitos = valor.replace(/[\s.()+-]/g, "");
   return digitos.length === 11 && digitos.startsWith("56") ? digitos.slice(2) : digitos;
 }
 
-/**
- * Lo que pasa con los vehículos asignados al desactivar al conductor (PB-24, criterio 4):
- * "1 vehículo quedó sin conductor asignado." o "2 vehículos quedaron sin conductor asignado."
- */
+// Mensaje de cuántos vehículos quedaron sin conductor al desactivarlo.
 export function textoVehiculosSinConductor(cantidad: number) {
   return cantidad === 1
     ? "1 vehículo quedó sin conductor asignado."
     : `${cantidad} vehículos quedaron sin conductor asignado.`;
 }
 
-/** `+56912345678` → `+56 9 1234 5678`; `+56223456789` → `+56 2 2345 6789`. Solo para mostrar. */
+// Para mostrar el teléfono, por ejemplo +56 9 1234 5678.
 export function formatearTelefono(telefono: string) {
   return telefono.replace(/^\+56(\d)(\d{4})(\d{4})$/, "+56 $1 $2 $3");
 }
@@ -78,7 +70,7 @@ export type DatosConductor = z.infer<typeof esquemaConductor>;
 export type Conductor = DatosConductor & { id: string; activo: boolean };
 export type ErroresConductor = Partial<Record<keyof DatosConductor | "general", string>>;
 
-/** Valida los datos de un formulario y devuelve un error por campo. */
+// Valida el formulario y devuelve un mensaje de error por campo.
 export function validarConductor(
   datos: unknown,
 ): { ok: true; datos: DatosConductor } | { ok: false; errores: ErroresConductor } {

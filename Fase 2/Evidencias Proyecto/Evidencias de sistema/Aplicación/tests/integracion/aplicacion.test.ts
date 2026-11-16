@@ -3,19 +3,14 @@ import { randomUUID } from "node:crypto";
 import { describe, test } from "node:test";
 import { ENCABEZADOS_DE_SEGURIDAD } from "../../src/lib/seguridad.ts";
 
-// Pruebas de integración de la aplicación levantada con Supabase Auth (SIM-04, CP-INT-11 a
-// CP-INT-16, CP-INT-21 y CP-INT-22 para conductores, y CP-INT-23 para los avisos): el proxy, las
-// páginas y Supabase funcionando juntos, como los usa el navegador.
-// Solo leen: no inician sesión con cuentas reales ni crean datos.
-//
-// Necesitan la aplicación corriendo (npm run dev) con el mismo .env. Por defecto se prueba
-// http://localhost:3000; otra dirección se indica en URL_APLICACION.
+// Pruebas con la app corriendo (npm run dev): proxy, páginas y Supabase juntos. Solo leen datos.
+// Por defecto usan http://localhost:3000; se puede cambiar con URL_APLICACION.
 
 const URL_APLICACION = process.env.URL_APLICACION ?? "http://localhost:3000";
 const URL_SUPABASE = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
 const CLAVE_SUPABASE = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
 
-// Un vehículo y un conductor del seed de la Empresa A (prisma/seed.ts).
+// Un vehículo y un conductor del seed de la Empresa A.
 const VEHICULO_DEL_SEED = "a1000000-0000-4000-8000-000000000001";
 const CONDUCTOR_DEL_SEED = "a2000000-0000-4000-8000-000000000001";
 
@@ -24,7 +19,7 @@ const sinSupabase =
     ? false
     : "Faltan las variables de Supabase en el .env: la aplicación queda en modo desarrollo, sin inicio de sesión.";
 
-// La primera solicitud a `npm run dev` compila la página, por eso el plazo es largo.
+// La primera visita a `npm run dev` compila la página, por eso se espera más.
 const aplicacionLevantada = await fetch(new URL("/login", URL_APLICACION), {
   signal: AbortSignal.timeout(60_000),
 }).then(
@@ -51,7 +46,7 @@ async function comprobarQueVaAlLogin(ruta: string, encabezados?: Record<string, 
   assert.doesNotMatch(await respuesta.text(), /BBCD|Transportes Cordillera|Pedro Soto/, `${ruta} mostró datos`);
 }
 
-/** Con la clave pública, la API de Supabase no devuelve filas de la tabla (RLS sin políticas). */
+// Con la clave pública, Supabase no devuelve filas de la tabla.
 async function comprobarQueNoSeLee(tabla: string) {
   const respuesta = await fetch(`${URL_SUPABASE}/rest/v1/${tabla}?select=*&limit=1`, {
     headers: { apikey: CLAVE_SUPABASE ?? "" },
@@ -67,7 +62,7 @@ async function comprobarQueNoSeLee(tabla: string) {
 
 const base64url = (valor: string) => Buffer.from(valor).toString("base64url");
 
-/** Cookie de sesión con el formato de @supabase/ssr, pero con un token con firma inventada. */
+// Cookie de sesión con una firma inventada.
 function cookieFalsificada() {
   const ahora = Math.floor(Date.now() / 1000);
   const token = [
@@ -120,7 +115,6 @@ describe("Aplicación levantada", { skip: sinAplicacion }, () => {
   });
 
   test("CP-INT-21 · sin sesión, las páginas de conductores redirigen al inicio de sesión", { skip: sinSupabase }, async () => {
-    // JOA-09, criterio 13.
     for (const ruta of [
       "/conductores",
       "/conductores?inactivos=1",
@@ -140,7 +134,7 @@ describe("Aplicación levantada", { skip: sinAplicacion }, () => {
   });
 
   test("CP-INT-23 · la ruta de los avisos sin la clave de CRON_SECRET responde 401", async () => {
-    // JOA-13, criterio 12. El proxy no la manda al login: la protege la clave.
+    // El proxy no manda al login la ruta de avisos: la protege la clave.
     const casos: Record<string, string>[] = [
       {},
       { authorization: "Bearer clave-inventada" },
@@ -160,7 +154,6 @@ describe("Aplicación levantada", { skip: sinAplicacion }, () => {
   });
 
   test("CP-INT-16 · todas las respuestas llevan los encabezados de seguridad", async () => {
-    // Una página, un archivo público y una página privada (sin sesión, la redirección del proxy).
     for (const ruta of ["/login", "/favicon.ico", "/vehiculos"]) {
       const respuesta = await pedir(ruta);
       for (const { key, value } of ENCABEZADOS_DE_SEGURIDAD) {

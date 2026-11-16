@@ -6,12 +6,8 @@ import { hoyEnChile } from "@/lib/fechas";
 import { formatearRut } from "@/lib/rut";
 import { ListaDocumentos } from "../documentos/seccion-documentos";
 
-/**
- * El conductor asignado en la ficha del vehículo, con sus documentos y su estado (PB-24,
- * criterio 3). Los documentos del propio vehículo van en su propia sección.
- */
+// Conductor asignado en la ficha del vehículo, con sus documentos.
 export async function SeccionConductor({ conductorId }: { conductorId: string | null }) {
-  // obtenerConductor filtra por la empresa de la sesión, como toda consulta.
   const conductor = conductorId ? await obtenerConductor(conductorId) : null;
   const documentos = conductor ? await documentosDe({ tipo: "conductor", id: conductor.id }) : [];
 

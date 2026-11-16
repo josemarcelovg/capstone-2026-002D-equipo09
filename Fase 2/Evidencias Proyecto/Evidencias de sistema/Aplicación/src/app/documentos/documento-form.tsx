@@ -22,7 +22,6 @@ import { guardarDocumento, type ErroresGuardado } from "./acciones";
 import { BOTON_PRINCIPAL, BOTON_SECUNDARIO, CONTROL } from "../estilos";
 
 
-/** Un vehículo o conductor que se puede elegir como dueño. */
 export type OpcionDueno = { id: string; nombre: string };
 
 function Campo({
@@ -67,12 +66,7 @@ const EJEMPLO_DESCRIPCION: Partial<Record<TipoDocumento, string>> = {
   otro: "Seguro de pasajeros",
 };
 
-/**
- * Formulario de registro (sin `documento`) y de edición (con `documento`). El tipo decide si el
- * dueño es un vehículo o un conductor (JOA-10, sección 3.1). Al editar, o al llegar desde una
- * ficha (`duenoFijo`), el dueño solo puede ser del mismo tipo: de vehículo a vehículo o de
- * conductor a conductor.
- */
+// Formulario para registrar o editar un documento. El tipo decide si el dueño es un vehículo o un conductor.
 export function DocumentoForm({
   documento,
   duenoFijo,
@@ -94,7 +88,7 @@ export function DocumentoForm({
   const [tipo, setTipo] = useState<TipoDocumento | "">(documento?.tipo ?? "");
   const [elegido, setElegido] = useState<TipoDueno | "">(bloqueado ?? "");
 
-  // Con un tipo de un solo dueño, el dueño queda decidido; con "otro" lo elige el usuario.
+  // Si el tipo es de un solo dueño, se elige solo; con "otro" lo elige el usuario.
   const posibles = tipo ? DUENOS_POR_TIPO[tipo] : [];
   const tipoDueno: TipoDueno | null =
     bloqueado ?? (posibles.length === 1 ? posibles[0] : elegido || null);
@@ -117,7 +111,7 @@ export function DocumentoForm({
       if (enfocable instanceof HTMLElement) enfocable.focus();
     };
 
-    // Primero en el navegador para ayudar al usuario; el servidor valida de nuevo.
+    // Se valida primero en el navegador; el servidor vuelve a validar.
     const resultado = validarDocumento(Object.fromEntries(datos), hoyEnChile());
     if (!resultado.ok) return mostrar(resultado.errores);
 
@@ -226,7 +220,6 @@ export function DocumentoForm({
               }
             >
               <select
-                // Al pasar de vehículo a conductor se crea otro campo, con su propio valor.
                 key={campoDueno}
                 id={campoDueno}
                 name={campoDueno}

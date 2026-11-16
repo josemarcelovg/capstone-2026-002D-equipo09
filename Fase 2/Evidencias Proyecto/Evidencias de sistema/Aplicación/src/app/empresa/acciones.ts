@@ -10,9 +10,9 @@ import {
   RutYaRegistradoError,
 } from "@/lib/empresa-datos";
 
-/** Guarda los datos de la empresa de la sesión. Si todo sale bien, recarga la página con un mensaje. */
+// Guarda los datos de la empresa de la sesión.
 export async function guardarEmpresa(formulario: FormData): Promise<ErroresEmpresa> {
-  // Las acciones del servidor se pueden llamar con cualquier dato, no solo desde el formulario.
+  // Revisa que los datos tengan la forma esperada, por si llaman la acción sin el formulario.
   if (!(formulario instanceof FormData)) return { general: "No pudimos guardar los datos." };
 
   try {
@@ -24,10 +24,10 @@ export async function guardarEmpresa(formulario: FormData): Promise<ErroresEmpre
 
     await actualizarMiEmpresa(resultado.datos);
   } catch (error) {
-    // Sin sesión, empresaDeLaSesion() redirige al login: esa redirección no es un error.
+    // Si no hay sesión, se deja pasar la redirección al login.
     unstable_rethrow(error);
     if (error instanceof RutDeEmpresaDuplicadoError) {
-      // Sin decir que el RUT pertenece a otra empresa, para no revelarlo.
+      // No se dice que el RUT es de otra empresa.
       return { rut: "No pudimos registrar ese RUT. Revisa que sea el de tu empresa o escríbenos." };
     }
     if (error instanceof RutYaRegistradoError) {
@@ -37,7 +37,7 @@ export async function guardarEmpresa(formulario: FormData): Promise<ErroresEmpre
     return { general: "No pudimos guardar los datos. Intenta nuevamente." };
   }
 
-  // El nombre de la empresa aparece en el encabezado de todas las páginas.
+  // Actualiza el nombre de la empresa en el menú.
   revalidatePath("/", "layout");
   redirect("/empresa?mensaje=guardado");
 }

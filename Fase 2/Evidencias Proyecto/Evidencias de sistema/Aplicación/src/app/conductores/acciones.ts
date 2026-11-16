@@ -13,16 +13,12 @@ import { formatearRut } from "@/lib/rut";
 
 const NO_ENCONTRADO = "No encontramos el conductor. Vuelve al listado.";
 
-/**
- * Registra un conductor (`id` nulo) o guarda los cambios de uno existente.
- * Si todo sale bien vuelve al listado; si no, devuelve un error por campo.
- * El estado (activo o inactivo) solo cambia con `cambiarActivacion`.
- */
+// Registra un conductor nuevo o guarda los cambios de uno existente.
 export async function guardarConductor(
   id: string | null,
   formulario: FormData,
 ): Promise<ErroresConductor> {
-  // Las acciones del servidor se pueden llamar con cualquier dato, no solo desde el formulario.
+  // Revisa que los datos tengan la forma esperada, por si llaman la acción sin el formulario.
   if (!(formulario instanceof FormData) || (id !== null && typeof id !== "string")) {
     return { general: NO_ENCONTRADO };
   }
@@ -37,7 +33,7 @@ export async function guardarConductor(
       await crearConductor(datos);
     }
   } catch (error) {
-    // Sin sesión, empresaDeLaSesion() redirige al login (SIM-02): esa redirección no es un error.
+    // Si no hay sesión, se deja pasar la redirección al login.
     unstable_rethrow(error);
     if (error instanceof RutDuplicadoError) {
       const rut = formatearRut(datos.rut);
@@ -55,12 +51,8 @@ export async function guardarConductor(
   redirect(`/conductores?mensaje=${id !== null ? "actualizado" : "creado"}`);
 }
 
-/**
- * Desactiva (`activar` falso) o reactiva un conductor. Nunca se elimina.
- * Si algo falla devuelve el mensaje para mostrar.
- */
+// Desactiva o reactiva un conductor. Nunca se borra.
 export async function cambiarActivacion(id: string, activar: boolean) {
-  // Las acciones del servidor se pueden llamar con cualquier dato: solo `true` reactiva.
   if (typeof id !== "string") redirect("/conductores");
   const reactivar = activar === true;
   let encontrado: boolean;
@@ -69,7 +61,6 @@ export async function cambiarActivacion(id: string, activar: boolean) {
     if (reactivar) {
       encontrado = (await actualizarConductor(id, { activo: true })) !== null;
     } else {
-      // Sus vehículos quedan sin conductor asignado (PB-24, criterio 4).
       const resultado = await desactivarConductor(id);
       encontrado = resultado !== null;
       sinConductor = resultado?.vehiculosSinConductor ?? 0;

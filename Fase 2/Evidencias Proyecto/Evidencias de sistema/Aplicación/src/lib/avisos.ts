@@ -2,20 +2,13 @@ import { timingSafeEqual } from "node:crypto";
 import { describirVencimiento, ETIQUETA_TIPO_DOCUMENTO, type TipoDocumento } from "./documentos.ts";
 import { diasEntre, formatearFecha } from "./fechas.ts";
 
-// Reglas de las alertas de vencimiento por correo (JOA-13), sin dependencias de Next.js ni de la
-// base de datos para probarlas directo (tests/avisos.test.ts). El proceso que lee la base y envía
-// los correos está en avisos-datos.ts; el envío, en correo.ts.
-// Importa documentos.ts y fechas.ts con ruta relativa para que las pruebas los carguen sin Next.js.
+// Reglas de los avisos por correo: qué documentos avisar hoy y cómo se arma el correo.
 
-/** Los 4 avisos de cada documento: 30, 7 y 1 días antes, y el día del vencimiento (JOA-13, sección 2). */
+// Días antes del vencimiento en que se manda un aviso.
 export const PLAZOS_AVISO = [30, 7, 1, 0] as const;
 export type PlazoAviso = (typeof PLAZOS_AVISO)[number];
 
-/**
- * El plazo que corresponde a los días que faltan (JOA-13, sección 3.1): el menor de 30, 7, 1 o 0
- * que sea mayor o igual. `null` si ya venció o si faltan más de 30 días. Así un plazo que no se
- * avisó a tiempo nunca se manda atrasado: faltando 5 días toca el de 7, que dice "Vence en 5 días".
- */
+// Qué aviso toca según los días que faltan. Si se saltó uno, se manda el siguiente.
 export function plazoQueCorresponde(dias: number): PlazoAviso | null {
   if (dias < 0 || dias > PLAZOS_AVISO[0]) return null;
   return [...PLAZOS_AVISO].reverse().find((plazo) => plazo >= dias) ?? null;
@@ -26,16 +19,15 @@ export type DocumentoParaAviso = {
   empresaId: string;
   tipo: TipoDocumento;
   descripcion: string | null;
-  /** `AAAA-MM-DD`. */
+  // Formato AAAA-MM-DD
   fechaVencimiento: string;
-  /** Patente con guion o nombre del conductor. */
+  // Patente o nombre del conductor
   dueno: string;
   duenoActivo: boolean;
 };
 
 export type AvisoRegistrado = {
   documentoId: string;
-  /** `AAAA-MM-DD`: la fecha que tenía el documento al avisar. */
   fechaVencimiento: string;
   diasAnticipacion: number;
   estado: "enviado" | "fallido";
@@ -44,19 +36,13 @@ export type AvisoRegistrado = {
 export type AvisoPendiente = {
   documento: DocumentoParaAviso;
   plazo: PlazoAviso;
-  /** Días que faltan hoy, que son los que dice el correo. */
   dias: number;
 };
 
 const clave = (documentoId: string, fechaVencimiento: string, plazo: number) =>
   `${documentoId}|${fechaVencimiento}|${plazo}`;
 
-/**
- * Los avisos que hay que mandar hoy (JOA-13, sección 3): uno por documento con el plazo que
- * corresponde, si su dueño está activo y ese aviso (documento + fecha de vencimiento + plazo) no
- * está registrado como enviado. Los fallidos se vuelven a incluir. Quedan ordenados por fecha de
- * vencimiento, como en el correo.
- */
+// Los avisos que hay que mandar hoy, sin repetir los que ya se enviaron.
 export function avisosPendientes(
   documentos: DocumentoParaAviso[],
   registrados: AvisoRegistrado[],
@@ -84,7 +70,7 @@ export function avisosPendientes(
   );
 }
 
-/** Un solo correo por empresa con todos sus avisos del día (JOA-13, sección 2). */
+// Junta los avisos de cada empresa para mandarle un solo correo.
 export function agruparPorEmpresa(avisos: AvisoPendiente[]) {
   const porEmpresa = new Map<string, AvisoPendiente[]>();
   for (const aviso of avisos) {
@@ -95,20 +81,17 @@ export function agruparPorEmpresa(avisos: AvisoPendiente[]) {
   return porEmpresa;
 }
 
-// --- El correo (JOA-13, sección 4) ----------------------------------------------------------
-
 export type Correo = { asunto: string; texto: string; html: string };
 
 const NOTA_FINAL =
   "Este aviso se envía al correo de contacto de tu empresa. Puedes cambiarlo en los datos de tu empresa.";
 
-/** "Revisión técnica" o, para el tipo "otro", su descripción ("Seguro de pasajeros"). */
 function nombreDelDocumento(documento: DocumentoParaAviso) {
   if (documento.tipo === "otro" && documento.descripcion) return documento.descripcion;
   return ETIQUETA_TIPO_DOCUMENTO[documento.tipo];
 }
 
-/** El nombre de la empresa o del conductor viene de un formulario: no se interpreta como HTML. */
+// Evita que un nombre escrito en un formulario se lea como HTML.
 function escaparHtml(texto: string) {
   return texto
     .replaceAll("&", "&amp;")
@@ -118,7 +101,7 @@ function escaparHtml(texto: string) {
     .replaceAll("'", "&#39;");
 }
 
-/** "MicroLogist: 3 documentos por vencer" o, si alguno vence hoy, "MicroLogist: documentos que vencen hoy". */
+// Asunto del correo, por ejemplo "MicroLogist: 3 documentos por vencer".
 export function asuntoDelCorreo(avisos: AvisoPendiente[]) {
   const venceHoy = avisos.some((aviso) => aviso.dias === 0);
   if (avisos.length === 1) {
@@ -129,11 +112,7 @@ export function asuntoDelCorreo(avisos: AvisoPendiente[]) {
     : `MicroLogist: ${avisos.length} documentos por vencer`;
 }
 
-/**
- * El correo diario de una empresa: saludo, la lista de documentos (tipo, dueño, fecha y cuánto
- * falta), el enlace a los documentos y la nota del destinatario. Texto simple y un HTML sin
- * imágenes con lo mismo (RNF-COM-05).
- */
+// Arma el correo de una empresa, en texto simple y en HTML.
 export function armarCorreo(
   empresa: { nombre: string },
   avisos: AvisoPendiente[],
@@ -161,7 +140,6 @@ export function armarCorreo(
   ].join("\n");
 
   const asunto = asuntoDelCorreo(avisos);
-  // El título repite el asunto sin "MicroLogist: " y con mayúscula: "Un documento vence hoy".
   const resumen = asunto.replace(/^MicroLogist: /, "");
   const filas = avisos.map(({ dias }, i) => filaDelCorreo(lineas[i], colorDelPlazo(dias), i === 0));
   const html = plantillaDelCorreo({
@@ -174,10 +152,9 @@ export function armarCorreo(
   return { asunto, texto, html };
 }
 
-// El HTML usa tablas y estilos en cada etiqueta, sin imágenes ni hojas de estilo, porque es lo
-// que muestran igual Outlook, Gmail y los celulares (RNF-COM-05). Mismos colores que la app.
+// El HTML usa tablas y estilos en línea para que se vea bien en Outlook, Gmail y el celular.
 
-/** Rojo si vence hoy, amarillo si vence en 7 días o menos, naranja si falta más. */
+// Color de cada documento según cuánto falta: rojo, amarillo o naranja.
 function colorDelPlazo(dias: number) {
   if (dias === 0) return { barra: "#ef4444", fondo: "#fee2e2", texto: "#991b1b" };
   if (dias <= 7) return { barra: "#f59e0b", fondo: "#fef3c7", texto: "#92400e" };
@@ -209,7 +186,7 @@ function plantillaDelCorreo(partes: { titulo: string; saludo: string; filas: str
     '<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">',
     '<meta name="viewport" content="width=device-width, initial-scale=1"></head>',
     '<body style="margin:0;padding:0;background:#f5f5f4;">',
-    // Texto que se ve en la vista previa de la bandeja de entrada.
+    // Texto de vista previa en la bandeja de entrada.
     `<div style="display:none;max-height:0;overflow:hidden;">${partes.titulo}: estos documentos necesitan tu atención.</div>`,
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f5f4;">',
     '<tr><td align="center" style="padding:24px 12px;">',
@@ -235,13 +212,7 @@ function plantillaDelCorreo(partes: { titulo: string; saludo: string; filas: str
   ].join("\n");
 }
 
-// --- La ruta del proceso ----------------------------------------------------------------------
-
-/**
- * Vercel Cron llama la ruta del proceso con `Authorization: Bearer <CRON_SECRET>` (JOA-13,
- * sección 5). Sin `CRON_SECRET` configurado nunca se autoriza, para no dejar la ruta abierta.
- * La comparación toma el mismo tiempo aunque la clave sea parecida.
- */
+// Revisa que la llamada traiga la clave CRON_SECRET. Si la clave no está configurada, no deja pasar a nadie.
 export function esLlamadaAutorizada(encabezado: string | null, secreto: string | undefined) {
   const esperado = secreto?.trim();
   if (!esperado || !encabezado) return false;
@@ -250,12 +221,7 @@ export function esLlamadaAutorizada(encabezado: string | null, secreto: string |
   return recibido.length === correcto.length && timingSafeEqual(recibido, correcto);
 }
 
-/**
- * El enlace "Ver documentos" del correo. Usa la dirección pública de la aplicación
- * (`URL_PUBLICA`, por ejemplo `https://micrologist-equipo09.vercel.app`) para que el enlace no
- * dependa de cómo llegó la solicitud del cron. Si no está o no es una dirección http(s) válida,
- * usa la de la solicitud, como antes.
- */
+// Enlace del botón "Ver documentos". Usa URL_PUBLICA si está bien escrita.
 export function urlDeDocumentos(urlPublica: string | undefined, urlSolicitud: string) {
   const base = urlPublica?.trim();
   if (base) {
@@ -265,7 +231,7 @@ export function urlDeDocumentos(urlPublica: string | undefined, urlSolicitud: st
         return new URL("/documentos", url).toString();
       }
     } catch {
-      // No es una dirección válida: se usa la de la solicitud.
+      // Si no es válida, se usa la dirección de la solicitud.
     }
   }
   return new URL("/documentos", urlSolicitud).toString();

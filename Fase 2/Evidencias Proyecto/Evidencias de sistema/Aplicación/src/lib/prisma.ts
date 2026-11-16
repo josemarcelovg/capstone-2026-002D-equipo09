@@ -1,9 +1,7 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@/generated/prisma/client";
 
-// Un solo PrismaClient por proceso: cada instancia abre su propio grupo de conexiones.
-// La aplicación usa DATABASE_URL (transaction pooler de Supabase, puerto 6543).
-// Se guarda en globalThis para que las recargas de `next dev` no abran conexiones nuevas.
+// Un solo cliente de Prisma para toda la app, para no abrir conexiones de más.
 
 const almacen = globalThis as typeof globalThis & { prisma?: PrismaClient };
 

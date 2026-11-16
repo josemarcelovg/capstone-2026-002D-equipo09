@@ -1,9 +1,6 @@
 import type { ReactNode } from "react";
 
-/**
- * Título de una pantalla con una línea que explica para qué sirve y, a la derecha, sus
- * acciones (por ejemplo, el botón para registrar). En celular las acciones van debajo.
- */
+// Título de la pantalla, una descripción corta y sus botones.
 export function Encabezado({
   titulo,
   descripcion,
@@ -24,7 +21,7 @@ export function Encabezado({
   );
 }
 
-/** Mensaje de confirmación después de guardar, desactivar o reactivar. */
+// Mensaje verde después de guardar.
 export function MensajeExito({ children }: { children: ReactNode }) {
   return (
     <p

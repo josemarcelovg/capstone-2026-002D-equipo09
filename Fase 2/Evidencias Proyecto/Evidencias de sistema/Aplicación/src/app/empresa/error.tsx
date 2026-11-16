@@ -3,8 +3,7 @@
 import { useEffect } from "react";
 import { IconoAlerta } from "../iconos";
 
-// Se muestra si falla la carga de la pantalla de la empresa (por ejemplo, sin conexión
-// a la base de datos). No muestra detalles técnicos (RNF-SEG-09).
+// Pantalla de error de la empresa, sin mostrar detalles técnicos.
 export default function ErrorEmpresa({
   error,
   retry,

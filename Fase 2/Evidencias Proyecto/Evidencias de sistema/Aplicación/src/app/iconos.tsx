@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 
-// Íconos de la interfaz, dibujados con SVG simple para no agregar dependencias. Son solo
-// decorativos (aria-hidden): cada uno va siempre junto a un texto que dice lo mismo.
+// Íconos en SVG. Son decorativos: siempre van junto a un texto.
 
 type PropsIcono = { className?: string };
 
@@ -23,7 +22,6 @@ function Icono({ className = "size-5", children }: PropsIcono & { children: Reac
   );
 }
 
-/** Marca de MicroLogist y menú de vehículos. */
 export function IconoBus(props: PropsIcono) {
   return (
     <Icono {...props}>

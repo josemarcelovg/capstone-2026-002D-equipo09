@@ -1,10 +1,7 @@
 import Link from "next/link";
 import { formatearPatente, type Vehiculo } from "@/lib/vehiculos";
 
-/**
- * Los vehículos de los que es el conductor habitual (PB-24). Se asignan desde la ficha de cada
- * vehículo; un conductor puede tener varios.
- */
+// Vehículos asignados al conductor, en su ficha.
 export function VehiculosAsignados({
   vehiculos,
 }: {

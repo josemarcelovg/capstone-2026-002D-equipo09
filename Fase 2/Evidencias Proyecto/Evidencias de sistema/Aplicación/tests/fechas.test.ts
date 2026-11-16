@@ -12,8 +12,7 @@ import {
   sumarDias,
 } from "../src/lib/fechas.ts";
 
-// Casos tomados de JOA-10 (secciones 2, 5 y 6), JOA-13 (sección 2) y JOA-14 (sección 2).
-// En diciembre Chile está en UTC−3 y en julio, en UTC−4.
+// En diciembre Chile está en UTC−3 y en julio en UTC−4.
 
 test("a las 23:30 de Chile sigue siendo el mismo día, aunque en UTC ya sea mañana", () => {
   assert.equal(hoyEnChile(new Date("2026-12-02T02:30:00Z")), "2026-12-01");

@@ -16,7 +16,7 @@ export type EstadoLogin = { errores: ErroresAcceso; correo: string };
 
 const ERROR_GENERAL = "No pudimos iniciar sesión. Intenta nuevamente.";
 
-/** Inicia sesión con Supabase Auth. Si todo sale bien va al listado de vehículos (JOA-01, 7.1). */
+// Inicia sesión con Supabase Auth y lleva al listado de vehículos.
 export async function iniciarSesion(
   _anterior: EstadoLogin,
   formulario: FormData,
@@ -39,7 +39,7 @@ export async function iniciarSesion(
       return { errores: { general: mensajeDeErrorDeAcceso(error) }, correo };
     }
 
-    // La cuenta existe en Supabase Auth, pero sin perfil no sabemos su empresa (JOS-02, 7).
+    // Sin perfil en la tabla usuario no sabemos de qué empresa es la cuenta.
     const perfil = await prisma.usuario.findUnique({
       where: { id: data.user.id },
       select: { id: true },
@@ -60,14 +60,13 @@ export async function iniciarSesion(
   redirect("/vehiculos");
 }
 
-/** Cierra la sesión en este navegador y vuelve al inicio de sesión. */
 export async function cerrarSesion() {
   const acceso = accesoDelEntorno();
   if (acceso.modo === "supabase") {
     const supabase = await crearClienteSupabase(acceso.url, acceso.clave);
     await supabase.auth.signOut({ scope: "local" });
   }
-  // Descarta las páginas privadas que el navegador tenía guardadas (JOA-01, criterio 7.4).
+  // Borra las páginas privadas que el navegador tenía guardadas.
   revalidatePath("/", "layout");
   redirect(RUTA_LOGIN);
 }

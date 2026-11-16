@@ -13,8 +13,6 @@ test("al desactivar, avisa cuántos vehículos quedaron sin conductor (PB-24, cr
   assert.equal(textoVehiculosSinConductor(3), "3 vehículos quedaron sin conductor asignado.");
 });
 
-// Casos tomados de JOA-09, secciones 3, 4 y 5. Solo RUT ficticios.
-
 const valido = {
   nombre: "Juan Pérez",
   rut: "22.222.222-2",
@@ -130,14 +128,12 @@ test("la búsqueda por RUT parcial no inventa un guion (JOA-09, criterio 6)", as
   const { filtroConductores } = await import("../src/lib/conductores-filtros.ts");
   const condiciones = (buscar: string) => filtroConductores("empresa", { buscar }).OR ?? [];
 
-  // "12345678" es parte de un RUT: no debe buscar también el 1234567-8.
+  // "12345678" es parte de un RUT: no debe buscar también 1234567-8.
   assert.deepEqual(condiciones("12345678"), [
     { nombre: { contains: "12345678", mode: "insensitive" } },
     { rut: { contains: "12345678" } },
   ]);
-  // Un RUT completo sin guion sí agrega la búsqueda exacta.
   assert.deepEqual(condiciones("111111111").at(-1), { rut: "11111111-1" });
-  // Siempre filtra por la empresa y, por defecto, solo activos.
   assert.equal(filtroConductores("empresa").empresaId, "empresa");
   assert.equal(filtroConductores("empresa").activo, true);
   assert.equal(filtroConductores("empresa", { incluirInactivos: true }).activo, undefined);

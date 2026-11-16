@@ -1,10 +1,7 @@
 import { z } from "zod";
 import { diasEntre, formatearFecha, leerFecha, sumarAnios, sumarDias } from "./fechas.ts";
 
-// Tipos, dueño, campos, mensajes y estado de los documentos según JOA-10 (secciones 2 a 4).
-// El formulario y el servidor validan con este mismo esquema. Lo que necesita la base de datos
-// (dueño de la empresa y activo, documento repetido) se comprueba en el acceso a datos.
-// Importa fechas.ts con ruta relativa para que las pruebas lo carguen sin Next.js.
+// Reglas de los documentos: tipos, validación del formulario y cálculo del estado.
 
 export const TIPOS_DOCUMENTO = [
   "revision_tecnica",
@@ -25,7 +22,7 @@ export const ETIQUETA_TIPO_DOCUMENTO: Record<TipoDocumento, string> = {
   otro: "Otro",
 };
 
-/** A quién puede pertenecer cada tipo (JOA-10, sección 3.1). */
+// Qué tipos de documento puede tener un vehículo y cuáles un conductor.
 export const DUENOS_POR_TIPO: Record<TipoDocumento, readonly TipoDueno[]> = {
   revision_tecnica: ["vehiculo"],
   soap: ["vehiculo"],
@@ -34,25 +31,20 @@ export const DUENOS_POR_TIPO: Record<TipoDocumento, readonly TipoDueno[]> = {
   otro: ["vehiculo", "conductor"],
 };
 
-/** Tipos que se pueden registrar para un vehículo o para un conductor. */
 export function tiposPara(dueno: TipoDueno) {
   return TIPOS_DOCUMENTO.filter((tipo) => DUENOS_POR_TIPO[tipo].includes(dueno));
 }
 
-/** Un dueño tiene uno solo de cada tipo, salvo "otro": renovar es editar (JOA-10, sección 2). */
+// Cada vehículo o conductor tiene uno solo de cada tipo, salvo "otro".
 export function esUnicoPorDueno(tipo: TipoDocumento) {
   return tipo !== "otro";
 }
 
-// --- Documento como se muestra --------------------------------------------------------------
-
-/** El vehículo o conductor al que pertenece un documento. */
 export type DuenoDocumento = {
   tipo: TipoDueno;
   id: string;
-  /** Patente con guion (`BBCD-12`) o nombre del conductor. */
+  // Patente o nombre del conductor
   nombre: string;
-  /** Un vehículo inactivo o un conductor desactivado no recibe documentos nuevos (JOA-10, sección 2). */
   activo: boolean;
 };
 
@@ -60,27 +52,25 @@ export type Documento = {
   id: string;
   tipo: TipoDocumento;
   descripcion: string | null;
-  /** `AAAA-MM-DD`, el último día válido. */
+  // Formato AAAA-MM-DD
   fechaVencimiento: string;
   observaciones: string | null;
   dueno: DuenoDocumento;
 };
 
-/** "SOAP", "Licencia de conducir (Clase A3)" o, para "otro", su descripción. */
+// Nombre que se muestra, por ejemplo "SOAP" o la descripción si el tipo es "otro".
 export function nombreDelDocumento({ tipo, descripcion }: Pick<Documento, "tipo" | "descripcion">) {
   if (tipo === "otro") return descripcion ?? ETIQUETA_TIPO_DOCUMENTO.otro;
   return descripcion ? `${ETIQUETA_TIPO_DOCUMENTO[tipo]} (${descripcion})` : ETIQUETA_TIPO_DOCUMENTO[tipo];
 }
 
-/** La ficha del dueño: `/vehiculos/<id>` o `/conductores/<id>`. */
+// Enlace a la ficha del vehículo o del conductor.
 export function fichaDelDueno(dueno: Pick<DuenoDocumento, "tipo" | "id">) {
   return `/${dueno.tipo === "vehiculo" ? "vehiculos" : "conductores"}/${dueno.id}`;
 }
 
-/** Desde dónde se abrió el formulario: al guardar se vuelve ahí (JOA-10, sección 4). */
+// Para volver a la pantalla desde donde se abrió el formulario.
 export type Origen = "listado" | "ficha";
-
-// --- Estado -------------------------------------------------------------------------------
 
 export const ESTADOS_DOCUMENTO = ["vencido", "por_vencer", "vigente"] as const;
 export type EstadoDocumento = (typeof ESTADOS_DOCUMENTO)[number];
@@ -91,15 +81,11 @@ export const ETIQUETA_ESTADO_DOCUMENTO: Record<EstadoDocumento, string> = {
   vigente: "Vigente",
 };
 
-/** "Por vencer" es 30 días o menos, contando el día del vencimiento. Un solo valor para todo. */
+// Días antes del vencimiento en que un documento pasa a "por vencer".
 export const DIAS_POR_VENCER = 30;
 
-/**
- * Estado de un documento y días que faltan para su vencimiento (negativo si ya venció).
- * El estado no se guarda: se calcula con la fecha de hoy en Chile (`hoyEnChile()`). La fecha de
- * vencimiento es el último día válido, así que ese día el documento todavía está "por vencer".
- * La reutilizan las pantallas y el proceso de avisos (JOA-10, sección 3.4).
- */
+// Calcula si el documento está vigente, por vencer o vencido, y cuántos días le quedan.
+// No se guarda en la base: se calcula siempre con la fecha de hoy.
 export function calcularEstado(fechaVencimiento: string, hoy: string) {
   const dias = diasEntre(hoy, fechaVencimiento);
   const estado: EstadoDocumento =
@@ -107,7 +93,7 @@ export function calcularEstado(fechaVencimiento: string, hoy: string) {
   return { estado, dias };
 }
 
-/** El texto que acompaña al estado (JOA-10, sección 3.2). No depende solo del color. */
+// Texto que acompaña al estado, por ejemplo "Vence en 5 días".
 export function describirVencimiento(fechaVencimiento: string, hoy: string) {
   const { estado, dias } = calcularEstado(fechaVencimiento, hoy);
   if (estado === "vigente") return `Vence el ${formatearFecha(fechaVencimiento)}`;
@@ -118,19 +104,14 @@ export function describirVencimiento(fechaVencimiento: string, hoy: string) {
   return `Venció hace ${-dias} días`;
 }
 
-/**
- * Las fechas de vencimiento que corresponden a un estado, para filtrar en la base de datos sin
- * repetir la regla de los 30 días. Las fechas son `AAAA-MM-DD`, así que se comparan como texto.
- */
+// Rango de fechas de cada estado, para filtrar el listado en la base de datos.
 export function rangoDeEstado(estado: EstadoDocumento, hoy: string): { desde?: string; hasta?: string } {
   if (estado === "vencido") return { hasta: sumarDias(hoy, -1) };
   if (estado === "por_vencer") return { desde: hoy, hasta: sumarDias(hoy, DIAS_POR_VENCER) };
   return { desde: sumarDias(hoy, DIAS_POR_VENCER + 1) };
 }
 
-// --- Validación ---------------------------------------------------------------------------
-
-/** Fechas permitidas: de hoy menos 5 años a hoy más 10 años (JOA-10, sección 2). */
+// Fechas de vencimiento permitidas: hasta 5 años atrás y 10 años hacia adelante.
 export function rangoDeFechas(hoy: string) {
   return { minima: sumarAnios(hoy, -5), maxima: sumarAnios(hoy, 10) };
 }
@@ -147,14 +128,13 @@ const MENSAJES = {
   observaciones: "Las observaciones pueden tener hasta 500 caracteres.",
 };
 
-/** Texto vacío o con solo espacios → `null`. */
+// Un texto vacío se guarda como null.
 const opcional = z
   .string()
   .trim()
   .nullish()
   .transform((valor) => valor || null);
 
-/** Los campos que deciden a quién pertenece el documento. */
 const CAMPOS_DEL_DUENO = {
   tipo: z.enum(TIPOS_DOCUMENTO, { error: MENSAJES.tipo }),
   vehiculoId: opcional,
@@ -169,13 +149,12 @@ const CAMPOS_DEL_DUENO = {
 
 type DatosDelDueno = z.infer<z.ZodObject<typeof CAMPOS_DEL_DUENO>>;
 
-/** Exactamente un dueño, que admita el tipo, y la descripción cuando el tipo es "otro". */
+// Un solo dueño por documento, y descripción obligatoria si el tipo es "otro".
 function reglasDelDueno(datos: DatosDelDueno, contexto: z.RefinementCtx) {
   const error = (campo: string, message: string) =>
     contexto.addIssue({ code: "custom", path: [campo], message });
   const duenos = DUENOS_POR_TIPO[datos.tipo];
 
-  // Siempre hay exactamente un dueño, y tiene que ser uno que admite el tipo.
   if (datos.vehiculoId && datos.conductorId) {
     error("dueno", MENSAJES.sinDueno);
   } else if (datos.conductorId && !duenos.includes("conductor")) {
@@ -224,7 +203,7 @@ export function esquemaDocumento(hoy: string) {
 export type DatosDocumento = z.infer<ReturnType<typeof esquemaDocumento>>;
 export type ErroresDocumento = Partial<Record<keyof DatosDocumento | "dueno" | "general", string>>;
 
-/** Valida los datos de un formulario y devuelve un error por campo. `hoy` es `hoyEnChile()`. */
+// Valida el formulario y devuelve un mensaje de error por campo.
 export function validarDocumento(
   datos: unknown,
   hoy: string,
@@ -241,27 +220,22 @@ export function validarDocumento(
   };
   anotar(resultado.error.issues);
 
-  // Zod no ejecuta las reglas del dueño si otro campo ya falló (por ejemplo, la fecha), así que se
-  // revisan aparte para mostrar todos los errores a la vez (JOA-10, sección 4; SIM-12, OBS-01).
+  // Se revisa el dueño aparte para mostrar todos los errores juntos.
   const dueno = esquemaDelDueno.safeParse(datos);
   if (!dueno.success) anotar(dueno.error.issues);
   return { ok: false, errores };
 }
 
-/** El dueño de un documento ya validado. */
 export function tipoDeDueno(datos: Pick<DatosDocumento, "vehiculoId">): TipoDueno {
   return datos.vehiculoId ? "vehiculo" : "conductor";
 }
 
-// --- Mensajes que necesitan datos de la base ----------------------------------------------
-
-/** "No puedes agregar documentos a un vehículo inactivo. Reactívalo primero." */
 export function mensajeDuenoInactivo(dueno: TipoDueno) {
   const quien = dueno === "vehiculo" ? "un vehículo inactivo" : "un conductor inactivo";
   return `No puedes agregar documentos a ${quien}. Reactívalo primero.`;
 }
 
-// Género de cada tipo, para "un SOAP registrado. Edítalo" o "una licencia… registrada. Edítala".
+// Para escribir "un SOAP registrado" o "una licencia registrada".
 const FEMENINO: Record<TipoDocumento, boolean> = {
   revision_tecnica: true,
   soap: false,
@@ -270,11 +244,7 @@ const FEMENINO: Record<TipoDocumento, boolean> = {
   otro: false,
 };
 
-/**
- * "El vehículo BBCD-12 ya tiene un SOAP registrado. Edítalo para renovarlo." o
- * "Pedro Soto ya tiene una licencia de conducir registrada. Edítala para renovarla."
- * `nombreDueno` es la patente con guion o el nombre del conductor.
- */
+// Mensaje cuando el vehículo o conductor ya tiene ese documento.
 export function mensajeRepetido(tipo: TipoDocumento, dueno: TipoDueno, nombreDueno: string) {
   const femenino = FEMENINO[tipo];
   const etiqueta = tipo === "soap" ? "SOAP" : ETIQUETA_TIPO_DOCUMENTO[tipo].toLowerCase();

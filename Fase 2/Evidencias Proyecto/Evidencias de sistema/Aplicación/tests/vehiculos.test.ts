@@ -7,8 +7,6 @@ import {
   validarVehiculo,
 } from "../src/lib/vehiculos.ts";
 
-// Casos tomados de JOA-01, secciones 3.1, 4 y 6.
-
 const valido = {
   patente: "FGHJ-34",
   tipo: "van",

@@ -14,23 +14,20 @@ import {
 import { cerrarSesion } from "./login/acciones";
 import { Logo } from "./logo";
 
-/**
- * Menú principal: lateral en computador y desplegable en celular, con la empresa de la sesión
- * y el cierre de sesión. Sin sesión no muestra nada.
- */
+// Menú principal: lateral en computador y desplegable en celular. Sin sesión no se muestra.
 export async function MenuSesion() {
   let usuario: UsuarioDeLaSesion | null = null;
   try {
     usuario = await usuarioDeLaSesion();
   } catch (error) {
-    // Si falla la base de datos o la configuración, la página muestra su propio error.
+    // Si falla la base de datos, la página muestra su propio error.
     unstable_rethrow(error);
   }
   if (!usuario) return null;
 
   return (
     <>
-      {/* Celular: la marca y un botón "Menú" que despliega las mismas opciones. */}
+      {/* Celular */}
       <header className="relative flex items-center justify-between border-b border-stone-200 bg-stone-100 px-4 py-3 md:hidden">
         <Marca />
         <details className="group">
@@ -45,7 +42,7 @@ export async function MenuSesion() {
         </details>
       </header>
 
-      {/* Computador: menú lateral fijo a la izquierda. */}
+      {/* Computador */}
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-stone-200 bg-stone-100 px-4 py-6 md:flex">
         <Marca />
         <div className="mt-8 flex-1">

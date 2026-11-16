@@ -8,8 +8,7 @@ import {
 } from "../src/lib/documentos-filtros.ts";
 import { fichaDelDueno, nombreDelDocumento } from "../src/lib/documentos.ts";
 
-// Filtros del listado de documentos y de la ficha (JOA-10, secciones 2, 3.4 y 4).
-// Como en los ejemplos de JOA-10, hoy es 01-12-2026 en Chile.
+// En estas pruebas hoy es 01-12-2026 en Chile.
 
 const HOY = "2026-12-01";
 const EMPRESA = "a0000000-0000-4000-8000-000000000001";

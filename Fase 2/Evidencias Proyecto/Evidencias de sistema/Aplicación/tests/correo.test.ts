@@ -2,8 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { enviadorResend, REMITENTE_DE_PRUEBA, type MensajeCorreo } from "../src/lib/correo.ts";
 
-// El envío con Resend se prueba sin llamar a Resend: una función reemplaza a fetch y guarda
-// lo que se habría enviado. La clave es inventada.
+// Se prueba sin llamar a Resend: una función reemplaza a fetch y guarda lo que se habría enviado.
 
 const MENSAJE: MensajeCorreo = {
   para: "contacto@cordillera.example",

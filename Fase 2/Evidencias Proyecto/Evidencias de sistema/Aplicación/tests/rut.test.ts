@@ -8,8 +8,6 @@ import {
   tieneFormatoDeRut,
 } from "../src/lib/rut.ts";
 
-// Casos tomados de JOA-09, secciones 3.1 y 5. Solo RUT ficticios (dígitos repetidos).
-
 test("normaliza puntos, espacios, guion y la k minúscula", () => {
   assert.equal(normalizarRut("11.111.111-1"), "11111111-1");
   assert.equal(normalizarRut("22.222.222-2"), "22222222-2");

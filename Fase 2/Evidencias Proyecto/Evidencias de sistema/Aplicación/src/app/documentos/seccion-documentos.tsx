@@ -17,16 +17,13 @@ const MENSAJES = new Map([
   ["documento-actualizado", "Los cambios del documento se guardaron."],
 ]);
 
-/** El mensaje de confirmación al volver a la ficha después de guardar un documento. */
+// Mensaje al volver a la ficha después de guardar un documento.
 export function mensajeDeDocumento(valor: string | string[] | undefined) {
   const texto = Array.isArray(valor) ? valor[0] : valor;
   return texto ? MENSAJES.get(texto) : undefined;
 }
 
-/**
- * La sección "Documentos" de la ficha de un vehículo o conductor (JOA-10, sección 4). "Agregar
- * documento" abre el formulario con este dueño elegido y no aparece si el dueño está inactivo.
- */
+// Sección "Documentos" en la ficha de un vehículo o conductor.
 export async function SeccionDocumentos({ dueno }: { dueno: DuenoDocumento }) {
   const documentos = await documentosDe(dueno);
   const hoy = hoyEnChile();
@@ -65,10 +62,7 @@ export async function SeccionDocumentos({ dueno }: { dueno: DuenoDocumento }) {
   );
 }
 
-/**
- * Los documentos de un dueño con su estado y "Editar", que vuelve a la ficha de ese dueño.
- * La usan esta sección y la del conductor asignado en la ficha del vehículo (PB-24).
- */
+// Lista de documentos con su estado y botón "Editar".
 export function ListaDocumentos({ documentos, hoy }: { documentos: Documento[]; hoy: string }) {
   return (
     <ul className="mt-3 divide-y divide-stone-100">

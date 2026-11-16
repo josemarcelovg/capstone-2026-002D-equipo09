@@ -2,9 +2,7 @@ import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Prisma, PrismaClient } from "../src/generated/prisma/client.ts";
 
-// Comprobación de JOS-02 contra la base de datos real (después de migrar y ejecutar el seed).
-// Crea y consulta vehículos de la empresa de prueba dentro de una transacción que al final
-// se deshace, así que no deja datos nuevos. La salida sirve como evidencia para el PR.
+// Prueba rápida contra la base real. Todo se hace en una transacción que al final se deshace.
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DIRECT_URL }),
@@ -73,7 +71,6 @@ async function main() {
       if (!(error instanceof Deshacer)) throw error;
     });
 
-  // Fuera de la transacción: el intento falla y no crea nada.
   try {
     await prisma.vehiculo.create({
       data: {

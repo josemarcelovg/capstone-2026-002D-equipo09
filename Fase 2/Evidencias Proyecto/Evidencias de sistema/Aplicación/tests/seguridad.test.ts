@@ -3,8 +3,6 @@ import { test } from "node:test";
 import nextConfig from "../next.config.ts";
 import { ENCABEZADOS_DE_SEGURIDAD, POLITICA_DE_CONTENIDO } from "../src/lib/seguridad.ts";
 
-// Encabezados HTTP de seguridad (src/lib/seguridad.ts), SIM-04 CP-SEG-14.
-
 const valor = (nombre: string) => ENCABEZADOS_DE_SEGURIDAD.find(({ key }) => key === nombre)?.value;
 
 test("ningún otro sitio puede mostrar la aplicación dentro de un iframe", () => {

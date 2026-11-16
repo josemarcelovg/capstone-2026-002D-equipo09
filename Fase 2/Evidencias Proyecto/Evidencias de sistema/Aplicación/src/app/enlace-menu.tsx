@@ -4,10 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { MouseEvent, ReactNode } from "react";
 
-/**
- * Enlace del menú principal. Marca la sección en la que se está (`aria-current="page"`) y,
- * en el celular, cierra el menú desplegable al elegir una opción.
- */
+// Enlace del menú. Marca la sección actual y cierra el menú en el celular.
 export function EnlaceMenu({ href, children }: { href: string; children: ReactNode }) {
   const ruta = usePathname();
   const activo = ruta === href || ruta.startsWith(`${href}/`);

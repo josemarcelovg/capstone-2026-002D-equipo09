@@ -18,15 +18,12 @@ import {
 
 const NO_ENCONTRADO = "No encontramos el vehículo. Vuelve al listado.";
 
-/**
- * Registra un vehículo (`id` nulo) o guarda los cambios de uno existente.
- * Si todo sale bien vuelve al listado; si no, devuelve un error por campo.
- */
+// Registra un vehículo nuevo o guarda los cambios de uno existente.
 export async function guardarVehiculo(
   id: string | null,
   formulario: FormData,
 ): Promise<ErroresVehiculo> {
-  // Las acciones del servidor se pueden llamar con cualquier dato, no solo desde el formulario.
+  // Revisa que los datos tengan la forma esperada, por si llaman la acción sin el formulario.
   if (!(formulario instanceof FormData) || (id !== null && typeof id !== "string")) {
     return { general: NO_ENCONTRADO };
   }
@@ -38,7 +35,7 @@ export async function guardarVehiculo(
     if (id) {
       const actual = await obtenerVehiculo(id);
       if (!actual) return { general: NO_ENCONTRADO };
-      // Desactivar y reactivar solo con su botón, que pide confirmación (JOA-01, sección 4).
+      // Para desactivar o reactivar se usa su botón, que pide confirmación.
       if (actual.estado === "inactivo") datos.estado = "inactivo";
       else if (datos.estado === "inactivo") {
         return { estado: "Para desactivar el vehículo usa el botón «Desactivar vehículo»." };
@@ -48,7 +45,7 @@ export async function guardarVehiculo(
       await crearVehiculo(datos);
     }
   } catch (error) {
-    // Sin sesión, empresaDeLaSesion() redirige al login (SIM-02): esa redirección no es un error.
+    // Si no hay sesión, se deja pasar la redirección al login.
     unstable_rethrow(error);
     if (error instanceof PatenteDuplicadaError) {
       return {
@@ -64,12 +61,8 @@ export async function guardarVehiculo(
   redirect(`/vehiculos?mensaje=${id ? "actualizado" : "creado"}`);
 }
 
-/**
- * Desactiva (`activar` falso) o reactiva un vehículo. Nunca se elimina.
- * Si algo falla devuelve el mensaje para mostrar.
- */
+// Desactiva o reactiva un vehículo. Nunca se borra.
 export async function cambiarActivacion(id: string, activar: boolean) {
-  // Las acciones del servidor se pueden llamar con cualquier dato: solo `true` reactiva.
   if (typeof id !== "string") redirect("/vehiculos");
   const reactivar = activar === true;
   let vehiculo;

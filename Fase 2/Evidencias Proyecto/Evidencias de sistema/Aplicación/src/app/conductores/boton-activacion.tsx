@@ -5,10 +5,7 @@ import { useState, useTransition } from "react";
 import { llamarAlServidor, SIN_CONEXION } from "@/lib/guardado";
 import { cambiarActivacion } from "./acciones";
 
-/**
- * Desactiva (pidiendo confirmación) o reactiva un conductor. Si tiene vehículos asignados, la
- * confirmación avisa que quedarán sin conductor (PB-24, criterio 4).
- */
+// Botón para desactivar (con confirmación) o reactivar un conductor.
 export function BotonActivacion({
   id,
   nombre,

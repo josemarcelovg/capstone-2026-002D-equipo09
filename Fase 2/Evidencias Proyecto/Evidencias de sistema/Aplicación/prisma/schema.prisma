@@ -1,13 +1,9 @@
-// Modelo de datos de MicroLogist (JOS-02), según JOA-01 secciones 2.2 y 3.
-// En el código los campos van en camelCase; en la base de datos, las tablas
-// y columnas quedan en snake_case (@map / @@map), como en JOA-01.
+// Modelo de datos de MicroLogist. En el código los campos van en camelCase y en la base en snake_case.
 
-// El cliente se genera dentro de la aplicación (src/generated/prisma). Las migraciones
-// están en la carpeta «Base de datos» (ver prisma.config.ts).
+// Las migraciones están en la carpeta «Base de datos» (ver prisma.config.ts).
 generator client {
   provider        = "prisma-client"
   output          = "../src/generated/prisma"
-  /// Para los índices únicos parciales de documento (un documento por dueño y tipo).
   previewFeatures = ["partialIndexes"]
 }
 
@@ -57,13 +53,13 @@ enum EstadoAviso {
   @@map("estado_aviso")
 }
 
-/// Los datos cuelgan de la empresa y no del usuario (JOA-01, 2.1).
+/// Todos los datos pertenecen a una empresa.
 model Empresa {
   id            String   @id @default(uuid()) @db.Uuid
   nombre        String   @db.VarChar(100)
-  /// Opcional por ahora; único si se ingresa. [POR CONFIRMAR] si será obligatorio.
+  /// Opcional, pero no se puede repetir entre empresas.
   rut           String?  @unique @db.VarChar(12)
-  /// Recibirá los avisos de vencimiento.
+  /// Recibe los avisos de vencimiento.
   emailContacto String   @map("email_contacto") @db.VarChar(254)
   telefono      String?  @db.VarChar(20)
   createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
@@ -78,9 +74,9 @@ model Empresa {
   @@map("empresa")
 }
 
-/// Perfil del usuario. La contraseña la maneja Supabase Auth, no esta tabla.
+/// Perfil del usuario. La contraseña la guarda Supabase Auth, no esta tabla.
 model Usuario {
-  /// El mismo id del usuario en Supabase Auth (auth.users.id), por eso no se genera aquí.
+  /// Mismo id que el usuario en Supabase Auth.
   id        String   @id @db.Uuid
   empresaId String   @map("empresa_id") @db.Uuid
   nombre    String   @db.VarChar(100)
@@ -97,7 +93,7 @@ model Usuario {
 model Vehiculo {
   id                 String         @id @default(uuid()) @db.Uuid
   empresaId          String         @map("empresa_id") @db.Uuid
-  /// Normalizada: mayúsculas, sin espacios, guiones ni puntos (BBCD12 o AB1234).
+  /// Sin espacios ni guiones: BBCD12 o AB1234.
   patente            String         @db.VarChar(6)
   tipo               TipoVehiculo
   marca              String         @db.VarChar(50)
@@ -108,113 +104,95 @@ model Vehiculo {
   color              String?        @db.VarChar(30)
   estado             EstadoVehiculo @default(activo)
   observaciones      String?        @db.VarChar(500)
-  /// Conductor habitual del vehículo (PB-24), sin fecha ni jornada: no es un turno. Opcional.
-  /// Un conductor puede tener varios vehículos; al desactivarlo, sus vehículos quedan sin conductor.
+  /// Conductor habitual del vehículo (opcional).
   conductorId        String?        @map("conductor_id") @db.Uuid
   createdAt          DateTime       @default(now()) @map("created_at") @db.Timestamptz
   updatedAt          DateTime       @updatedAt @map("updated_at") @db.Timestamptz
 
   empresa    Empresa     @relation(fields: [empresaId], references: [id])
-  /// Clave foránea compuesta: el conductor tiene que ser de la misma empresa (JOS-04, sección 4).
+  /// El conductor tiene que ser de la misma empresa.
   conductor  Conductor?  @relation(fields: [conductorId, empresaId], references: [id, empresaId], onDelete: Restrict, onUpdate: Restrict)
   documentos Documento[]
 
-  /// Una patente no se repite dentro de la misma empresa, incluidos los inactivos.
-  /// Otra empresa sí puede tenerla (JOA-01, 3.1).
+  /// La patente no se repite dentro de una empresa, pero otra empresa sí puede tenerla.
   @@unique([empresaId, patente])
-  /// Para los vehículos asignados en la ficha del conductor.
   @@index([conductorId])
-  /// Destino de las claves foráneas compuestas de documentos y turnos (JOS-04, sección 4).
   @@unique([id, empresaId])
   @@map("vehiculo")
 }
 
-/// El conductor es un registro, no una cuenta: no inicia sesión (JOA-09, sección 1).
+/// El conductor es un registro, no inicia sesión.
 model Conductor {
   id        String   @id @default(uuid()) @db.Uuid
   empresaId String   @map("empresa_id") @db.Uuid
-  /// Nombre completo, con los espacios normalizados.
   nombre    String   @db.VarChar(100)
-  /// Normalizado como 12345678-9 (sin puntos, K mayúscula), con dígito verificador válido.
+  /// Formato 12345678-9.
   rut       String   @db.VarChar(10)
-  /// Normalizado como +56 seguido de 9 dígitos.
+  /// Formato +56 y 9 dígitos.
   telefono  String   @db.VarChar(12)
   email     String?  @db.VarChar(254)
-  /// No se elimina: se desactiva y se puede reactivar (JOA-09, sección 3.3).
+  /// No se borra: se desactiva.
   activo    Boolean  @default(true)
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
 
   empresa            Empresa     @relation(fields: [empresaId], references: [id])
   documentos         Documento[]
-  /// Los vehículos de los que es el conductor habitual (PB-24).
   vehiculosAsignados Vehiculo[]
 
-  /// Un RUT no se repite dentro de la misma empresa, incluidos los inactivos.
-  /// Otra empresa sí puede tenerlo (JOA-09, sección 2).
+  /// El RUT no se repite dentro de una empresa, pero otra empresa sí puede tenerlo.
   @@unique([empresaId, rut])
-  /// Destino de las claves foráneas compuestas de documentos, turnos y vehículos (JOS-04, sección 4).
   @@unique([id, empresaId])
   @@map("conductor")
 }
 
-/// Pertenece a un vehículo o a un conductor, nunca a ambos (JOA-10, sección 2).
-/// El estado (vigente, por vencer, vencido) no se guarda: se calcula en src/lib/documentos.ts.
-/// No se elimina ni guarda historial: renovar es editar la fecha (PB-13).
-/// La migración agrega a mano las reglas CHECK de un solo dueño, tipo según el dueño
-/// y descripción obligatoria para "otro".
+/// Pertenece a un vehículo o a un conductor, nunca a los dos. El estado no se guarda: se calcula
+/// con la fecha de vencimiento. Renovar un documento es editar su fecha.
 model Documento {
   id               String        @id @default(uuid()) @db.Uuid
   empresaId        String        @map("empresa_id") @db.Uuid
   tipo             TipoDocumento
-  /// Obligatoria cuando el tipo es "otro"; en los demás, opcional (por ejemplo, la clase de la licencia).
+  /// Obligatoria si el tipo es "otro".
   descripcion      String?       @db.VarChar(100)
   vehiculoId       String?       @map("vehiculo_id") @db.Uuid
   conductorId      String?       @map("conductor_id") @db.Uuid
-  /// Último día válido del documento.
+  /// Último día válido.
   fechaVencimiento DateTime      @map("fecha_vencimiento") @db.Date
   observaciones    String?       @db.VarChar(500)
   createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz
   updatedAt        DateTime      @updatedAt @map("updated_at") @db.Timestamptz
 
   empresa   Empresa        @relation(fields: [empresaId], references: [id])
-  /// Claves foráneas compuestas: el dueño tiene que ser de la misma empresa (JOS-04, sección 4).
+  /// El dueño tiene que ser de la misma empresa.
   vehiculo  Vehiculo?      @relation(fields: [vehiculoId, empresaId], references: [id, empresaId], onDelete: Restrict, onUpdate: Restrict)
   conductor Conductor?     @relation(fields: [conductorId, empresaId], references: [id, empresaId], onDelete: Restrict, onUpdate: Restrict)
   avisos    AvisoEnviado[]
 
-  /// Un vehículo tiene un solo SOAP, revisión técnica y permiso de circulación, y un conductor
-  /// una sola licencia. Los de tipo "otro" no tienen límite (JOA-10, sección 2).
+  /// Un vehículo o conductor tiene uno solo de cada tipo, salvo "otro".
   @@unique([vehiculoId, tipo], map: "documento_vehiculo_id_tipo_key", where: raw("tipo <> 'otro'"))
   @@unique([conductorId, tipo], map: "documento_conductor_id_tipo_key", where: raw("tipo <> 'otro'"))
   @@unique([id, empresaId])
-  /// Para el listado general y el proceso de avisos.
   @@index([empresaId, fechaVencimiento])
   @@index([vehiculoId])
   @@index([conductorId])
   @@map("documento")
 }
 
-/// Registro de cada aviso por correo (JOA-13, sección 3.3). Primero se registra la fila y
-/// después se envía el correo, así que la restricción única impide mandar dos veces el mismo
-/// aviso, aunque el proceso diario corra de nuevo. Los fallidos se reintentan al día siguiente.
-/// La migración agrega a mano la regla CHECK de los plazos.
+/// Registro de los avisos enviados, para no mandar dos veces el mismo.
 model AvisoEnviado {
   id               String      @id @default(uuid()) @db.Uuid
   empresaId        String      @map("empresa_id") @db.Uuid
   documentoId      String      @map("documento_id") @db.Uuid
-  /// La que tenía el documento al avisar: si se renueva, sus avisos empiezan de cero.
+  /// Si el documento se renueva, sus avisos empiezan de cero.
   fechaVencimiento DateTime    @map("fecha_vencimiento") @db.Date
-  /// 30, 7 o 1 días antes, o 0 (el día del vencimiento).
+  /// 30, 7, 1 o 0 días antes del vencimiento.
   diasAnticipacion Int         @map("dias_anticipacion") @db.SmallInt
-  /// Correo de contacto de la empresa al que se envió.
   destinatario     String      @db.VarChar(254)
   estado           EstadoAviso
-  /// Fecha y hora del último intento.
+  /// Último intento de envío.
   enviadoEn        DateTime    @map("enviado_en") @db.Timestamptz
 
   empresa   Empresa   @relation(fields: [empresaId], references: [id])
-  /// Clave foránea compuesta: el documento tiene que ser de la misma empresa (JOS-04, sección 4).
   documento Documento @relation(fields: [documentoId, empresaId], references: [id, empresaId], onDelete: Restrict, onUpdate: Restrict)
 
   @@unique([documentoId, fechaVencimiento, diasAnticipacion])
