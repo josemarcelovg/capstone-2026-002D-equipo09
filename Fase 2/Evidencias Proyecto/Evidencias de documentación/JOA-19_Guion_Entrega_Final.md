@@ -5,8 +5,8 @@
 | **Tarea** | [JOA-19] Validar la entrega final y preparar la demostración |
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Revisión** | José Vargas (datos y despliegue) y Simón Jofré (pruebas y avisos) |
-| **Estado** | Propuesta: falta el despliegue, ensayar el guion con el equipo y las pruebas pendientes de la sección 2 |
-| **Fecha** | 04-11-2026 |
+| **Estado** | Propuesta: el alcance está terminado y probado; faltan preparar los datos de producción (sección 3.7) y ensayar el guion con el equipo |
+| **Fecha** | 04-11-2026 · actualizado el 15-11-2026 (estado del alcance, diseño nuevo, correo de avisos y datos de producción) |
 
 Este documento hace para la entrega final de la semana 15 lo mismo que [JOA-03](JOA-03_Validacion_Primera_Entrega.md) hizo para la primera: comprobar que se cumple el alcance aprobado en la [sección 2 de JOA-08](JOA-08_Product_Backlog.md) (PR #50) y guiar la demostración para la profesora. Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -25,18 +25,19 @@ Este documento hace para la entrega final de la semana 15 lo mismo que [JOA-03](
 
 ## 2. Estado del alcance
 
-Estado real al 04-11-2026, según la sección 2 de JOA-08.
+Estado real al 15-11-2026, según la sección 2 de JOA-08. Todos los ítems del alcance están terminados.
 
 | Ítem | Código | Pruebas | Qué falta |
 |---|---|---|---|
 | Primera entrega (PB-01 a PB-07) | ✅ | ✅ [SIM-03](SIM-03_Pruebas_Primera_Entrega.md): 14 de 14 | — |
 | Conductores (PB-08 a PB-10) | ✅ | ✅ [SIM-08](SIM-08_Pruebas_Conductores.md): 14 de 14 | — |
-| Documentos (PB-11 a PB-13), con su sección en las fichas | ✅ PR #48, #53 y #56 | ⏳ Probados en local en el PR #56 | CP-FUN-23 a CP-FUN-25 con Supabase ([SIM-04](SIM-04_Plan_de_Pruebas.md)) |
-| Conductor asignado al vehículo (PB-24) | ✅ PR #57 | ⏳ Probado en local en el PR #57, más 2 pruebas de integración | Sus casos en SIM-04 |
-| Datos de contacto de la empresa (PB-14) | ✅ PR #44 | ⏳ Pruebas unitarias | CP-FUN-26 |
-| Avisos por correo (PB-15 y PB-16) | ✅ PR #55 | ⏳ Reglas en `tests/avisos.test.ts`; CP-INT-23 ✅ | Cuenta de Resend y un envío real (CP-FUN-27 y CP-FUN-28, [SIM-11](SIM-11_Alertas_por_Correo.md)) |
-| Despliegue en Vercel (SIM-10) | ✅ Guía en el PR #54; publicada en `https://micrologist-equipo09.vercel.app` (PR #60) | ✅ Responde el inicio de sesión y `/api/avisos` exige la clave (05-11-2026) | Desplegar con la GitHub Action, como pidió la profesora: cargar sus secretos y desconectar Git en Vercel (SIM-10, secciones 4.3 y 4.5) |
-| Migraciones en Supabase | — | — | `npm run db:deploy` en desarrollo y producción: `documentos`, `avisos` y `conductor_asignado` |
+| Documentos (PB-11 a PB-13), con su sección en las fichas | ✅ PR #48, #53 y #56 | ✅ CP-FUN-23 a CP-FUN-25: 15 de 15 criterios de JOA-10 ([SIM-12](SIM-12_Pruebas_Documentos_Empresa_y_Conductor.md)) | — |
+| Conductor asignado al vehículo (PB-24) | ✅ PR #57 | ✅ CP-FUN-33: 5 de 5 (SIM-12) | — |
+| Datos de contacto de la empresa (PB-14) | ✅ PR #44 | ✅ CP-FUN-26 (SIM-12) | — |
+| Avisos por correo (PB-15 y PB-16) | ✅ PR #55, #74 y #94 (correo con el diseño de la aplicación) | ✅ CP-INT-23 a CP-INT-34, y CP-FUN-27 y CP-FUN-28 con un envío real el 15-11-2026 ([SIM-11](SIM-11_Alertas_por_Correo.md), sección 5) | — |
+| Diseño de la aplicación (JOS-13) | ✅ PR #82 y #84: menú lateral, logo y colores naranjos | ✅ Revisado en producción | — |
+| Despliegue en Vercel (SIM-10) | ✅ La GitHub Action prueba y publica en `https://micrologist-equipo09.vercel.app` en cada push a `main` (PR #62 y #71) | ✅ Cada PR pasa "Lint, tipos y pruebas" y "Despliegue en Vercel" | — |
+| Migraciones en Supabase | ✅ Las cinco, también `conductor_asignado` | ✅ Revisado en producción el 15-11-2026 | — |
 
 Turnos (PB-17 a PB-19), resumen de la flota (PB-20) e ingresos (PB-21 a PB-23) quedan fuera de esta entrega (JOA-08, sección 2).
 
@@ -49,9 +50,11 @@ Turnos (PB-17 a PB-19), resumen de la flota (PB-20) e ingresos (PB-21 a PB-23) q
 - [ ] Actualizar `main` y seguir el README: `npm install`, `npm run db:deploy`, `npm run db:seed` y `npm run db:comprobar`, en desarrollo y en producción (SIM-10, sección 4.2).
 - [ ] `npm run build`, `npm run lint` y `npm test` terminan sin errores (Definition of Done, sección 3.1).
 - [ ] Que la última ejecución de la GitHub Action en `main` esté en verde y haya publicado en producción (SIM-10, sección 4.5).
-- [ ] Cuenta de Resend y variables `RESEND_API_KEY`, `CORREO_REMITENTE` y `CRON_SECRET` en Vercel (SIM-11, sección 3).
-- [ ] En **Mi empresa** de las dos empresas, cambiar el correo de contacto al correo de la cuenta de Resend y aceptar la confirmación: sin dominio propio, el plan gratis solo envía a los correos verificados (SIM-11, sección 3). Los dos correos llegan a la misma bandeja, cada uno con el nombre de su empresa.
-- [ ] En producción, en **D − 1 después de las 09:00**, registrar los documentos de la sección 3.3 con las fechas calculadas desde D. Así el proceso de esa mañana ya pasó y el primero que los avisa es el de la mañana de D.
+- [x] Cuenta de Resend y variables `RESEND_API_KEY`, `CORREO_REMITENTE`, `CRON_SECRET` y `URL_PUBLICA` en Vercel (SIM-11, sección 3). Probado con un envío real el 15-11-2026.
+- [ ] En **Mi empresa** de las dos empresas, dejar como correo de contacto el de la cuenta de Resend y aceptar la confirmación: sin dominio propio, el plan gratis solo envía a los correos verificados (SIM-11, sección 3). La Empresa A ya lo tiene; falta la Empresa B. Los dos correos llegan a la misma bandeja, cada uno con el nombre de su empresa.
+- [ ] Dejar los datos de producción como los espera el guion (sección 3.7).
+- [ ] En producción, en **D − 1 después de las 09:00**, registrar o editar los documentos de la sección 3.3 con las fechas calculadas desde D. Así el proceso de esa mañana ya pasó y el primero que los avisa es el de la mañana de D.
+- [ ] En la mañana de D, revisar también la carpeta de spam: el remitente de prueba de Resend puede caer ahí (SIM-11, sección 6). Si pasa, marcarlo como "No es spam".
 - [ ] Ensayar el guion completo con el equipo al menos una vez, en desarrollo (sección 3.5).
 
 ### 3.2 Datos de prueba
@@ -67,7 +70,7 @@ Son los del seed (`Aplicación/prisma/seed.ts`): dos empresas ficticias, sin dat
 
 ### 3.3 Documentos para la demo
 
-El seed no trae documentos, porque su estado depende del día. Se registran desde la aplicación en D − 1 (sección 3.1). La columna "Ejemplo" usa D = 18-11-2026 **[POR CONFIRMAR]**.
+El seed no trae documentos, porque su estado depende del día. Se registran desde la aplicación en D − 1 (sección 3.1). En producción, la licencia de Pedro Soto y la revisión técnica de FGHJ-34 salen de documentos que ya existen, editándolos (sección 3.7): como no existe eliminar, registrarlos de nuevo daría el mensaje de repetido. La columna "Ejemplo" usa D = 18-11-2026 **[POR CONFIRMAR]**.
 
 | Empresa | Documento | Dueño | Vence | Ejemplo | En la demo |
 |---|---|---|---|---|---|
@@ -96,6 +99,20 @@ El documento de XY-4321 se registra mientras el vehículo está activo: reactiva
 
 Una cuenta por empresa en Supabase Auth, con su perfil en `usuario` ([SIM-02](SIM-02_Inicio_de_Sesion.md), secciones 5 y 6.3). Las de producción tienen contraseñas propias (SIM-10, sección 4.2). Las contraseñas se comparten por un canal privado del equipo y no se escriben en el repositorio.
 
+### 3.7 Datos de producción después de la prueba del 15-11-2026
+
+La prueba del envío real (SIM-11, sección 5) dejó en la Empresa A datos que no están en el seed. No se pueden eliminar, así que antes de D − 1 se dejan así, desde la aplicación y con la cuenta de la Empresa A:
+
+| Qué hay hoy | Qué hacer | Para qué |
+|---|---|---|
+| El nombre de la empresa es "Transportes Cordillera" | En **Mi empresa**, volver a "Transportes Cordillera (ficticia)" | El saludo del correo del paso 19 |
+| BBDD23, un vehículo de prueba con Pedro Soto asignado, una revisión técnica vencida y un SOAP | Editarlo con "Sin conductor asignado" y después **Desactivar vehículo** | Sus documentos dejan de verse y de avisar, y la ficha de Pedro Soto muestra solo BBCD-12 (paso 7) |
+| BBCD-12 con María Muñoz asignada | Editarlo con "Sin conductor asignado" | El paso 4 parte sin conductor |
+| Una revisión técnica de BBCD-12, "Revisión técnica (aa)", que vence el 29-03-2032 | Editarla: pasarla a FGHJ-34, con vencimiento D + 90 y sin la descripción "aa" | Queda como la revisión técnica vigente de FGHJ-34 de la sección 3.3, y BBCD-12 solo con su permiso (paso 6) |
+| La licencia de Pedro Soto, que vence el 18-11-2026 | Si D no es el 18-11-2026, editar la fecha a D | Es la licencia de la sección 3.3 |
+
+Después de esto, la Empresa A queda con los vehículos y conductores del seed (sección 3.2) más BBDD23 inactivo, que solo aparece con «Incluir inactivos».
+
 ---
 
 ## 4. Guion de la demostración
@@ -107,7 +124,7 @@ La última columna indica el criterio: **JOA-10 · n** son los de la sección 6 
 | Paso | Qué se hace | Qué debe verse | Criterio |
 |---|---|---|---|
 | 1 | Abrir la dirección de Vercel sin sesión. | Redirige al inicio de sesión. | PB-01 · 3 |
-| 2 | Entrar con la cuenta de la Empresa A. | Listado de vehículos: BBCD-12, FGHJ-34 y HJKL-78. El menú tiene Vehículos, Conductores y Documentos. | PB-01 · 1 |
+| 2 | Entrar con la cuenta de la Empresa A. | Listado de vehículos: BBCD-12, FGHJ-34 y HJKL-78, con una barra de color según su estado. El menú lateral tiene Vehículos, Conductores, Documentos y Mi empresa; abajo, el nombre de la empresa y "Cerrar sesión". | PB-01 · 1 |
 | 3 | Abrir **Conductores**. | Pedro Soto y María Muñoz; Luis Rojas no aparece porque está inactivo. | PB-09 |
 
 ### 4.2 Conductor asignado (2 minutos)
@@ -125,7 +142,7 @@ La última columna indica el criterio: **JOA-10 · n** son los de la sección 6 
 |---|---|---|---|
 | 8 | Abrir **Documentos**. | Ordenados por vencimiento: revisión técnica de HJKL-78 ("Vencido · Venció hace 10 días"), licencia de Pedro Soto ("Vence hoy"), permiso de BBCD-12 ("Vence en 7 días") y revisión técnica de FGHJ-34 ("Vigente"). El permiso de XY-4321 no aparece. | JOA-10 · 5, 7, 8 |
 | 9 | Filtrar por "Por vencer". Luego por tipo "Revisión técnica" con estado "Todos". | Primero la licencia y el permiso; después las dos revisiones técnicas. | JOA-10 · 7 |
-| 10 | Marcar "Incluir inactivos" y filtrar. | Aparece el permiso de XY-4321 con la marca "(inactivo)". | JOA-10 · 8 |
+| 10 | Marcar "Incluir inactivos" y filtrar. | Aparece el permiso de XY-4321 con la marca "(inactivo)". En producción aparecen también los dos documentos de BBDD23, el vehículo de la prueba del 15-11-2026 (sección 3.7). | JOA-10 · 8 |
 | 11 | Volver a la ficha de BBCD-12 y presionar **Agregar documento**. | El formulario llega con BBCD-12 elegido y solo con los tipos de un vehículo (sin licencia). | JOA-10 · 9 |
 | 12 | Enviar el formulario vacío. Luego escribir la fecha `01-12-2062`. | "Selecciona el tipo de documento." e "Ingresa la fecha de vencimiento (DD-MM-AAAA)."; con la fecha, "La fecha debe estar entre …" con el rango calculado desde hoy. No se guarda nada. | JOA-10 · 2, 4 |
 | 13 | Registrar el SOAP con la fecha de la sección 3.4. | Vuelve a la ficha con "Documento registrado correctamente." y el SOAP "Por vencer · Vence en 30 días". | JOA-10 · 1, 5 |
@@ -136,7 +153,7 @@ La última columna indica el criterio: **JOA-10 · n** son los de la sección 6 
 
 | Paso | Qué se hace | Qué debe verse | Criterio |
 |---|---|---|---|
-| 16 | Hacer clic en el nombre de la empresa, en el encabezado. | **Mi empresa** con nombre, correo de contacto, teléfono y RUT. | PB-14 · 1 |
+| 16 | En el menú lateral, abrir **Mi empresa**. | **Mi empresa** con nombre, correo de contacto, teléfono y RUT. | PB-14 · 1 |
 | 17 | Borrar el correo de contacto y guardar. | "Ingresa un correo válido." No se guarda. | PB-14 · 2 |
 | 18 | Volver a escribir el mismo correo y cambiar el teléfono. Guardar. | "Los datos de tu empresa se guardaron." Ese correo es el que recibe los avisos (JOA-13, sección 2). | PB-14 · 1, 3 |
 
@@ -144,8 +161,8 @@ La última columna indica el criterio: **JOA-10 · n** son los de la sección 6 
 
 | Paso | Qué se hace | Qué debe verse | Criterio |
 |---|---|---|---|
-| 19 | Abrir la bandeja de la cuenta de Resend. | Dos correos de la mañana. El de la Empresa A ("MicroLogist: documentos que vencen hoy", "Hola, Transportes Cordillera (ficticia):") trae la licencia de Pedro Soto ("Vence hoy") y el permiso de BBCD-12 ("Vence en 7 días"). No trae la revisión vencida, la vigente ni el permiso de XY-4321. El de la Empresa B ("MicroLogist: 1 documento por vencer") trae solo su SOAP. | JOA-13 · 1, 2, 4, 6, 7 |
-| 20 | Ejecutar el proceso a mano: Vercel > **Settings > Cron Jobs** > ejecutar (o el comando de SIM-11, sección 4). | Llega un solo correo nuevo, "MicroLogist: 1 documento por vencer", con el SOAP del paso 13 ("Vence en 30 días"). Los avisos de la mañana no se repiten. | JOA-13 · 1, 4, 9 |
+| 19 | Abrir la bandeja de la cuenta de Resend. | Dos correos de la mañana, de "MicroLogist", con la franja naranja y el botón «Ver documentos». El de la Empresa A (asunto "MicroLogist: documentos que vencen hoy", título "Documentos que vencen hoy", "Hola, Transportes Cordillera (ficticia):") trae la licencia de Pedro Soto, con la etiqueta roja "Vence hoy", y el permiso de BBCD-12, con la etiqueta amarilla "Vence en 7 días". No trae la revisión vencida, la vigente ni el permiso de XY-4321. El de la Empresa B (asunto "MicroLogist: 1 documento por vencer") trae solo su SOAP. | JOA-13 · 1, 2, 4, 6, 7 |
+| 20 | Ejecutar el proceso a mano: Vercel > **Settings > Cron Jobs** > ejecutar (o el comando de SIM-11, sección 4). | Llega un solo correo nuevo, "MicroLogist: 1 documento por vencer", con el SOAP del paso 13 y la etiqueta naranja "Vence en 30 días". Los avisos de la mañana no se repiten. | JOA-13 · 1, 4, 9 |
 
 Los criterios 3, 5, 8, 10, 11 y 12 de JOA-13 no se muestran en la demo: los cubren las pruebas de SIM-11 y de SIM-04 (CP-FUN-27, CP-FUN-28 y CP-INT-23).
 
@@ -169,7 +186,7 @@ Los criterios 3, 5, 8, 10, 11 y 12 de JOA-13 no se muestran en la demo: los cubr
 
 | Paso | Qué se hace | Qué debe verse | Criterio |
 |---|---|---|---|
-| 27 | En las herramientas del navegador, vista de dispositivo a 360 px. Recorrer **Documentos**, la ficha de BBCD-12 y el formulario de registro. | Los documentos se ven como tarjetas; ninguna pantalla tiene desplazamiento horizontal y el menú pasa a dos líneas sin desbordarse. | JOA-10 · 15; JOA-08 · criterio común 4 |
+| 27 | En las herramientas del navegador, vista de dispositivo a 360 px. Recorrer **Documentos**, la ficha de BBCD-12 y el formulario de registro. | Los documentos se ven como tarjetas; ninguna pantalla tiene desplazamiento horizontal y el menú lateral se reemplaza por el botón «Menú», que despliega las mismas opciones. | JOA-10 · 15; JOA-08 · criterio común 4 |
 
 ### 4.9 Cierre (1 minuto)
 
@@ -179,20 +196,20 @@ Contar lo que queda como trabajo futuro y los próximos pasos (sección 7.1).
 
 ## 5. Matriz de validación
 
-Estado al 04-11-2026. "Desarrollo" quiere decir que se probó en el navegador al construirlo, en local y con una base en memoria (PR #56 y #57); todavía falta la prueba del equipo con Supabase.
+Estado al 15-11-2026. Todos los criterios que muestra el guion tienen su caso de SIM-04 aprobado.
 
 | Criterio | Estado | Evidencia | Paso |
 |---|---|---|---|
-| JOA-10 · 1 a 4 (registro y errores) | ⏳ Desarrollo | PR #56; `tests/documentos.test.ts`; falta CP-FUN-23 | 11 a 14 |
-| JOA-10 · 5 y 6 (estado y hora de Chile) | ⏳ Desarrollo | PR #56; `tests/documentos.test.ts` y `tests/fechas.test.ts` (SIM-09); falta CP-FUN-24 | 6, 8, 13 |
-| JOA-10 · 7 a 10 (listados y fichas) | ⏳ Desarrollo | PR #56; `tests/documentos-filtros.test.ts`; falta CP-FUN-24. El criterio 10 (listado vacío) no se probó | 6 a 11 |
-| JOA-10 · 11 y 12 (renovar y cambiar de dueño) | ⏳ Desarrollo | PR #56; falta CP-FUN-25 | 15 |
-| JOA-10 · 13 y 14 (separación entre empresas) | ⏳ Desarrollo | PR #56, también con el formulario manipulado | 25, 26 |
-| JOA-10 · 15 (celular) | ⏳ Desarrollo | PR #56 | 27 |
-| PB-24 · 1 a 5 | ⏳ Desarrollo | PR #57; 2 pruebas de integración en `tests/integracion/base-de-datos.test.ts`; faltan sus casos en SIM-04 | 4 a 7, 21 a 23 |
-| PB-14 · 1 y 2 | ⏳ Pruebas unitarias | `tests/empresa.test.ts` (PR #44); falta CP-FUN-26 | 16 a 18 |
-| PB-14 · 3 | ✅ Decidido | JOA-13, sección 2: los avisos van al correo de contacto | 18, 19 |
-| JOA-13 · 1 a 11 | ⏳ Reglas | `tests/avisos.test.ts` y `tests/correo.test.ts` (SIM-11); falta un envío real (CP-FUN-27 y CP-FUN-28) | 19, 20 |
+| JOA-10 · 1 a 4 (registro y errores) | ✅ Aprobado | CP-FUN-23 ([SIM-12](SIM-12_Pruebas_Documentos_Empresa_y_Conductor.md)); `tests/documentos.test.ts` | 11 a 14 |
+| JOA-10 · 5 y 6 (estado y hora de Chile) | ✅ Aprobado | CP-FUN-24 (SIM-12); el criterio 6, con `tests/fechas.test.ts` y `tests/documentos.test.ts` | 6, 8, 13 |
+| JOA-10 · 7 a 10 (listados y fichas) | ✅ Aprobado | CP-FUN-24 (SIM-12), también el listado vacío con la Empresa B | 6 a 11 |
+| JOA-10 · 11 y 12 (renovar y cambiar de dueño) | ✅ Aprobado | CP-FUN-25 (SIM-12) | 15 |
+| JOA-10 · 13 y 14 (separación entre empresas) | ✅ Aprobado | SIM-12, sección 4, también con solicitudes alteradas | 25, 26 |
+| JOA-10 · 15 (celular) | ✅ Aprobado | SIM-12, a 360 px | 27 |
+| PB-24 · 1 a 5 | ✅ Aprobado | CP-FUN-33 (SIM-12); 2 pruebas de integración en `tests/integracion/base-de-datos.test.ts` | 4 a 7, 21 a 23 |
+| PB-14 · 1 y 2 | ✅ Aprobado | CP-FUN-26 (SIM-12); `tests/empresa.test.ts` | 16 a 18 |
+| PB-14 · 3 | ✅ Aprobado | CP-INT-24 y el envío real del 15-11-2026: el correo llegó al correo de contacto ([SIM-11](SIM-11_Alertas_por_Correo.md), sección 5) | 18, 19 |
+| JOA-13 · 1 a 11 | ✅ Aprobado | CP-FUN-27 y CP-FUN-28 con un envío real (SIM-11, sección 5); CP-INT-24 a CP-INT-34 | 19, 20 |
 | JOA-13 · 12 | ✅ Aprobado | CP-INT-23 (04-11-2026) | — |
 
 ---
@@ -217,7 +234,7 @@ No se encontraron diferencias entre las reglas y el código.
 
 ### 6.2 Errores que bloqueen el flujo principal
 
-No se conocen errores que bloqueen el flujo principal. Falta confirmarlo con las pruebas de SIM-04 en Supabase (sección 2) y con el despliegue en Vercel.
+No se conocen errores que bloqueen el flujo principal. Las pruebas de SIM-04 con Supabase (SIM-12) y el envío real en producción (SIM-11) no encontraron ninguno. ERR-02 (guardar sin conexión) se corrigió el 11-11-2026 (SIM-13).
 
 ### 6.3 README
 
@@ -248,9 +265,10 @@ Falta el ensayo con el equipo en Vercel (sección 7.2).
 
 ### 7.2 Antes de dar por terminada la entrega
 
-- Migraciones aplicadas en desarrollo y producción, y la GitHub Action publicando en Vercel, con sus secretos cargados (SIM-10, sección 4.5).
-- Cuenta de Resend y un envío real (SIM-11).
-- Pruebas de SIM-04: CP-FUN-23 a CP-FUN-28 y los casos de PB-24.
+- ~~Migraciones aplicadas en desarrollo y producción, y la GitHub Action publicando en Vercel (SIM-10, sección 4.5).~~ Listo.
+- ~~Cuenta de Resend y un envío real (SIM-11).~~ Listo el 15-11-2026.
+- ~~Pruebas de SIM-04: CP-FUN-23 a CP-FUN-28 y los casos de PB-24.~~ Listo (SIM-12 y SIM-11).
+- Datos de producción preparados (sección 3.7) y documentos de la sección 3.3 cargados en D − 1.
 - Guion completo ensayado con el equipo, con inicio de sesión y en Vercel.
 - Confirmar la fecha y la duración de la demostración.
 
@@ -264,5 +282,7 @@ Falta el ensayo con el equipo en Vercel (sección 7.2).
 - [x] Matriz de validación (sección 5).
 - [x] Reglas contrastadas con el código (sección 6.1).
 - [x] Primer ensayo en local, sin inicio de sesión ni correo (sección 6.4).
+- [x] Estado, guion y matriz al día con el diseño nuevo y el envío real (15-11-2026).
+- [ ] Datos de producción preparados para la demo (sección 3.7).
 - [ ] Guion ensayado con el equipo, con inicio de sesión y en Vercel.
 - [ ] Revisión de José y Simón en el PR.
