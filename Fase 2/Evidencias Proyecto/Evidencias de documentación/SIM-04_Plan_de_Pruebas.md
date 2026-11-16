@@ -184,7 +184,7 @@ Cuando se agregue cada módulo del MVP (conductores, documentos, turnos e ingres
 | CP-COM-02 | Flujos principales a 768 px **[POR CONFIRMAR]**. | Se completan sin desplazamiento horizontal. | RNF-COM-02 | ✅ SIM-13. La observación menor de los filtros apretados se corrigió el mismo día |
 | CP-COM-03 | Flujos principales desde 1280 px **[POR CONFIRMAR]**. | Se completan. | RNF-COM-03 | ✅ SIM-13 |
 | CP-COM-04 | Flujo principal en cada navegador acordado, anotando la versión. | Funciona en todos. | RNF-COM-04 | 🟡 Chromium aprobado (SIM-03); faltan Edge, Firefox, Safari, Chrome para Android y Safari para iPhone **[POR CONFIRMAR]** |
-| CP-COM-05 | Correo de aviso en Gmail y Outlook, en computador y celular. | Se ve completo y legible. | RNF-COM-05 | 📝 MVP |
+| CP-COM-05 | Correo de aviso en Gmail y Outlook, en computador y celular. | Se ve completo y legible. | RNF-COM-05 | 🟡 15-11-2026: Gmail en computador y en la app de Gmail del celular (modo oscuro), completo, legible y sin desplazamiento horizontal ([SIM-11](SIM-11_Alertas_por_Correo.md), sección 5). Outlook no se probó |
 
 ### 6.4 Usabilidad (`CP-USA`)
 
@@ -315,19 +315,19 @@ Conteo de las tablas de la sección 6: **94 casos**.
 | Estado | Cantidad | Casos |
 |---|---|---|
 | ✅ Aprobado | 70 | CP-FUN-01 a 12, 20 a 28 y 33; CP-SEG-01 a 08, 10, 11, 13 y 14; CP-COM-02 y 03; CP-INT-01 a 34 |
-| 🟡 Parcial | 8 | CP-FUN-13; CP-SEG-09 y 12; CP-COM-01 y 04; CP-USA-03; CP-REN-03 y 04 |
+| 🟡 Parcial | 9 | CP-FUN-13; CP-SEG-09 y 12; CP-COM-01, 04 y 05; CP-USA-03; CP-REN-03 y 04 |
 | ❌ No aprobado | 0 | — |
 | ⏳ Pendiente | 8 | CP-FUN-14; CP-USA-01 y 02; CP-REN-01, 02 y 05 a 07 |
-| 📝 Por detallar | 8 | CP-FUN-29 a 32 y 40 a 42; CP-COM-05 |
+| 📝 Por detallar | 7 | CP-FUN-29 a 32 y 40 a 42 |
 
-El 27-10-2026 había 35 aprobados de 53 casos de la primera entrega. Desde entonces se aprobaron los de conductores (SIM-08), la versión publicada sin sesión (SIM-10), los avisos con la base de datos (SIM-11), los de documentos, la empresa y el conductor asignado (SIM-12), y la parte de la base de las pruebas de rendimiento (sección 6.5). El mismo 11-11-2026 se ejecutaron en local los casos de la primera entrega que necesitaban una sesión iniciada ([SIM-13](SIM-13_Casos_Pendientes_Primera_Entrega.md)). El 15-11-2026 se aprobaron CP-FUN-27 y 28 con un envío real en producción (SIM-11).
+El 27-10-2026 había 35 aprobados de 53 casos de la primera entrega. Desde entonces se aprobaron los de conductores (SIM-08), la versión publicada sin sesión (SIM-10), los avisos con la base de datos (SIM-11), los de documentos, la empresa y el conductor asignado (SIM-12), y la parte de la base de las pruebas de rendimiento (sección 6.5). El mismo 11-11-2026 se ejecutaron en local los casos de la primera entrega que necesitaban una sesión iniciada ([SIM-13](SIM-13_Casos_Pendientes_Primera_Entrega.md)). El 15-11-2026 se aprobaron CP-FUN-27 y 28 con un envío real en producción, y CP-COM-05 quedó parcial: el correo se revisó en Gmail, en computador y en celular, pero no en Outlook (SIM-11).
 
 **Qué falta para cada uno de los casos que no están aprobados:**
 
 | Qué se necesita | Casos |
 |---|---|
 | La versión publicada, con sesión | CP-FUN-13 (volver a desplegar), CP-REN-01 y 02 (Lighthouse y tiempo de guardar), la pantalla de CP-REN-03, la duración en producción de CP-REN-04 y la auditoría de accesibilidad de Lighthouse de CP-USA-03 (SIM-10) |
-| Detallar el caso y abrir el correo en Outlook y en un celular (Gmail en computador ya se vio en SIM-11) | CP-COM-05 |
+| Abrir el correo en Outlook (Gmail en computador y en celular ya se vio en SIM-11) | CP-COM-05 |
 | Personas que no conozcan la aplicación | CP-USA-01 y 02 (sección 6.4) |
 | Otros recursos o decisiones | CP-COM-01 (un teléfono real), CP-COM-04 (otros navegadores), CP-SEG-09 (duración de la sesión), CP-SEG-12 y CP-FUN-14 (simular la falla de un servicio con sesión iniciada), CP-REN-05 (un mes publicado), CP-REN-06 (respaldo y restauración) y CP-REN-07 (otro integrante levanta el proyecto) |
 | Nada en la entrega final: son trabajo futuro u opcionales (JOA-08, sección 2) | CP-FUN-29 a 32 (turnos y resumen de la flota) y CP-FUN-40 a 42 (ingresos) |
