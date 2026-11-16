@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (Product Owner) y José Vargas |
 | **Estado** | En curso: se actualiza al inicio y al cierre de cada iteración |
-| **Fecha** | 21-10-2026 (actualizado el 11-11-2026) |
+| **Fecha** | 21-10-2026 (actualizado el 15-11-2026) |
 
 Este documento registra qué tareas entraron en cada iteración (Sprint Backlog), cómo terminaron y qué aprendió el equipo en cada retrospectiva. Los datos salen del tablero del Project del equipo ("@josemarcelovg's Micrologist"), del historial de pull requests de GitHub y de los documentos [JOA-03](JOA-03_Validacion_Primera_Entrega.md) y [JOA-08](JOA-08_Product_Backlog.md). Los ítems del backlog se citan con su identificador `PB-xx`.
 
@@ -316,6 +316,25 @@ Otras mejoras de Joaquín unidas el 10-11:
 - Crear en el tablero las tarjetas de las tareas que no la tienen (sección 4.4) y pasar SIM-06 a *In progress* y JOA-15 a *Done*.
 - La retrospectiva de la Iteración 4 con el equipo (sección 4.4).
 
+### Avance al 15-11-2026
+
+| Tarea | Responsable | Estado |
+|---|---|---|
+| SIM-12: observaciones de documentos y de la página "No encontrado" | Simón | ✅ PR #86. |
+| SIM-04: estado de los 94 casos | Simón | ✅ PR #87, y al 15-11 con CP-FUN-27 y CP-FUN-28 aprobados (PR #95): 70 aprobados. |
+| SIM-13: casos pendientes de la primera entrega, ERR-02 y filtros en tablet | Simón | ✅ PR #91 y #92. |
+| [SIM-11] Avisos por correo | Simón, José y Joaquín | ✅ Checklist al día (Simón, PR #93), correo con el diseño de la aplicación (José, JOS-16, PR #94) y envío real con Resend en producción el 15-11-2026 (Joaquín, PR #95). Con eso, PB-15 y PB-16 pasan a *Terminado* en JOA-08 y queda terminado el alcance de la entrega final. |
+| [JOS-14] Quitar `.mailmap` de la raíz | José | ✅ PR #89, como pidió la revisión del repositorio. |
+| [JOS-15] Metodología justificada en la Guía 1.5 | José | ✅ PR #90. |
+| [JOA-19] Guion de la demostración | Joaquín | ✅ Al día con el diseño nuevo y el correo, con D = martes 17-11-2026 y los datos de producción preparados (PR #95). Falta ensayarlo con el equipo. |
+| [SIM-10] Desplegar en Vercel | Simón | En curso: faltan las comprobaciones con sesión y Lighthouse. |
+
+**Pendiente para la demostración del 17-11:**
+
+- Ensayar el guion completo con el equipo ([JOA-19](JOA-19_Guion_Entrega_Final.md), sección 3.5).
+- SIM-10: las comprobaciones con sesión y Lighthouse.
+- La retrospectiva de la Iteración 4 con el equipo (sección 4.4).
+
 ---
 
 ## 7. Cómo se mantiene
@@ -334,6 +353,7 @@ Otras mejoras de Joaquín unidas el 10-11:
 | 09-11-2026 | Avance de la Iteración 4 al 09-11 y alcance aprobado de la entrega final. |
 | 10-11-2026 | Avance de la Iteración 4 al 10-11: PR #66 a #75 y datos para la retrospectiva. |
 | 11-11-2026 | Avance de la Iteración 4 al 11-11 (PR #79 a #86), fila de la Iteración 4 en el resumen, y datos y temas para su retrospectiva (sección 4.4). |
+| 15-11-2026 | Avance de la Iteración 4 al 15-11 (PR #86 a #95): avisos por correo terminados con un envío real y guion de la demostración del 17-11. |
 
 ---
 

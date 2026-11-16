@@ -7,7 +7,7 @@
 | **Revisión** | José Vargas y Simón Jofré |
 | **Estado** | Propuesta para revisión del equipo |
 | **Fecha** | 12-10-2026 (actualizado el 28-10-2026) |
-| **Actualización** | 11-11-2026 (PB-11 a PB-14 y PB-24 terminados, según SIM-12) |
+| **Actualización** | 15-11-2026 (PB-15 y PB-16 terminados, según SIM-11) |
 
 Este documento reúne todo lo que MicroLogist debe hacer, ordenado por prioridad. Parte de la [Product Vision](JOA-04_Product_Vision.md) y de las reglas de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md). De aquí salen los ítems de cada Sprint Backlog (SIM-06) y los casos del plan de pruebas (SIM-04). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -54,8 +54,8 @@ Estado al 11-11-2026.
 | 13 | PB-13 | Renovar o corregir documento | Documentos | MVP completo | Terminado |
 | 14 | PB-24 | Conductor asignado al vehículo | Vehículos | MVP completo | Terminado |
 | 15 | PB-14 | Datos de contacto de la empresa | Empresa | MVP completo | Terminado |
-| 16 | PB-15 | Aviso por correo antes del vencimiento | Avisos | MVP completo | En curso |
-| 17 | PB-16 | Avisos sin duplicados y con registro de envíos | Avisos | MVP completo | En curso |
+| 16 | PB-15 | Aviso por correo antes del vencimiento | Avisos | MVP completo | Terminado |
+| 17 | PB-16 | Avisos sin duplicados y con registro de envíos | Avisos | MVP completo | Terminado |
 | 18 | PB-17 | Asignar turno | Turnos | Trabajo futuro | Pendiente |
 | 19 | PB-18 | Ver turnos por fecha | Turnos | Trabajo futuro | Pendiente |
 | 20 | PB-19 | Editar o anular turno | Turnos | Trabajo futuro | Pendiente |
@@ -71,7 +71,7 @@ Estado al 11-11-2026.
 - **Documentos (PB-11 a PB-13): terminado.** Están la validación y el cálculo del estado según [JOA-10](JOA-10_Reglas_Modulo_Documentos.md) (PR #48), la tabla con su migración (PR #53), las pantallas con la sección en la ficha del vehículo y del conductor (PR #56) y sus pruebas de integración (PR #64). Las pruebas funcionales con las dos empresas aprobaron CP-FUN-23 a CP-FUN-25 ([SIM-12](SIM-12_Pruebas_Documentos_Empresa_y_Conductor.md), PR #81).
 - **Datos de contacto de la empresa (PB-14): terminado.** La pantalla "Mi empresa" (JOA-15, PR #44) aprobó CP-FUN-26 (SIM-12). Su correo de contacto es el destinatario de los avisos (JOA-13).
 - **Conductor asignado (PB-24): terminado.** El vehículo tiene un conductor asignado opcional (solo activos de la empresa) y su ficha muestra al conductor con sus documentos (PR #57). Aprobó CP-FUN-33, con sus criterios 1 a 5 (SIM-12).
-- **Avisos por correo (PB-15 y PB-16): en curso.** Están el proceso diario que llama Vercel Cron, el envío con Resend y el registro en `aviso_enviado`, según las reglas de [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md) (SIM-11, PR #55), con un reintento inmediato si el envío falla (PR #74). Sus reglas tienen pruebas unitarias y con la base de datos (CP-INT-24 a CP-INT-34, PR #68, #70 y #74). Falta la cuenta de Resend con un envío real (CP-FUN-27 y CP-FUN-28).
+- **Avisos por correo (PB-15 y PB-16): terminado.** Están el proceso diario que llama Vercel Cron, el envío con Resend y el registro en `aviso_enviado`, según las reglas de [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md) (SIM-11, PR #55), con un reintento inmediato si el envío falla (PR #74) y el correo con el diseño de la aplicación (PR #94). Sus reglas tienen pruebas unitarias y con la base de datos (CP-INT-24 a CP-INT-34, PR #68, #70 y #74), y el 15-11-2026 aprobaron CP-FUN-27 y CP-FUN-28 con un envío real en producción (SIM-11, sección 5).
 - **Despliegue (SIM-10):** a pedido de la profesora (05-11-2026), una GitHub Action ejecuta las pruebas, también las de integración con PostgreSQL (PR #71), y publica en Vercel en cada push a `main` (PR #62).
 - **Siguen:** lo que entra en la entrega final, en el apartado siguiente.
 
@@ -446,6 +446,7 @@ Lo pidió la profesora en la revisión del 28-10-2026 (SIM-06, sección 6). Es d
 | 04-11-2026 | PB-11 a PB-13 pasan a En curso (pantallas unidas en el PR #56; faltan sus pruebas). PB-24 pasa a En curso: se confirma su criterio 4 (varios vehículos por conductor y sin conductor al desactivarlo) y se agrega el criterio 5 (vehículos en la ficha del conductor). |
 | 08-11-2026 | PB-15 y PB-16 pasan a En curso (SIM-11, PR #55). Los criterios de los ítems de la entrega final (PB-08 a PB-16) se escriben con las decisiones de JOA-09, JOA-10 y JOA-13 y se les quita el [POR CONFIRMAR], sin cambiar su numeración; PB-16 suma el criterio 4 (documento renovado). Se agregan al avance los avisos y el despliegue con GitHub Actions (PR #62). |
 | 11-11-2026 | PB-11 a PB-14 y PB-24 pasan a Terminado: sus casos CP-FUN-23 a CP-FUN-26 y CP-FUN-33 se aprobaron en SIM-12 (PR #81). PB-15 y PB-16 siguen En curso hasta el envío real con Resend. Se quita de la sección 8 el pendiente de PB-24. |
+| 15-11-2026 | PB-15 y PB-16 pasan a Terminado: CP-FUN-27 y CP-FUN-28 se aprobaron con un envío real en producción (SIM-11, sección 5). Con esto queda terminado el alcance de la entrega final. |
 
 ---
 
