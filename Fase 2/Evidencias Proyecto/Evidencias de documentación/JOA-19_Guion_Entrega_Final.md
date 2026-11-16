@@ -351,7 +351,7 @@ Son ideas guía, no un texto para leer de memoria. Cada uno las dice con sus pal
   - Outlook no se probó;
   - no hay prueba con usuarios reales todavía (CP-USA-01 y 02).
 - **Hoy tenemos:** el alcance ajustado completo y publicado. "El MVP resuelve el problema principal: que un documento no venza sin que nadie se entere."
-- **Para la defensa de título** (propuesta del Product Owner, a confirmar con el equipo):
+- **Para la defensa de título** (confirmado por el equipo el 16-11-2026):
   - **Turnos** (PB-17 a PB-19): sus reglas y criterios ya están escritos en [JOA-14](JOA-14_Reglas_Modulo_Turnos.md). Con esto se cumple lo que el objetivo de Fase 1 decía sobre turnos.
   - **Prueba con usuarios** (CP-USA-01 y 02): cierra el "validar" del objetivo y los indicadores 1 y 5 de [JOA-04](JOA-04_Product_Vision.md) (sección 6.2).
   - **La retroalimentación de esta presentación,** incorporada.
