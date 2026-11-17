@@ -16,7 +16,7 @@ Este documento hace para la entrega final de la semana 15 lo mismo que [JOA-03](
 
 > Un responsable de una empresa de transporte entra a MicroLogist publicado en Vercel, ve sus vehículos y conductores, sabe quién maneja cada vehículo, controla los documentos con su vencimiento y recibe un aviso por correo antes de que venzan, sin que otra empresa vea sus datos.
 
-- **Duración:** 20 minutos en total, que se cortan estrictamente en el minuto 20: unos 14 de exposición, con 4 y medio de demo, y el resto para preguntas (sección 9).
+- **Duración:** 20 minutos en total, que se cortan estrictamente en el minuto 20: unos 15 de exposición, con 4 y medio de demo, y el resto para preguntas (sección 9).
 - **Fecha:** martes 17-11-2026, a las 11:30 (semana 15, SIM-06, sección 6). En este documento el día de la demo se llama **D**.
 - **Quién presenta:** los tres; el reparto de cada bloque y de cada paso de la demo está en la sección 9.
 - **Dónde:** en `https://micrologist-equipo09.vercel.app`, con el proyecto de Supabase de producción y sus cuentas de prueba ([SIM-10](SIM-10_Despliegue_Vercel.md)). **Plan B**, si el despliegue no está listo: en local con `npm run dev` y la base de desarrollo; todo el guion funciona igual, salvo que el aviso se ejecuta a mano (paso 20) en vez de llegar en la mañana.
@@ -194,7 +194,7 @@ Los criterios 3, 5, 8, 10, 11 y 12 de JOA-13 no se muestran en la demo: los cubr
 
 ### 4.9 Cierre (1 minuto)
 
-Contar lo que tenemos hoy y lo que traeremos a la defensa de título (secciones 7.1 y 9.2, bloque 6).
+Contar lo que tenemos hoy y lo que traeremos a la defensa de título (secciones 7.1 y 9.2, bloque 9).
 
 ---
 
@@ -290,7 +290,7 @@ Falta el ensayo con el equipo en Vercel (sección 7.2).
 - [x] Datos de producción preparados para la demo (sección 3.7, 15-11-2026).
 - [x] Guion de la presentación ante la comisión, con tiempos y responsables (sección 9).
 - [ ] Guion ensayado con el equipo, con inicio de sesión y en Vercel.
-- [ ] Presentación cronometrada en unos 14 minutos, con los tres exponiendo.
+- [ ] Presentación cronometrada en unos 15 minutos, con los tres exponiendo.
 - [x] Revisión de José y Simón en el PR.
 
 ---
@@ -299,8 +299,8 @@ Falta el ensayo con el equipo en Vercel (sección 7.2).
 
 La presentación del martes 17-11-2026 es la **Evaluación Final de la Fase 2** (Informe Final del Proyecto APT, 30% de la nota), ante una comisión de docentes de la asignatura y de la Dirección de Carrera, como si se expusiera ante la gerencia del proyecto. **Los tres integrantes exponen**, y la participación equitativa se evalúa de forma individual. El proyecto sigue en la Fase 3, hasta la defensa de título, así que se presenta el alcance ajustado tal como está hoy y se cierra con lo que estará listo para la defensa de título (bloque 8). Según las orientaciones del Proyecto APT y el correo de la profesora del 16-11-2026:
 
-- Dura **máximo 20 minutos** y se corta estrictamente en el minuto 20. Por eso la exposición dura unos **14 minutos** y quedan unos 6 para las preguntas de la comisión.
-- Hay que **describir lo más relevante y fundamentar las decisiones** tomadas durante el proceso. El centro de la presentación son las decisiones (bloque 3), no la lista de funciones.
+- Dura **máximo 20 minutos** y se corta estrictamente en el minuto 20. Por eso la exposición dura unos **15 minutos** y quedan unos 5 para las preguntas de la comisión.
+- Hay que **describir lo más relevante y fundamentar las decisiones** tomadas durante el proceso. El centro de la presentación son las decisiones (bloque 6), no la lista de funciones.
 - La estructura sigue los campos de la guía del Informe Final, y cada afirmación va con su evidencia: la aplicación funcionando, el correo recibido y los documentos del repositorio.
 
 Por eso no es un *pitch*: es la defensa del proyecto, con la demo como evidencia. Del *pitch* se toma solo el inicio, un problema claro en un minuto.
@@ -311,18 +311,19 @@ Por eso no es un *pitch*: es la defensa del proyecto, con la demo como evidencia
 |---|---|---|---|---|
 | 1 | Apertura | 0:00 – 0:20 | Joaquín | Portada, con el correo en el teléfono |
 | 2 | El problema | 0:20 – 1:30 | Simón | Diapositiva con el problema y la multa |
-| 3 | Objetivo y alcance | 1:30 – 2:30 | Joaquín | Diapositiva: lo comprometido, lo entregado y lo que viene para la defensa de título |
-| 4 | La solución y su arquitectura | 2:30 – 4:00 | José | Capturas de la aplicación y diagrama de arquitectura |
-| 5 | Decisiones y su fundamento | 4:00 – 6:30 | Joaquín (producto, 4:00 – 5:15) y José (técnicas, 5:15 – 6:30) | Las decisiones de la sección 9.3 |
-| 6 | Demo: el producto funcionando | 6:30 – 11:00 | Joaquín, José y Simón (sección 9.4) | La aplicación en Vercel |
-| 7 | Metodología y calidad | 11:00 – 13:00 | Simón | Iteraciones, retroalimentación incorporada y pruebas |
-| 8 | Lo que tenemos y lo que viene para la defensa de título | 13:00 – 14:00 | Simón | Diapositiva "Hoy / Para la defensa de título" |
-| 9 | Cierre y pregunta a la comisión | 14:00 – 14:15 | Joaquín | Diapositiva "Gracias" |
-| — | Preguntas de la comisión | 14:15 – 20:00 | Quien corresponda (sección 9.6) | — |
+| 3 | Qué nos diferencia del resto | 1:30 – 2:15 | Joaquín | Diapositiva: lo que ya existe y en qué somos distintos ([JOA-07](JOA-07_Innovacion.md)) |
+| 4 | Objetivo y alcance | 2:15 – 3:15 | Joaquín | Diapositiva: lo comprometido, lo entregado y lo que viene para la defensa de título |
+| 5 | La solución y su arquitectura | 3:15 – 4:45 | José | Capturas de la aplicación y diagrama de arquitectura |
+| 6 | Decisiones y su fundamento | 4:45 – 7:15 | Joaquín (producto, 4:45 – 6:00) y José (técnicas, 6:00 – 7:15) | Las decisiones de la sección 9.3 |
+| 7 | Demo: el producto funcionando | 7:15 – 11:45 | Joaquín, José y Simón (sección 9.4) | La aplicación en Vercel |
+| 8 | Metodología y calidad | 11:45 – 13:45 | Simón | Iteraciones, retroalimentación incorporada y pruebas |
+| 9 | Lo que tenemos y lo que viene para la defensa de título | 13:45 – 14:45 | Simón | Diapositiva "Hoy / Para la defensa de título" |
+| 10 | Cierre y pregunta a la comisión | 14:45 – 15:00 | Joaquín | Diapositiva "Gracias" |
+| — | Preguntas de la comisión | 15:00 – 20:00 | Quien corresponda (sección 9.6) | — |
 
-**Tiempo de cada integrante:** Joaquín, unos 4 minutos y 20 segundos; José, unos 5 minutos; Simón, unos 4 minutos y 55 segundos.
+**Tiempo de cada integrante:** Joaquín, unos 5 minutos y 5 segundos; José, unos 5 minutos; Simón, unos 4 minutos y 55 segundos.
 
-La presentación tiene 12 diapositivas, con más imágenes que texto. La demo solo lleva una diapositiva de transición.
+La presentación tiene 13 diapositivas, con más imágenes que texto. La demo solo lleva una diapositiva de transición.
 
 ### 9.2 Qué decir en cada bloque
 
@@ -336,23 +337,28 @@ Son ideas guía, no un texto para leer de memoria. Cada uno las dice con sus pal
 - "En una empresa chica de transporte, la revisión técnica está en una carpeta, el SOAP en el correo y los conductores en una planilla que lleva una sola persona. Nadie avisa cuando algo vence."
 - "Circular con el SOAP, la revisión técnica o el permiso de circulación vencidos tiene una multa de 1 a 1,5 UTM cada uno, y el vehículo puede terminar en el corral: es un servicio que no se presta" ([JOA-04](JOA-04_Product_Vision.md), [JOA-07](JOA-07_Innovacion.md)).
 
-**3. Objetivo y alcance (Joaquín, 1:00).**
+**3. Qué nos diferencia del resto (Joaquín, 0:45).**
+- "Ya existen soluciones, pero no están pensadas para una empresa chica de pasajeros."
+- Las de GPS (Geotab, Black GPS) piden instalar un equipo en cada vehículo y miran la ruta, no los papeles. Los software de flotas (Fleetio, cloudFleet) también avisan vencimientos, pero traen muchos módulos de mantenimiento, y Fleetio está en inglés. Odoo obliga a implementar un sistema completo.
+- "Avisar vencimientos no es nuevo; lo nuevo es el enfoque: sin equipos, solo lo necesario, con los documentos de Chile y avisando antes de que venza" ([JOA-07](JOA-07_Innovacion.md), sección 4). No decir que somos los únicos que avisan.
+
+**4. Objetivo y alcance (Joaquín, 1:00).**
 - "MicroLogist permite registrar vehículos, conductores y documentos, ver de un vistazo qué está vencido o por vencer, y avisa por correo antes de que venza."
 - "Lo que entregamos: vehículos, conductores con su vehículo asignado, documentos con su estado, los datos de la empresa y los avisos por correo, para varias empresas con sus datos separados. Está publicado en Vercel."
 - "Lo que quedó fuera, y por qué: la entrega final se adelantó a la semana 15, así que priorizamos lo que hace útil el control de vencimientos. Turnos, que ya tiene sus reglas escritas, lo traeremos a la defensa de título; el resumen de la flota y los ingresos los evaluaremos según el tiempo" ([JOA-08](JOA-08_Product_Backlog.md), sección 2, PR #50).
 
-**4. La solución y su arquitectura (José, 1:30).** El producto de un vistazo y la arquitectura: una aplicación Next.js en Vercel, Supabase para la base de datos y el inicio de sesión, y el proceso diario de avisos con Vercel Cron y Resend. Todo en planes gratuitos y sin equipos en los vehículos.
+**5. La solución y su arquitectura (José, 1:30).** El producto de un vistazo y la arquitectura: una aplicación Next.js en Vercel, Supabase para la base de datos y el inicio de sesión, y el proceso diario de avisos con Vercel Cron y Resend. Todo en planes gratuitos y sin equipos en los vehículos.
 
-**5. Decisiones (Joaquín y José, 2:30).** Es el bloque que más pesa. Joaquín presenta las de producto y José las técnicas, con la tabla de la sección 9.3. Basta con 4 o 5 bien explicadas; el resto queda para las preguntas.
+**6. Decisiones (Joaquín y José, 2:30).** Es el bloque que más pesa. Joaquín presenta las de producto y José las técnicas, con la tabla de la sección 9.3. Basta con 4 o 5 bien explicadas; el resto queda para las preguntas.
 
-**6. Demo (Joaquín, José y Simón, 4:30).** Ver la sección 9.4, que dice quién muestra cada paso. Mientras se muestra, decir qué decisión o criterio se está viendo: "esto es lo que pidió la profesora en la revisión del 28-10".
+**7. Demo (Joaquín, José y Simón, 4:30).** Ver la sección 9.4, que dice quién muestra cada paso. Mientras se muestra, decir qué decisión o criterio se está viendo: "esto es lo que pidió la profesora en la revisión del 28-10".
 
-**7. Metodología y calidad (Simón, 2:00).**
+**8. Metodología y calidad (Simón, 2:00).**
 - "Trabajamos con Scrum en 4 iteraciones de 2 semanas, con un tablero en GitHub Projects, Sprint Backlog y retrospectivas" ([SIM-06](SIM-06_Sprint_Backlog_y_Retrospectivas.md)).
-- "Cada cambio entró por un PR revisado por otro integrante: más de 90 PR. Cada PR pasa automáticamente lint, tipos, 130 pruebas unitarias, pruebas de integración con PostgreSQL, `npm audit` y pruebas de rendimiento, y se publica solo en Vercel" ([SIM-10](SIM-10_Despliegue_Vercel.md)).
+- "Cada cambio entró por un PR, más de 100 en total, y casi todos con la aprobación de otro integrante; los pocos que no la tuvieron quedaron registrados en la retrospectiva. Cada PR pasa automáticamente lint, tipos, 130 pruebas unitarias, pruebas de integración con PostgreSQL, `npm audit` y pruebas de rendimiento, y se publica solo en Vercel" ([SIM-10](SIM-10_Despliegue_Vercel.md)).
 - "El plan de pruebas tiene 94 casos: 70 aprobados y ninguno rechazado. Los parciales y pendientes tienen el motivo escrito, por ejemplo, Outlook no se probó" ([SIM-04](SIM-04_Plan_de_Pruebas.md), sección 9).
 
-**8. Lo que tenemos y lo que viene para la defensa de título (Simón, 1:00), y 9. cierre (Joaquín, 0:15).**
+**9. Lo que tenemos y lo que viene para la defensa de título (Simón, 1:00), y 10. cierre (Joaquín, 0:15).**
 - **Qué ajustamos por las retroalimentaciones anteriores:**
   - la profesora pidió, el 28-10, vincular el conductor al vehículo y ver los documentos en la ficha, y se agregó PB-24;
   - el 05-11 pidió publicar con GitHub Actions, y así se publica (SIM-10);
@@ -404,7 +410,7 @@ Quedan fuera, salvo que pregunten: validaciones del formulario (12 y 14), renova
 - [ ] Tener abiertos: las diapositivas, un navegador con la Empresa A, otro (o una ventana de incógnito) con la Empresa B, y el correo en el teléfono y en el computador.
 - [ ] Copiar antes la dirección del documento del paso 26, para no buscarla en vivo.
 - [ ] **Plan B:** si la aplicación o la red fallan, mostrar las capturas de `Aplicación/Capturas` y seguir el guion con ellas: las 12 a 15 (vehículos, conductores, documentos y la ficha con el conductor asignado, con el diseño actual) y las 10 y 11 (el correo de aviso).
-- [ ] Alguien lleva el tiempo y avisa a los 10 minutos.
+- [ ] Alguien lleva el tiempo y avisa a los 11 minutos, al terminar la demo.
 
 ### 9.6 Preguntas probables y quién responde
 
@@ -418,4 +424,5 @@ Quedan fuera, salvo que pregunten: validaciones del formulario (12 y 14), renova
 | ¿Cuánto cuesta mantenerlo? | José | Hoy nada: todo está en planes gratis. Con más uso, el primer costo sería el dominio propio para los correos. |
 | ¿Lo probaron con usuarios reales? | Joaquín | Todavía no: es parte de lo que traeremos a la defensa de título (CP-USA-01 y 02). |
 | ¿Por qué no está turnos, si estaba en el objetivo? | Joaquín | Porque la entrega se adelantó a la semana 15 y priorizamos el control de vencimientos, que es el problema principal (PR #50). Las reglas de turnos ya están escritas y es lo primero para la defensa de título. |
-| ¿Qué harían distinto? | Cada uno | Una idea por persona, de su retrospectiva (SIM-06, sección 4). |
+| ¿En qué se diferencian de Fleetio o cloudFleet? | Joaquín | Ellos también avisan vencimientos. La diferencia es el enfoque: sin módulos de mantenimiento que configurar, en español, con los documentos y la patente de Chile, y pensado para una empresa chica de pasajeros (JOA-07, sección 4). |
+| ¿Qué harían distinto? | Cada uno | Una idea por persona, de la retrospectiva de la Iteración 4 (SIM-06, sección 4.4): Joaquín, configurar los servicios externos en la primera semana; Simón, crear la tarjeta antes de abrir el PR para que el tablero refleje el trabajo; José, revisar los PR cada día en vez de acumularlos. |
