@@ -5,8 +5,8 @@
 | **Tarea** | [JOS-06] Redactar manual técnico |
 | **Responsable** | José Vargas (Developer). Aportan Simón Jofré y Joaquín Orellana. |
 | **Revisión** | Simón Jofré y Joaquín Orellana |
-| **Versión** | 0.2.1 |
-| **Fecha** | 16-10-2026 (actualizado el 15-11-2026) |
+| **Versión** | 0.2.2 |
+| **Fecha** | 16-10-2026 (actualizado el 16-11-2026) |
 
 Este manual explica **cómo está construido MicroLogist y cómo se instala, configura, despliega y mantiene**. Está pensado para quien desarrolla o administra el sistema: el equipo, la profesora o quien continúe el proyecto. No es el manual de usuario: no explica cómo usar las pantallas.
 
@@ -35,6 +35,16 @@ La aplicación está publicada en `https://micrologist-equipo09.vercel.app` (sec
 ---
 
 ## 2. Arquitectura
+
+**Tipo de arquitectura:** MicroLogist es un **monolito modular en capas**, **cliente-servidor** y **multiempresa con base compartida**, desplegado en **servicios administrados** (*serverless*).
+
+| Característica | Qué significa en MicroLogist | Por qué |
+|---|---|---|
+| Monolito modular | Una sola aplicación Next.js que se despliega entera, organizada por módulo: vehículos, conductores, documentos, empresa y avisos (sección 4). | Somos un equipo de tres con plazo fijo: es más simple de construir, probar y publicar que varios servicios separados, y alcanza para un MVP. |
+| En capas | Páginas → acciones del servidor → validación (Zod) → acceso a datos (Prisma) → PostgreSQL (sección 2.2). | Cada capa tiene una sola responsabilidad, y las reglas de validación se prueban sin la pantalla ni la base. |
+| Cliente-servidor | El navegador pide cada pantalla y el servidor la arma con los datos de la empresa de la sesión. | No hay que instalar nada: se usa desde el navegador, en computador, tablet o celular. |
+| Multiempresa con base compartida | Todas las empresas usan las mismas tablas, separadas por `empresa_id`, claves foráneas compuestas y RLS ([JOS-04](JOS-04_Modelo_de_Datos.md)). La empresa siempre sale de la sesión, nunca del formulario. | Un solo sistema sirve a muchas empresas chicas, y una nunca ve los datos de otra, aunque la aplicación tenga un error. |
+| Servicios administrados (*serverless*) | Vercel ejecuta la aplicación y el proceso diario de avisos (Vercel Cron); Supabase entrega PostgreSQL y el inicio de sesión; Resend envía los correos; GitHub Actions prueba y publica. | Son gratis para un MVP y no hay servidores propios que instalar ni mantener. |
 
 ### 2.1 Componentes
 
@@ -344,6 +354,7 @@ Implementados en [SIM-11](SIM-11_Alertas_por_Correo.md) (PB-15 y PB-16):
 | 0.1.2 | 10-11-2026 | `engines.node` pasa a `>=24.0.0` y `@types/node` a `^24`, como el README, CI y Docker (sale de las mejoras pendientes de la sección 10). Con Node 20, `npm test` ni siquiera arranca: `--experimental-strip-types` existe desde Node 22.6 y Prisma 7 pide `^22.12` o `>=24`. La sección 1 se pone al día con el estado de cada módulo según JOA-08. |
 | 0.2 | 10-11-2026 | Inicio de sesión con Supabase Auth (SIM-02) en las secciones 2.1, 4, 5.1, 8 y 9. Estructura del código y pruebas al día: conductores, conductor asignado, documentos, Mi empresa y avisos por correo (SIM-11). Despliegue publicado con la GitHub Action (SIM-10), con las pruebas de integración en una base PostgreSQL de prueba y `npm audit` en cada PR; variables de Production y Preview, `URL_PUBLICA` y `ORIGENES_DESARROLLO`; región `cle1` en `vercel.json`; seed que no pisa datos editados; reintento inmediato de los avisos. Mejoras pendientes nuevas y cuatro problemas frecuentes nuevos. |
 | 0.2.1 | 15-11-2026 | Sección 1: conductor asignado, documentos, Mi empresa y avisos por correo terminados (SIM-12 y SIM-11). Sección 8.3: Resend configurado y probado con un envío real, destinatarios y spam sin dominio propio, y cómo ejecutar el proceso a mano. |
+| 0.2.2 | 16-11-2026 | Sección 2: tipo de arquitectura (monolito modular en capas, cliente-servidor, multiempresa con base compartida y servicios administrados) y por qué se eligió cada característica. |
 
 En cada entrega se actualizan las secciones 1, 5.1, 8 y 9, y se agrega una fila a esta tabla.
 
