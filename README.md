@@ -160,7 +160,8 @@ En la raíz están las carpetas de cada fase, este README y `.github/workflows/`
 |---|---|
 | `Fase 1/` | Evidencias individuales y grupales de la Fase 1 |
 | `Fase 2/Evidencias Individuales/` | Diarios de reflexión y autoevaluaciones de la Fase 2 de cada integrante |
-| `Fase 2/Evidencias Grupales/` | Guía 2.4, Informe Final del Proyecto APT (guía 2.6), presentación de la Evaluación Final y planilla de evaluación del avance |
+| `Fase 2/Evidencias Grupales/` | Guía 2.4, Informe Final del Proyecto APT (guía 2.6) y planilla de evaluación del avance |
+| `Fase 2/Evidencias Proyecto/` | `Presentación Proyecto.pptx`, la presentación de la Evaluación Final |
 | `Fase 2/Evidencias Proyecto/Evidencias de documentación/` | Documentos del proyecto (tabla de abajo) |
 | `Fase 2/Evidencias Proyecto/Evidencias de sistema/` | El sistema: `Aplicación` y `Base de datos` |
 | `Fase 3/` | Evidencias individuales y grupales de la Fase 3 |
