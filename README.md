@@ -159,7 +159,8 @@ En la raíz están las carpetas de cada fase, este README y `.github/workflows/`
 | Carpeta | Contenido |
 |---|---|
 | `Fase 1/` | Evidencias individuales y grupales de la Fase 1 |
-| `Fase 2/Evidencias Individuales/` y `Fase 2/Evidencias Grupales/` | Evidencias individuales y grupales de la Fase 2 |
+| `Fase 2/Evidencias Individuales/` | Diarios de reflexión y autoevaluaciones de la Fase 2 de cada integrante |
+| `Fase 2/Evidencias Grupales/` | Guía 2.4, Informe Final del Proyecto APT (guía 2.6), presentación de la Evaluación Final y planilla de evaluación del avance |
 | `Fase 2/Evidencias Proyecto/Evidencias de documentación/` | Documentos del proyecto (tabla de abajo) |
 | `Fase 2/Evidencias Proyecto/Evidencias de sistema/` | El sistema: `Aplicación` y `Base de datos` |
 | `Fase 3/` | Evidencias individuales y grupales de la Fase 3 |
@@ -235,3 +236,5 @@ Usamos Scrum, adaptado a un equipo de tres personas y a un plazo fijo, con sprin
 | [SIM-08 Pruebas de conductores](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-08_Pruebas_Conductores.md>) | Los 14 criterios de JOA-09 probados con las dos empresas ficticias y su verificación en la base de datos |
 | [SIM-10 Despliegue en Vercel](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-10_Despliegue_Vercel.md>) | Pasos para publicar la aplicación con GitHub Actions y un proyecto de Supabase de producción, secretos, variables y comprobaciones después de desplegar |
 | [SIM-11 Alertas por correo](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-11_Alertas_por_Correo.md>) | Proceso diario de avisos con Resend y Vercel Cron, configuración, cómo probarlo a mano y límites del MVP |
+| [SIM-12 Pruebas de documentos, empresa y conductor asignado](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-12_Pruebas_Documentos_Empresa_y_Conductor.md>) | Criterios de documentos, datos de la empresa y conductor asignado probados con las dos empresas ficticias |
+| [SIM-13 Casos pendientes de la primera entrega](<Fase 2/Evidencias Proyecto/Evidencias de documentación/SIM-13_Casos_Pendientes_Primera_Entrega.md>) | Casos de SIM-04 que seguían pendientes, corrección de ERR-02 y filtros en tablet |
