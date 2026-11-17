@@ -130,4 +130,4 @@ Rama `sim-11-alertas-correo`, desde el PR #53 (tabla `documento`), el 04-11-2026
 - [x] Pruebas de integración del proceso con la base de datos: CP-INT-24 a CP-INT-28 (sección 5).
 - [x] CP-FUN-27 y CP-FUN-28 con un envío real (15-11-2026, sección 5).
 - [x] Variables y operación en [JOS-06](JOS-06_Manual_Tecnico.md) (secciones 5.1 y 8.3).
-- [ ] Revisión de José y Joaquín en el PR.
+- [x] Revisión de José y Joaquín en el PR.

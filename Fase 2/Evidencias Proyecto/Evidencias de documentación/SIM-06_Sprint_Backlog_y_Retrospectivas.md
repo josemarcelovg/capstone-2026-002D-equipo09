@@ -376,4 +376,4 @@ Otras mejoras de Joaquín unidas el 10-11:
 - [x] Avance de la Iteración 4 al 09-11, al 10-11 y al 11-11-2026 (sección 6).
 - [x] Datos medibles y temas propuestos para la retrospectiva de la Iteración 4 (sección 4.4).
 - [x] Retrospectiva de la Iteración 4 al cierre, hecha el 16-11.
-- [ ] Revisión de Joaquín y José en el PR.
+- [x] Revisión de Joaquín y José en el PR.

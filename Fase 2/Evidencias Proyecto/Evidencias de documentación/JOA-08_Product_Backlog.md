@@ -5,7 +5,7 @@
 | **Tarea** | [JOA-08] Construir y priorizar el Product Backlog |
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Revisión** | José Vargas y Simón Jofré |
-| **Estado** | Propuesta para revisión del equipo |
+| **Estado** | Aprobado por el equipo. Alcance de la entrega final terminado: 17 de 24 ítems |
 | **Fecha** | 12-10-2026 (actualizado el 28-10-2026) |
 | **Actualización** | 16-11-2026 (turnos pasan a la etapa "Defensa de título") |
 
@@ -337,9 +337,9 @@ Antes de desarrollar cada módulo hay que definir sus campos y reglas, como se h
 **Criterios de aceptación:**
 
 1. Puedo crear un turno eligiendo fecha, jornada, vehículo y conductor.
-2. Solo puedo elegir vehículos y conductores de mi empresa que no estén inactivos. Si un vehículo en mantención se puede asignar está **[POR CONFIRMAR]**.
-3. No puedo asignar el mismo vehículo ni el mismo conductor a dos turnos de la misma fecha y jornada **[POR CONFIRMAR]**.
-4. Las jornadas disponibles están **[POR CONFIRMAR]** (propuesta: mañana, tarde y noche).
+2. Solo puedo elegir vehículos y conductores de mi empresa que no estén inactivos. Los vehículos en mantención tampoco se pueden elegir (JOA-14).
+3. No puedo asignar el mismo vehículo ni el mismo conductor a dos turnos de la misma fecha y jornada (JOA-14).
+4. Las jornadas son mañana, tarde y noche (JOA-14).
 
 ### PB-18 · Ver turnos por fecha
 
@@ -359,7 +359,7 @@ Antes de desarrollar cada módulo hay que definir sus campos y reglas, como se h
 
 1. Puedo cambiar el vehículo, el conductor, la fecha o la jornada de un turno, con las mismas validaciones que al crearlo.
 2. Puedo anular un turno, con confirmación.
-3. Si el turno anulado se borra o queda registrado como anulado está **[POR CONFIRMAR]**.
+3. El turno anulado no se borra: queda registrado como anulado, con un motivo opcional (JOA-14).
 
 ### PB-20 · Resumen de la flota
 
@@ -474,5 +474,5 @@ Lo pidió la profesora en la revisión del 28-10-2026 (SIM-06, sección 6). Es d
 - [x] Incluye todo el alcance del producto: vehículos, conductores, turnos, documentación, avisos por correo e ingresos opcionales (secciones 4, 5 y 6).
 - [x] Cada ítem tiene sus criterios de aceptación (secciones 3 a 6).
 - [x] Está priorizado y distingue primera entrega, MVP completo y opcionales (sección 2).
-- [ ] Revisión y aportes de José y Simón en el PR.
+- [x] Revisión y aportes de José y Simón en el PR.
 - [ ] Se actualiza al cierre de cada sprint (sección 9).

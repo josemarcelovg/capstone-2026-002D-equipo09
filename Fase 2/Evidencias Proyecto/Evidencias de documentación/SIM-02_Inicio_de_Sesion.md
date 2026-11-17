@@ -5,7 +5,7 @@
 | **Tarea** | [SIM-02] Inicio y cierre de sesión con Supabase Auth |
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | José Vargas (código y relación usuario–empresa) y Joaquín Orellana (criterios de JOA-01) |
-| **Estado** | Propuesta para revisión del equipo |
+| **Estado** | Aprobado por el equipo e implementado (SIM-03: 14 de 14 criterios) |
 | **Fecha** | 16-10-2026 (actualizado el 28-10-2026) |
 
 Este documento explica cómo funciona el inicio de sesión de MicroLogist, qué decisiones se tomaron y cómo configurarlo. Cubre los ítems **PB-01**, **PB-02** y **PB-03** del [Product Backlog](JOA-08_Product_Backlog.md) y los criterios 7.1 a 7.4 de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md). Las pruebas formales con dos empresas las hace **SIM-03**. Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
@@ -206,5 +206,5 @@ Con las cuentas de la Empresa A y la Empresa B, ejecutar en SIM-03:
 - [x] README y `.env.example` actualizados.
 - [x] Supabase Auth configurado y cuentas de prueba creadas (sección 5).
 - [x] Comprobación inicial con Supabase real: criterios 7.2 y 7.3 (sección 6.3).
-- [ ] Resto de las pruebas con Supabase real, con evidencia en SIM-03 (sección 6.4).
-- [ ] Revisión de José y Joaquín en el PR.
+- [x] Resto de las pruebas con Supabase real, con evidencia en SIM-03 (sección 6.4).
+- [x] Revisión de José y Joaquín en el PR.

@@ -5,7 +5,7 @@
 | **Tarea** | [JOA-01] Definir alcance, campos y reglas del módulo de vehículos |
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Revisión** | José Vargas (modelo de datos) y Simón Jofré (acceso y pruebas) |
-| **Estado** | Propuesta para revisión del equipo |
+| **Estado** | Aprobado por el equipo e implementado en la primera entrega (SIM-03: 14 de 14 criterios) |
 | **Fecha** | 24-09-2026 (actualizado el 28-10-2026) |
 
 Este documento fija las reglas que necesitan **JOS-02** (modelo de datos), **JOS-03** (lógica de vehículos), **JOA-02** (interfaz), **SIM-02** (acceso) y **SIM-03** (pruebas). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
@@ -53,7 +53,7 @@ Siguen dentro del producto, aunque no sean parte de esta primera entrega:
 - Pagos, facturación y suscripciones.
 - Integraciones con organismos externos (por ejemplo, consulta automática de revisión técnica).
 - Inteligencia artificial y analítica avanzada (posible evolución futura).
-- Adjuntar archivos de documentos en la primera entrega **[POR CONFIRMAR para el módulo de documentos]**.
+- Adjuntar archivos de documentos: no está en el MVP ([JOA-10](JOA-10_Reglas_Modulo_Documentos.md), sección 2).
 
 ---
 
@@ -78,7 +78,7 @@ Nombres orientativos; José puede ajustarlos en el esquema Prisma manteniendo la
 |---|---|---|---|
 | `id` | uuid | Sí | Generado por el sistema. |
 | `nombre` | texto (2–100) | Sí | Nombre de fantasía o razón social. |
-| `rut` | texto | No | Formato RUT chileno con dígito verificador. Único si se ingresa. **[POR CONFIRMAR]** si será obligatorio. |
+| `rut` | texto | No | Formato RUT chileno con dígito verificador. Único si se ingresa. Es opcional: los datos obligatorios de la empresa son el nombre y el correo de contacto (PB-14). |
 | `email_contacto` | email | Sí | Correo que recibirá los avisos de vencimiento. |
 | `telefono` | texto | No | Solo como dato de contacto; no se usa para avisos. |
 | `created_at`, `updated_at` | fecha y hora | Sí | Automáticos. |
@@ -162,7 +162,7 @@ El vehículo **no** tiene columnas de revisión técnica, SOAP ni permiso de cir
 
 - **No existe eliminar.** Para sacar un vehículo se cambia a `inactivo`. Así se conserva su historial (turnos y documentos futuros).
 - Un vehículo `inactivo` se puede reactivar.
-- **[POR CONFIRMAR para el módulo de avisos]:** los vehículos inactivos no deberían generar avisos de vencimiento.
+- Los documentos de un vehículo inactivo no generan avisos de vencimiento ([JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md), sección 2).
 
 ---
 
@@ -191,15 +191,15 @@ Mensajes sugeridos:
 
 **Decisión confirmada:** los avisos de vencimiento se envían **exclusivamente por correo electrónico**. No se usará WhatsApp, SMS ni otro canal.
 
-Este punto **no es parte de la primera entrega**. Se definirá junto con el módulo de documentos. Pendiente de acordar:
+Este punto no fue parte de la primera entrega. Se definió en [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md) y se implementó en [SIM-11](SIM-11_Alertas_por_Correo.md):
 
-| Tema | Propuesta inicial | Estado |
+| Tema | Decisión | Dónde |
 |---|---|---|
-| Destinatario | `email_contacto` de la empresa | **[POR CONFIRMAR]** |
-| Anticipación | 30, 7 y 1 días antes, y el día en que vence | **[POR CONFIRMAR]** |
-| Hora y zona horaria | Un envío diario en la mañana, hora de Chile (`America/Santiago`) | **[POR CONFIRMAR]** |
-| Evitar duplicados | Registrar cada envío (documento + plazo) y no repetirlo | **[POR CONFIRMAR]** |
-| Proveedor de correo | Por elegir (por ejemplo, Resend o SMTP) | **[POR CONFIRMAR]** |
+| Destinatario | `email_contacto` de la empresa | JOA-13, sección 2 |
+| Anticipación | 30, 7 y 1 días antes, y el día en que vence | JOA-13, sección 2 |
+| Hora y zona horaria | Un envío diario en la mañana (11:00 UTC), con las fechas en hora de Chile (`America/Santiago`) | JOA-13, sección 2 |
+| Evitar duplicados | Registrar cada envío (documento + fecha + plazo) y no repetirlo | JOA-13, sección 2 |
+| Proveedor de correo | Resend, con Vercel Cron como programador diario | JOA-13 y SIM-11 |
 
 ---
 

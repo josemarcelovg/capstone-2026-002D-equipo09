@@ -5,7 +5,7 @@
 | **Tarea** | [JOA-09] Definir campos y reglas del módulo de conductores |
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Revisión** | José Vargas (modelo de datos y lógica) y Simón Jofré (pruebas) |
-| **Estado** | Propuesta para revisión del equipo |
+| **Estado** | Aprobado por el equipo e implementado (SIM-08: 14 de 14 criterios) |
 | **Fecha** | 27-10-2026 |
 
 Este documento fija las reglas de los ítems **PB-08**, **PB-09** y **PB-10** del [Product Backlog](JOA-08_Product_Backlog.md), como pide su sección 8 antes de desarrollar cada módulo. Cierra los **[POR CONFIRMAR]** de esos ítems y de la tabla `conductor` del [modelo de datos](JOS-04_Modelo_de_Datos.md) (secciones 3.4 y 6). Sigue el mismo formato que [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), y todo lo que no se dice aquí funciona igual que en vehículos.
@@ -196,4 +196,4 @@ Base para las pruebas del módulo (SIM-04, casos CP-FUN-20 a CP-FUN-22) y para l
 - [x] Comportamiento de las pantallas y mensajes exactos (sección 4).
 - [x] Ejemplos de datos válidos e inválidos con RUT ficticios (sección 5).
 - [x] Criterios de aceptación numerados para las pruebas (sección 6).
-- [ ] Revisión y aprobación de José y Simón en el PR.
+- [x] Revisión y aprobación de José y Simón en el PR.

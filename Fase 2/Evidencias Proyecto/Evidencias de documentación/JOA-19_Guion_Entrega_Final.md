@@ -5,7 +5,7 @@
 | **Tarea** | [JOA-19] Validar la entrega final y preparar la demostración |
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Revisión** | José Vargas (datos y despliegue) y Simón Jofré (pruebas y avisos) |
-| **Estado** | Propuesta: el alcance está terminado y probado; faltan preparar los datos de producción (sección 3.7) y ensayar el guion con el equipo |
+| **Estado** | Listo para la Evaluación Final: alcance terminado y probado, y datos de producción preparados (sección 3.7). Falta ensayar con el equipo |
 | **Fecha** | 04-11-2026 · actualizado el 16-11-2026 (apertura con el aviso del mismo día y demo a las 11:30) |
 
 Este documento hace para la entrega final de la semana 15 lo mismo que [JOA-03](JOA-03_Validacion_Primera_Entrega.md) hizo para la primera: comprobar que se cumple el alcance aprobado en la [sección 2 de JOA-08](JOA-08_Product_Backlog.md) (PR #50) y guiar la demostración para la profesora. Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
@@ -16,9 +16,9 @@ Este documento hace para la entrega final de la semana 15 lo mismo que [JOA-03](
 
 > Un responsable de una empresa de transporte entra a MicroLogist publicado en Vercel, ve sus vehículos y conductores, sabe quién maneja cada vehículo, controla los documentos con su vencimiento y recibe un aviso por correo antes de que venzan, sin que otra empresa vea sus datos.
 
-- **Duración:** 15 minutos de demostración y 5 de preguntas **[POR CONFIRMAR]**.
+- **Duración:** 20 minutos en total, que se cortan estrictamente en el minuto 20: unos 14 de exposición, con 4 y medio de demo, y el resto para preguntas (sección 9).
 - **Fecha:** martes 17-11-2026, a las 11:30 (semana 15, SIM-06, sección 6). En este documento el día de la demo se llama **D**.
-- **Quién presenta:** Joaquín conduce el guion; José responde lo de datos y despliegue; Simón, lo de avisos y pruebas **[POR CONFIRMAR]**.
+- **Quién presenta:** los tres; el reparto de cada bloque y de cada paso de la demo está en la sección 9.
 - **Dónde:** en `https://micrologist-equipo09.vercel.app`, con el proyecto de Supabase de producción y sus cuentas de prueba ([SIM-10](SIM-10_Despliegue_Vercel.md)). **Plan B**, si el despliegue no está listo: en local con `npm run dev` y la base de desarrollo; todo el guion funciona igual, salvo que el aviso se ejecuta a mano (paso 20) en vez de llegar en la mañana.
 
 ---
@@ -291,7 +291,7 @@ Falta el ensayo con el equipo en Vercel (sección 7.2).
 - [x] Guion de la presentación ante la comisión, con tiempos y responsables (sección 9).
 - [ ] Guion ensayado con el equipo, con inicio de sesión y en Vercel.
 - [ ] Presentación cronometrada en unos 14 minutos, con los tres exponiendo.
-- [ ] Revisión de José y Simón en el PR.
+- [x] Revisión de José y Simón en el PR.
 
 ---
 
@@ -403,7 +403,7 @@ Quedan fuera, salvo que pregunten: validaciones del formulario (12 y 14), renova
 - [ ] Antes de entrar, comprobar que llegaron los dos correos de la mañana, revisando también spam; si no llegaron, ejecutar el proceso en Vercel (**Settings > Cron Jobs**) (sección 3.5).
 - [ ] Tener abiertos: las diapositivas, un navegador con la Empresa A, otro (o una ventana de incógnito) con la Empresa B, y el correo en el teléfono y en el computador.
 - [ ] Copiar antes la dirección del documento del paso 26, para no buscarla en vivo.
-- [ ] **Plan B:** si la aplicación o la red fallan, mostrar las capturas de `Aplicación/Capturas` y seguir el guion con ellas.
+- [ ] **Plan B:** si la aplicación o la red fallan, mostrar las capturas de `Aplicación/Capturas` y seguir el guion con ellas: las 12 a 15 (vehículos, conductores, documentos y la ficha con el conductor asignado, con el diseño actual) y las 10 y 11 (el correo de aviso).
 - [ ] Alguien lleva el tiempo y avisa a los 10 minutos.
 
 ### 9.6 Preguntas probables y quién responde

@@ -5,7 +5,7 @@
 | **Tarea** | [JOA-10] Definir campos y reglas del módulo de documentos |
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Revisión** | José Vargas (modelo de datos) y Simón Jofré (pruebas y fechas) |
-| **Estado** | Propuesta para revisión del equipo |
+| **Estado** | Aprobado por el equipo e implementado (SIM-12: 23 de 23 criterios) |
 | **Fecha** | 27-10-2026 |
 | **Actualización** | 10-11-2026: base legal de los tipos de documento (sección 3.5) |
 
@@ -247,4 +247,4 @@ Base para las pruebas del módulo (SIM-04, casos CP-FUN-23 a CP-FUN-25) y para l
 - [x] Comportamiento de las pantallas y mensajes (sección 4).
 - [x] Ejemplos de datos válidos e inválidos (sección 5).
 - [x] Criterios de aceptación numerados para las pruebas (sección 6).
-- [ ] Revisión y aprobación de José y Simón en el PR.
+- [x] Revisión y aprobación de José y Simón en el PR.

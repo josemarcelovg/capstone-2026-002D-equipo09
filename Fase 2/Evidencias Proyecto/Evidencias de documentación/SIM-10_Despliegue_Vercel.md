@@ -180,4 +180,4 @@ node --experimental-strip-types --test "tests/integracion/aplicacion.test.ts"
 - [x] GitHub Action de pruebas y despliegue, con las carpetas que pide el curso (sección 4.5).
 - [x] Secretos de la Action cargados y Git desconectado en el proyecto de Vercel (secciones 4.3 y 4.5). La Action publicó en producción el 08-11-2026.
 - [ ] Comprobaciones de la sección 5 registradas.
-- [ ] Revisión de José y Joaquín en el PR.
+- [x] Revisión de José y Joaquín en el PR.

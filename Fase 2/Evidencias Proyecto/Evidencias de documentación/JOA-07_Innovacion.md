@@ -5,7 +5,7 @@
 | **Tarea** | [JOA-07] Documentar la innovación del proyecto |
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Revisión** | José Vargas y Simón Jofré |
-| **Estado** | Propuesta para revisión del equipo |
+| **Estado** | Aprobado por el equipo |
 | **Fecha** | 12-10-2026 · actualizado el 16-11-2026 (multas de la revisión técnica y el permiso de circulación, y respaldo del diagnóstico) |
 
 Este documento explica qué tiene de nuevo MicroLogist: qué problema existe hoy, cómo lo resuelven las empresas, qué alternativas hay en el mercado y qué aporta nuestro producto frente a ellas. Se apoya en la [Product Vision](JOA-04_Product_Vision.md) y en el alcance definido en [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md).
@@ -144,7 +144,7 @@ Para no prometer más de lo que el producto hará:
 
 ## 6. Cómo comprobaremos el aporte
 
-El aporte se verificará con los indicadores de la sección 6.2 de la Product Vision, que siguen **[POR CONFIRMAR]** con el equipo:
+El aporte se verificará con los indicadores de la sección 6.2 de la Product Vision, acordados por el equipo (al 16-11-2026 se cumplen 3 de 5):
 
 | Lo que afirmamos | Cómo lo comprobaremos |
 |---|---|
@@ -176,4 +176,4 @@ Consultadas el 12-10-2026. Los precios y funciones de productos de terceros pued
 - [x] Alternativas existentes y sus limitaciones (sección 3).
 - [x] Aporte concreto de MicroLogist frente a esas alternativas (sección 4).
 - [x] No se atribuyen al MVP funciones fuera de alcance: inteligencia artificial, GPS ni analítica avanzada (sección 5).
-- [ ] Revisión de José y Simón en el PR.
+- [x] Revisión de José y Simón en el PR.
