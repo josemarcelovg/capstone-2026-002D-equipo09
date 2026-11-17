@@ -5,7 +5,7 @@
 | **Tarea** | [JOA-06] Elaborar diagramas UML |
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Revisión** | José Vargas (modelo de datos) y Simón Jofré (acceso) |
-| **Estado** | Propuesta para revisión del equipo |
+| **Estado** | Aprobado por el equipo. Las decisiones que quedaban pendientes se tomaron después en JOA-09, JOA-10, JOA-13, JOA-14 y SIM-02 (anotadas en cada sección) |
 | **Fecha** | 12-10-2026 |
 | **Actualización** | 16-10-2026: se agregan los diagramas de clases y de componentes |
 
@@ -82,7 +82,7 @@ flowchart LR
 |---|---|---|
 | **Responsable de la empresa** | El dueño o encargado de una empresa de transporte. Es el único usuario del MVP, con rol `admin`. | Inicia sesión y gestiona los vehículos, conductores, documentos y turnos de su empresa. También recibe los correos de aviso. |
 | **Tiempo** | No es una persona: representa que el sistema actúa solo, una vez al día. | Inicia el envío de avisos de vencimiento. |
-| **Proveedor de correo** | Servicio externo que entrega los correos. Cuál se usará está **[POR CONFIRMAR]** (JOA-01, sección 5). | Recibe del sistema cada aviso y lo entrega al responsable. |
+| **Proveedor de correo** | Servicio externo que entrega los correos. Es **Resend** (JOA-13). | Recibe del sistema cada aviso y lo entrega al responsable. |
 
 El **conductor no es un actor**: en el MVP es un registro dentro del sistema y no inicia sesión (JOA-01, sección 2.1).
 
@@ -160,7 +160,7 @@ sequenceDiagram
 
 - El mensaje de error es el mismo si el correo no existe o si la contraseña es incorrecta (JOA-01, criterio 7.2).
 - La contraseña nunca se guarda en nuestras tablas: la maneja Supabase Auth.
-- El detalle de cómo se guarda la sesión se define en SIM-02 **[POR CONFIRMAR]**.
+- La sesión se guarda en cookies que maneja Supabase Auth ([SIM-02](SIM-02_Inicio_de_Sesion.md)).
 
 ### 2.2 Registro de vehículo (CU-03)
 
@@ -263,14 +263,14 @@ sequenceDiagram
     end
 ```
 
-Este flujo todavía tiene decisiones pendientes, todas de la sección 5 de JOA-01:
+Las decisiones que este flujo dejaba pendientes se tomaron en [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md), sección 2:
 
-- Los plazos de aviso: 30, 7 y 1 días antes, y el día del vencimiento **[POR CONFIRMAR]**.
-- La hora del proceso diario: en la mañana, hora de Chile **[POR CONFIRMAR]**.
-- El destinatario: el correo de contacto de la empresa **[POR CONFIRMAR]**.
-- El registro de cada envío para no repetir avisos **[POR CONFIRMAR]**.
-- Que los documentos de vehículos inactivos no generen avisos **[POR CONFIRMAR]**.
-- Qué pasa si el envío falla **[POR CONFIRMAR]**.
+- Los plazos de aviso: 30, 7 y 1 días antes, y el día del vencimiento.
+- La hora del proceso diario: una vez al día a las 11:00 UTC, en la mañana en Chile, con Vercel Cron.
+- El destinatario: el correo de contacto de la empresa, en un solo correo diario por empresa.
+- Cada envío se registra en `aviso_enviado` y nunca se repite.
+- Los documentos de vehículos y conductores inactivos no generan avisos.
+- Si el envío falla, se reintenta una vez de inmediato; si vuelve a fallar, queda como `fallido` y se reintenta al día siguiente.
 
 El único canal es el correo: no hay avisos por WhatsApp, SMS ni notificaciones push.
 
@@ -281,7 +281,7 @@ El único canal es el correo: no hay avisos por WhatsApp, SMS ni notificaciones 
 Muestra las clases del dominio del MVP, sus atributos principales y cómo se relacionan.
 
 - **Empresa, Usuario y Vehículo** siguen los campos acordados en JOA-01 (secciones 2.2 y 3), con los nombres que ya usa el código (por ejemplo, `capacidadPasajeros` en vez de `capacidad_pasajeros`).
-- **Conductor, Documento, Turno y AvisoEnviado** todavía no tienen sus reglas definidas, así que sus atributos son una propuesta **[POR CONFIRMAR]**, tomada del Product Backlog.
+- **Conductor, Documento, Turno y AvisoEnviado** no tenían sus reglas cuando se hizo este diagrama; hoy están en JOA-09, JOA-10, JOA-13 y JOA-14, y sus tablas en [JOS-04](JOS-04_Modelo_de_Datos.md).
 
 ```mermaid
 classDiagram
@@ -387,9 +387,9 @@ classDiagram
 
 - **Atributos opcionales:** los marcados con `[0..1]`. Todas las clases tienen además las fechas de creación y de actualización, que se omiten para que el diagrama se lea mejor.
 - **Usuario:** en el MVP cada empresa tiene un solo usuario, con rol `admin`. La relación permite agregar más usuarios después sin cambiar el modelo (JOA-01, sección 2.1). Su `id` es el mismo de Supabase Auth y la contraseña no se guarda en esta clase.
-- **Nada se elimina:** los vehículos se desactivan en vez de borrarse (JOA-01, sección 3.2). Que los conductores sigan la misma regla está **[POR CONFIRMAR]**.
-- **Estado del documento:** no se guarda; se calcula con la fecha de vencimiento cada vez que se consulta. "Por vencer" significa 30 días o menos **[POR CONFIRMAR]**.
-- **Jornada del turno:** los valores posibles están **[POR CONFIRMAR]** (propuesta: mañana, tarde y noche).
+- **Nada se elimina:** los vehículos se desactivan en vez de borrarse (JOA-01, sección 3.2). Los conductores siguen la misma regla (JOA-09, sección 2).
+- **Estado del documento:** no se guarda; se calcula con la fecha de vencimiento cada vez que se consulta. "Por vencer" significa 30 días o menos (JOA-10, sección 2).
+- **Jornada del turno:** mañana, tarde y noche ([JOA-14](JOA-14_Reglas_Modulo_Turnos.md), sección 2).
 - **Ingresos:** no aparece porque es un módulo opcional, fuera del MVP.
 
 ---
@@ -438,18 +438,18 @@ flowchart LR
     avisos -->|envía el correo| correo
 ```
 
-| Componente | Qué hace | Estado al 16-10-2026 |
+| Componente | Qué hace | Estado al 16-11-2026 |
 |---|---|---|
-| **Interfaz web** | Las pantallas que usa el responsable, en computador o celular. | Pantallas de vehículos hechas en JOA-02. |
-| **Páginas** | Arman cada pantalla en el servidor con los datos de la empresa del usuario. | Listado, registro y detalle de vehículos, hechos en JOA-02. |
-| **Acciones del servidor** | Reciben lo que el usuario guarda, comprueban la sesión, validan y llaman al acceso a datos. | Hechas en JOA-02, todavía sin sesión. |
-| **Validación** | Las reglas de JOA-01 en esquemas Zod, compartidas por el formulario y el servidor. | Esquema de vehículo hecho en JOA-02. |
-| **Acceso a datos** | Las consultas a la base de datos, siempre filtradas por la empresa de la sesión. | Hoy usa datos de ejemplo en memoria; JOS-03 lo conecta con Prisma. |
-| **Supabase Auth** | Comprueba las credenciales y maneja las sesiones. | Pendiente en SIM-02. |
-| **Base de datos** | Guarda empresas, usuarios, vehículos y el resto del modelo. | En configuración en JOS-02. |
-| **Proceso de avisos** | Busca los documentos por vencer y pide enviar los correos. | Pendiente, módulo del MVP completo. |
-| **Programador diario** | Inicia el proceso de avisos una vez al día. Cuál se usará está **[POR CONFIRMAR]**. | Pendiente. |
-| **Proveedor de correo** | Entrega los correos de aviso. Cuál se usará está **[POR CONFIRMAR]** (JOA-01, sección 5). | Pendiente. |
+| **Interfaz web** | Las pantallas que usa el responsable, en computador o celular. | Vehículos, conductores, documentos y Mi empresa. |
+| **Páginas** | Arman cada pantalla en el servidor con los datos de la empresa del usuario. | Listado, registro y ficha de cada módulo. |
+| **Acciones del servidor** | Reciben lo que el usuario guarda, comprueban la sesión, validan y llaman al acceso a datos. | Hechas, con la empresa tomada de la sesión (SIM-02). |
+| **Validación** | Las reglas de JOA-01 en esquemas Zod, compartidas por el formulario y el servidor. | Esquemas de vehículos, conductores, documentos y empresa. |
+| **Acceso a datos** | Las consultas a la base de datos, siempre filtradas por la empresa de la sesión. | Con Prisma sobre PostgreSQL (JOS-03). |
+| **Supabase Auth** | Comprueba las credenciales y maneja las sesiones. | Hecho en SIM-02. |
+| **Base de datos** | Guarda empresas, usuarios, vehículos y el resto del modelo. | PostgreSQL en Supabase, con seis tablas y RLS (JOS-02 y JOS-04). |
+| **Proceso de avisos** | Busca los documentos por vencer y pide enviar los correos. | Hecho en SIM-11. |
+| **Programador diario** | Inicia el proceso de avisos una vez al día. | Vercel Cron (SIM-11). |
+| **Proveedor de correo** | Entrega los correos de aviso. | Resend (SIM-11). |
 
 ---
 
@@ -466,4 +466,4 @@ El diagrama de clases (sección 3) es la propuesta de la que debería partir el 
 - [x] Diagramas de clases y de componentes (secciones 3 y 4). Se agregaron porque la revisión de evidencias de la profesora considera cuatro tipos de diagrama UML: casos de uso, clases, secuencia y componentes.
 - [x] Diagramas versionados en el repositorio como texto Mermaid dentro de este archivo.
 - [ ] Revisión de coherencia con el modelo de datos de JOS-04, cuando exista (sección 5).
-- [ ] Revisión de José y Simón en el PR.
+- [x] Revisión de José y Simón en el PR.

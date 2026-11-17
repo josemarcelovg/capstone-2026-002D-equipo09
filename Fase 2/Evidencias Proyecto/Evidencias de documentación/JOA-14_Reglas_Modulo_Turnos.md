@@ -5,7 +5,7 @@
 | **Tarea** | [JOA-14] Definir campos y reglas del módulo de turnos |
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Revisión** | José Vargas (modelo de datos) y Simón Jofré (implementación y pruebas) |
-| **Estado** | Propuesta para revisión del equipo |
+| **Estado** | Aprobado por el equipo; se implementa para la defensa de título |
 | **Fecha** | 28-10-2026 |
 
 Este documento fija las reglas de los ítems **PB-17**, **PB-18** y **PB-19** del [Product Backlog](JOA-08_Product_Backlog.md), como pide su sección 8 antes de desarrollar cada módulo. Cierra los **[POR CONFIRMAR]** de esos ítems y de la tabla `turno` del [modelo de datos](JOS-04_Modelo_de_Datos.md) (secciones 3.6 y 3.9). Sigue el mismo formato que [JOA-09](JOA-09_Reglas_Modulo_Conductores.md) y [JOA-10](JOA-10_Reglas_Modulo_Documentos.md). Las decisiones se acordaron en equipo el 28-10-2026.
@@ -47,7 +47,7 @@ Fuera de este módulo:
 | Editar y anular | Solo turnos de **hoy en adelante**. Los pasados quedan como registro y no se modifican. | El registro de quién manejó qué no debe cambiar después. |
 | Dueño pasa a mantención o inactivo | Sus turnos futuros **no se anulan solos**. Se muestran con un aviso ("Vehículo en mantención", "Vehículo inactivo" o "Conductor inactivo") para reasignarlos. Al desactivar un vehículo o conductor con turnos futuros, el mensaje de confirmación indica cuántos tiene. | El responsable decide qué hacer. Anular en automático podría dejar jornadas sin cubrir sin que nadie se dé cuenta. |
 | Vista | **Por día**, en 3 bloques (mañana, tarde y noche). | Es la pregunta del día a día: "¿quién sale hoy?". Se ve bien en el celular. |
-| Implementación | Iteración 7 (14-12 al 27-12), entre Simón y Joaquín. | Depende de conductores (Iteración 4). |
+| Implementación | Para la defensa de título, entre Simón y Joaquín (JOA-08, sección 2). | Depende de conductores (Iteración 4). |
 
 ---
 
@@ -185,4 +185,4 @@ Base para las pruebas del módulo (SIM-04, casos CP-FUN-29 a CP-FUN-31). Se prue
 - [x] Comportamiento de las pantallas y mensajes (sección 4).
 - [x] Ejemplos válidos e inválidos (sección 5).
 - [x] Criterios de aceptación numerados (sección 6).
-- [ ] Revisión y aprobación de José y Simón en el PR.
+- [x] Revisión y aprobación de José y Simón en el PR.

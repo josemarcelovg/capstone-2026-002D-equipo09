@@ -5,7 +5,7 @@
 | **Tarea** | [SIM-05] Definir y aprobar la Definition of Done |
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Aprobación** | Joaquín Orellana, José Vargas y Simón Jofré |
-| **Estado** | Propuesta para aprobación del equipo |
+| **Estado** | Aprobada por el equipo y aplicada en cada PR |
 | **Fecha** | 29-09-2026 |
 
 ## 1. Para qué sirve

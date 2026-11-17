@@ -5,7 +5,7 @@
 | **Tarea** | [JOS-05] Configurar entorno Docker |
 | **Responsable** | José Vargas (Developer) |
 | **Revisión** | Simón Jofré o Joaquín Orellana (levantar el entorno en su computador) |
-| **Estado** | En revisión |
+| **Estado** | Aprobado por el equipo |
 | **Fecha** | 16-10-2026 |
 
 Con un solo comando, Docker levanta MicroLogist y una base de datos PostgreSQL propia, con las tablas y los datos de prueba ya cargados. **No necesita las claves de Supabase**: cualquier integrante, o la profesora, puede ejecutar la aplicación sin pedir credenciales.

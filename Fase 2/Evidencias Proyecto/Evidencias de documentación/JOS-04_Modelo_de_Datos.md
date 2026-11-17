@@ -5,7 +5,7 @@
 | **Tarea** | [JOS-04] Documentar modelo de datos: DER y diccionario |
 | **Responsable** | José Vargas (Developer) |
 | **Revisión** | Joaquín Orellana (coherencia con JOA-06 y JOA-08) |
-| **Estado** | Propuesta para revisión del equipo |
+| **Estado** | Aprobado por el equipo; implementado salvo `turno` e `ingreso`, que son trabajo futuro |
 | **Fecha** | 16-10-2026 (actualizado el 04-11-2026) |
 
 Este documento describe la base de datos de MicroLogist: qué tablas tiene, cómo se relacionan, qué guarda cada columna y cómo se separan los datos entre empresas. Se basa en las reglas de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), en el diagrama de clases de [JOA-06](JOA-06_Diagramas_UML.md) (sección 3) y en el [Product Backlog](JOA-08_Product_Backlog.md).
@@ -188,8 +188,8 @@ Cada empresa de transporte. Todos los demás datos cuelgan de ella (JOA-01, secc
 |---|---|---|---|
 | `id` | `uuid` | Sí | PK. |
 | `nombre` | `varchar(100)` | Sí | Nombre de fantasía o razón social. 2 a 100 caracteres (Zod, cuando exista el formulario de PB-14). |
-| `rut` | `varchar(12)` | No | Único si se ingresa. RUT chileno con dígito verificador. Si será obligatorio está **[POR CONFIRMAR]** (JOA-01, 2.2). |
-| `email_contacto` | `varchar(254)` | Sí | Correo que recibirá los avisos de vencimiento **[POR CONFIRMAR]** (JOA-01, sección 5). |
+| `rut` | `varchar(12)` | No | Único si se ingresa. RUT chileno con dígito verificador. Es opcional (PB-14). |
+| `email_contacto` | `varchar(254)` | Sí | Correo que recibe los avisos de vencimiento (JOA-13). |
 | `telefono` | `varchar(20)` | No | Solo contacto; no se usa para avisos. |
 | `modulo_ingresos` | `boolean` | Sí | **Propuesta** (PB-21): activa el módulo de ingresos. Por defecto `false` **[POR CONFIRMAR]**. |
 | `created_at` | `timestamptz` | Sí | Por defecto, la fecha y hora actual. |
@@ -287,12 +287,12 @@ Restricción única adicional: `(id, empresa_id)`.
 | `empresa_id` | `uuid` | Sí | FK a `empresa`. |
 | `fecha` | `date` | Sí | |
 | `jornada` | `jornada` | Sí | Ver sección 3.9. |
-| `vehiculo_id` | `uuid` | Sí | FK compuesta a `vehiculo`. Al crear, no puede estar inactivo; si puede estar en mantención está **[POR CONFIRMAR]** (PB-17). |
+| `vehiculo_id` | `uuid` | Sí | FK compuesta a `vehiculo`. Al crear, debe estar activo: ni en mantención ni inactivo (JOA-14). |
 | `conductor_id` | `uuid` | Sí | FK compuesta a `conductor`. Al crear, debe estar activo. |
-| `anulado` | `boolean` | Sí | Por defecto `false`. Anular marca el turno en vez de borrarlo **[POR CONFIRMAR]** (PB-19). |
+| `anulado` | `boolean` | Sí | Por defecto `false`. Anular marca el turno en vez de borrarlo (JOA-14). |
 | `created_at`, `updated_at` | `timestamptz` | Sí | |
 
-- Un vehículo o un conductor no puede estar en dos turnos de la misma fecha y jornada **[POR CONFIRMAR]** (PB-17). Se implementa con dos índices únicos parciales, `(vehiculo_id, fecha, jornada)` y `(conductor_id, fecha, jornada)`, que solo cuentan los turnos no anulados. Prisma no los define en el esquema, así que se agregan a mano en la migración, como el RLS de JOS-02.
+- Un vehículo o un conductor no puede estar en dos turnos de la misma fecha y jornada (JOA-14). Se implementa con dos índices únicos parciales, `(vehiculo_id, fecha, jornada)` y `(conductor_id, fecha, jornada)`, que solo cuentan los turnos no anulados. Prisma no los define en el esquema, así que se agregan a mano en la migración, como el RLS de JOS-02.
 - Índice `(empresa_id, fecha)` para ver los turnos de un día (PB-18).
 
 ### 3.7 `aviso_enviado` · implementada en SIM-11 (PB-15 y PB-16)
@@ -334,8 +334,8 @@ Restricción única: `(documento_id, fecha_vencimiento, dias_anticipacion)`. El 
 | `rol` | `admin` | Implementado |
 | `tipo_vehiculo` | `bus`, `minibus`, `van`, `furgon`, `automovil`, `otro` | Implementado |
 | `estado_vehiculo` | `activo` (por defecto), `en_mantencion`, `inactivo` | Implementado |
-| `tipo_documento` | `revision_tecnica`, `soap`, `permiso_circulacion`, `licencia_conducir`, `otro` | Propuesta (de JOA-06) |
-| `jornada` | `manana`, `tarde`, `noche` | Propuesta **[POR CONFIRMAR]** (PB-17) |
+| `tipo_documento` | `revision_tecnica`, `soap`, `permiso_circulacion`, `licencia_conducir`, `otro` | Implementado (JOA-10) |
+| `jornada` | `manana`, `tarde`, `noche` | Decidido en JOA-14; se crea con el módulo de turnos |
 | `estado_aviso` | `enviado`, `fallido` | Implementado (SIM-11) |
 
 El estado del documento (`vigente`, `por_vencer`, `vencido`) no es un tipo de la base de datos: se calcula (sección 3.5).
@@ -395,4 +395,4 @@ Las decisiones de conductores (campos obligatorios, RUT único por empresa y des
 - [x] Coherencia con el esquema Prisma de JOS-02 (secciones 3.1 a 3.3) y con el diagrama de clases de JOA-06 (sección 5).
 - [x] Tabla `conductor` implementada en JOS-09, igual que la sección 3.4.
 - [x] Tabla `documento` implementada, igual que la sección 3.5.
-- [ ] Revisión de Joaquín en el PR.
+- [x] Revisión de Joaquín en el PR.

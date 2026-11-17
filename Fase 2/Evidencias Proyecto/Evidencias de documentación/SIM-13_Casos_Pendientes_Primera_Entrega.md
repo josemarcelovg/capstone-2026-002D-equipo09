@@ -158,4 +158,4 @@ Consulta de solo lectura al terminar (hora de Chile):
 - [x] Corrección de OBS-03 de SIM-12 revisada en pantalla (sección 3.4).
 - [x] Evidencia sin datos personales reales: empresa y cuenta ficticias, sin contraseñas (sección 2).
 - [x] ERR-02 y la observación 1 corregidos y vueltos a probar el 11-11-2026, con `tests/guardado.test.ts` (sección 4).
-- [ ] Revisión de José y Joaquín en el PR.
+- [x] Revisión de José y Joaquín en el PR.

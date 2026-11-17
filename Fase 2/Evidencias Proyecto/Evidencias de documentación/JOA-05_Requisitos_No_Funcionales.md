@@ -5,7 +5,7 @@
 | **Tarea** | [JOA-05] Definir requisitos no funcionales verificables |
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Revisión** | Simón Jofré (seguridad) y José Vargas (rendimiento y datos) |
-| **Estado** | Propuesta para revisión del equipo |
+| **Estado** | Aprobado por el equipo. Los umbrales marcados [POR CONFIRMAR] se ajustan al medirlos (SIM-04, sección 9) |
 | **Fecha** | 12-10-2026 (actualizado el 28-10-2026) |
 
 Los requisitos no funcionales dicen **cómo** debe comportarse MicroLogist: qué tan seguro, rápido, fácil de usar, compatible y disponible debe ser. Lo que el sistema hace está en las reglas de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md) y en el Product Backlog (JOA-08).
@@ -148,4 +148,4 @@ Requisitos que ya tienen un criterio de aceptación en la sección 7 de JOA-01, 
 - [x] Cada requisito tiene un criterio medible y la forma de verificarlo.
 - [x] Los umbrales sin acuerdo están marcados como [POR CONFIRMAR] (resumen en la sección 8).
 - [ ] Relación con los casos de prueba de SIM-04: está por tipo de prueba (sección 7); faltan los identificadores de cada caso, que dependen de SIM-04.
-- [ ] Revisión de Simón (seguridad) y José (rendimiento y datos) en el PR.
+- [x] Revisión de Simón (seguridad) y José (rendimiento y datos) en el PR.
