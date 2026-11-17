@@ -161,4 +161,4 @@ No se encontraron errores. Dos observaciones menores, que no bloquean ningún cr
 - [x] Pruebas automáticas completas: 55 unitarias y 23 de integración (sección 3).
 - [x] Casos manuales ejecutados con las dos empresas: 14 de 14 criterios y 3 de 3 casos de seguridad (sección 4).
 - [x] Resultados confirmados en la base con consultas de solo lectura (sección 5).
-- [ ] Revisión de José y Joaquín en el PR.
+- [x] Revisión de José y Joaquín en el PR.

@@ -356,4 +356,4 @@ En cada entrega se actualizan las secciones 1, 5.1, 8 y 9, y se agrega una fila 
 - [x] Despliegue y operación con Vercel, Supabase y el servicio de correo, marcando lo pendiente (sección 8).
 - [x] Separado del manual de usuario y con historial para actualizarlo en cada entrega (sección 12).
 - [ ] Aportes de Simón (inicio de sesión y plan de pruebas) y de Joaquín cuando correspondan.
-- [ ] Revisión del equipo en el PR.
+- [x] Revisión del equipo en el PR.

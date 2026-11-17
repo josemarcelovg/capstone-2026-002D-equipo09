@@ -169,5 +169,5 @@ No se encontraron errores. Quedaron dos observaciones menores, que no bloqueaban
 - [x] Casos manuales ejecutados con las dos empresas: 15 de 15 criterios de JOA-10, 3 de 3 de PB-14 y 5 de 5 de PB-24 (sección 4).
 - [x] Resultados confirmados en la base con consultas de solo lectura (sección 5).
 - [x] Observaciones OBS-01 y OBS-03 corregidas, con sus pruebas: 125 unitarias y 43 de integración el 11-11-2026 (sección 7).
-- [ ] Tarjeta [SIM-12] en el tablero.
-- [ ] Revisión de José y Joaquín en el PR.
+- [x] Tarjeta [SIM-12] en el tablero.
+- [x] Revisión de José y Joaquín en el PR.

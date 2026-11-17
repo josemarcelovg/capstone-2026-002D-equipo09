@@ -5,7 +5,7 @@
 | **Tarea** | [SIM-03] Probar la primera entrega con dos empresas ficticias |
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | José Vargas y Joaquín Orellana |
-| **Estado** | Propuesta para revisión del equipo |
+| **Estado** | Ejecutado: 14 de 14 criterios aprobados |
 | **Fecha** | 21-10-2026 (observaciones corregidas el 27-10-2026) |
 
 Este documento registra las pruebas de la primera entrega ("iniciar sesión y registrar, listar y editar vehículos con datos persistentes, sin que una empresa pueda ver o modificar los datos de otra"). Se probaron los 14 criterios de aceptación de la sección 7 de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md) y los requisitos de seguridad de [JOA-05](JOA-05_Requisitos_No_Funcionales.md) que dependen de ellos. Cada caso tiene sus pasos, el resultado esperado y el resultado obtenido, como pide la [Definition of Done](SIM-05_Definition_of_Done.md) (sección 3.3).
@@ -198,4 +198,4 @@ El resto de los resultados (mensajes, códigos de respuesta y consultas a la bas
 - [x] Errores registrados: ninguno; observaciones menores con cómo reproducirlas (sección 6).
 - [x] Observaciones menores corregidas y comprobadas en la aplicación (sección 6).
 - [x] Evidencia sin datos personales reales: empresas y cuentas ficticias, sin contraseñas (secciones 2 y 7).
-- [ ] Revisión de José y Joaquín en el PR.
+- [x] Revisión de José y Joaquín en el PR.

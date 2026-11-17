@@ -5,7 +5,7 @@
 | **Tarea** | [SIM-04] Definir el plan de pruebas |
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (requisitos y backlog) y José Vargas (rendimiento y datos) |
-| **Estado** | Propuesta para revisión del equipo |
+| **Estado** | Aprobado por el equipo; en ejecución: 70 de 94 casos aprobados y ninguno rechazado (sección 9) |
 | **Fecha** | 21-10-2026 · actualizado el 22-10-2026 (pruebas de integración), el 27-10-2026 (encabezados de seguridad), el 28-10-2026 (decisiones de la reunión del 27-10), el 29-10-2026 (casos de conductores), el 02-11-2026 (resultados de SIM-08, entrega final en la semana 15, y CP-SEG-13 y ERR-01 con JOS-07), el 04-11-2026 (avisos por correo), el 09-11-2026 (versión publicada) y el 10-11-2026 (avisos con la base de datos, pruebas de rendimiento y resultados de SIM-12), el 11-11-2026 (estado de todos los casos, sección 9, y casos pendientes de la primera entrega en SIM-13) y el 15-11-2026 (CP-FUN-27 y 28 con un envío real) |
 
 Este plan define cómo se prueba MicroLogist: qué tipos de prueba hay, con qué técnicas se ejecutan, en qué entorno y con qué datos, cuándo se hacen y cómo se registran los resultados y los errores. Cada caso de prueba tiene un identificador que no cambia, y cada requisito de [JOA-05](JOA-05_Requisitos_No_Funcionales.md) queda cubierto por al menos un caso (sección 10). Los casos de la primera entrega ya tienen un estado, gracias a la ejecución de [SIM-03](SIM-03_Pruebas_Primera_Entrega.md). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
@@ -390,7 +390,7 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 - **Casos de la primera entrega:** los que se podían probar en local ya están (SIM-13, 11-11-2026), y ERR-02 y la observación de SIM-13 se corrigieron el mismo día. Los que quedan necesitan la versión publicada, usuarios u otros recursos (sección 9). ERR-01 se cerró el 02-11-2026 (JOS-07).
 - **Agregar los ID de la sección 10** a la sección 7 de JOA-05 (a cargo de Joaquín).
 - **Detallar los casos de turnos** si entran en una entrega (JOA-14, trabajo futuro). Los de conductores, documentos, empresa, conductor asignado y avisos ya están (CP-FUN-20 a 28 y CP-FUN-33, CP-INT-17 a 34).
-- **Fecha exacta** de la entrega de la semana 15 **[POR CONFIRMAR]** con la profesora.
+- **Fecha de la entrega de la semana 15:** martes 17-11-2026 (JOA-19).
 
 ---
 
@@ -409,4 +409,4 @@ Con esta tabla se completa la sección 7 de JOA-05: cada requisito tiene al meno
 - [x] Pruebas de rendimiento en el código: la parte de la base de CP-REN-03 y CP-REN-04, aprobadas el 10-11-2026 (sección 6.5).
 - [x] Casos de documentos, datos de la empresa y conductor asignado: CP-FUN-23 a CP-FUN-26 y CP-FUN-33, aprobados el 10-11-2026 en SIM-12 (sección 6.1).
 - [x] Casos pendientes de la primera entrega que se podían probar en local: CP-FUN-06, 08, 11 y 12 y CP-COM-02 y 03 aprobados, y CP-USA-03 parcial, el 11-11-2026 en SIM-13; ERR-02 registrado y cerrado el mismo día (secciones 6 y 9).
-- [ ] Revisión de Joaquín y José en el PR.
+- [x] Revisión de Joaquín y José en el PR.

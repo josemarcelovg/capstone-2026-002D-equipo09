@@ -5,7 +5,7 @@
 | **Tarea** | [JOA-04] Redactar Product Vision |
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Validación** | José Vargas y Simón Jofré |
-| **Estado** | Propuesta para validación del equipo |
+| **Estado** | Aprobado por el equipo; actualizado con el objetivo ajustado de la entrega final |
 | **Fecha** | 24-09-2026 · actualizado el 16-11-2026 (objetivo ajustado, resultado de los indicadores, fecha de la entrega final y lo que se entrega para la defensa de título) |
 
 Este documento explica qué queremos lograr con MicroLogist, para quién es y por qué vale la pena. Sirve de base para el Product Backlog (JOA-08), los requisitos no funcionales (JOA-05) y la sección de innovación (JOA-07). Las reglas detalladas del primer módulo están en [JOA-01_Reglas_Modulo_Vehiculos.md](JOA-01_Reglas_Modulo_Vehiculos.md).
@@ -118,7 +118,7 @@ Desarrollar y validar una plataforma web simple que centralice la gestión de ve
 
 ### 6.2 Indicadores propuestos
 
-Las metas siguen **[POR CONFIRMAR]** con el equipo y se validarán con usuarios reales o de prueba. La última columna dice cómo está cada una al 16-11-2026: 3 de 5 cumplidas y 2 sin medir.
+Las metas las acordó el equipo; las que dependen de personas se miden en la prueba con usuarios (SIM-04, CP-USA-01 y 02). La última columna dice cómo está cada una al 16-11-2026: 3 de 5 cumplidas y 2 sin medir.
 
 | Indicador | Meta propuesta | Resultado al 16-11-2026 |
 |---|---|---|
@@ -151,7 +151,7 @@ Las metas siguen **[POR CONFIRMAR]** con el equipo y se validarán con usuarios 
 | 14 | MVP integrado |
 | 18 | Entrega final |
 
-Las fechas exactas de cada semana están **[POR CONFIRMAR]** con el cronograma del equipo.
+Las fechas de cada iteración están en [SIM-06](SIM-06_Sprint_Backlog_y_Retrospectivas.md), sección 3.
 
 **Cambio de fecha:** en la revisión del 28-10-2026 la entrega final se adelantó de la semana 18 a la **semana 15**. La presentación ante la comisión es el martes 17-11-2026 ([JOA-19](JOA-19_Guion_Entrega_Final.md)).
 
@@ -198,4 +198,4 @@ Los tres participan en análisis, diseño, desarrollo, pruebas y documentación.
 - [x] Usuarios objetivo de todos los rubros de transporte de pasajeros (sección 3).
 - [x] Problema, objetivo del producto y valor que entrega (secciones 2, 4, 5 y 6).
 - [x] Alcance, limitaciones y lo que queda fuera (sección 7 y JOA-01).
-- [ ] Validación de José y Simón en el PR.
+- [x] Validación de José y Simón en el PR.
