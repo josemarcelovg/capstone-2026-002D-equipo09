@@ -349,7 +349,7 @@ Son ideas guía, no un texto para leer de memoria. Cada uno las dice con sus pal
 
 **7. Metodología y calidad (Simón, 2:00).**
 - "Trabajamos con Scrum en 4 iteraciones de 2 semanas, con un tablero en GitHub Projects, Sprint Backlog y retrospectivas" ([SIM-06](SIM-06_Sprint_Backlog_y_Retrospectivas.md)).
-- "Cada cambio entró por un PR revisado por otro integrante: más de 90 PR. Cada PR pasa automáticamente lint, tipos, 130 pruebas unitarias, pruebas de integración con PostgreSQL, `npm audit` y pruebas de rendimiento, y se publica solo en Vercel" ([SIM-10](SIM-10_Despliegue_Vercel.md)).
+- "Cada cambio entró por un PR, más de 100 en total, y casi todos con la aprobación de otro integrante; los pocos que no la tuvieron quedaron registrados en la retrospectiva. Cada PR pasa automáticamente lint, tipos, 130 pruebas unitarias, pruebas de integración con PostgreSQL, `npm audit` y pruebas de rendimiento, y se publica solo en Vercel" ([SIM-10](SIM-10_Despliegue_Vercel.md)).
 - "El plan de pruebas tiene 94 casos: 70 aprobados y ninguno rechazado. Los parciales y pendientes tienen el motivo escrito, por ejemplo, Outlook no se probó" ([SIM-04](SIM-04_Plan_de_Pruebas.md), sección 9).
 
 **8. Lo que tenemos y lo que viene para la defensa de título (Simón, 1:00), y 9. cierre (Joaquín, 0:15).**
@@ -418,4 +418,4 @@ Quedan fuera, salvo que pregunten: validaciones del formulario (12 y 14), renova
 | ¿Cuánto cuesta mantenerlo? | José | Hoy nada: todo está en planes gratis. Con más uso, el primer costo sería el dominio propio para los correos. |
 | ¿Lo probaron con usuarios reales? | Joaquín | Todavía no: es parte de lo que traeremos a la defensa de título (CP-USA-01 y 02). |
 | ¿Por qué no está turnos, si estaba en el objetivo? | Joaquín | Porque la entrega se adelantó a la semana 15 y priorizamos el control de vencimientos, que es el problema principal (PR #50). Las reglas de turnos ya están escritas y es lo primero para la defensa de título. |
-| ¿Qué harían distinto? | Cada uno | Una idea por persona, de su retrospectiva (SIM-06, sección 4). |
+| ¿Qué harían distinto? | Cada uno | Una idea por persona, de la retrospectiva de la Iteración 4 (SIM-06, sección 4.4): Joaquín, configurar los servicios externos en la primera semana; Simón, crear la tarjeta antes de abrir el PR para que el tablero refleje el trabajo; José, revisar los PR cada día en vez de acumularlos. |
