@@ -14,6 +14,7 @@ import {
   type FiltroDocumentos,
 } from "../../src/lib/documentos-filtros.ts";
 import { fechaDesdeBase, fechaParaBase, sumarDias } from "../../src/lib/fechas.ts";
+import { validarTurno } from "../../src/lib/turnos.ts";
 import { formatearPatente, normalizarPatente, validarVehiculo } from "../../src/lib/vehiculos.ts";
 
 // Pruebas con la base de datos real. Cada prueba crea sus datos en una transacción que se
@@ -759,19 +760,146 @@ describe("Documentos en la base de datos", { skip: sinBase }, () => {
   });
 });
 
+// Valida con el mismo esquema que usa la app. Por defecto, en la mañana de dentro de 7 días.
+async function crearTurno(tx: Tx, empresaId: string, cambios: Record<string, unknown>) {
+  const resultado = validarTurno({ fecha: sumarDias(HOY, 7), jornada: "manana", ...cambios }, HOY);
+  assert.ok(resultado.ok, `Datos de prueba inválidos: ${JSON.stringify(resultado)}`);
+  const { fecha, ...datos } = resultado.datos;
+  return tx.turno.create({ data: { ...datos, fecha: fechaParaBase(fecha), empresaId } });
+}
+
+// Empresa con dos vehículos y dos conductores para armar turnos.
+async function empresaConFlota(tx: Tx, nombre: string) {
+  const empresa = await crearEmpresa(tx, nombre);
+  const [bus, van] = [
+    await crearVehiculo(tx, empresa, { patente: "BBCD12" }),
+    await crearVehiculo(tx, empresa, { patente: "FGHJ34" }),
+  ];
+  const [pedro, maria] = [
+    await crearConductor(tx, empresa, { nombre: "Pedro Soto" }),
+    await crearConductor(tx, empresa, { nombre: "María Muñoz", rut: "22.222.222-2" }),
+  ];
+  return { empresa, bus, van, pedro, maria };
+}
+
+describe("Turnos en la base de datos", { skip: sinBase }, () => {
+  test("PB-17 · guarda un turno tal como lo valida el formulario y aparece en su día (JOA-14, criterio 1)", async () => {
+    await sinGuardar(async (tx) => {
+      const { empresa, bus, pedro } = await empresaConFlota(tx, "Empresa A");
+      await crearTurno(tx, empresa, {
+        fecha: "25-11-2026",
+        jornada: "tarde",
+        vehiculoId: ` ${bus.id} `,
+        conductorId: pedro.id,
+        empresaId: randomUUID(),
+      });
+
+      const delDia = await tx.turno.findMany({
+        where: { empresaId: empresa, fecha: fechaParaBase("2026-11-25") },
+      });
+      assert.equal(delDia.length, 1);
+      const [turno] = delDia;
+      assert.equal(fechaDesdeBase(turno.fecha), "2026-11-25");
+      assert.equal(turno.jornada, "tarde");
+      assert.equal(turno.vehiculoId, bus.id);
+      assert.equal(turno.conductorId, pedro.id);
+      assert.equal(turno.anulado, false);
+      assert.equal(turno.motivoAnulacion, null);
+    });
+  });
+
+  test("PB-17 · la base no deja repetir un vehículo ni un conductor en la misma fecha y jornada (JOA-14, criterio 3)", async () => {
+    await debeFallar("P2002", async (tx) => {
+      const { empresa, bus, pedro, maria } = await empresaConFlota(tx, "Empresa A");
+      await crearTurno(tx, empresa, { vehiculoId: bus.id, conductorId: pedro.id });
+      await crearTurno(tx, empresa, { vehiculoId: bus.id, conductorId: maria.id });
+    });
+
+    await debeFallar("P2002", async (tx) => {
+      const { empresa, bus, van, pedro } = await empresaConFlota(tx, "Empresa A");
+      await crearTurno(tx, empresa, { vehiculoId: bus.id, conductorId: pedro.id });
+      await crearTurno(tx, empresa, { vehiculoId: van.id, conductorId: pedro.id });
+    });
+  });
+
+  test("PB-17 · el mismo vehículo y conductor pueden tener turno en otra jornada u otro día (JOA-14, criterio 3)", async () => {
+    await sinGuardar(async (tx) => {
+      const { empresa, bus, pedro } = await empresaConFlota(tx, "Empresa A");
+      const mismos = { vehiculoId: bus.id, conductorId: pedro.id };
+      await crearTurno(tx, empresa, mismos);
+      await crearTurno(tx, empresa, { ...mismos, jornada: "noche" });
+      await crearTurno(tx, empresa, { ...mismos, fecha: sumarDias(HOY, 8) });
+      assert.equal(await tx.turno.count({ where: { empresaId: empresa } }), 3);
+    });
+  });
+
+  test("PB-19 · anular libera el vehículo y el conductor, y el motivo solo se guarda si está anulado (JOA-14, criterio 10)", async () => {
+    await sinGuardar(async (tx) => {
+      const { empresa, bus, van, pedro, maria } = await empresaConFlota(tx, "Empresa A");
+      const turno = await crearTurno(tx, empresa, { vehiculoId: bus.id, conductorId: pedro.id });
+      await tx.turno.update({
+        where: { id: turno.id, empresaId: empresa },
+        data: { anulado: true, motivoAnulacion: "Se cambió el recorrido." },
+      });
+      await crearTurno(tx, empresa, { vehiculoId: bus.id, conductorId: maria.id });
+      await crearTurno(tx, empresa, { vehiculoId: van.id, conductorId: pedro.id });
+
+      const anulado = await tx.turno.findUniqueOrThrow({ where: { id: turno.id } });
+      assert.equal(anulado.anulado, true);
+      assert.equal(anulado.motivoAnulacion, "Se cambió el recorrido.");
+      assert.equal(await tx.turno.count({ where: { empresaId: empresa, anulado: false } }), 2);
+    });
+
+    await debeRechazarPor("turno_motivo_anulacion_check", async (tx) => {
+      const { empresa, bus, pedro } = await empresaConFlota(tx, "Empresa A");
+      const turno = await crearTurno(tx, empresa, { vehiculoId: bus.id, conductorId: pedro.id });
+      await tx.turno.update({
+        where: { id: turno.id, empresaId: empresa },
+        data: { motivoAnulacion: "Sin anular" },
+      });
+    });
+  });
+
+  test("PB-17 · cada empresa tiene sus turnos, y no se puede usar un vehículo o conductor de otra (JOA-14, criterios 12 y 13)", async () => {
+    await sinGuardar(async (tx) => {
+      const a = await empresaConFlota(tx, "Empresa A");
+      const b = await empresaConFlota(tx, "Empresa B");
+      await crearTurno(tx, a.empresa, { vehiculoId: a.bus.id, conductorId: a.pedro.id });
+      await crearTurno(tx, b.empresa, { vehiculoId: b.bus.id, conductorId: b.pedro.id });
+
+      const delDia = { fecha: fechaParaBase(sumarDias(HOY, 7)) };
+      const deA = await tx.turno.findMany({ where: { ...delDia, empresaId: a.empresa } });
+      assert.deepEqual(deA.map((turno) => turno.vehiculoId), [a.bus.id]);
+    });
+
+    await debeFallar("P2003", async (tx) => {
+      const a = await empresaConFlota(tx, "Empresa A");
+      const b = await empresaConFlota(tx, "Empresa B");
+      await crearTurno(tx, a.empresa, { vehiculoId: b.bus.id, conductorId: a.pedro.id });
+    });
+
+    await debeFallar("P2003", async (tx) => {
+      const a = await empresaConFlota(tx, "Empresa A");
+      const b = await empresaConFlota(tx, "Empresa B");
+      await crearTurno(tx, a.empresa, { vehiculoId: a.bus.id, conductorId: b.pedro.id });
+    });
+  });
+});
+
 describe("Seguridad del esquema", { skip: sinBase }, () => {
   test("CP-INT-10 · RLS activado en las tablas y sin columna de contraseña en usuario", async () => {
     const tablas = await prisma.$queryRaw<{ tabla: string; rls: boolean }[]>`
       select relname as tabla, relrowsecurity as rls
       from pg_class
       where relnamespace = 'public'::regnamespace
-        and relname in ('aviso_enviado', 'conductor', 'documento', 'empresa', 'usuario', 'vehiculo')
+        and relname in ('aviso_enviado', 'conductor', 'documento', 'empresa', 'turno', 'usuario', 'vehiculo')
       order by relname`;
     assert.deepEqual(tablas, [
       { tabla: "aviso_enviado", rls: true },
       { tabla: "conductor", rls: true },
       { tabla: "documento", rls: true },
       { tabla: "empresa", rls: true },
+      { tabla: "turno", rls: true },
       { tabla: "usuario", rls: true },
       { tabla: "vehiculo", rls: true },
     ]);

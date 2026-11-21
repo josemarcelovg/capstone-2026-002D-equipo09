@@ -1,8 +1,9 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient, type Prisma } from "../src/generated/prisma/client.ts";
+import { fechaParaBase, hoyEnChile, sumarDias } from "../src/lib/fechas.ts";
 
-// Datos de prueba: dos empresas inventadas con sus vehículos y conductores.
+// Datos de prueba: dos empresas inventadas con sus vehículos, conductores y turnos.
 // Se puede ejecutar varias veces: solo crea lo que falta y no cambia lo que ya existe.
 // Los usuarios no se crean aquí porque su id viene de Supabase Auth.
 
@@ -167,6 +168,108 @@ const conductores: ConductorSeed[] = [
   },
 ];
 
+// Turnos de ayer a 3 días más, contados desde el día en que se carga el seed por primera vez.
+// Incluyen los casos de JOA-14: doblar jornada, un anulado con otro turno en su lugar, y avisos
+// por vehículo en mantención y conductor inactivo. La empresa B repite patente, conductor, fecha
+// y jornada de la A, porque cada empresa tiene sus propios turnos.
+const hoy = hoyEnChile();
+const dia = (dias: number) => fechaParaBase(sumarDias(hoy, dias));
+
+const turnos: Prisma.TurnoCreateManyInput[] = [
+  // Empresa A
+  {
+    id: "a3000000-0000-4000-8000-000000000001",
+    empresaId: EMPRESA_A,
+    fecha: dia(-1),
+    jornada: "manana",
+    vehiculoId: "a1000000-0000-4000-8000-000000000001", // BBCD12
+    conductorId: "a2000000-0000-4000-8000-000000000001", // Pedro Soto
+  },
+  {
+    id: "a3000000-0000-4000-8000-000000000002",
+    empresaId: EMPRESA_A,
+    fecha: dia(0),
+    jornada: "manana",
+    vehiculoId: "a1000000-0000-4000-8000-000000000001", // BBCD12
+    conductorId: "a2000000-0000-4000-8000-000000000001", // Pedro Soto
+  },
+  {
+    id: "a3000000-0000-4000-8000-000000000003",
+    empresaId: EMPRESA_A,
+    fecha: dia(0),
+    jornada: "tarde",
+    vehiculoId: "a1000000-0000-4000-8000-000000000003", // FGHJ34
+    conductorId: "a2000000-0000-4000-8000-000000000002", // María Muñoz
+  },
+  {
+    id: "a3000000-0000-4000-8000-000000000004",
+    empresaId: EMPRESA_A,
+    fecha: dia(0),
+    jornada: "noche",
+    vehiculoId: "a1000000-0000-4000-8000-000000000001", // BBCD12
+    conductorId: "a2000000-0000-4000-8000-000000000001", // Pedro Soto
+  },
+  {
+    id: "a3000000-0000-4000-8000-000000000005",
+    empresaId: EMPRESA_A,
+    fecha: dia(1),
+    jornada: "manana",
+    vehiculoId: "a1000000-0000-4000-8000-000000000003", // FGHJ34
+    conductorId: "a2000000-0000-4000-8000-000000000002", // María Muñoz
+    anulado: true,
+    motivoAnulacion: "Se cambió el recorrido.",
+  },
+  {
+    id: "a3000000-0000-4000-8000-000000000006",
+    empresaId: EMPRESA_A,
+    fecha: dia(1),
+    jornada: "manana",
+    vehiculoId: "a1000000-0000-4000-8000-000000000003", // FGHJ34
+    conductorId: "a2000000-0000-4000-8000-000000000001", // Pedro Soto
+  },
+  {
+    id: "a3000000-0000-4000-8000-000000000007",
+    empresaId: EMPRESA_A,
+    fecha: dia(2),
+    jornada: "tarde",
+    vehiculoId: "a1000000-0000-4000-8000-000000000002", // HJKL78, en mantención
+    conductorId: "a2000000-0000-4000-8000-000000000002", // María Muñoz
+  },
+  {
+    id: "a3000000-0000-4000-8000-000000000008",
+    empresaId: EMPRESA_A,
+    fecha: dia(3),
+    jornada: "manana",
+    vehiculoId: "a1000000-0000-4000-8000-000000000001", // BBCD12
+    conductorId: "a2000000-0000-4000-8000-000000000003", // Luis Rojas, inactivo
+  },
+  // Empresa B
+  {
+    id: "b3000000-0000-4000-8000-000000000001",
+    empresaId: EMPRESA_B,
+    fecha: dia(0),
+    jornada: "manana",
+    vehiculoId: "b1000000-0000-4000-8000-000000000001", // BBCD12
+    conductorId: "b2000000-0000-4000-8000-000000000001", // Pedro Soto
+  },
+  {
+    id: "b3000000-0000-4000-8000-000000000002",
+    empresaId: EMPRESA_B,
+    fecha: dia(0),
+    jornada: "tarde",
+    vehiculoId: "b1000000-0000-4000-8000-000000000003", // KLPR56
+    conductorId: "b2000000-0000-4000-8000-000000000002", // Ana Díaz
+  },
+  {
+    id: "b3000000-0000-4000-8000-000000000003",
+    empresaId: EMPRESA_B,
+    fecha: dia(1),
+    jornada: "noche",
+    vehiculoId: "b1000000-0000-4000-8000-000000000003", // KLPR56
+    conductorId: "b2000000-0000-4000-8000-000000000002", // Ana Díaz
+  },
+];
+
 async function main() {
   for (const { id, ...datos } of empresas) {
     await prisma.empresa.upsert({ where: { id }, update: {}, create: { id, ...datos } });
@@ -177,8 +280,10 @@ async function main() {
   for (const { id, ...datos } of conductores) {
     await prisma.conductor.upsert({ where: { id }, update: {}, create: { id, ...datos } });
   }
+  // Se salta los turnos que ya existen y los que chocan con otro turno de esa fecha y jornada.
+  await prisma.turno.createMany({ data: turnos, skipDuplicates: true });
   console.log(
-    `Seed listo: ${empresas.length} empresas, ${vehiculos.length} vehículos y ${conductores.length} conductores.`,
+    `Seed listo: ${empresas.length} empresas, ${vehiculos.length} vehículos, ${conductores.length} conductores y ${turnos.length} turnos.`,
   );
 }
 

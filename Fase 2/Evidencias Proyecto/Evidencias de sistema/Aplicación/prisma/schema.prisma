@@ -53,6 +53,15 @@ enum EstadoAviso {
   @@map("estado_aviso")
 }
 
+/// Parte del día del turno, sin horario fijo.
+enum Jornada {
+  manana
+  tarde
+  noche
+
+  @@map("jornada")
+}
+
 /// Todos los datos pertenecen a una empresa.
 model Empresa {
   id            String   @id @default(uuid()) @db.Uuid
@@ -70,6 +79,7 @@ model Empresa {
   conductores Conductor[]
   documentos  Documento[]
   avisos      AvisoEnviado[]
+  turnos      Turno[]
 
   @@map("empresa")
 }
@@ -113,6 +123,7 @@ model Vehiculo {
   /// El conductor tiene que ser de la misma empresa.
   conductor  Conductor?  @relation(fields: [conductorId, empresaId], references: [id, empresaId], onDelete: Restrict, onUpdate: Restrict)
   documentos Documento[]
+  turnos     Turno[]
 
   /// La patente no se repite dentro de una empresa, pero otra empresa sí puede tenerla.
   @@unique([empresaId, patente])
@@ -139,6 +150,7 @@ model Conductor {
   empresa            Empresa     @relation(fields: [empresaId], references: [id])
   documentos         Documento[]
   vehiculosAsignados Vehiculo[]
+  turnos             Turno[]
 
   /// El RUT no se repite dentro de una empresa, pero otra empresa sí puede tenerlo.
   @@unique([empresaId, rut])
@@ -198,4 +210,30 @@ model AvisoEnviado {
   @@unique([documentoId, fechaVencimiento, diasAnticipacion])
   @@index([empresaId])
   @@map("aviso_enviado")
+}
+
+/// Vehículo y conductor asignados a una fecha y jornada. No se borra: se anula.
+model Turno {
+  id              String   @id @default(uuid()) @db.Uuid
+  empresaId       String   @map("empresa_id") @db.Uuid
+  fecha           DateTime @db.Date
+  jornada         Jornada
+  vehiculoId      String   @map("vehiculo_id") @db.Uuid
+  conductorId     String   @map("conductor_id") @db.Uuid
+  anulado         Boolean  @default(false)
+  /// Opcional, y solo si el turno está anulado.
+  motivoAnulacion String?  @map("motivo_anulacion") @db.VarChar(200)
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  empresa   Empresa   @relation(fields: [empresaId], references: [id])
+  /// El vehículo y el conductor tienen que ser de la misma empresa.
+  vehiculo  Vehiculo  @relation(fields: [vehiculoId, empresaId], references: [id, empresaId], onDelete: Restrict, onUpdate: Restrict)
+  conductor Conductor @relation(fields: [conductorId, empresaId], references: [id, empresaId], onDelete: Restrict, onUpdate: Restrict)
+
+  /// Un vehículo y un conductor tienen como máximo un turno por fecha y jornada. Los anulados no cuentan.
+  @@unique([vehiculoId, fecha, jornada], map: "turno_vehiculo_id_fecha_jornada_key", where: raw("NOT anulado"))
+  @@unique([conductorId, fecha, jornada], map: "turno_conductor_id_fecha_jornada_key", where: raw("NOT anulado"))
+  @@index([empresaId, fecha])
+  @@map("turno")
 }
