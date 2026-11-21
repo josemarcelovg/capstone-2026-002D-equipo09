@@ -6,7 +6,7 @@
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Revisión** | José Vargas (datos y despliegue) y Simón Jofré (pruebas y avisos) |
 | **Estado** | Listo para la Evaluación Final: alcance terminado y probado, y datos de producción preparados (sección 3.7). Falta ensayar con el equipo |
-| **Fecha** | 04-11-2026 · actualizado el 16-11-2026 (apertura con el aviso del mismo día y demo a las 11:30) |
+| **Fecha** | 04-11-2026 · actualizado el 16-11-2026 (apertura con el aviso del mismo día y demo a las 11:30) y el 21-11-2026 (pregunta de Docker) |
 
 Este documento hace para la entrega final de la semana 15 lo mismo que [JOA-03](JOA-03_Validacion_Primera_Entrega.md) hizo para la primera: comprobar que se cumple el alcance aprobado en la [sección 2 de JOA-08](JOA-08_Product_Backlog.md) (PR #50) y guiar la demostración para la profesora. Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -425,5 +425,6 @@ Quedan fuera, salvo que pregunten: validaciones del formulario (12 y 14), renova
 | ¿Lo probaron con usuarios reales? | Joaquín | Todavía no: es parte de lo que traeremos a la defensa de título (CP-USA-01 y 02). |
 | ¿Por qué no está turnos, si estaba en el objetivo? | Joaquín | Porque la entrega se adelantó a la semana 15 y priorizamos el control de vencimientos, que es el problema principal (PR #50). Las reglas de turnos ya están escritas y es lo primero para la defensa de título. |
 | ¿Qué tipo de arquitectura usaron? | José | Un monolito modular en capas: una sola aplicación Next.js con páginas, acciones del servidor, validación y acceso a datos separados, sobre una base PostgreSQL multiempresa compartida, en servicios administrados (Vercel y Supabase). No usamos microservicios porque somos tres con plazo fijo y un monolito alcanza para el MVP (JOS-06, sección 2). |
+| ¿Cómo se hace el despliegue? ¿Usan Docker? | José | Docker se usa solo para desarrollo: con `docker compose up --build` levanta la aplicación y un PostgreSQL local con las migraciones y los datos de prueba, sin las claves de Supabase ([JOS-05](JOS-05_Entorno_Docker.md)). El despliegue no usa Docker: cada cambio pasa por una GitHub Action que corre las pruebas y publica en Vercel, y la base de datos está en Supabase ([SIM-10](SIM-10_Despliegue_Vercel.md)). Así no hay un servidor propio que mantener. La comisión la hizo el 17-11-2026. |
 | ¿En qué se diferencian de Fleetio o cloudFleet? | Joaquín | Ellos también avisan vencimientos. La diferencia es el enfoque: sin módulos de mantenimiento que configurar, en español, con los documentos y la patente de Chile, y pensado para una empresa chica de pasajeros (JOA-07, sección 4). |
 | ¿Qué harían distinto? | Cada uno | Una idea por persona, de la retrospectiva de la Iteración 4 (SIM-06, sección 4.4): Joaquín, configurar los servicios externos en la primera semana; Simón, crear la tarjeta antes de abrir el PR para que el tablero refleje el trabajo; José, revisar los PR cada día en vez de acumularlos. |
