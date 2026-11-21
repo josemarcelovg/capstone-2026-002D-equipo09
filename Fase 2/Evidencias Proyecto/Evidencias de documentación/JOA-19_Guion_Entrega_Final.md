@@ -6,7 +6,7 @@
 | **Responsable** | Joaquín Orellana (Product Owner) |
 | **Revisión** | José Vargas (datos y despliegue) y Simón Jofré (pruebas y avisos) |
 | **Estado** | Listo para la Evaluación Final: alcance terminado y probado, y datos de producción preparados (sección 3.7). Falta ensayar con el equipo |
-| **Fecha** | 04-11-2026 · actualizado el 16-11-2026 (apertura con el aviso del mismo día y demo a las 11:30) y el 21-11-2026 (pregunta de Docker) |
+| **Fecha** | 04-11-2026 · actualizado el 16-11-2026 (apertura con el aviso del mismo día y demo a las 11:30) y el 20-11-2026 (pregunta de Docker) |
 
 Este documento hace para la entrega final de la semana 15 lo mismo que [JOA-03](JOA-03_Validacion_Primera_Entrega.md) hizo para la primera: comprobar que se cumple el alcance aprobado en la [sección 2 de JOA-08](JOA-08_Product_Backlog.md) (PR #50) y guiar la demostración para la profesora. Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
