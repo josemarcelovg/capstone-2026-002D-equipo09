@@ -5,8 +5,8 @@
 | **Tarea** | [JOS-06] Redactar manual técnico |
 | **Responsable** | José Vargas (Developer). Aportan Simón Jofré y Joaquín Orellana. |
 | **Revisión** | Simón Jofré y Joaquín Orellana |
-| **Versión** | 0.2.2 |
-| **Fecha** | 16-10-2026 (actualizado el 16-11-2026) |
+| **Versión** | 0.2.3 |
+| **Fecha** | 16-10-2026 (actualizado el 20-11-2026) |
 
 Este manual explica **cómo está construido MicroLogist y cómo se instala, configura, despliega y mantiene**. Está pensado para quien desarrolla o administra el sistema: el equipo, la profesora o quien continúe el proyecto. No es el manual de usuario: no explica cómo usar las pantallas.
 
@@ -88,7 +88,7 @@ Reglas de diseño que siguen todas las pantallas:
 | Tecnología | Versión | Uso |
 |---|---|---|
 | Node.js | 24 | Entorno de ejecución (el equipo usa 24) |
-| Next.js | 16.4.4 | Framework web (App Router, server actions, Turbopack) |
+| Next.js | 16.4.6 | Framework web (App Router, server actions, Turbopack) |
 | React | 19.2.8 | Interfaz |
 | TypeScript | 5 | Lenguaje |
 | Tailwind CSS | 4 | Estilos adaptables a computador y celular |
@@ -314,6 +314,8 @@ Implementados en [SIM-11](SIM-11_Alertas_por_Correo.md) (PB-15 y PB-16):
 
 **Dependencias al día (JOS-07, 02-11-2026):** se actualizaron Next.js y `eslint-config-next` de 16.3.6 a 16.4.4 y `zod` a 4.6.7, y se ejecutó `npm audit fix` (sin `--force`). No basta con cualquier 16.4: hasta la 16.4.0, Next.js tiene 2 vulnerabilidades críticas de ejecución remota de código. `npm audit --omit=dev` informa 0 vulnerabilidades, lo que cumple CP-SEG-13 y cierra ERR-01 de [SIM-04](SIM-04_Plan_de_Pruebas.md). `npm audit` completo informa 16 vulnerabilidades moderadas, todas en herramientas de desarrollo: vienen de `minimatch` ([GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249), publicado el 30-10-2026), que llega a través de ESLint y no forma parte de la aplicación en producción. No se usa `npm audit fix --force` porque propone bajar ESLint a la versión 4.
 
+**Vulnerabilidades del 20-11-2026 (ERR-03, JOA-55):** Next.js y `eslint-config-next` pasan de 16.4.4 a 16.4.6. Prisma 7.10.1, la última versión publicada, trae `effect` 3.20.0, vulnerable hasta la 3.22.0; como todavía no hay una versión de Prisma que lo corrija, `package.json` fuerza `effect` 3.22.5 con `"overrides": { "effect": "3.22.5" }`, sin bajar Prisma a la versión 6. Se comprobó con `prisma validate`, `prisma generate`, lint, tipos, las 130 pruebas unitarias y el build. **Hay que quitar el `overrides`** cuando Prisma publique una versión que traiga `effect` 3.22.1 o superior.
+
 ---
 
 ## 10. Mejoras técnicas pendientes
@@ -355,6 +357,7 @@ Implementados en [SIM-11](SIM-11_Alertas_por_Correo.md) (PB-15 y PB-16):
 | 0.2 | 10-11-2026 | Inicio de sesión con Supabase Auth (SIM-02) en las secciones 2.1, 4, 5.1, 8 y 9. Estructura del código y pruebas al día: conductores, conductor asignado, documentos, Mi empresa y avisos por correo (SIM-11). Despliegue publicado con la GitHub Action (SIM-10), con las pruebas de integración en una base PostgreSQL de prueba y `npm audit` en cada PR; variables de Production y Preview, `URL_PUBLICA` y `ORIGENES_DESARROLLO`; región `cle1` en `vercel.json`; seed que no pisa datos editados; reintento inmediato de los avisos. Mejoras pendientes nuevas y cuatro problemas frecuentes nuevos. |
 | 0.2.1 | 15-11-2026 | Sección 1: conductor asignado, documentos, Mi empresa y avisos por correo terminados (SIM-12 y SIM-11). Sección 8.3: Resend configurado y probado con un envío real, destinatarios y spam sin dominio propio, y cómo ejecutar el proceso a mano. |
 | 0.2.2 | 16-11-2026 | Sección 2: tipo de arquitectura (monolito modular en capas, cliente-servidor, multiempresa con base compartida y servicios administrados) y por qué se eligió cada característica. |
+| 0.2.3 | 20-11-2026 | ERR-03 (JOA-55): Next.js 16.4.6 y `effect` 3.22.5 forzado con `overrides`, porque Prisma 7.10.1 trae una versión vulnerable (secciones 3 y 9). |
 
 En cada entrega se actualizan las secciones 1, 5.1, 8 y 9, y se agrega una fila a esta tabla.
 
