@@ -6,7 +6,7 @@
 | **Responsable** | Simón Jofré (Scrum Master) |
 | **Revisión** | Joaquín Orellana (Product Owner) y José Vargas |
 | **Estado** | En curso: se actualiza al inicio y al cierre de cada iteración |
-| **Fecha** | 21-10-2026 (actualizado el 16-11-2026) |
+| **Fecha** | 21-10-2026 (actualizado el 20-11-2026) |
 
 Este documento registra qué tareas entraron en cada iteración (Sprint Backlog), cómo terminaron y qué aprendió el equipo en cada retrospectiva. Los datos salen del tablero del Project del equipo ("@josemarcelovg's Micrologist"), del historial de pull requests de GitHub y de los documentos [JOA-03](JOA-03_Validacion_Primera_Entrega.md) y [JOA-08](JOA-08_Product_Backlog.md). Los ítems del backlog se citan con su identificador `PB-xx`.
 
@@ -18,12 +18,14 @@ Las retrospectivas no se inventan: cada una trae los datos medibles de la iterac
 
 **Iteraciones del tablero** (campo *Iteration* del Project):
 
-| Iteración | Fechas | Duración | Estado al 11-11-2026 |
+| Iteración | Fechas | Duración | Estado al 20-11-2026 |
 |---|---|---|---|
 | 1 | 21-09 al 04-10 | 2 semanas | Completada |
 | 2 | 05-10 al 18-10 | 2 semanas | Completada |
 | 3 | 19-10 al 01-11 | 2 semanas | Completada; retrospectiva hecha el 27-10 |
-| 4 | 02-11 al 15-11 | 2 semanas | En curso (sección 6) |
+| 4 | 02-11 al 15-11 | 2 semanas | Completada; retrospectiva hecha el 16-11 (sección 6) |
+| 5 | 16-11 al 29-11 | 2 semanas | En curso (sección 7) |
+| 6 | 30-11 al 13-12 | 2 semanas | Planificada (sección 8) |
 
 Los sprints duran 2 semanas, igual que estas iteraciones (acordado en la retrospectiva del 27-10-2026).
 
@@ -45,6 +47,7 @@ Los sprints duran 2 semanas, igual que estas iteraciones (acordado en la retrosp
 | 2 | 8 | 8 | 16 (#5 a #20) | 6 |
 | 3 (al 21-10) | 6, más 2 sin iteración | 3 | 3 (#21 a #23) | 3 |
 | 4 (al 15-11) | 8, más 11 sin iteración | 17 (SIM-06 y SIM-10 siguen en curso) | 50 (#45 a #95, salvo el #59) | 45 |
+| 5 (al 20-11) | 9 | 0 | 16 (#96 a #112, salvo el #108), de la Evaluación Final | 12 |
 
 En la Iteración 4, unas 21 tareas con su PR unido no tenían tarjeta en el tablero al 11-11 (sección 4.4). El 16-11 se crearon las 9 que tienen identificador en los documentos (JOS-13 a JOS-17, JOA-19, JOA-32, SIM-12 y SIM-13), y JOA-15 y SIM-11 pasaron a *Done*.
 
@@ -342,7 +345,47 @@ Otras mejoras de Joaquín unidas el 10-11:
 
 ---
 
-## 7. Cómo se mantiene
+## 7. Iteración 5 · 16-11 al 29-11
+
+Planificada el 19-11-2026 con el plan de trabajo para la defensa de título. Ese día se crearon en el tablero las iteraciones 5 y 6 y sus 14 tarjetas, cada una con su responsable, prioridad (P0 lo comprometido para la defensa, P1 el resto) e iteración.
+
+La primera semana incluye la Evaluación Final de la Fase 2 (17-11-2026): los PR #96 a #112 son de esa entrega (informe, presentación, documentos al día y retrospectiva de la Iteración 4), no de estas tarjetas.
+
+**Objetivo:** dejar lista la base de turnos (tabla, validación y acceso a datos), el resumen de la flota y la prueba con usuarios, y avanzar las pruebas pendientes en producción.
+
+| Orden | Tarea | Responsable | Prioridad | Talla | Depende de |
+|---|---|---|---|---|---|
+| 1 | [JOS-19] Tabla de turnos: migración con índices y RLS, y turnos de ejemplo en el seed | José | P0 | **[POR CONFIRMAR]** | — |
+| 2 | [JOA-50] Reglas del resumen de la flota (PB-20) | Joaquín | P1 | **[POR CONFIRMAR]** | — |
+| 3 | [SIM-14] Casos de prueba de turnos y del resumen en SIM-04 (CP-FUN-29 a 32) | Simón | P0 | **[POR CONFIRMAR]** | JOA-50, para el resumen |
+| 4 | [SIM-16] Prueba con usuarios (CP-USA-01 y 02) | Simón, con Joaquín | P0 | **[POR CONFIRMAR]** | — |
+| 5 | [JOA-51] Validación de turnos (Zod y pruebas unitarias) | Joaquín | P0 | **[POR CONFIRMAR]** | — |
+| 6 | [JOS-20] Acceso a datos de turnos y pruebas de integración | José | P0 | **[POR CONFIRMAR]** | JOS-19 |
+| 7 | [JOS-21] Resumen de la flota (pantalla de inicio) | José | P1 | **[POR CONFIRMAR]** | JOA-50 |
+| 8 | [SIM-17] Pruebas pendientes en producción: con sesión, Lighthouse, Outlook, otros navegadores y un teléfono real | Simón | P1 | **[POR CONFIRMAR]** | — |
+| — | [SIM-18] Planificación de las iteraciones 5 y 6, y sus retrospectivas | Simón | P1 | **[POR CONFIRMAR]** | — |
+
+Las tallas (XS a XL) se estiman con el equipo, como pide la sección 1. Se aplican las acciones de mejora 8 a 10 (sección 5): crear la tarjeta antes de abrir el PR, configurar lo externo en la primera semana y revisar los PR cada día.
+
+---
+
+## 8. Iteración 6 · 30-11 al 13-12
+
+**Objetivo:** terminar turnos con sus pantallas, probar turnos y el resumen con las dos empresas ficticias, dejar la documentación al día y preparar la defensa de título.
+
+| Orden | Tarea | Responsable | Prioridad | Talla | Depende de |
+|---|---|---|---|---|---|
+| 1 | [JOA-52] Pantallas de turnos: vista del día, crear, editar y anular, filtros y avisos | Joaquín | P0 | **[POR CONFIRMAR]** | JOA-51 y JOS-20 |
+| 2 | [SIM-15] Probar turnos y el resumen con las dos empresas ficticias | Simón | P0 | **[POR CONFIRMAR]** | JOA-52 y JOS-21 |
+| 3 | [JOS-22] Documentación técnica al día (JOS-05 y JOS-06), con Docker como entorno de desarrollo | José | P1 | **[POR CONFIRMAR]** | JOS-19 a JOS-21 |
+| 4 | [JOA-53] Producto al día: retroalimentación de la comisión en JOA-08, pregunta de Docker en JOA-19, y JOA-04 y JOA-08 actualizados | Joaquín | P1 | **[POR CONFIRMAR]** | SIM-16 |
+| 5 | [JOA-54] Guion y presentación de la defensa, con ensayo de los tres | Joaquín, con los tres | P0 | **[POR CONFIRMAR]** | Todo lo anterior |
+
+**Si falta tiempo** (la fecha de la defensa está **[POR CONFIRMAR]** con la profesora): primero se sacan los filtros por vehículo y por conductor de turnos; después, el resumen de la flota (JOS-21). Turnos y la prueba con usuarios no se recortan, porque son lo comprometido para la defensa de título (JOA-08, sección 2). Ingresos (PB-21 a PB-23) queda fuera, salvo que la comisión lo pida.
+
+---
+
+## 9. Cómo se mantiene
 
 - **Al inicio de cada iteración:** se agrega su Sprint Backlog en la sección 3, con tareas, responsables, ítems del backlog y objetivo.
 - **Al cierre de cada iteración:** se completan los datos, se hace la retrospectiva con el equipo y se actualiza la sección 5.
@@ -360,10 +403,11 @@ Otras mejoras de Joaquín unidas el 10-11:
 | 11-11-2026 | Avance de la Iteración 4 al 11-11 (PR #79 a #86), fila de la Iteración 4 en el resumen, y datos y temas para su retrospectiva (sección 4.4). |
 | 15-11-2026 | Avance de la Iteración 4 al 15-11 (PR #86 a #95): avisos por correo terminados con un envío real y guion de la demostración del 17-11. |
 | 16-11-2026 | Cierre de la Iteración 4: datos al 15-11, retrospectiva (sección 4.4) y acciones de mejora 8 a 10. |
+| 20-11-2026 | Planificación de las iteraciones 5 (16-11 al 29-11) y 6 (30-11 al 13-12) para la defensa de título, con las 14 tarjetas del tablero (secciones 7 y 8); iteraciones 5 y 6 en el resumen y en la sección 1. |
 
 ---
 
-## 8. Checklist de SIM-06
+## 10. Checklist de SIM-06
 
 - [x] Iteraciones y fechas tomadas del tablero (sección 1).
 - [x] Sprint Backlog de las iteraciones 1, 2 y 3, con tareas, responsables, ítems del backlog y PR (sección 3).
@@ -376,4 +420,7 @@ Otras mejoras de Joaquín unidas el 10-11:
 - [x] Avance de la Iteración 4 al 09-11, al 10-11 y al 11-11-2026 (sección 6).
 - [x] Datos medibles y temas propuestos para la retrospectiva de la Iteración 4 (sección 4.4).
 - [x] Retrospectiva de la Iteración 4 al cierre, hecha el 16-11.
+- [x] Planificación de las iteraciones 5 y 6 (secciones 7 y 8), con sus tarjetas en el tablero.
+- [ ] Tallas de las tarjetas de las iteraciones 5 y 6, estimadas con el equipo.
+- [ ] Retrospectivas de las iteraciones 5 y 6 al cierre.
 - [x] Revisión de Joaquín y José en el PR.
