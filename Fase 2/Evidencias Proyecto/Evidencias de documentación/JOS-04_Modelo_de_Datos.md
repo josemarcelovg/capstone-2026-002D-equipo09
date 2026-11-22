@@ -5,8 +5,8 @@
 | **Tarea** | [JOS-04] Documentar modelo de datos: DER y diccionario |
 | **Responsable** | José Vargas (Developer) |
 | **Revisión** | Joaquín Orellana (coherencia con JOA-06 y JOA-08) |
-| **Estado** | Aprobado por el equipo; implementado salvo `turno` e `ingreso`, que son trabajo futuro |
-| **Fecha** | 16-10-2026 (actualizado el 04-11-2026) |
+| **Estado** | Aprobado por el equipo; implementado salvo `ingreso`, que es trabajo futuro |
+| **Fecha** | 16-10-2026 (actualizado el 21-11-2026) |
 
 Este documento describe la base de datos de MicroLogist: qué tablas tiene, cómo se relacionan, qué guarda cada columna y cómo se separan los datos entre empresas. Se basa en las reglas de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), en el diagrama de clases de [JOA-06](JOA-06_Diagramas_UML.md) (sección 3) y en el [Product Backlog](JOA-08_Product_Backlog.md).
 
@@ -18,8 +18,8 @@ El modelo tiene dos partes:
 
 | Parte | Tablas | Estado |
 |---|---|---|
-| **Implementada** | `empresa`, `usuario`, `vehiculo`, `conductor`, `documento`, `aviso_enviado` | Es exactamente lo que hay en `Aplicación/prisma/schema.prisma`. Las tres primeras vienen de la migración inicial (JOS-02); `conductor`, de la migración `conductores` (JOS-09); `documento`, de la migración `documentos`; `aviso_enviado`, de la migración `avisos` (SIM-11). |
-| **Propuesta** | `turno`, `ingreso` | Diseño para los módulos del MVP completo y el módulo opcional de ingresos. Se crea en la tarea de cada módulo, después de confirmar sus reglas. Lo no decidido está marcado **[POR CONFIRMAR]**. |
+| **Implementada** | `empresa`, `usuario`, `vehiculo`, `conductor`, `documento`, `aviso_enviado`, `turno` | Es exactamente lo que hay en `Aplicación/prisma/schema.prisma`. Las tres primeras vienen de la migración inicial (JOS-02); `conductor`, de la migración `conductores` (JOS-09); `documento`, de la migración `documentos`; `aviso_enviado`, de la migración `avisos` (SIM-11); `turno`, de la migración `turnos` (JOS-19). |
+| **Propuesta** | `ingreso` | Diseño para el módulo opcional de ingresos. Se crea en la tarea del módulo, después de confirmar sus reglas. Lo no decidido está marcado **[POR CONFIRMAR]**. |
 
 Convenciones:
 
@@ -148,6 +148,7 @@ erDiagram
         uuid vehiculo_id FK
         uuid conductor_id FK
         boolean anulado
+        varchar motivo_anulacion "opcional, solo si está anulado"
         timestamptz created_at
         timestamptz updated_at
     }
@@ -279,21 +280,26 @@ Otros puntos:
 
 Restricción única adicional: `(id, empresa_id)`.
 
-### 3.6 `turno` · propuesta (PB-17 a PB-19)
+### 3.6 `turno` · implementada en JOS-19 (PB-17 a PB-19)
+
+Un vehículo y un conductor asignados a una fecha y jornada. Las reglas están en [JOA-14](JOA-14_Reglas_Modulo_Turnos.md) y la migración es `20261121203605_turnos`.
 
 | Columna | Tipo | Obl. | Restricciones y reglas |
 |---|---|---|---|
 | `id` | `uuid` | Sí | PK. |
-| `empresa_id` | `uuid` | Sí | FK a `empresa`. |
-| `fecha` | `date` | Sí | |
+| `empresa_id` | `uuid` | Sí | FK a `empresa`. Lo asigna el servidor desde la sesión, nunca el formulario. |
+| `fecha` | `date` | Sí | Al crear, entre hoy y hoy + 60 días en hora de Chile (Zod, `src/lib/turnos.ts`). |
 | `jornada` | `jornada` | Sí | Ver sección 3.9. |
-| `vehiculo_id` | `uuid` | Sí | FK compuesta a `vehiculo`. Al crear, debe estar activo: ni en mantención ni inactivo (JOA-14). |
-| `conductor_id` | `uuid` | Sí | FK compuesta a `conductor`. Al crear, debe estar activo. |
+| `vehiculo_id` | `uuid` | Sí | FK compuesta `(vehiculo_id, empresa_id)` a `vehiculo`. Al elegirlo, debe estar activo: ni en mantención ni inactivo (acceso a datos, JOA-14). |
+| `conductor_id` | `uuid` | Sí | FK compuesta `(conductor_id, empresa_id)` a `conductor`. Al elegirlo, debe estar activo. |
 | `anulado` | `boolean` | Sí | Por defecto `false`. Anular marca el turno en vez de borrarlo (JOA-14). |
+| `motivo_anulacion` | `varchar(200)` | No | Solo en un turno anulado, con una regla CHECK en la migración (`turno_motivo_anulacion_check`). |
 | `created_at`, `updated_at` | `timestamptz` | Sí | |
 
-- Un vehículo o un conductor no puede estar en dos turnos de la misma fecha y jornada (JOA-14). Se implementa con dos índices únicos parciales, `(vehiculo_id, fecha, jornada)` y `(conductor_id, fecha, jornada)`, que solo cuentan los turnos no anulados. Prisma no los define en el esquema, así que se agregan a mano en la migración, como el RLS de JOS-02.
-- Índice `(empresa_id, fecha)` para ver los turnos de un día (PB-18).
+- Un vehículo o un conductor no puede estar en dos turnos de la misma fecha y jornada (JOA-14). Lo aseguran dos índices únicos parciales, `(vehiculo_id, fecha, jornada)` y `(conductor_id, fecha, jornada)`, con `WHERE NOT anulado`: los anulados no cuentan, así que anular libera el vehículo y el conductor. Se declaran en `schema.prisma` con la opción `partialIndexes`, como los de `documento`.
+- Que el vehículo y el conductor estén activos lo revisa la aplicación, no la base: si después uno pasa a mantención o se desactiva, sus turnos se mantienen y se muestran con un aviso (JOA-14, sección 2).
+- Índice `(empresa_id, fecha)` para ver los turnos de un día (PB-18). RLS activado, como las demás tablas.
+- El seed carga turnos de ejemplo en las dos empresas, de ayer a 3 días más: uno anulado con otro en su lugar, uno con un vehículo en mantención y otro con un conductor inactivo.
 
 ### 3.7 `aviso_enviado` · implementada en SIM-11 (PB-15 y PB-16)
 
@@ -335,7 +341,7 @@ Restricción única: `(documento_id, fecha_vencimiento, dias_anticipacion)`. El 
 | `tipo_vehiculo` | `bus`, `minibus`, `van`, `furgon`, `automovil`, `otro` | Implementado |
 | `estado_vehiculo` | `activo` (por defecto), `en_mantencion`, `inactivo` | Implementado |
 | `tipo_documento` | `revision_tecnica`, `soap`, `permiso_circulacion`, `licencia_conducir`, `otro` | Implementado (JOA-10) |
-| `jornada` | `manana`, `tarde`, `noche` | Decidido en JOA-14; se crea con el módulo de turnos |
+| `jornada` | `manana`, `tarde`, `noche` | Implementado (JOA-14, JOS-19) |
 | `estado_aviso` | `enviado`, `fallido` | Implementado (SIM-11) |
 
 El estado del documento (`vigente`, `por_vencer`, `vencido`) no es un tipo de la base de datos: se calcula (sección 3.5).
@@ -348,7 +354,7 @@ MicroLogist guarda los datos de todas las empresas en las mismas tablas. La sepa
 
 1. **Toda tabla con datos de una empresa tiene su propio `empresa_id` obligatorio**, aunque se pudiera deducir por otra relación (por ejemplo, un documento a través de su vehículo). Así la regla es la misma en todas partes: cada consulta filtra por `empresa_id`, sin uniones extra.
 2. **La aplicación toma la empresa de la sesión y filtra siempre por ella**, también al buscar por `id` (JOA-01, sección 2.4). Hoy esto está en `src/lib/sesion.ts` y `src/lib/vehiculos-datos.ts` (JOS-03). Un registro de otra empresa responde "no encontrado" (404). El `empresa_id` nunca viene del formulario.
-3. **Las referencias entre tablas no pueden cruzar empresas.** En las tablas propuestas, las claves foráneas son compuestas: por ejemplo, `turno (vehiculo_id, empresa_id)` apunta a `vehiculo (id, empresa_id)`. Un turno de la empresa A no puede usar un vehículo de la empresa B, aunque la aplicación tuviera un error. Por eso cada tabla referenciada tiene `UNIQUE (id, empresa_id)`.
+3. **Las referencias entre tablas no pueden cruzar empresas.** Las claves foráneas entre tablas de una empresa son compuestas: por ejemplo, `turno (vehiculo_id, empresa_id)` apunta a `vehiculo (id, empresa_id)`. Un turno de la empresa A no puede usar un vehículo de la empresa B, aunque la aplicación tuviera un error. Por eso cada tabla referenciada tiene `UNIQUE (id, empresa_id)`.
 4. **La API pública de Supabase no puede leer las tablas.** Todas tienen *Row Level Security* activado sin políticas (JOS-02, sección 6). La aplicación se conecta con Prisma como dueña de las tablas y no queda sujeta a RLS. Si en el futuro el navegador consultara Supabase directamente, habría que agregar políticas por empresa **[POR CONFIRMAR]**.
 
 Además, las reglas de unicidad son **por empresa**: dos empresas pueden tener la misma patente o el mismo RUT de conductor (JOA-01, criterio 13).
@@ -364,7 +370,7 @@ Además, las reglas de unicidad son **por empresa**: dos empresas pueden tener l
 | `Vehiculo` | `vehiculo` | Ninguna. |
 | `Conductor` | `conductor` | Ninguna. Se marca qué campos son opcionales. |
 | `Documento` | `documento` | Se agregan `empresa_id`, `descripcion` y `observaciones`. `estado(hoy)` queda como cálculo, igual que en JOA-06. |
-| `Turno` | `turno` | Se agregan `empresa_id` y `anulado` (PB-19). `jornada` pasa a ser un tipo `enum`. |
+| `Turno` | `turno` | Se agregan `empresa_id`, `anulado` (PB-19) y `motivo_anulacion` (JOA-14). `jornada` pasa a ser un tipo `enum`. |
 | `AvisoEnviado` | `aviso_enviado` | Se agregan `empresa_id`, `fecha_vencimiento`, `destinatario` y `estado`, para no repetir avisos después de una renovación y para reintentar los fallidos (PB-16). |
 | — | `ingreso` | No está en JOA-06 porque el módulo es opcional (JOA-06, sección 3). |
 
@@ -379,11 +385,9 @@ En todas las tablas, `empresa_id` es un detalle de cómo se guardan los datos (s
 | RUT de la empresa obligatorio | Opcional | JOA-01, 2.2 |
 | Días para "por vencer" y zona horaria | 30 días, `America/Santiago` | PB-12 |
 | Historial de vencimientos y archivo adjunto | No en el MVP | PB-13, JOA-01 1.4 |
-| Jornadas del turno y si se puede asignar un vehículo en mantención | Mañana, tarde, noche; en mantención no | PB-17 |
-| Turno anulado: borrar o marcar | Marcar (`anulado`) | PB-19 |
 | Ingreso asociado a vehículo, servicio o ambos | Vehículo opcional y descripción libre | PB-22 |
 
-Las decisiones de conductores (campos obligatorios, RUT único por empresa y desactivar en vez de eliminar) se cerraron en JOA-09 y quedaron en la tabla `conductor` (sección 3.4). Las de los avisos (plazos, destinatario y reintentos) se cerraron en JOA-13 y quedaron en la tabla `aviso_enviado` (sección 3.7).
+Las decisiones de conductores (campos obligatorios, RUT único por empresa y desactivar en vez de eliminar) se cerraron en JOA-09 y quedaron en la tabla `conductor` (sección 3.4). Las de los avisos (plazos, destinatario y reintentos) se cerraron en JOA-13 y quedaron en la tabla `aviso_enviado` (sección 3.7). Las de los turnos (mañana, tarde y noche, solo vehículos activos y anular en vez de borrar) se cerraron en JOA-14 y quedaron en la tabla `turno` (sección 3.6).
 
 ---
 
@@ -395,4 +399,5 @@ Las decisiones de conductores (campos obligatorios, RUT único por empresa y des
 - [x] Coherencia con el esquema Prisma de JOS-02 (secciones 3.1 a 3.3) y con el diagrama de clases de JOA-06 (sección 5).
 - [x] Tabla `conductor` implementada en JOS-09, igual que la sección 3.4.
 - [x] Tabla `documento` implementada, igual que la sección 3.5.
+- [x] Tabla `turno` implementada en JOS-19, igual que la sección 3.6.
 - [x] Revisión de Joaquín en el PR.

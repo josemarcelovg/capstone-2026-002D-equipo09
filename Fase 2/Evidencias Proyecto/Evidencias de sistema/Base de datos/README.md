@@ -19,7 +19,7 @@ Los comandos se ejecutan desde la carpeta `Aplicación`, que tiene la configurac
 | Comando | Qué hace |
 |---|---|
 | `npm run db:deploy` | Aplica las migraciones de `migrations/`. |
-| `npm run db:seed` | Carga las dos empresas y los vehículos ficticios (`Aplicación/prisma/seed.ts`). |
+| `npm run db:seed` | Carga las dos empresas ficticias con sus vehículos, conductores y turnos (`Aplicación/prisma/seed.ts`). |
 | `npm run db:comprobar` | Comprueba la conexión y la separación entre empresas (`Aplicación/prisma/comprobar.ts`). |
 | `npm run db:migrate` | Crea una migración nueva en `migrations/` después de cambiar `Aplicación/prisma/schema.prisma` (solo en desarrollo). |
 

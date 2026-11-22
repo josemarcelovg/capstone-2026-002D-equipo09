@@ -6,7 +6,7 @@
 | **Responsable** | José Vargas (Developer) |
 | **Revisión** | Simón Jofré (relación usuario–empresa con SIM-02) |
 | **Estado** | Aprobado por el equipo e implementado |
-| **Fecha** | 16-10-2026 (actualizado el 28-10-2026) |
+| **Fecha** | 16-10-2026 (actualizado el 21-11-2026) |
 
 Este documento explica cómo quedó la base de datos de la primera entrega y cómo levantarla. Las reglas vienen de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), secciones 2.2 y 3. El diagrama entidad-relación y el diccionario completo se harán en **JOS-04**.
 
@@ -79,7 +79,7 @@ Se usa el *session pooler* y no la conexión directa (`db.xxx.supabase.co`) porq
 |---|---|
 | `npm install` | Instala dependencias y genera el cliente de Prisma (`postinstall`). |
 | `npm run db:deploy` | Aplica las migraciones pendientes. Es lo primero en una base nueva. |
-| `npm run db:seed` | Carga las empresas, vehículos y conductores ficticios. Se puede ejecutar varias veces sin duplicar: solo crea los que faltan y no cambia los que ya existen, aunque se hayan editado. |
+| `npm run db:seed` | Carga las empresas, vehículos, conductores y turnos ficticios. Se puede ejecutar varias veces sin duplicar: solo crea los que faltan y no cambia los que ya existen, aunque se hayan editado. |
 | `npm run db:comprobar` | Comprueba la creación y consulta de vehículos. No deja datos nuevos. |
 | `npm run db:studio` | Abre Prisma Studio para ver las tablas en el navegador. |
 | `npm run db:migrate -- --name descripcion` | Crea una migración nueva después de cambiar `prisma/schema.prisma`. |
@@ -113,6 +113,8 @@ Empresas inventadas, sin datos personales reales. Los `id` son fijos para que la
 | Buses del Litoral (ficticia) | `b0000000-0000-4000-8000-000000000002` | `BBCD12` activo, `AB1234` en mantención, `KLPR56` activo |
 
 `BBCD12` está en las dos empresas a propósito (criterio 13 de JOA-01).
+
+Desde JOS-19 el seed también carga turnos de ejemplo en las dos empresas, de ayer a 3 días más, contados desde el día en que se carga por primera vez. Qué casos cubren está en [JOS-04](JOS-04_Modelo_de_Datos.md), sección 3.6.
 
 Los usuarios no se cargan en el seed: su `id` tiene que ser el que asigna Supabase Auth. Ver la sección 7.
 
