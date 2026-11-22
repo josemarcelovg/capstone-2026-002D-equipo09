@@ -7,7 +7,7 @@
 | **Revisión** | José Vargas y Simón Jofré |
 | **Estado** | Aprobado por el equipo. Alcance de la entrega final terminado: 17 de 24 ítems |
 | **Fecha** | 12-10-2026 (actualizado el 28-10-2026) |
-| **Actualización** | 16-11-2026 (turnos pasan a la etapa "Defensa de título") |
+| **Actualización** | 21-11-2026 (turnos en curso y resumen de la flota en el plan de la defensa de título) |
 
 Este documento reúne todo lo que MicroLogist debe hacer, ordenado por prioridad. Parte de la [Product Vision](JOA-04_Product_Vision.md) y de las reglas de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md). De aquí salen los ítems de cada Sprint Backlog (SIM-06) y los casos del plan de pruebas (SIM-04). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -23,9 +23,8 @@ Este documento reúne todo lo que MicroLogist debe hacer, ordenado por prioridad
 |---|---|
 | **Primera entrega** | Iniciar sesión y registrar, listar y editar vehículos con datos separados por empresa. |
 | **MVP completo** | Conductores, documentos, conductor asignado al vehículo, datos de la empresa y avisos por correo. Es lo que entra en la entrega final de la semana 15. |
-| **Defensa de título** | Turnos. No entró en la entrega final de la semana 15 y se entrega para la defensa de título (confirmado por el equipo el 16-11-2026). |
+| **Defensa de título** | Turnos, que no entró en la entrega final de la semana 15 (confirmado por el equipo el 16-11-2026), y el resumen de la flota si alcanza el tiempo (plan de las iteraciones 5 y 6, SIM-06). |
 | **Opcional** | Ingresos. Se haría solo si el avance lo permitía; queda fuera de la entrega final (sección 7) y se evalúa para la defensa de título. |
-| **Trabajo futuro** | Resumen de la flota. Queda fuera de la entrega final (sección 7) y se evalúa para la defensa de título. |
 
 - **Estado:** `Pendiente`, `En curso` o `Terminado`. Un ítem está terminado cuando cumple sus criterios de aceptación y la [Definition of Done](SIM-05_Definition_of_Done.md).
 - **Usuario:** en todas las historias es el dueño o responsable de la empresa (rol `admin`). En el MVP no hay otros roles y los conductores no inician sesión.
@@ -36,7 +35,7 @@ Este backlog contiene funcionalidades del producto. Las tareas de documentación
 
 ## 2. Backlog priorizado
 
-Estado al 16-11-2026.
+Estado al 21-11-2026.
 
 | Prioridad | ID | Ítem | Módulo | Etapa | Estado |
 |---|---|---|---|---|---|
@@ -57,10 +56,10 @@ Estado al 16-11-2026.
 | 15 | PB-14 | Datos de contacto de la empresa | Empresa | MVP completo | Terminado |
 | 16 | PB-15 | Aviso por correo antes del vencimiento | Avisos | MVP completo | Terminado |
 | 17 | PB-16 | Avisos sin duplicados y con registro de envíos | Avisos | MVP completo | Terminado |
-| 18 | PB-17 | Asignar turno | Turnos | Defensa de título | Pendiente |
-| 19 | PB-18 | Ver turnos por fecha | Turnos | Defensa de título | Pendiente |
-| 20 | PB-19 | Editar o anular turno | Turnos | Defensa de título | Pendiente |
-| 21 | PB-20 | Resumen de la flota | Inicio | Trabajo futuro | Pendiente |
+| 18 | PB-17 | Asignar turno | Turnos | Defensa de título | En curso |
+| 19 | PB-18 | Ver turnos por fecha | Turnos | Defensa de título | En curso |
+| 20 | PB-19 | Editar o anular turno | Turnos | Defensa de título | En curso |
+| 21 | PB-20 | Resumen de la flota | Inicio | Defensa de título | Pendiente |
 | 22 | PB-21 | Activar el módulo de ingresos | Ingresos | Opcional | Pendiente |
 | 23 | PB-22 | Registrar ingreso | Ingresos | Opcional | Pendiente |
 | 24 | PB-23 | Ver ingresos por período | Ingresos | Opcional | Pendiente |
@@ -75,7 +74,9 @@ Estado al 16-11-2026.
 - **Avisos por correo (PB-15 y PB-16): terminado.** Están el proceso diario que llama Vercel Cron, el envío con Resend y el registro en `aviso_enviado`, según las reglas de [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md) (SIM-11, PR #55), con un reintento inmediato si el envío falla (PR #74) y el correo con el diseño de la aplicación (PR #94). Sus reglas tienen pruebas unitarias y con la base de datos (CP-INT-24 a CP-INT-34, PR #68, #70 y #74), y el 15-11-2026 aprobaron CP-FUN-27 y CP-FUN-28 con un envío real en producción (SIM-11, sección 5).
 - **Despliegue (SIM-10):** a pedido de la profesora (05-11-2026), una GitHub Action ejecuta las pruebas, también las de integración con PostgreSQL (PR #71), y publica en Vercel en cada push a `main` (PR #62).
 - **Entrega final (semana 15): terminada.** Todo el alcance aprobado en el PR #50 está terminado y publicado. La presentación de la Evaluación Final de la Fase 2 ante la comisión es el 17-11-2026 ([JOA-19](JOA-19_Guion_Entrega_Final.md)).
-- **Siguen:** turnos y la prueba con usuarios, para la defensa de título (apartado "Para la defensa de título").
+- **Turnos (PB-17 a PB-19): en curso.** Están las reglas ([JOA-14](JOA-14_Reglas_Modulo_Turnos.md)), la validación con sus pruebas (JOA-51, PR #118) y la tabla con su migración (JOS-19, PR #119). Falta aplicar esa migración en desarrollo y en producción, y siguen el acceso a datos (JOS-20), las pantallas (JOA-52) y las pruebas (SIM-15).
+- **Resumen de la flota (PB-20): pendiente.** Sus reglas ya están en [JOA-50](JOA-50_Reglas_Resumen_Flota.md) (PR #117); sigue la pantalla (JOS-21).
+- **Siguen:** turnos, la prueba con usuarios y, si alcanza el tiempo, el resumen de la flota, para la defensa de título (apartado "Para la defensa de título").
 
 ### Alcance de la entrega final (semana 15)
 
@@ -105,11 +106,11 @@ La presentación del 17-11-2026 es la Evaluación Final de la Fase 2; el proyect
 |---|---|---|
 | Turnos | PB-17 a PB-19 | Es lo que falta del objetivo de Fase 1 ([JOA-04](JOA-04_Product_Vision.md), sección 6.1). Sus reglas y criterios ya están escritos en [JOA-14](JOA-14_Reglas_Modulo_Turnos.md), que resuelve los **[POR CONFIRMAR]** de sus ítems. |
 | Prueba con usuarios | CP-USA-01 y CP-USA-02 ([SIM-04](SIM-04_Plan_de_Pruebas.md)) | Cierra el "validar" del objetivo y los dos indicadores sin medir de la Product Vision (sección 6.2). No es un ítem del backlog porque es una prueba. |
+| Resumen de la flota, si alcanza el tiempo | PB-20 | Responde a la necesidad 3 de la Product Vision. Se sumó con el plan de las iteraciones 5 y 6 (PR #113), con prioridad P1 y reglas en [JOA-50](JOA-50_Reglas_Resumen_Flota.md). Si falta tiempo, se recorta después de los filtros de turnos (SIM-06, sección 8). |
 | La retroalimentación de la Evaluación Final de la Fase 2 | — | Se agrega aquí cuando la comisión la entregue. |
 
 | Se evalúa según el tiempo | Ítems | Por qué |
 |---|---|---|
-| Resumen de la flota | PB-20 | Responde a la necesidad 3 de la Product Vision, pero no tiene documento de reglas. |
 | Ingresos | PB-21 a PB-23 | Son opcionales y todavía no tienen reglas: primero habría que resolver sus **[POR CONFIRMAR]**. |
 | El correo de aviso en Outlook | CP-COM-05 | Ya se revisó en Gmail, en computador y en celular. |
 
@@ -365,7 +366,7 @@ Antes de desarrollar cada módulo hay que definir sus campos y reglas, como se h
 
 **Historia:** como responsable, quiero ver un resumen de mi flota al entrar, para saber de un vistazo qué necesita atención.
 
-Este ítem responde a la necesidad 3 de la Product Vision ("ver el estado de la flota de un vistazo"), pero no figura como módulo en su sección 5.1. Queda como trabajo futuro (sección 2, aprobado en el PR #50).
+Este ítem responde a la necesidad 3 de la Product Vision ("ver el estado de la flota de un vistazo"). Quedó fuera de la entrega final (PR #50) y entra en el plan de la defensa de título si alcanza el tiempo (sección 2). Sus reglas y sus 11 criterios detallados están en [JOA-50](JOA-50_Reglas_Resumen_Flota.md).
 
 **Criterios de aceptación:**
 
@@ -430,7 +431,7 @@ Lo pidió la profesora en la revisión del 28-10-2026 (SIM-06, sección 6). Es d
 - Varios usuarios por empresa con roles (por ejemplo, un operador que no puede desactivar).
 - Registro público, para que una empresa se inscriba sola. Queda fuera del MVP (acordado el 27-10-2026; JOA-01, sección 2.3).
 - Reportes y analítica.
-- Turnos (PB-17 a PB-19), resumen de la flota (PB-20) e ingresos (PB-21 a PB-23). Quedan fuera de la entrega final de la semana 15 (sección 2, aprobado en el PR #50); sus ítems se mantienen en este backlog. Turnos se entrega para la defensa de título, y el resumen de la flota y los ingresos se evalúan según el tiempo (sección 2, "Para la defensa de título").
+- Turnos (PB-17 a PB-19), resumen de la flota (PB-20) e ingresos (PB-21 a PB-23). Quedan fuera de la entrega final de la semana 15 (sección 2, aprobado en el PR #50); sus ítems se mantienen en este backlog. Turnos se entrega para la defensa de título, junto con el resumen de la flota si alcanza el tiempo, y los ingresos se evalúan según el tiempo (sección 2, "Para la defensa de título").
 
 **Fuera de alcance** (no se hará, sección 1.4 de JOA-01): GPS y seguimiento de rutas, aplicación móvil nativa, avisos por WhatsApp, SMS o notificaciones push, pagos y facturación, integraciones con organismos externos e inteligencia artificial.
 
@@ -440,7 +441,7 @@ Lo pidió la profesora en la revisión del 28-10-2026 (SIM-06, sección 6). Es d
 
 - **Estimación:** se estima con tallas XS a XL al planificar cada iteración (acordado el 27-10-2026). La talla de cada tarea queda en el campo *Size* del tablero.
 - **Sprints:** los sprints duran 2 semanas, igual que las iteraciones del tablero (acordado el 27-10-2026). La asignación de ítems a cada sprint se registra en el Sprint Backlog (SIM-06).
-- **Reglas de cada módulo:** conductores, documentos, turnos e ingresos necesitan un documento de reglas como JOA-01 antes de desarrollarse. Ahí se resuelven los **[POR CONFIRMAR]** de sus ítems. Conductores (PB-08 a PB-10): resueltos en [JOA-09](JOA-09_Reglas_Modulo_Conductores.md). Documentos (PB-11 a PB-13): resueltos en [JOA-10](JOA-10_Reglas_Modulo_Documentos.md). Avisos (PB-14 a PB-16): resueltos en [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md). Turnos (PB-17 a PB-19): resueltos en [JOA-14](JOA-14_Reglas_Modulo_Turnos.md).
+- **Reglas de cada módulo:** conductores, documentos, turnos e ingresos necesitan un documento de reglas como JOA-01 antes de desarrollarse. Ahí se resuelven los **[POR CONFIRMAR]** de sus ítems. Conductores (PB-08 a PB-10): resueltos en [JOA-09](JOA-09_Reglas_Modulo_Conductores.md). Documentos (PB-11 a PB-13): resueltos en [JOA-10](JOA-10_Reglas_Modulo_Documentos.md). Avisos (PB-14 a PB-16): resueltos en [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md). Turnos (PB-17 a PB-19): resueltos en [JOA-14](JOA-14_Reglas_Modulo_Turnos.md). Resumen de la flota (PB-20): en [JOA-50](JOA-50_Reglas_Resumen_Flota.md).
 
 ---
 
@@ -466,6 +467,7 @@ Lo pidió la profesora en la revisión del 28-10-2026 (SIM-06, sección 6). Es d
 | 11-11-2026 | PB-11 a PB-14 y PB-24 pasan a Terminado: sus casos CP-FUN-23 a CP-FUN-26 y CP-FUN-33 se aprobaron en SIM-12 (PR #81). PB-15 y PB-16 siguen En curso hasta el envío real con Resend. Se quita de la sección 8 el pendiente de PB-24. |
 | 15-11-2026 | PB-15 y PB-16 pasan a Terminado: CP-FUN-27 y CP-FUN-28 se aprobaron con un envío real en producción (SIM-11, sección 5). Con esto queda terminado el alcance de la entrega final. |
 | 16-11-2026 | El equipo confirma lo que se entrega para la defensa de título: turnos (PB-17 a PB-19) pasan a la nueva etapa "Defensa de título", junto con la prueba con usuarios (CP-USA-01 y 02). El resumen de la flota, los ingresos y el correo en Outlook se evalúan según el tiempo (sección 2). |
+| 21-11-2026 | PB-17 a PB-19 pasan a En curso: validación (JOA-51, PR #118) y tabla (JOS-19, PR #119). PB-20 pasa de "Trabajo futuro" a "Defensa de título", si alcanza el tiempo, con sus reglas en JOA-50 (PR #113 y #117). Se quita la etapa "Trabajo futuro", que queda sin ítems. |
 
 ---
 
