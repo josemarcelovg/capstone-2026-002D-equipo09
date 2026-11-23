@@ -22,6 +22,16 @@ function Icono({ className = "size-5", children }: PropsIcono & { children: Reac
   );
 }
 
+export function IconoInicio(props: PropsIcono) {
+  return (
+    <Icono {...props}>
+      <path d="M4 10.5 12 4l8 6.5" />
+      <path d="M6 9v10h12V9" />
+      <path d="M10 19v-5h4v5" />
+    </Icono>
+  );
+}
+
 export function IconoBus(props: PropsIcono) {
   return (
     <Icono {...props}>

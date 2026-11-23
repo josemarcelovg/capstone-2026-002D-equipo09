@@ -8,6 +8,7 @@ import {
   IconoConductor,
   IconoDocumento,
   IconoEmpresa,
+  IconoInicio,
   IconoMenu,
   IconoSalir,
 } from "./iconos";
@@ -65,7 +66,15 @@ function Marca() {
 function Navegacion() {
   return (
     <nav aria-label="Principal">
-      <p className="px-3 pb-1 pt-2 text-xs font-semibold uppercase tracking-wider text-stone-600">
+      <ul className="grid gap-1">
+        <li>
+          <EnlaceMenu href="/">
+            <IconoInicio />
+            Inicio
+          </EnlaceMenu>
+        </li>
+      </ul>
+      <p className="px-3 pb-1 pt-5 text-xs font-semibold uppercase tracking-wider text-stone-600">
         Flota
       </p>
       <ul className="grid gap-1">
