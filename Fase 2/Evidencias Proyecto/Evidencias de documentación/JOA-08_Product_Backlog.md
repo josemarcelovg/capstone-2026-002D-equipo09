@@ -7,7 +7,7 @@
 | **Revisión** | José Vargas y Simón Jofré |
 | **Estado** | Aprobado por el equipo. Alcance de la entrega final terminado: 17 de 24 ítems |
 | **Fecha** | 12-10-2026 (actualizado el 28-10-2026) |
-| **Actualización** | 21-11-2026 (turnos en curso y resumen de la flota en el plan de la defensa de título) |
+| **Actualización** | 23-11-2026 (turnos y resumen de la flota integrados, faltan sus pruebas) |
 
 Este documento reúne todo lo que MicroLogist debe hacer, ordenado por prioridad. Parte de la [Product Vision](JOA-04_Product_Vision.md) y de las reglas de [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md). De aquí salen los ítems de cada Sprint Backlog (SIM-06) y los casos del plan de pruebas (SIM-04). Lo marcado como **[POR CONFIRMAR]** todavía no es una decisión del equipo.
 
@@ -35,7 +35,7 @@ Este backlog contiene funcionalidades del producto. Las tareas de documentación
 
 ## 2. Backlog priorizado
 
-Estado al 21-11-2026.
+Estado al 23-11-2026.
 
 | Prioridad | ID | Ítem | Módulo | Etapa | Estado |
 |---|---|---|---|---|---|
@@ -59,7 +59,7 @@ Estado al 21-11-2026.
 | 18 | PB-17 | Asignar turno | Turnos | Defensa de título | En curso |
 | 19 | PB-18 | Ver turnos por fecha | Turnos | Defensa de título | En curso |
 | 20 | PB-19 | Editar o anular turno | Turnos | Defensa de título | En curso |
-| 21 | PB-20 | Resumen de la flota | Inicio | Defensa de título | Pendiente |
+| 21 | PB-20 | Resumen de la flota | Inicio | Defensa de título | En curso |
 | 22 | PB-21 | Activar el módulo de ingresos | Ingresos | Opcional | Pendiente |
 | 23 | PB-22 | Registrar ingreso | Ingresos | Opcional | Pendiente |
 | 24 | PB-23 | Ver ingresos por período | Ingresos | Opcional | Pendiente |
@@ -74,9 +74,9 @@ Estado al 21-11-2026.
 - **Avisos por correo (PB-15 y PB-16): terminado.** Están el proceso diario que llama Vercel Cron, el envío con Resend y el registro en `aviso_enviado`, según las reglas de [JOA-13](JOA-13_Reglas_Alertas_Vencimiento.md) (SIM-11, PR #55), con un reintento inmediato si el envío falla (PR #74) y el correo con el diseño de la aplicación (PR #94). Sus reglas tienen pruebas unitarias y con la base de datos (CP-INT-24 a CP-INT-34, PR #68, #70 y #74), y el 15-11-2026 aprobaron CP-FUN-27 y CP-FUN-28 con un envío real en producción (SIM-11, sección 5).
 - **Despliegue (SIM-10):** a pedido de la profesora (05-11-2026), una GitHub Action ejecuta las pruebas, también las de integración con PostgreSQL (PR #71), y publica en Vercel en cada push a `main` (PR #62).
 - **Entrega final (semana 15): terminada.** Todo el alcance aprobado en el PR #50 está terminado y publicado. La presentación de la Evaluación Final de la Fase 2 ante la comisión es el 17-11-2026 ([JOA-19](JOA-19_Guion_Entrega_Final.md)).
-- **Turnos (PB-17 a PB-19): en curso.** Están las reglas ([JOA-14](JOA-14_Reglas_Modulo_Turnos.md)), la validación con sus pruebas (JOA-51, PR #118) y la tabla con su migración (JOS-19, PR #119), aplicada en desarrollo y en producción el 22-11-2026. Siguen el acceso a datos (JOS-20), las pantallas (JOA-52) y las pruebas (SIM-15).
-- **Resumen de la flota (PB-20): pendiente.** Sus reglas ya están en [JOA-50](JOA-50_Reglas_Resumen_Flota.md) (PR #117); sigue la pantalla (JOS-21).
-- **Siguen:** turnos, la prueba con usuarios y, si alcanza el tiempo, el resumen de la flota, para la defensa de título (apartado "Para la defensa de título").
+- **Turnos (PB-17 a PB-19): en curso.** Están las reglas ([JOA-14](JOA-14_Reglas_Modulo_Turnos.md)), la validación con sus pruebas (JOA-51, PR #118), la tabla con su migración (JOS-19, PR #119), aplicada en desarrollo y en producción el 22-11-2026, el acceso a datos con sus pruebas de integración (JOS-20, PR #121) y las pantallas (JOA-52, PR #123). Pasan a Terminado cuando aprueben sus casos de prueba (SIM-14 y SIM-15).
+- **Resumen de la flota (PB-20): en curso.** Están las reglas ([JOA-50](JOA-50_Reglas_Resumen_Flota.md), PR #117) y la pantalla de Inicio (JOS-21, PR #122). Pasa a Terminado cuando aprueben sus casos de prueba (SIM-14 y SIM-15).
+- **Siguen:** probar turnos y el resumen de la flota (SIM-14 y SIM-15) y la prueba con usuarios (SIM-16), para la defensa de título (apartado "Para la defensa de título").
 
 ### Alcance de la entrega final (semana 15)
 
@@ -106,7 +106,7 @@ La presentación del 17-11-2026 es la Evaluación Final de la Fase 2; el proyect
 |---|---|---|
 | Turnos | PB-17 a PB-19 | Es lo que falta del objetivo de Fase 1 ([JOA-04](JOA-04_Product_Vision.md), sección 6.1). Sus reglas y criterios ya están escritos en [JOA-14](JOA-14_Reglas_Modulo_Turnos.md), que resuelve los **[POR CONFIRMAR]** de sus ítems. |
 | Prueba con usuarios | CP-USA-01 y CP-USA-02 ([SIM-04](SIM-04_Plan_de_Pruebas.md)) | Cierra el "validar" del objetivo y los dos indicadores sin medir de la Product Vision (sección 6.2). No es un ítem del backlog porque es una prueba. |
-| Resumen de la flota, si alcanza el tiempo | PB-20 | Responde a la necesidad 3 de la Product Vision. Se sumó con el plan de las iteraciones 5 y 6 (PR #113), con prioridad P1 y reglas en [JOA-50](JOA-50_Reglas_Resumen_Flota.md). Si falta tiempo, se recorta después de los filtros de turnos (SIM-06, sección 8). |
+| Resumen de la flota, si alcanza el tiempo | PB-20 | Responde a la necesidad 3 de la Product Vision. Se sumó con el plan de las iteraciones 5 y 6 (PR #113), con prioridad P1 y reglas en [JOA-50](JOA-50_Reglas_Resumen_Flota.md). Si falta tiempo, se recorta después de los filtros de turnos (SIM-06, sección 8). La pantalla ya está integrada (JOS-21, PR #122); falta probarla (SIM-15). |
 | La retroalimentación de la Evaluación Final de la Fase 2 | — | Se agrega aquí cuando la comisión la entregue. |
 
 | Se evalúa según el tiempo | Ítems | Por qué |
@@ -468,6 +468,7 @@ Lo pidió la profesora en la revisión del 28-10-2026 (SIM-06, sección 6). Es d
 | 15-11-2026 | PB-15 y PB-16 pasan a Terminado: CP-FUN-27 y CP-FUN-28 se aprobaron con un envío real en producción (SIM-11, sección 5). Con esto queda terminado el alcance de la entrega final. |
 | 16-11-2026 | El equipo confirma lo que se entrega para la defensa de título: turnos (PB-17 a PB-19) pasan a la nueva etapa "Defensa de título", junto con la prueba con usuarios (CP-USA-01 y 02). El resumen de la flota, los ingresos y el correo en Outlook se evalúan según el tiempo (sección 2). |
 | 21-11-2026 | PB-17 a PB-19 pasan a En curso: validación (JOA-51, PR #118) y tabla (JOS-19, PR #119). PB-20 pasa de "Trabajo futuro" a "Defensa de título", si alcanza el tiempo, con sus reglas en JOA-50 (PR #113 y #117). Se quita la etapa "Trabajo futuro", que queda sin ítems. |
+| 23-11-2026 | PB-20 pasa a En curso: pantalla de Inicio (JOS-21, PR #122). PB-17 a PB-19 siguen En curso, ahora con el acceso a datos (JOS-20, PR #121) y las pantallas (JOA-52, PR #123). Pasan a Terminado cuando aprueben sus casos de prueba (SIM-14 y SIM-15). |
 
 ---
 
