@@ -11,6 +11,7 @@ import {
   IconoInicio,
   IconoMenu,
   IconoSalir,
+  IconoTurno,
 } from "./iconos";
 import { cerrarSesion } from "./login/acciones";
 import { Logo } from "./logo";
@@ -88,6 +89,12 @@ function Navegacion() {
           <EnlaceMenu href="/conductores">
             <IconoConductor />
             Conductores
+          </EnlaceMenu>
+        </li>
+        <li>
+          <EnlaceMenu href="/turnos">
+            <IconoTurno />
+            Turnos
           </EnlaceMenu>
         </li>
         <li>
