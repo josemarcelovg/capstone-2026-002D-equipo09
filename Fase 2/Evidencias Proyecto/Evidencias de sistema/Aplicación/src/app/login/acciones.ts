@@ -57,7 +57,7 @@ export async function iniciarSesion(
   }
 
   revalidatePath("/", "layout");
-  redirect("/vehiculos");
+  redirect("/");
 }
 
 export async function cerrarSesion() {

@@ -14,8 +14,8 @@ export const metadata: Metadata = { title: "Iniciar sesión" };
 export default async function PaginaLogin() {
   await connection();
   // En desarrollo sin Supabase no hay login.
-  if (accesoDelEntorno().modo === "desarrollo") redirect("/vehiculos");
-  if (await usuarioDeLaSesion()) redirect("/vehiculos");
+  if (accesoDelEntorno().modo === "desarrollo") redirect("/");
+  if (await usuarioDeLaSesion()) redirect("/");
 
   return (
     <div className="grid overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-xl md:min-h-[620px] md:grid-cols-2">
