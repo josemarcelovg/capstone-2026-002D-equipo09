@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache } from "react";
+import { textoTurnosFuturos } from "@/lib/turnos";
+import { contarTurnosDesdeHoy } from "@/lib/turnos-datos";
+import { contextoDeTurnos } from "@/lib/turnos-sesion";
 import { formatearPatente } from "@/lib/vehiculos";
 import { obtenerVehiculo } from "@/lib/vehiculos-datos";
 import { opcionesDeDueno } from "../../documentos/opciones";
@@ -28,6 +31,10 @@ export default async function PaginaVehiculo({ params, searchParams }: PageProps
   const patente = formatearPatente(vehiculo.patente);
   const inactivo = vehiculo.estado === "inactivo";
   const mensaje = mensajeDeDocumento((await searchParams).mensaje);
+  // Para la confirmación al desactivar: sus turnos no se anulan solos (JOA-14, criterio 11).
+  const avisoTurnos = inactivo
+    ? null
+    : textoTurnosFuturos(await contarTurnosDesdeHoy(await contextoDeTurnos(), { vehiculoId: vehiculo.id }));
 
   return (
     <>
@@ -57,7 +64,7 @@ export default async function PaginaVehiculo({ params, searchParams }: PageProps
             ? "Este vehículo está inactivo y no aparece en el listado. Puedes reactivarlo cuando quieras."
             : "Si el vehículo se vendió o dejó de usarse, desactívalo. No se elimina y se puede reactivar."}
         </p>
-        <BotonActivacion id={vehiculo.id} patente={patente} inactivo={inactivo} />
+        <BotonActivacion id={vehiculo.id} patente={patente} inactivo={inactivo} avisoTurnos={avisoTurnos} />
       </section>
     </>
   );
