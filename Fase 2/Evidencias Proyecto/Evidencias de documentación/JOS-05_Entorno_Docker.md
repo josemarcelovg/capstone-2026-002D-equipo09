@@ -6,9 +6,11 @@
 | **Responsable** | José Vargas (Developer) |
 | **Revisión** | Simón Jofré o Joaquín Orellana (levantar el entorno en su computador) |
 | **Estado** | Aprobado por el equipo |
-| **Fecha** | 16-10-2026 |
+| **Fecha** | 16-10-2026 (actualizado el 22-11-2026) |
 
 Con un solo comando, Docker levanta MicroLogist y una base de datos PostgreSQL propia, con las tablas y los datos de prueba ya cargados. **No necesita las claves de Supabase**: cualquier integrante, o la profesora, puede ejecutar la aplicación sin pedir credenciales.
+
+**Docker es para desarrollo; el despliegue es con GitHub Actions y Vercel.** Docker sirve para levantar y revisar la aplicación en un computador. La versión publicada (`https://micrologist-equipo09.vercel.app`) no usa Docker: cada cambio pasa por un PR, la GitHub Action corre las pruebas y lo publica en Vercel, y la base de datos y el inicio de sesión están en Supabase ([SIM-10](SIM-10_Despliegue_Vercel.md); [JOS-06](JOS-06_Manual_Tecnico.md), sección 8). Así no hay un servidor ni contenedores propios que mantener.
 
 Desde el 18-10-2026, el sistema está en `Fase 2/Evidencias Proyecto/Evidencias de sistema`: la aplicación y los archivos de Docker en `Aplicación`, y el modelo y las migraciones en `Base de datos`.
 
@@ -24,7 +26,7 @@ Desde el 18-10-2026, el sistema está en `Fase 2/Evidencias Proyecto/Evidencias 
 Al arrancar, `app` espera a que la base de datos esté lista y ejecuta `Aplicación/iniciar.sh`:
 
 1. `prisma migrate deploy`: crea o actualiza las tablas con las migraciones de `Base de datos/migrations/` (JOS-02).
-2. `npm run db:seed`: carga las dos empresas ficticias con sus vehículos y conductores. Si ya están, no los duplica ni los cambia: lo que se editó en la aplicación se mantiene al volver a levantar Docker.
+2. `npm run db:seed`: carga las dos empresas ficticias con sus vehículos, conductores y turnos. Los turnos van de ayer a 3 días más, contados desde la primera vez que se carga el seed. Si ya están, no los duplica ni los cambia: lo que se editó en la aplicación se mantiene al volver a levantar Docker. El seed no trae documentos: se registran desde la aplicación.
 3. `npm run dev`: inicia la aplicación.
 
 Archivos:
@@ -80,6 +82,17 @@ Para programar sin Supabase:
 2. En el `.env`, usar las direcciones locales que están comentadas en `.env.example`.
 3. `npm run db:deploy`, `npm run db:seed` y `npm run dev` como siempre.
 
+### 3.3 Comprobar que funciona
+
+Después de `docker compose up --build`:
+
+1. En la terminal aparecen "Aplicando migraciones...", "All migrations have been successfully applied" y "Seed listo: 2 empresas, 7 vehículos, 5 conductores y 11 turnos".
+2. http://localhost:3000 abre en **Inicio**, con el resumen de la flota de la Empresa A: 2 vehículos activos, 1 en mantención, 1 inactivo y 4 en total. En Documentos dice "Todavía no tienes documentos registrados", porque el seed no trae documentos.
+3. En **Turnos**, el día en que se cargó el seed por primera vez muestra los turnos de ejemplo: BBCD-12 con Pedro Soto en la mañana y en la noche, y FGHJ-34 con María Muñoz en la tarde.
+4. Al registrar un documento que vence dentro de 30 días, el resumen de Inicio lo cuenta como "por vencer".
+
+Si ya se había levantado Docker antes de los turnos, basta con volver a levantarlo con `--build`: las migraciones nuevas y los turnos de ejemplo se agregan solos, sin borrar lo que ya estaba.
+
 ---
 
 ## 4. Variables
@@ -106,6 +119,7 @@ Los valores de `micrologist` son credenciales solo de esta base local: no dan ac
 | `Cannot connect to the Docker daemon` o `docker: command not found` | Docker Desktop no está abierto o no está instalado. |
 | `sh: iniciar.sh: not found` o `set: Illegal option -` | El script quedó con fin de línea de Windows. Desde `Aplicación`, ejecutar `git checkout -- iniciar.sh` para recuperarlo con LF y levantar con `--build`. |
 | La página no muestra vehículos | Revisar en la terminal que aparezcan "Aplicando migraciones..." y "Seed listo". Si hubo un error, `down -v` y levantar de nuevo. |
+| No aparecen "Inicio" ni "Turnos" en el menú, o falta la tabla `turno` | Docker usó la imagen anterior. Bajar los cambios con `git pull` y levantar con `docker compose up --build`. |
 
 ---
 
@@ -114,4 +128,5 @@ Los valores de `micrologist` son credenciales solo de esta base local: no dan ac
 - [x] Configuración Docker del entorno de desarrollo en la carpeta `Aplicación` (sección 1; hasta el 18-10-2026 estaba en `docker/`).
 - [x] Variables documentadas en `.env.example` y en este documento, sin valores secretos (sección 4).
 - [x] README actualizado con los pasos para ejecutar con Docker.
+- [x] Turnos y resumen de la flota, cómo comprobar que funciona (sección 3.3) y Docker como entorno de desarrollo, no de despliegue (JOS-22).
 - [ ] Otro integrante levanta el entorno siguiendo estas instrucciones y deja evidencia en el PR.

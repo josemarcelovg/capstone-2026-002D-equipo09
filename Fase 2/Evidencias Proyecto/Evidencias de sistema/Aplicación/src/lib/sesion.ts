@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { cache } from "react";
 import { accesoDelEntorno, RUTA_LOGIN } from "@/lib/acceso";
+import { hoyEnChile } from "@/lib/fechas";
 import { prisma } from "@/lib/prisma";
 import { crearClienteSupabase } from "@/lib/supabase";
 
@@ -59,4 +60,10 @@ export async function empresaDeLaSesion(): Promise<string> {
   const usuario = await usuarioDeLaSesion();
   if (!usuario) redirect(RUTA_LOGIN);
   return usuario.empresaId;
+}
+
+// Base, empresa de la sesión y fecha de hoy en Chile, para las funciones que reciben la base
+// (turnos-datos.ts y resumen-datos.ts), que así se pueden probar con la base de datos.
+export async function contextoDeLaSesion() {
+  return { db: prisma, empresaId: await empresaDeLaSesion(), hoy: hoyEnChile() };
 }

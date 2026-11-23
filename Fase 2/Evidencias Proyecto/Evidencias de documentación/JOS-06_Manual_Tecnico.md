@@ -5,8 +5,8 @@
 | **Tarea** | [JOS-06] Redactar manual técnico |
 | **Responsable** | José Vargas (Developer). Aportan Simón Jofré y Joaquín Orellana. |
 | **Revisión** | Simón Jofré y Joaquín Orellana |
-| **Versión** | 0.2.3 |
-| **Fecha** | 16-10-2026 (actualizado el 20-11-2026) |
+| **Versión** | 0.3 |
+| **Fecha** | 16-10-2026 (actualizado el 22-11-2026) |
 
 Este manual explica **cómo está construido MicroLogist y cómo se instala, configura, despliega y mantiene**. Está pensado para quien desarrolla o administra el sistema: el equipo, la profesora o quien continúe el proyecto. No es el manual de usuario: no explica cómo usar las pantallas.
 
@@ -18,7 +18,7 @@ Se actualiza en cada entrega (sección 12). Lo que todavía no está decidido o 
 
 MicroLogist es una aplicación web para pequeñas y medianas empresas de transporte de pasajeros: centraliza vehículos, conductores, turnos y documentos, y avisa por correo antes de que venzan los documentos.
 
-| Módulo | Estado al 10-11-2026 (según el [Product Backlog](JOA-08_Product_Backlog.md), sección 2) |
+| Módulo | Estado al 22-11-2026 (según el [Product Backlog](JOA-08_Product_Backlog.md), sección 2) |
 |---|---|
 | Inicio y cierre de sesión, y separación de datos entre empresas (PB-01 a PB-03) | Terminado, con Supabase Auth ([SIM-02](SIM-02_Inicio_de_Sesion.md)) |
 | Vehículos: registrar, listar, buscar, editar, desactivar y reactivar (PB-04 a PB-07) | Terminado |
@@ -27,7 +27,8 @@ MicroLogist es una aplicación web para pequeñas y medianas empresas de transpo
 | Documentos con vencimiento, en su listado y en la ficha del vehículo y del conductor (PB-11 a PB-13) | Terminado (SIM-12) |
 | Datos de contacto de la empresa, "Mi empresa" (PB-14) | Terminado (SIM-12) |
 | Avisos por correo con Resend y Vercel Cron (PB-15 y PB-16) | Terminado: probado con un envío real en producción el 15-11-2026 ([SIM-11](SIM-11_Alertas_por_Correo.md), sección 5) |
-| Turnos y resumen de la flota (PB-17 a PB-20) | Trabajo futuro: fuera de la entrega final |
+| Turnos: asignar, ver por día, filtrar, editar y anular (PB-17 a PB-19) | Implementado para la defensa de título: reglas ([JOA-14](JOA-14_Reglas_Modulo_Turnos.md)), tabla (JOS-19), validación (JOA-51), acceso a datos (JOS-20) y pantallas (JOA-52). Falta probarlo con las dos empresas ficticias (SIM-15) |
+| Resumen de la flota en la pantalla de inicio (PB-20) | Implementado para la defensa de título: reglas ([JOA-50](JOA-50_Reglas_Resumen_Flota.md)) y pantalla (JOS-21). Falta probarlo (SIM-15) |
 | Ingresos (PB-21 a PB-23) | Opcional: fuera de la entrega final |
 
 La aplicación está publicada en `https://micrologist-equipo09.vercel.app` (sección 8.1). Los requisitos están en [JOA-01](JOA-01_Reglas_Modulo_Vehiculos.md), [JOA-05](JOA-05_Requisitos_No_Funcionales.md) y el [Product Backlog](JOA-08_Product_Backlog.md).
@@ -40,7 +41,7 @@ La aplicación está publicada en `https://micrologist-equipo09.vercel.app` (sec
 
 | Característica | Qué significa en MicroLogist | Por qué |
 |---|---|---|
-| Monolito modular | Una sola aplicación Next.js que se despliega entera, organizada por módulo: vehículos, conductores, documentos, empresa y avisos (sección 4). | Somos un equipo de tres con plazo fijo: es más simple de construir, probar y publicar que varios servicios separados, y alcanza para un MVP. |
+| Monolito modular | Una sola aplicación Next.js que se despliega entera, organizada por módulo: vehículos, conductores, documentos, turnos, empresa, avisos y el resumen de la flota (sección 4). | Somos un equipo de tres con plazo fijo: es más simple de construir, probar y publicar que varios servicios separados, y alcanza para un MVP. |
 | En capas | Páginas → acciones del servidor → validación (Zod) → acceso a datos (Prisma) → PostgreSQL (sección 2.2). | Cada capa tiene una sola responsabilidad, y las reglas de validación se prueban sin la pantalla ni la base. |
 | Cliente-servidor | El navegador pide cada pantalla y el servidor la arma con los datos de la empresa de la sesión. | No hay que instalar nada: se usa desde el navegador, en computador, tablet o celular. |
 | Multiempresa con base compartida | Todas las empresas usan las mismas tablas, separadas por `empresa_id`, claves foráneas compuestas y RLS ([JOS-04](JOS-04_Modelo_de_Datos.md)). La empresa siempre sale de la sesión, nunca del formulario. | Un solo sistema sirve a muchas empresas chicas, y una nunca ve los datos de otra, aunque la aplicación tenga un error. |
@@ -76,7 +77,7 @@ flowchart LR
 Reglas de diseño que siguen todas las pantallas:
 
 1. **Validación en dos lugares con el mismo esquema Zod:** en el navegador, para ayudar al usuario, y en el servidor, que es la que protege los datos.
-2. **Todo el acceso a la base de datos pasa por `src/lib/*-datos.ts`.** Las páginas y acciones no usan Prisma directamente.
+2. **Todo el acceso a la base de datos pasa por `src/lib/*-datos.ts`.** Las páginas y acciones no hacen consultas con Prisma; la única excepción es la búsqueda del perfil al iniciar sesión (`login/acciones.ts`). `turnos-datos.ts` y `resumen-datos.ts` reciben la base como parámetro, igual que el proceso de avisos (`avisos-datos.ts`), para poder probarlos con la base de datos: las páginas y acciones se la pasan con `contextoDeLaSesion()` (`src/lib/sesion.ts`), que también entrega la empresa de la sesión y la fecha de hoy en Chile.
 3. **El acceso a datos siempre filtra por la empresa de la sesión**, también al buscar por `id`. La empresa la entrega `empresaDeLaSesion()` y nunca viene del formulario.
 4. **Lo que no es de la empresa responde 404**, no 403, para no revelar que existe.
 5. **Los errores no muestran detalles técnicos** al usuario: se registran en el servidor (`console.error`) y la pantalla muestra un mensaje claro.
@@ -99,7 +100,7 @@ Reglas de diseño que siguen todas las pantallas:
 | Vercel | Plan Hobby | Despliegue, con la CLI de Vercel desde GitHub Actions (SIM-10) |
 | GitHub Actions | `.github/workflows/vercel.yml` | Lint, tipos, pruebas y `npm audit` en cada PR, y publicación en Vercel |
 | Resend | API HTTP, plan gratuito | Envío de los avisos por correo (SIM-11) |
-| Docker | Docker Desktop | Entorno local opcional (JOS-05) |
+| Docker | Docker Desktop | Solo desarrollo: entorno local opcional (JOS-05). No se usa para publicar (sección 8) |
 
 Las versiones exactas están en `package.json` y `package-lock.json`. Prisma se fijó en 7.10.1 porque, al 16-10-2026, la etiqueta "latest" de su CLI apunta a una versión 8 en prueba.
 
@@ -126,7 +127,7 @@ Aplicación/
 │   ├── app/                      Páginas y rutas (App Router)
 │   │   ├── layout.tsx            Estructura común y menú
 │   │   ├── menu-sesion.tsx       Encabezado: empresa y «Cerrar sesión»
-│   │   ├── page.tsx              "/" redirige a /vehiculos
+│   │   ├── (inicio)/             Inicio: resumen de la flota (/), con su carga y su error
 │   │   ├── not-found.tsx         Página "No encontrado"
 │   │   ├── login/                Inicio y cierre de sesión (/login)
 │   │   ├── vehiculos/
@@ -138,6 +139,7 @@ Aplicación/
 │   │   │   └── *.tsx             Formulario, botón de activación e insignia de estado
 │   │   ├── conductores/          Igual que vehículos (/conductores)
 │   │   ├── documentos/           Igual que vehículos (/documentos)
+│   │   ├── turnos/               Vista del día y filtros (/turnos), asignar, editar y anular
 │   │   ├── empresa/              Mi empresa: datos de contacto (/empresa)
 │   │   └── api/avisos/           Proceso diario de avisos (GET /api/avisos, con CRON_SECRET)
 │   ├── lib/
@@ -150,6 +152,10 @@ Aplicación/
 │   │   ├── supabase.ts           Cliente de Supabase (solo para la autenticación)
 │   │   ├── seguridad.ts          Encabezados de seguridad HTTP
 │   │   ├── documentos*.ts        Lo mismo para documentos (esquema, estado, datos y filtros)
+│   │   ├── turnos.ts             Esquema Zod, jornadas y mensajes de los turnos
+│   │   ├── turnos-datos.ts       Acceso a datos de turnos (recibe la base; ver sección 2.2)
+│   │   ├── turnos-sesion.ts      Le pasa a turnos-datos.ts la base y la empresa de la sesión
+│   │   ├── resumen*.ts           Textos, enlaces y totales del resumen de la flota
 │   │   ├── avisos*.ts            Reglas y proceso diario de los avisos por correo
 │   │   ├── correo.ts             Envío con la API de Resend
 │   │   ├── rut.ts, fechas.ts     RUT chileno y fechas en hora de Chile
@@ -172,7 +178,7 @@ Aplicación/
 Convenciones:
 
 - **Nombres en español**, en el código y en la base de datos (`vehiculo`, `guardarVehiculo`). Código en camelCase; tablas y columnas en snake_case.
-- **Un módulo nuevo** (por ejemplo, turnos) sigue el patrón de vehículos, conductores y documentos: `src/lib/turnos.ts` (esquema), `src/lib/turnos-datos.ts` (acceso a datos) y `src/app/turnos/` (pantallas y acciones).
+- **Un módulo nuevo** (por ejemplo, ingresos) sigue el patrón de turnos: `src/lib/ingresos.ts` (esquema), `src/lib/ingresos-datos.ts` (acceso a datos, que recibe la base para probarlo con `tests/integracion/`) y `src/app/ingresos/` (pantallas y acciones).
 - **Ramas y commits:** una rama por tarea (`jos-03-vehiculos-prisma`), commits que empiezan con el código de la tarea (`JOS-03: …`) y pull request revisado por otro integrante ([Definition of Done](SIM-05_Definition_of_Done.md)).
 
 ---
@@ -240,17 +246,26 @@ Reglas al cambiar el modelo:
 
 | Comando | Qué revisa |
 |---|---|
-| `npm test` | Pruebas automáticas con el runner de Node (`node --test`). Hoy son 121 en `tests/`: vehículos, conductores, Mi empresa, documentos y sus filtros, avisos, envío de correo, inicio de sesión, RUT, fechas y encabezados de seguridad. |
-| `npm run test:integracion` | Pruebas con la base de datos y con la aplicación levantada (50 en `tests/integracion/`: base de datos, avisos y aplicación). Usan el `.env`; las que necesitan la aplicación levantada o Supabase se saltan solas si faltan sus datos ([SIM-04](SIM-04_Plan_de_Pruebas.md), sección 6.6). |
+| `npm test` | Pruebas automáticas con el runner de Node (`node --test`). Hoy son 148 en `tests/`: vehículos, conductores, Mi empresa, documentos y sus filtros, turnos, resumen de la flota, avisos, envío de correo, inicio de sesión, navegación, RUT, fechas y encabezados de seguridad. |
+| `npm run test:integracion` | Pruebas con la base de datos y con la aplicación levantada (72 en `tests/integracion/`: base de datos, turnos, resumen de la flota, avisos y aplicación). Usan el `.env`; las que necesitan la aplicación levantada o Supabase se saltan solas si faltan sus datos ([SIM-04](SIM-04_Plan_de_Pruebas.md), sección 6.6). |
+| `npm run test:rendimiento` | Tiempos de las consultas del listado y del proceso de avisos con 100 vehículos y 300 documentos ([SIM-04](SIM-04_Plan_de_Pruebas.md), sección 6.5). |
 | `npm run lint` | Reglas de ESLint de Next.js |
 | `npm run build` | Compila la aplicación; también revisa los tipos de TypeScript |
 | `npm run db:comprobar` | Funcionamiento de la base de datos y de la separación entre empresas |
 
-La Definition of Done exige que `build` y `lint` pasen antes de unir un PR ([SIM-05](SIM-05_Definition_of_Done.md), sección 3.1). La GitHub Action lo revisa sola en cada PR y en cada push a `main`: lint, tipos, `npm test`, `npm audit --omit=dev --audit-level=high` y el build (PR #62). Desde el PR #71 también ejecuta las pruebas de integración contra una base PostgreSQL 17 vacía, creada solo para esa ejecución: aplica las migraciones, carga el seed y nunca toca las bases de Supabase. Si algo falla, no publica. El plan de pruebas completo está en [SIM-04](SIM-04_Plan_de_Pruebas.md).
+La Definition of Done exige que `build` y `lint` pasen antes de unir un PR ([SIM-05](SIM-05_Definition_of_Done.md), sección 3.1). La GitHub Action lo revisa sola en cada PR y en cada push a `main`: lint, tipos, `npm test`, `npm audit --omit=dev --audit-level=high` y el build (PR #62). Desde el PR #71 también ejecuta las pruebas de integración, y después las de rendimiento, contra una base PostgreSQL 17 vacía, creada solo para esa ejecución: aplica las migraciones, carga el seed y nunca toca las bases de Supabase. Si algo falla, no publica. El plan de pruebas completo está en [SIM-04](SIM-04_Plan_de_Pruebas.md).
 
 ---
 
 ## 8. Despliegue y operación
+
+**Docker es para desarrollo; el despliegue es con GitHub Actions y Vercel.** Docker solo levanta la aplicación y un PostgreSQL local con los datos de prueba, sin claves, para revisarla en un computador ([JOS-05](JOS-05_Entorno_Docker.md)). La versión publicada no usa Docker ni servidores propios:
+
+| | Desarrollo | Producción |
+|---|---|---|
+| Aplicación | `npm run dev` o Docker, en el computador | Vercel, publicada por la GitHub Action (sección 8.1) |
+| Base de datos e inicio de sesión | Supabase `micrologist-dev`, o el PostgreSQL de Docker sin inicio de sesión | Supabase `micrologist-prod` (sección 8.2) |
+| Cómo llega un cambio | Se prueba en el computador | PR → la Action corre las pruebas y publica una vista previa → se une a `main` → la Action publica en producción |
 
 ### 8.1 Vercel (aplicación)
 
@@ -303,14 +318,15 @@ Implementados en [SIM-11](SIM-11_Alertas_por_Correo.md) (PB-15 y PB-16):
 | Credenciales solo en variables de entorno; `.env` fuera del repositorio y fuera de las imágenes de Docker | `.gitignore`, `Dockerfile.dockerignore` |
 | Solo con sesión: el proxy redirige a `/login`, y cada página y acción vuelve a validar la sesión contra Supabase Auth | `src/proxy.ts`, `src/lib/sesion.ts` |
 | La empresa se toma de la sesión y todas las consultas filtran por ella | `src/lib/sesion.ts` y los `src/lib/*-datos.ts` |
-| Validación en el servidor con Zod | `src/lib/vehiculos.ts`, `src/lib/conductores.ts`, `src/lib/documentos.ts`, `src/lib/empresa.ts` y los `acciones.ts` |
+| Validación en el servidor con Zod | `src/lib/vehiculos.ts`, `src/lib/conductores.ts`, `src/lib/documentos.ts`, `src/lib/turnos.ts`, `src/lib/empresa.ts` y los `acciones.ts` |
 | El proceso de avisos solo se ejecuta con la clave `CRON_SECRET`; sin ella responde 401 | `src/app/api/avisos/route.ts`, `src/lib/avisos.ts` |
 | Las vistas previas de los PR usan la base de desarrollo, nunca la de producción | Variables de Preview en Vercel (sección 5.1) |
 | Patente y RUT del conductor únicos por empresa, garantizados por la base de datos | Restricciones `(empresa_id, patente)` y `(empresa_id, rut)` |
+| Un vehículo o un conductor no tiene dos turnos en la misma fecha y jornada, y un turno no usa un vehículo o conductor de otra empresa, aunque la aplicación tenga un error | Índices únicos parciales y claves foráneas compuestas de `turno` ([JOS-04](JOS-04_Modelo_de_Datos.md), sección 3.6) |
 | La API pública de Supabase no puede leer las tablas (RLS activo sin políticas) | Migración de cada tabla |
 | Contraseñas fuera de nuestras tablas y el mismo mensaje si el correo no existe o la contraseña es incorrecta | Supabase Auth; `mensajeDeErrorDeAcceso()` en `src/lib/acceso.ts` |
 | Encabezados de seguridad (CSP, HSTS y otros) y sin `X-Powered-By` | `src/lib/seguridad.ts`, `next.config.ts` |
-| Errores sin detalles técnicos | `error.tsx` de vehículos, conductores, documentos y Mi empresa |
+| Errores sin detalles técnicos | `error.tsx` de Inicio, vehículos, conductores, turnos, documentos y Mi empresa |
 
 **Dependencias al día (JOS-07, 02-11-2026):** se actualizaron Next.js y `eslint-config-next` de 16.3.6 a 16.4.4 y `zod` a 4.6.7, y se ejecutó `npm audit fix` (sin `--force`). No basta con cualquier 16.4: hasta la 16.4.0, Next.js tiene 2 vulnerabilidades críticas de ejecución remota de código. `npm audit --omit=dev` informa 0 vulnerabilidades, lo que cumple CP-SEG-13 y cierra ERR-01 de [SIM-04](SIM-04_Plan_de_Pruebas.md). `npm audit` completo informa 16 vulnerabilidades moderadas, todas en herramientas de desarrollo: vienen de `minimatch` ([GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249), publicado el 30-10-2026), que llega a través de ESLint y no forma parte de la aplicación en producción. No se usa `npm audit fix --force` porque propone bajar ESLint a la versión 4.
 
@@ -324,6 +340,7 @@ Implementados en [SIM-11](SIM-11_Alertas_por_Correo.md) (PB-15 y PB-16):
 |---|---|
 | Pasar `actions/checkout` y `actions/setup-node` de `v4` a una versión que use Node 24 | GitHub avisa en cada ejecución de la Action que las `v4` usan Node 20, que está obsoleto. Hoy funcionan porque GitHub las fuerza a Node 24 |
 | Resolver las 16 vulnerabilidades moderadas de `minimatch` cuando ESLint publique una versión corregida | Solo afectan a herramientas de desarrollo (sección 9). No se usa `npm audit fix --force` |
+| Quitar el `overrides` de `effect` en `package.json` cuando Prisma publique una versión que traiga `effect` 3.22.1 o superior | Es un arreglo temporal de ERR-03 (sección 9). Al 22-11-2026, la última versión 7 de Prisma sigue siendo la 7.10.1 |
 
 ---
 
@@ -358,6 +375,7 @@ Implementados en [SIM-11](SIM-11_Alertas_por_Correo.md) (PB-15 y PB-16):
 | 0.2.1 | 15-11-2026 | Sección 1: conductor asignado, documentos, Mi empresa y avisos por correo terminados (SIM-12 y SIM-11). Sección 8.3: Resend configurado y probado con un envío real, destinatarios y spam sin dominio propio, y cómo ejecutar el proceso a mano. |
 | 0.2.2 | 16-11-2026 | Sección 2: tipo de arquitectura (monolito modular en capas, cliente-servidor, multiempresa con base compartida y servicios administrados) y por qué se eligió cada característica. |
 | 0.2.3 | 20-11-2026 | ERR-03 (JOA-55): Next.js 16.4.6 y `effect` 3.22.5 forzado con `overrides`, porque Prisma 7.10.1 trae una versión vulnerable (secciones 3 y 9). |
+| 0.3 | 22-11-2026 | JOS-22: turnos (JOS-19, JOA-51, JOS-20 y JOA-52) y resumen de la flota en Inicio (JOS-21) en las secciones 1, 2, 4, 7 y 9. Acceso a datos que recibe la base y `contextoDeLaSesion()` (sección 2.2). Docker es solo para desarrollo y el despliegue es con GitHub Actions y Vercel (secciones 3 y 8). Pruebas de rendimiento en la sección 7 y el `overrides` de `effect` en las mejoras pendientes. |
 
 En cada entrega se actualizan las secciones 1, 5.1, 8 y 9, y se agrega una fila a esta tabla.
 
@@ -369,5 +387,6 @@ En cada entrega se actualizan las secciones 1, 5.1, 8 y 9, y se agrega una fila 
 - [x] Instalación, configuración, variables de entorno, base de datos y migraciones (secciones 5 y 6).
 - [x] Despliegue y operación con Vercel, Supabase y el servicio de correo, marcando lo pendiente (sección 8).
 - [x] Separado del manual de usuario y con historial para actualizarlo en cada entrega (sección 12).
+- [x] Turnos, resumen de la flota y Docker como entorno de desarrollo, para la defensa de título (JOS-22).
 - [ ] Aportes de Simón (inicio de sesión y plan de pruebas) y de Joaquín cuando correspondan.
 - [x] Revisión del equipo en el PR.
