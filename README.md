@@ -8,7 +8,7 @@ El sistema está en `Fase 2/Evidencias Proyecto/Evidencias de sistema`, en dos c
 
 ## Descripción del proyecto
 
-MicroLogist es una plataforma web orientada a pequeñas y medianas empresas de transporte de pasajeros. Permite centralizar la información de vehículos, conductores y documentación obligatoria, y avisa por correo antes de que venza cada documento. Los turnos, el resumen de la flota y los ingresos quedaron como trabajo futuro (JOA-08, sección 2).
+MicroLogist es una plataforma web orientada a pequeñas y medianas empresas de transporte de pasajeros. Permite centralizar la información de vehículos, conductores, turnos y documentación obligatoria, muestra un resumen de la flota al entrar y avisa por correo antes de que venza cada documento. Los turnos y el resumen se agregaron para la defensa de título; los ingresos quedaron como trabajo futuro (JOA-08, sección 2).
 
 ### ¿A quién va dirigido?
 

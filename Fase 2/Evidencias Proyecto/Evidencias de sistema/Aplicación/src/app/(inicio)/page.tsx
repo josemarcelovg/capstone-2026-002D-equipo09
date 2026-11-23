@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { ComponentType, ReactNode } from "react";
-import { formatearFecha, hoyEnChile } from "@/lib/fechas";
-import { prisma } from "@/lib/prisma";
+import { formatearFecha } from "@/lib/fechas";
 import {
   ENLACES_RESUMEN,
   ETIQUETA_VEHICULOS,
@@ -11,7 +10,7 @@ import {
   textoVencenHoy,
 } from "@/lib/resumen";
 import { resumenDeLaFlota } from "@/lib/resumen-datos";
-import { empresaDeLaSesion } from "@/lib/sesion";
+import { contextoDeLaSesion } from "@/lib/sesion";
 import { ESTADOS } from "@/lib/vehiculos";
 import { Encabezado } from "../encabezado";
 import { BOTON_PRINCIPAL, BOTON_SECUNDARIO, TARJETA } from "../estilos";
@@ -23,12 +22,9 @@ export const metadata: Metadata = { title: "Inicio" };
 
 // Resumen de la flota (JOA-50): lo primero que se ve al entrar. Se calcula cada vez que se abre.
 export default async function PaginaInicio() {
-  const hoy = hoyEnChile();
-  const { vehiculos, documentos } = await resumenDeLaFlota({
-    db: prisma,
-    empresaId: await empresaDeLaSesion(),
-    hoy,
-  });
+  const contexto = await contextoDeLaSesion();
+  const { hoy } = contexto;
+  const { vehiculos, documentos } = await resumenDeLaFlota(contexto);
   const situacion = situacionDocumentos(documentos);
 
   return (
