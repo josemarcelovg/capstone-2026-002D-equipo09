@@ -5,17 +5,20 @@ import { useState, useTransition } from "react";
 import { llamarAlServidor, SIN_CONEXION } from "@/lib/guardado";
 import { cambiarActivacion } from "./acciones";
 
-// Botón para desactivar (con confirmación) o reactivar un conductor.
+// Botón para desactivar (con confirmación) o reactivar un conductor. La confirmación avisa
+// cuántos turnos tiene desde hoy, si tiene.
 export function BotonActivacion({
   id,
   nombre,
   inactivo,
   vehiculosAsignados = 0,
+  avisoTurnos,
 }: {
   id: string;
   nombre: string;
   inactivo: boolean;
   vehiculosAsignados?: number;
+  avisoTurnos?: string | null;
 }) {
   const [cambiando, iniciarCambio] = useTransition();
   const [error, setError] = useState<string>();
@@ -27,7 +30,9 @@ export function BotonActivacion({
         : vehiculosAsignados > 1
           ? ` y sus ${vehiculosAsignados} vehículos quedarán sin conductor asignado`
           : "";
-    const pregunta = `¿Desactivar a ${nombre}? Dejará de aparecer en el listado${vehiculos}`;
+    const pregunta = [`¿Desactivar a ${nombre}? Dejará de aparecer en el listado${vehiculos}`, avisoTurnos]
+      .filter(Boolean)
+      .join(".\n\n");
     if (!inactivo && !window.confirm(pregunta)) return;
     iniciarCambio(async () =>
       setError(await llamarAlServidor(() => cambiarActivacion(id, inactivo), SIN_CONEXION, unstable_rethrow)),

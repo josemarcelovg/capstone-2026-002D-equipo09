@@ -5,21 +5,26 @@ import { useState, useTransition } from "react";
 import { llamarAlServidor, SIN_CONEXION } from "@/lib/guardado";
 import { cambiarActivacion } from "./acciones";
 
-// Botón para desactivar (con confirmación) o reactivar un vehículo.
+// Botón para desactivar (con confirmación) o reactivar un vehículo. La confirmación avisa
+// cuántos turnos tiene desde hoy, si tiene.
 export function BotonActivacion({
   id,
   patente,
   inactivo,
+  avisoTurnos,
 }: {
   id: string;
   patente: string;
   inactivo: boolean;
+  avisoTurnos?: string | null;
 }) {
   const [cambiando, iniciarCambio] = useTransition();
   const [error, setError] = useState<string>();
 
   function cambiar() {
-    const pregunta = `¿Desactivar el vehículo ${patente}? Dejará de aparecer en el listado`;
+    const pregunta = [`¿Desactivar el vehículo ${patente}? Dejará de aparecer en el listado`, avisoTurnos]
+      .filter(Boolean)
+      .join(".\n\n");
     if (!inactivo && !window.confirm(pregunta)) return;
     iniciarCambio(async () =>
       setError(await llamarAlServidor(() => cambiarActivacion(id, inactivo), SIN_CONEXION, unstable_rethrow)),

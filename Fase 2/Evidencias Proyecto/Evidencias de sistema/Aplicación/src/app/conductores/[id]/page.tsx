@@ -3,6 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { obtenerConductor } from "@/lib/conductores-datos";
+import { textoTurnosFuturos } from "@/lib/turnos";
+import { contarTurnosDesdeHoy } from "@/lib/turnos-datos";
+import { contextoDeTurnos } from "@/lib/turnos-sesion";
 import { vehiculosDelConductor } from "@/lib/vehiculos-datos";
 import { mensajeDeDocumento, SeccionDocumentos } from "../../documentos/seccion-documentos";
 import { BotonActivacion } from "../boton-activacion";
@@ -25,6 +28,10 @@ export default async function PaginaConductor({ params, searchParams }: PageProp
   if (!conductor) notFound();
   const mensaje = mensajeDeDocumento((await searchParams).mensaje);
   const vehiculos = await vehiculosDelConductor(conductor.id);
+  // Para la confirmación al desactivar: sus turnos no se anulan solos (JOA-14, criterio 11).
+  const avisoTurnos = conductor.activo
+    ? textoTurnosFuturos(await contarTurnosDesdeHoy(await contextoDeTurnos(), { conductorId: conductor.id }))
+    : null;
 
   return (
     <>
@@ -61,6 +68,7 @@ export default async function PaginaConductor({ params, searchParams }: PageProp
           nombre={conductor.nombre}
           inactivo={!conductor.activo}
           vehiculosAsignados={vehiculos.length}
+          avisoTurnos={avisoTurnos}
         />
       </section>
     </>
