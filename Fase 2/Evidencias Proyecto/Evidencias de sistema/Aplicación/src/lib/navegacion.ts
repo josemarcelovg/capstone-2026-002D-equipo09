@@ -3,6 +3,7 @@
 const SECCIONES = [
   { ruta: "/documentos", texto: "Volver al listado de documentos" },
   { ruta: "/conductores", texto: "Volver al listado de conductores" },
+  { ruta: "/turnos", texto: "Volver a los turnos" },
 ] as const;
 
 const INICIO = { href: "/vehiculos", texto: "Volver al listado de vehículos" };

@@ -111,6 +111,15 @@ export function IconoAlerta(props: PropsIcono) {
   );
 }
 
+export function IconoTurno(props: PropsIcono) {
+  return (
+    <Icono {...props}>
+      <rect x="4" y="5" width="16" height="15" rx="2.5" />
+      <path d="M4 10h16M8.5 3v4M15.5 3v4" />
+    </Icono>
+  );
+}
+
 export function IconoReloj(props: PropsIcono) {
   return (
     <Icono {...props}>

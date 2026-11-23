@@ -17,6 +17,10 @@ test("desde un documento, un conductor o un vehículo vuelve a su propio listado
     href: "/conductores",
     texto: "Volver al listado de conductores",
   });
+  assert.deepEqual(listadoParaVolver(`/turnos/${ID}`), {
+    href: "/turnos",
+    texto: "Volver a los turnos",
+  });
   assert.deepEqual(listadoParaVolver(`/vehiculos/${ID}`), {
     href: "/vehiculos",
     texto: "Volver al listado de vehículos",
